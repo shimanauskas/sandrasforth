@@ -875,6 +875,10 @@ literal:
 
 .x:
 	dq	lit
+	dq	1
+	dq	push.x
+
+	dq	lit
 	dq	output+CELL
 	dq	lit
 	dq	0
@@ -890,6 +894,13 @@ literal:
 	dq	lit
 	dq	1
 	dq	add.x
+
+	dq	pull.x
+	dq	pull.x
+	dq	enter
+	dq	negate.x
+	dq	push.x
+	dq	push.x
 
 	dq	dup.x
 	dq	fetchByte.x
@@ -914,17 +925,11 @@ literal:
 	dq	lit
 	dq	enter
 	dq	compile.x
+
 	dq	pull.x
-	dq	lit
-	dq	output+CELL
-	dq	fetchByte.x
-	dq	lit
-	dq	'-'
-	dq	sub.x
-	dq	branch
-	dq	.positive
-	dq	enter
-	dq	negate.x
+	dq	pull.x	
+	dq	mul.x
+	dq	drop.x
 
 .positive:
 	dq	enter	
