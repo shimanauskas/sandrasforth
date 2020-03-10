@@ -879,6 +879,7 @@ literal:
 
 	dq	lit
 	dq	output+CELL
+
 	dq	lit
 	dq	0
 	dq	push.x
@@ -890,6 +891,7 @@ literal:
 	dq	sub.x
 	dq	branch
 	dq	.loop
+
 	dq	lit
 	dq	1
 	dq	add.x
