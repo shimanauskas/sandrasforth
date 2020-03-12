@@ -878,11 +878,11 @@ literal:
 	dq	1
 
 	dq	lit
-	dq	output+CELL
-
-	dq	lit
 	dq	0
 	dq	push.x
+
+	dq	lit
+	dq	output+CELL
 
 	dq	dup.x
 	dq	fetchByte.x
