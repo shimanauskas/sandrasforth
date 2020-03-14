@@ -928,8 +928,6 @@ literal:
 	dq	pull.x
 	dq	mul.x
 	dq	drop.x
-
-.positive:
 	dq	enter	
 	dq	compile.x
 	dq	jump
