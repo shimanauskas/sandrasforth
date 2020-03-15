@@ -933,16 +933,6 @@ literal:
 	dq	jump
 	dq	token.x
 
-.drop:
-	dq	drop.x
-.exit:
-	dq	drop.x
-	dq	drop.x
-	dq	pull.x
-	dq	drop.x
-	dq	jump
-	dq	find.x
-
 .literal:
 	dq	lit
 	dq	'0'
@@ -975,6 +965,16 @@ literal:
 
 	dq	jump
 	dq	.loop
+
+.drop:
+	dq	drop.x
+.exit:
+	dq	drop.x
+	dq	drop.x
+	dq	pull.x
+	dq	drop.x
+	dq	jump
+	dq	find.x
 
 native:
 	dq	4
