@@ -914,26 +914,12 @@ literal:
 	dq	fetchByte.x
 
 	dq	dup.x
-	dq	branch
-	dq	.literal
-
-.compile:
-	dq	drop.x
-	dq	drop.x
-	dq	lit
-	dq	lit
 	dq	enter
-	dq	compile.x
+	dq	bool.x
+	dq	not.x
+	dq	branch
+	dq	.compile
 
-	dq	pull.x
-	dq	mul.x
-	dq	drop.x
-	dq	enter	
-	dq	compile.x
-	dq	jump
-	dq	token.x
-
-.literal:
 	dq	lit
 	dq	'0'
 	dq	sub.x
@@ -965,6 +951,22 @@ literal:
 
 	dq	jump
 	dq	.loop
+
+.compile:
+	dq	drop.x
+	dq	drop.x
+	dq	lit
+	dq	lit
+	dq	enter
+	dq	compile.x
+
+	dq	pull.x
+	dq	mul.x
+	dq	drop.x
+	dq	enter	
+	dq	compile.x
+	dq	jump
+	dq	token.x
 
 .drop:
 	dq	drop.x
