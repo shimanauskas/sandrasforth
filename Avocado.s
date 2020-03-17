@@ -79,6 +79,13 @@ branch:
 	add r12,	CELL
 	NEXT
 
+branch0:
+	test rax,	rax
+	DROP
+	jz jump
+	add r12,	CELL
+	NEXT
+
 align	CELL
 
 if:
@@ -834,10 +841,7 @@ token:
 	
 	dq	dup.x
 	dq	fetchByte.x
-	dq	enter
-	dq	bool.x
-	dq	not.x
-	dq	branch
+	dq	branch0
 	dq	definitionEnd.x
 
 	dq	push.x
@@ -903,10 +907,7 @@ literal:
 
 	dq	dup.x
 	dq	fetchByte.x
-	dq	enter
-	dq	bool.x
-	dq	not.x
-	dq	branch
+	dq	branch0
 	dq	.exit
 
 .loop:
@@ -914,10 +915,7 @@ literal:
 	dq	fetchByte.x
 
 	dq	dup.x
-	dq	enter
-	dq	bool.x
-	dq	not.x
-	dq	branch
+	dq	branch0
 	dq	.compile
 
 	dq	lit
