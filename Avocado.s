@@ -72,7 +72,7 @@ jump:
 	mov	r13,	[r12]
 	jmp	r13
 
-branch:
+branch1:
 	test rax,	rax
 	DROP
 	jnz jump
@@ -893,7 +893,7 @@ literal:
 	dq	lit
 	dq	'-'
 	dq	sub.x
-	dq	branch
+	dq	branch1
 	dq	.loop
 
 	dq	lit
@@ -930,7 +930,7 @@ literal:
 	dq	fetch.x
 	dq	div.x
 	dq	drop.x
-	dq	branch
+	dq	branch1
 	dq	.drop
 
 	dq	pull.x
@@ -938,7 +938,7 @@ literal:
 	dq	base
 	dq	fetch.x
 	dq	mul.x
-	dq	branch
+	dq	branch1
 	dq	find.error
 	dq	add.x
 	dq	push.x
@@ -1133,7 +1133,7 @@ number:
 	dq	lit
 	dq	FLAG
 	dq	and.x
-	dq	branch
+	dq	branch1
 	dq	.negative
 
 .natural:
@@ -1146,7 +1146,7 @@ number:
 	dq	div.x
 	dq	push.x
 	dq	dup.x
-	dq	branch
+	dq	branch1
 	dq	.recurse
 	dq	drop.x
 
