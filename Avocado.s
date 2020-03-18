@@ -72,17 +72,17 @@ jump:
 	mov	r13,	[r12]
 	jmp	r13
 
-branch1:
-	test rax,	rax
-	DROP
-	jnz jump
-	add r12,	CELL
-	NEXT
-
 branch0:
 	test rax,	rax
 	DROP
 	jz jump
+	add r12,	CELL
+	NEXT
+
+branch1:
+	test rax,	rax
+	DROP
+	jnz jump
 	add r12,	CELL
 	NEXT
 
