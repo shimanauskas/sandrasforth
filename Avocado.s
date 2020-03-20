@@ -879,11 +879,11 @@ literal:
 
 .x:
 	dq	lit
-	dq	1
-
-	dq	lit
 	dq	0
 	dq	push.x
+
+	dq	lit
+	dq	1
 
 	dq	lit
 	dq	output+CELL
