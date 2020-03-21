@@ -734,10 +734,24 @@ compile:
 	dq	store.x
 	dq	exit
 
+compileLiteral:
+	dq	14
+	dq	`compileLiteral`
+	dq	compile
+
+.x:
+	dq	lit
+	dq	lit
+	dq	enter
+	dq	compile.x
+	dq	enter
+	dq	compile.x
+	dq	exit
+
 skipWhitespace:
 	dq	14
 	dq	`skipWhitespace`
-	dq	compile
+	dq	compileLiteral
 
 .x:
 	dq	dup.x
@@ -958,16 +972,14 @@ literal:
 .compile:
 	dq	drop.x
 	dq	drop.x
-	dq	lit
-	dq	lit
-	dq	enter
-	dq	compile.x
 
 	dq	pull.x
 	dq	mul.x
 	dq	drop.x
+
 	dq	enter	
-	dq	compile.x
+	dq	compileLiteral.x
+
 	dq	jump
 	dq	token.x
 
