@@ -938,9 +938,14 @@ literal:
 	dq	base
 	dq	fetch.x
 	dq	mul.x
+	dq	drop.x
+	dq	add.x
+	dq	dup.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
 	dq	branch1
 	dq	find.error
-	dq	add.x
 	dq	push.x
 
 	dq	lit
