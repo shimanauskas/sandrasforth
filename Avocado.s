@@ -886,10 +886,32 @@ token:
 	dq	jump
 	dq	literal.x
 
+isDigit:
+	dq	7
+	dq	`isDigit`
+	dq	token
+
+.x:
+	dq	lit
+	dq	`0`
+	dq	sub.x
+
+	dq	lit
+	dq	0
+
+	dq	lit
+	dq	base
+	dq	fetch.x	
+
+	dq	div.x
+	dq	drop.x
+
+	dq	exit
+
 literal:
 	dq	7
 	dq	`literal`
-	dq	token
+	dq	isDigit
 
 .x:
 	dq	lit
@@ -932,20 +954,18 @@ literal:
 	dq	branch0
 	dq	.compile
 
-	dq	lit
-	dq	'0'
-	dq	sub.x
+	dq	enter
+	dq	isDigit.x
+
+	dq	branch1
+	dq	.exit
 
 	dq	dup.x
+	dq	fetchByte.x
+
 	dq	lit
-	dq	0
-	dq	lit
-	dq	base
-	dq	fetch.x
-	dq	div.x
-	dq	drop.x
-	dq	branch1
-	dq	.drop
+	dq	`0`
+	dq	sub.x
 
 	dq	pull.x
 	dq	lit
@@ -983,8 +1003,6 @@ literal:
 	dq	jump
 	dq	token.x
 
-.drop:
-	dq	drop.x
 .exit:
 	dq	drop.x
 	dq	drop.x
