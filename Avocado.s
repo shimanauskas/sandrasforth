@@ -908,12 +908,79 @@ isDigit:
 
 	dq	exit
 
-literal:
-	dq	7
-	dq	`literal`
+isLiteral:
+	dq	9
+	dq	`isLiteral`
 	dq	isDigit
 
 .x:
+	dq	dup.x
+	dq	fetchByte.x
+	dq	lit
+	dq	'-'
+	dq	sub.x
+	dq	branch1
+	dq	.loop
+
+	dq	lit
+	dq	1
+	dq	add.x
+
+	dq	dup.x
+	dq	fetchByte.x
+	dq	branch1
+	dq	.loop
+
+	dq	drop.x
+	dq	lit
+	dq	-1
+	dq	exit
+
+.loop:
+	dq	dup.x
+	dq	fetchByte.x
+	dq	branch1
+	dq	.0
+
+	dq	drop.x
+	dq	lit
+	dq	0
+	dq	exit
+
+.0:
+	dq	dup.x
+	dq	fetchByte.x
+	dq	enter
+	dq	isDigit.x
+	dq	branch0
+	dq	.1
+
+	dq	drop.x
+	dq	lit
+	dq	-1
+	dq	exit
+
+.1:
+	dq	lit
+	dq	1
+	dq	add.x
+
+	dq	jump
+	dq	.loop
+
+literal:
+	dq	7
+	dq	`literal`
+	dq	isLiteral
+
+.x:
+	dq	lit
+	dq	output+CELL
+	dq	enter
+	dq	isLiteral.x
+	dq	branch1
+	dq	find.x
+
 	dq	lit
 	dq	0
 	dq	push.x
@@ -941,11 +1008,6 @@ literal:
 	dq	negate.x
 	dq	pull.x
 
-	dq	dup.x
-	dq	fetchByte.x
-	dq	branch0
-	dq	.exit
-
 .loop:
 	dq	dup.x
 	dq	fetchByte.x
@@ -953,15 +1015,6 @@ literal:
 	dq	dup.x
 	dq	branch0
 	dq	.compile
-
-	dq	enter
-	dq	isDigit.x
-
-	dq	branch1
-	dq	.exit
-
-	dq	dup.x
-	dq	fetchByte.x
 
 	dq	lit
 	dq	`0`
@@ -1002,14 +1055,6 @@ literal:
 
 	dq	jump
 	dq	token.x
-
-.exit:
-	dq	drop.x
-	dq	drop.x
-	dq	pull.x
-	dq	drop.x
-	dq	jump
-	dq	find.x
 
 native:
 	dq	4
