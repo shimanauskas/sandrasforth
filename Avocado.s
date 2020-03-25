@@ -615,12 +615,23 @@ less:
 	dq	mrotr
 
 .x:
-	dq	sub.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
+	dq	over.x
+	dq	over.x
+	dq	xor.x
 	dq	enter
-	dq	bool.x
+	dq	negative.x
+	dq	branch0
+	dq	.0
+
+	dq	drop.x
+	dq	enter
+	dq	negative.x
+	dq	exit
+
+.0:
+	dq	sub.x
+	dq	enter
+	dq	negative.x
 	dq	exit
 
 terminate:
