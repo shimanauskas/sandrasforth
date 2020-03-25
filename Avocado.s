@@ -784,7 +784,7 @@ skipWhitespace:
 	dq	1
 	dq	over.x
 	dq	lit
-	dq	0x20+1
+	dq	`!`
 	dq	enter
 	dq	less.x
 	dq	push.x
