@@ -308,10 +308,35 @@ div:
 
 align	CELL
 
+fetch:
+	dq	5|FLAG
+	dq	`fetch`
+	dq	div
+
+.x:
+	mov	rax,	[rax]
+	NEXT
+
+align	CELL
+
+store:
+	dq	5|FLAG
+	dq	`store`
+	dq	fetch
+
+.x:
+	mov	rbx,	[rbp]
+	mov	[rbx],	rax
+	mov	rax,	[rbp-CELL]
+	lea	rbp,	[rbp-CELL*2]
+	NEXT
+
+align	CELL
+
 fetchByte:
 	dq	9|FLAG
 	dq	`fetchByte`
-	dq	div
+	dq	store
 
 .x:
 	mov	al,	[rax]
@@ -320,39 +345,14 @@ fetchByte:
 
 align	CELL
 
-fetch:
-	dq	5|FLAG
-	dq	`fetch`
-	dq	fetchByte
-
-.x:
-	mov	rax,	[rax]
-	NEXT
-
-align	CELL
-
 storeByte:
 	dq	9|FLAG
 	dq	`storeByte`
-	dq	fetch
+	dq	fetchByte
 
 .x:
 	mov	rbx,	[rbp]
 	mov	[rbx],	al
-	mov	rax,	[rbp-CELL]
-	lea	rbp,	[rbp-CELL*2]
-	NEXT
-
-align	CELL
-
-store:
-	dq	5|FLAG
-	dq	`store`
-	dq	storeByte
-
-.x:
-	mov	rbx,	[rbp]
-	mov	[rbx],	rax
 	mov	rax,	[rbp-CELL]
 	lea	rbp,	[rbp-CELL*2]
 	NEXT
