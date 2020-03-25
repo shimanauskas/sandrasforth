@@ -908,17 +908,27 @@ isDigit:
 
 	dq	exit
 
-isLiteral:
-	dq	9
-	dq	`isLiteral`
+points2Sign:
+	dq	11
+	dq	`points2Sign`
 	dq	isDigit
 
 .x:
-	dq	dup.x
 	dq	fetchByte.x
 	dq	lit
-	dq	'-'
+	dq	`-`
 	dq	sub.x
+	dq	exit
+
+isLiteral:
+	dq	9
+	dq	`isLiteral`
+	dq	points2Sign
+
+.x:
+	dq	dup.x
+	dq	enter
+	dq	points2Sign.x
 	dq	branch1
 	dq	.loop
 
@@ -990,12 +1000,10 @@ literal:
 
 	dq	lit
 	dq	output+CELL
-
 	dq	dup.x
-	dq	fetchByte.x
-	dq	lit
-	dq	'-'
-	dq	sub.x
+
+	dq	enter
+	dq	points2Sign.x	
 	dq	branch1
 	dq	.loop
 
