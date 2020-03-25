@@ -613,7 +613,7 @@ less:
 terminate:
 	dq	9
 	dq	`terminate`
-	dq	mrotr
+	dq	less
 
 .x:
 	dq	lit
