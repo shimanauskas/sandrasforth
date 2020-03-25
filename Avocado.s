@@ -452,10 +452,23 @@ bool:
 	dq	not.x
 	dq	exit
 
+negative:
+	dq	8
+	dq	`negative`
+	dq	bool
+
+.x:
+	dq	lit
+	dq	FLAG
+	dq	and.x
+	dq	enter
+	dq	bool.x
+	dq	exit
+
 addresslower:
 	dq	12
 	dq	`addresslower`
-	dq	bool
+	dq	negative
 
 .x:
 	dq	lit
