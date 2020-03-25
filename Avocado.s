@@ -612,7 +612,7 @@ less:
 
 terminate:
 	dq	9
-	dq	`terminate`
+	dq	`terminate`
 	dq	less
 
 .x:
