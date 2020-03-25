@@ -23,13 +23,13 @@
 %define FLAG	0x8000000000000000
 
 %macro	DUP	0
-	db	0x48, 0x8D, 0x6D, 0x08	; lea	rbp,	[rbp+CELL]
-	db	0x48, 0x89, 0x45, 0x00	; mov	[rbp],	rax
+	lea	rbp,	[rbp+CELL]
+	mov	[rbp],	rax
 %endmacro
 
 %macro	DROP	0
-	db	0x48, 0x8B, 0x45, 0x00	; mov	rax,	[rbp]
-	db	0x48, 0x8D, 0x6D, 0xF8	; lea	rbp,	[rbp-CELL]
+	mov	rax,	[rbp]
+	lea	rbp,	[rbp-CELL]
 %endmacro
 
 %macro	NEXT	0
@@ -129,9 +129,9 @@ over:
 	dq	drop
 
 .x:
-	db	0x48, 0x8D, 0x6D, 0x08	; lea	rbp,	[rbp+CELL]
-	db	0x48, 0x89, 0x45, 0x00	; mov	[rbp],	rax
-	db	0x48, 0x8B, 0x45, 0xF8	; mov	rax,	[rbp-CELL]
+	lea	rbp,	[rbp+CELL]
+	mov	[rbp],	rax
+	mov	rax,	[rbp-CELL]
 	NEXT
 
 align	CELL
@@ -167,7 +167,7 @@ shiftLeft:
 	dq	pull
 
 .x:
-	db	0x48, 0xD1, 0xE0	; shl	rax,	1
+	shl	rax,	1
 	NEXT
 
 align	CELL
@@ -178,7 +178,7 @@ shiftRight:
 	dq	shiftLeft
 
 .x:
-	db	0x48, 0xD1, 0xE8	; shr	rax,	1
+	shr	rax,	1
 	NEXT
 
 align	CELL
@@ -189,7 +189,7 @@ rotateLeft:
 	dq	shiftRight
 
 .x:
-	db	0x48, 0xD1, 0xC0	; rol	rax,	1
+	rol	rax,	1
 	NEXT
 
 align	CELL
@@ -200,7 +200,7 @@ rotateRight:
 	dq	rotateLeft
 
 .x:
-	db	0x48, 0xD1, 0xC8	; ror	rax,	1
+	ror	rax,	1
 	NEXT
 
 align	CELL
@@ -211,7 +211,7 @@ not:
 	dq	rotateRight
 
 .x:
-	db	0x48, 0xF7, 0xD0	; not	rax
+	not	rax
 	NEXT
 
 align	CELL
@@ -222,7 +222,7 @@ and:
 	dq	not
 
 .x:
-	db	0x48, 0x21, 0x45, 0x00	; and	[rbp],	rax
+	and	[rbp],	rax
 	DROP
 	NEXT
 
@@ -234,7 +234,7 @@ or:
 	dq	and
 
 .x:
-	db	0x48, 0x09, 0x45, 0x00	; or	[rbp],	rax
+	or	[rbp],	rax
 	DROP
 	NEXT
 
@@ -246,7 +246,7 @@ xor:
 	dq	or
 
 .x:
-	db	0x48, 0x31, 0x45, 0x00	; xor	[rbp],	rax
+	xor	[rbp],	rax
 	DROP
 	NEXT
 
@@ -258,7 +258,7 @@ add:
 	dq	xor
 
 .x:
-	db	0x48, 0x01, 0x45, 0x00	; add	[rbp],	rax
+	add	[rbp],	rax
 	DROP
 	NEXT
 
@@ -270,7 +270,7 @@ sub:
 	dq	add
 
 .x:
-	db	0x48, 0x29, 0x45, 0x00	; sub	[rbp],	rax
+	sub	[rbp],	rax
 	DROP
 	NEXT
 
