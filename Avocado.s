@@ -1016,11 +1016,8 @@ literal:
 	dq	find.x
 
 	dq	lit
-	dq	0
-	dq	push.x
-
-	dq	lit
 	dq	1
+	dq	push.x
 
 	dq	lit
 	dq	output+CELL
@@ -1029,16 +1026,54 @@ literal:
 	dq	enter
 	dq	points2Sign.x	
 	dq	branch1
-	dq	.loop
+	dq	.convertNatural
 
 	dq	lit
 	dq	1
 	dq	add.x
 
-	dq	push.x
+	dq	pull.x
 	dq	enter
 	dq	negate.x
+	dq	push.x
+
+.convertNatural:
+	dq	enter
+	dq	convertNatural.x
+
+	dq	dup.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
+	dq	branch1
+	dq	.error
+
 	dq	pull.x
+	dq	mul.x
+	dq	drop.x
+
+	dq	enter	
+	dq	compileLiteral.x
+
+	dq	jump
+	dq	token.x
+
+.error:
+	dq	drop.x
+	dq	pull.x
+	dq	drop.x
+	dq	jump
+	dq	find.error
+
+convertNatural:
+	dq	14
+	dq	`convertNatural`
+	dq	literal
+
+.x:
+	dq	lit
+	dq	0
+	dq	push.x
 
 .loop:
 	dq	dup.x
@@ -1046,7 +1081,7 @@ literal:
 
 	dq	dup.x
 	dq	branch0
-	dq	.compile
+	dq	.exit
 
 	dq	lit
 	dq	`0`
@@ -1059,12 +1094,6 @@ literal:
 	dq	mul.x
 	dq	drop.x
 	dq	add.x
-	dq	dup.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
-	dq	branch1
-	dq	find.error
 	dq	push.x
 
 	dq	lit
@@ -1074,24 +1103,16 @@ literal:
 	dq	jump
 	dq	.loop
 
-.compile:
+.exit:
 	dq	drop.x
 	dq	drop.x
-
 	dq	pull.x
-	dq	mul.x
-	dq	drop.x
-
-	dq	enter	
-	dq	compileLiteral.x
-
-	dq	jump
-	dq	token.x
+	dq	exit
 
 native:
 	dq	4
 	dq	`natv`
-	dq	literal
+	dq	convertNatural
 
 .x:
 	dq	lit
