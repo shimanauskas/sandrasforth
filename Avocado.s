@@ -23,7 +23,7 @@
 %define FLAG	0x8000000000000000
 
 %macro	DUP	0
-	lea	rbp,	[rbp+CELL]
+	add	rbp,	CELL
 	mov	[rbp],	rax
 %endmacro
 
