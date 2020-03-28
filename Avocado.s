@@ -1002,6 +1002,24 @@ isLiteral:
 	dq	jump
 	dq	.loop
 
+errorPrint:
+	dq	5
+	dq	`error`
+	dq	isLiteral
+
+.x:
+	dq	lit
+	dq	output
+	dq	enter
+	dq	string.x
+	dq	write.x
+	dq	lit
+	dq	error
+	dq	enter
+	dq	string.x
+	dq	write.x
+	dq	exit
+
 literal:
 	dq	7
 	dq	`literal`
@@ -1062,8 +1080,10 @@ literal:
 	dq	drop.x
 	dq	pull.x
 	dq	drop.x
+	dq	enter
+	dq	errorPrint.x
 	dq	jump
-	dq	find.error
+	dq	start.x
 
 convertNatural:
 	dq	14
@@ -1200,19 +1220,11 @@ find:
 	dq	not.x
 	dq	if.x
 	dq	drop.x
-.error:
-	dq	lit
-	dq	output
 	dq	enter
-	dq	string.x
-	dq	write.x
-	dq	lit
-	dq	error
-	dq	enter
-	dq	string.x
-	dq	write.x
+	dq	errorPrint.x
 	dq	jump
 	dq	start.x
+
 
 .found:
 	dq	lit
