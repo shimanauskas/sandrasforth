@@ -1093,10 +1093,9 @@ convertNatural:
 .x:
 	dq	lit
 	dq	0
-	dq	push.x
 
 .loop:
-	dq	dup.x
+	dq	over.x
 	dq	fetchByte.x
 
 	dq	dup.x
@@ -1107,17 +1106,21 @@ convertNatural:
 	dq	`0`
 	dq	sub.x
 
+	dq	push.x
+	dq	push.x
+
+	dq	lit
+	dq	1
+	dq	add.x
+
 	dq	pull.x
 	dq	lit
 	dq	base
 	dq	fetch.x
 	dq	mul.x
 	dq	drop.x
-	dq	add.x
-	dq	push.x
 
-	dq	lit
-	dq	1
+	dq	pull.x
 	dq	add.x
 
 	dq	jump
@@ -1125,6 +1128,7 @@ convertNatural:
 
 .exit:
 	dq	drop.x
+	dq	push.x
 	dq	drop.x
 	dq	pull.x
 	dq	exit
