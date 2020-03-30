@@ -1044,7 +1044,7 @@ literal:
 	dq	enter
 	dq	points2Sign.x	
 	dq	branch1
-	dq	.convertNatural
+	dq	.convert
 
 	dq	lit
 	dq	1
@@ -1055,9 +1055,9 @@ literal:
 	dq	negate.x
 	dq	push.x
 
-.convertNatural:
+.convert:
 	dq	enter
-	dq	convertNatural.x
+	dq	convertUnsigned.x
 
 	dq	dup.x
 	dq	lit
@@ -1085,10 +1085,58 @@ literal:
 	dq	jump
 	dq	start.x
 
-convertNatural:
-	dq	14
-	dq	`convertNatural`
+convertSigned:
+	dq	13
+	dq	`convertSigned`
 	dq	literal
+
+.x:
+	dq	lit
+	dq	0
+
+.loop:
+	dq	over.x
+	dq	fetchByte.x
+
+	dq	dup.x
+	dq	branch0
+	dq	.exit
+
+	dq	lit
+	dq	`0`
+	dq	sub.x
+
+	dq	push.x
+	dq	push.x
+
+	dq	lit
+	dq	1
+	dq	add.x
+
+	dq	pull.x
+	dq	lit
+	dq	base
+	dq	fetch.x
+	dq	mul.x
+	dq	drop.x
+
+	dq	pull.x
+	dq	sub.x
+
+	dq	jump
+	dq	.loop
+
+.exit:
+	dq	drop.x
+	dq	push.x
+	dq	drop.x
+	dq	pull.x
+	dq	exit
+
+convertUnsigned:
+	dq	15
+	dq	`convertUnsigned`
+	dq	convertSigned
 
 .x:
 	dq	lit
@@ -1136,7 +1184,7 @@ convertNatural:
 native:
 	dq	4
 	dq	`natv`
-	dq	convertNatural
+	dq	convertUnsigned
 
 .x:
 	dq	lit
