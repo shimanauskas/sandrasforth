@@ -1034,28 +1034,35 @@ literal:
 	dq	find.x
 
 	dq	lit
-	dq	1
-	dq	push.x
-
-	dq	lit
 	dq	output+CELL
 	dq	dup.x
 
 	dq	enter
 	dq	points2Sign.x	
 	dq	branch1
-	dq	.convert
+	dq	.unsigned
 
 	dq	lit
 	dq	1
 	dq	add.x
 
-	dq	pull.x
 	dq	enter
-	dq	negate.x
-	dq	push.x
+	dq	convertSigned.x
 
-.convert:
+	dq	dup.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
+	dq	branch0
+	dq	.error
+
+	dq	enter
+	dq	compileLiteral.x
+
+	dq	jump
+	dq	token.x
+
+.unsigned:
 	dq	enter
 	dq	convertUnsigned.x
 
@@ -1066,10 +1073,6 @@ literal:
 	dq	branch1
 	dq	.error
 
-	dq	pull.x
-	dq	mul.x
-	dq	drop.x
-
 	dq	enter	
 	dq	compileLiteral.x
 
@@ -1078,7 +1081,6 @@ literal:
 
 .error:
 	dq	drop.x
-	dq	pull.x
 	dq	drop.x
 	dq	enter
 	dq	errorPrint.x
