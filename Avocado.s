@@ -1023,7 +1023,7 @@ errorPrint:
 literal:
 	dq	7
 	dq	`literal`
-	dq	isLiteral
+	dq	errorPrint
 
 .x:
 	dq	lit
