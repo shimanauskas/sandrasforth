@@ -1008,6 +1008,7 @@ errorPrint:
 	dq	isLiteral
 
 .x:
+	dq	drop.x
 	dq	lit
 	dq	output
 	dq	enter
@@ -1080,7 +1081,6 @@ literal:
 	dq	token.x
 
 .error:
-	dq	drop.x
 	dq	drop.x
 	dq	enter
 	dq	errorPrint.x
@@ -1273,7 +1273,6 @@ find:
 	dq	bool.x
 	dq	not.x
 	dq	if.x
-	dq	drop.x
 	dq	enter
 	dq	errorPrint.x
 	dq	jump
