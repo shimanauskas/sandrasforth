@@ -1120,19 +1120,41 @@ convertSigned:
 	dq	base
 	dq	fetch.x
 	dq	mul.x
-	dq	drop.x
+
+	dq	branch1
+	dq	.exit3
 
 	dq	pull.x
-	dq	sub.x
+	dq	add.x
+
+	dq	dup.x
+	dq	lit
+	dq	FLAG
+	dq	enter
+	dq	less.x
+	dq	branch1
+	dq	.exit2
 
 	dq	jump
 	dq	.loop
 
+.exit3:
+	dq	pull.x
+	dq	drop.x
+	dq	drop.x
+	dq	drop.x
+	dq	lit
+	dq	0
+	dq	exit
+
 .exit:
 	dq	drop.x
+.exit2:
 	dq	push.x
 	dq	drop.x
 	dq	pull.x
+	dq	enter
+	dq	negate.x
 	dq	exit
 
 convertUnsigned:
@@ -1168,16 +1190,35 @@ convertUnsigned:
 	dq	base
 	dq	fetch.x
 	dq	mul.x
-	dq	drop.x
+
+	dq	branch1
+	dq	.exit3
 
 	dq	pull.x
 	dq	add.x
 
+	dq	dup.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
+	dq	branch1
+	dq	.exit2
+
 	dq	jump
 	dq	.loop
 
+.exit3:
+	dq	pull.x
+	dq	drop.x
+	dq	drop.x
+	dq	drop.x
+	dq	lit
+	dq	FLAG
+	dq	exit
+
 .exit:
 	dq	drop.x
+.exit2:
 	dq	push.x
 	dq	drop.x
 	dq	pull.x
