@@ -1225,8 +1225,8 @@ convertUnsigned:
 	dq	exit
 
 native:
-	dq	4
-	dq	`natv`
+	dq	6
+	dq	`native`
 	dq	convertUnsigned
 
 .x:
