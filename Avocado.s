@@ -1002,9 +1002,9 @@ isLiteral:
 	dq	jump
 	dq	.loop
 
-errorPrint:
-	dq	5
-	dq	`error`
+tokenError:
+	dq	10
+	dq	`tokenError`
 	dq	isLiteral
 
 .x:
@@ -1024,7 +1024,7 @@ errorPrint:
 literal:
 	dq	7
 	dq	`literal`
-	dq	errorPrint
+	dq	tokenError
 
 .x:
 	dq	lit
@@ -1083,7 +1083,7 @@ literal:
 .error:
 	dq	drop.x
 	dq	enter
-	dq	errorPrint.x
+	dq	tokenError.x
 	dq	jump
 	dq	start.x
 
@@ -1315,7 +1315,7 @@ find:
 	dq	not.x
 	dq	if.x
 	dq	enter
-	dq	errorPrint.x
+	dq	tokenError.x
 	dq	jump
 	dq	start.x
 
