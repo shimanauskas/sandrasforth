@@ -423,8 +423,6 @@ negate:
 	dq	add.x
 	dq	exit
 
-align	CELL
-
 swap:
 	dq	4
 	dq	`swap`
