@@ -19,8 +19,8 @@
 ; r15	unused
 
 %define	CELL	8
-%define	PAGE	4096
-%define FLAG	0x8000000000000000
+%define	PAGE	1000h
+%define FLAG	8000000000000000h
 
 %macro	DUP	0
 	add	rbp,	CELL
