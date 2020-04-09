@@ -798,35 +798,10 @@ skipWhitespace:
 	dq	jump
 	dq	skipWhitespace.x
 
-definitionEnd:
-	dq	13
-	dq	`definitionEnd`
-	dq	skipWhitespace
-
-.x:
-	dq	drop.x
-
-	dq	lit
-	dq	exit
-	dq	enter
-	dq	compile.x
-
-	dq	enter
-	dq	code
-
-	dq	lit
-	dq	codePointer
-	dq	lit
-	dq	code
-	dq	store.x
-
-	dq	jump
-	dq	start.x
-
 extractToken:
 	dq	12
 	dq	`extractToken`
-	dq	definitionEnd
+	dq	skipWhitespace
 
 .x:
 	dq	over.x
@@ -877,9 +852,29 @@ token:
 	
 	dq	dup.x
 	dq	fetchByte.x
-	dq	branch0
-	dq	definitionEnd.x
+	dq	branch1
+	dq	.0
 
+	dq	drop.x
+
+	dq	lit
+	dq	exit
+	dq	enter
+	dq	compile.x
+
+	dq	enter
+	dq	code
+
+	dq	lit
+	dq	codePointer
+	dq	lit
+	dq	code
+	dq	store.x
+
+	dq	jump
+	dq	start.x
+
+.0:
 	dq	push.x
 
 	dq	lit
