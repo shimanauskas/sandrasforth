@@ -729,6 +729,12 @@ start:
 	dq	enter
 	dq	terminate.x
 
+	dq	lit
+	dq	codePointer
+	dq	lit
+	dq	code
+	dq	store.x
+
 	dq	jump
 	dq	token.x
 
@@ -864,12 +870,6 @@ token:
 
 	dq	enter
 	dq	code
-
-	dq	lit
-	dq	codePointer
-	dq	lit
-	dq	code
-	dq	store.x
 
 	dq	jump
 	dq	start.x
@@ -1411,9 +1411,6 @@ base:
 link:
 	dq	0
 
-codePointer:
-	dq	code
-
 error:
 	dq	3
 	dq	` ?\n`
@@ -1437,4 +1434,7 @@ output:
 
 code:
 	resb	PAGE
+
+codePointer:
+	resq	1
 
