@@ -368,7 +368,7 @@ read:
 	mov	rdx,	rax		; Count.
 	mov	rsi,	[rbp]		; Address.
 	mov	rdi,	0		; stdin
-	mov	rax,	0x2000003	; sys_read
+	mov	rax,	2000003h	; sys_read
 	syscall
 	NEXT
 
@@ -383,7 +383,7 @@ write:
 	mov	rdx,	rax		; Count.
 	mov	rsi,	[rbp]		; Address.
 	mov	rdi,	1		; stdout
-	mov	rax,	0x2000004	; sys_write
+	mov	rax,	2000004h	; sys_write
 	syscall
 	mov	rax,	[rbp-CELL]
 	lea	rbp,	[rbp-CELL*2]
@@ -401,7 +401,7 @@ emit:
 	DUP
 	mov	rsi,	rbp		; Address.
 	mov	rdi,	1		; stdout
-	mov	rax,	0x2000004	; sys_write
+	mov	rax,	2000004h	; sys_write
 	syscall
 	mov	rax,	[rbp-CELL]
 	lea	rbp,	[rbp-CELL*2]
