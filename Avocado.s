@@ -828,10 +828,10 @@ extractToken:
 	dq	dup.x
 	dq	fetchByte.x
 	dq	lit
-	dq	0x21
+	dq	`!`
 	dq	over.x
 	dq	lit
-	dq	0x7E+1
+	dq	7Fh
 	dq	enter
 	dq	less.x
 	dq	push.x
