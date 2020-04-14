@@ -1385,7 +1385,7 @@ number:
 	dq	drop.x
 	dq	pull.x
 	dq	lit
-	dq	'0'
+	dq	`0`
 	dq	add.x
 	dq	emit.x
 	dq	exit
@@ -1400,7 +1400,7 @@ number:
 	dq	enter
 	dq	negate.x
 	dq	lit
-	dq	'-'
+	dq	`-`
 	dq	emit.x
 	dq	jump
 	dq	.natural
