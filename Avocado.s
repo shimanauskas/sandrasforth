@@ -1408,9 +1408,6 @@ number:
 base:
 	dq	10
 
-link:
-	dq	0
-
 error:
 	dq	3
 	dq	` ?\n`
@@ -1436,5 +1433,8 @@ code:
 	resb	PAGE
 
 codePointer:
+	resq	1
+
+link:
 	resq	1
 
