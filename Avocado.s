@@ -1354,10 +1354,36 @@ find:
 	dq	jump
 	dq	token.x
 
+binary:
+	dq	6
+	dq	`binary`
+	dq	find
+
+.x:
+	dq	lit
+	dq	base
+	dq	lit
+	dq	2
+	dq	store.x
+	dq	exit
+
+decimal:
+	dq	7
+	dq	`decimal`
+	dq	binary
+
+.x:
+	dq	lit
+	dq	base
+	dq	lit
+	dq	10
+	dq	store.x
+	dq	exit
+
 number:
 	dq	1
 	dq	`.`
-	dq	find
+	dq	decimal
 
 .signed:
 	dq	dup.x
