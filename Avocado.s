@@ -718,6 +718,9 @@ start:
 	dq	write.x
 
 	dq	lit
+	dq	inputPointer
+
+	dq	lit
 	dq	input
 	dq	lit
 	dq	PAGE
@@ -728,6 +731,8 @@ start:
 	dq	add.x
 	dq	enter
 	dq	terminate.x
+
+	dq	store.x
 
 	dq	lit
 	dq	codePointer
@@ -853,6 +858,10 @@ token:
 	dq	extractToken
 
 .x:
+	dq	lit
+	dq	inputPointer
+	dq	fetch.x
+
 	dq	enter
 	dq	skipWhitespace.x
 	
@@ -898,7 +907,10 @@ token:
 	dq	sub.x
 	dq	store.x
 
+	dq	lit
+	dq	inputPointer
 	dq	pull.x
+	dq	store.x
 
 	dq	jump
 	dq	literal.x
@@ -1001,7 +1013,6 @@ tokenError:
 	dq	isLiteral
 
 .x:
-	dq	drop.x
 	dq	lit
 	dq	output
 	dq	enter
@@ -1459,6 +1470,9 @@ code:
 	resb	PAGE
 
 codePointer:
+	resq	1
+
+inputPointer:
 	resq	1
 
 link:
