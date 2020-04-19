@@ -89,7 +89,7 @@ branch1:
 align	CELL
 
 if:
-	dq	1|FLAG
+	dq	1
 	dq	`?`
 	dq	0
 
@@ -102,7 +102,7 @@ if:
 align	CELL
 
 dup:
-	dq	3|FLAG
+	dq	3
 	dq	`dup`
 	dq	if
 
@@ -113,7 +113,7 @@ dup:
 align	CELL
 
 drop:
-	dq	4|FLAG
+	dq	4
 	dq	`drop`
 	dq	dup
 
@@ -124,7 +124,7 @@ drop:
 align	CELL
 
 over:
-	dq	4|FLAG
+	dq	4
 	dq	`over`
 	dq	drop
 
@@ -137,7 +137,7 @@ over:
 align	CELL
 
 push:
-	dq	4|FLAG
+	dq	4
 	dq	`push`
 	dq	over
 
@@ -149,7 +149,7 @@ push:
 align	CELL
 
 pull:
-	dq	4|FLAG
+	dq	4
 	dq	`pull`
 	dq	push
 
@@ -162,7 +162,7 @@ pull:
 align	CELL
 
 shiftLeft:
-	dq	9|FLAG
+	dq	9
 	dq	`shiftLeft`
 	dq	pull
 
@@ -173,7 +173,7 @@ shiftLeft:
 align	CELL
 
 shiftRight:
-	dq	10|FLAG
+	dq	10
 	dq	`shiftRight`
 	dq	shiftLeft
 
@@ -184,7 +184,7 @@ shiftRight:
 align	CELL
 
 rotateLeft:
-	dq	10|FLAG
+	dq	10
 	dq	`rotateLeft`
 	dq	shiftRight
 
@@ -195,7 +195,7 @@ rotateLeft:
 align	CELL
 
 rotateRight:
-	dq	11|FLAG
+	dq	11
 	dq	`rotateRight`
 	dq	rotateLeft
 
@@ -206,7 +206,7 @@ rotateRight:
 align	CELL
 
 not:
-	dq	1|FLAG
+	dq	1
 	dq	`!`
 	dq	rotateRight
 
@@ -217,7 +217,7 @@ not:
 align	CELL
 
 and:
-	dq	3|FLAG
+	dq	3
 	dq	`and`
 	dq	not
 
@@ -229,7 +229,7 @@ and:
 align	CELL
 
 or:
-	dq	2|FLAG
+	dq	2
 	dq	`or`
 	dq	and
 
@@ -241,7 +241,7 @@ or:
 align	CELL
 
 xor:
-	dq	1|FLAG
+	dq	1
 	dq	`^`
 	dq	or
 
@@ -253,7 +253,7 @@ xor:
 align	CELL
 
 add:
-	dq	1|FLAG
+	dq	1
 	dq	`+`
 	dq	xor
 
@@ -265,7 +265,7 @@ add:
 align	CELL
 
 sub:
-	dq	1|FLAG
+	dq	1
 	dq	`-`
 	dq	add
 
@@ -277,7 +277,7 @@ sub:
 align	CELL
 
 mul:
-	dq	1|FLAG
+	dq	1
 	dq	`*`
 	dq	sub
 
@@ -292,7 +292,7 @@ mul:
 align	CELL
 
 div:
-	dq	1|FLAG
+	dq	1
 	dq	`/`
 	dq	mul
 
@@ -309,7 +309,7 @@ div:
 align	CELL
 
 fetch:
-	dq	5|FLAG
+	dq	5
 	dq	`fetch`
 	dq	div
 
@@ -320,7 +320,7 @@ fetch:
 align	CELL
 
 store:
-	dq	5|FLAG
+	dq	5
 	dq	`store`
 	dq	fetch
 
@@ -334,7 +334,7 @@ store:
 align	CELL
 
 fetchByte:
-	dq	9|FLAG
+	dq	9
 	dq	`fetchByte`
 	dq	store
 
@@ -346,7 +346,7 @@ fetchByte:
 align	CELL
 
 storeByte:
-	dq	9|FLAG
+	dq	9
 	dq	`storeByte`
 	dq	fetchByte
 
@@ -360,7 +360,7 @@ storeByte:
 align	CELL
 
 read:
-	dq	4|FLAG
+	dq	4
 	dq	`read`
 	dq	store
 
@@ -375,7 +375,7 @@ read:
 align	CELL
 
 write:
-	dq	5|FLAG
+	dq	5
 	dq	`write`
 	dq	read
 
@@ -392,7 +392,7 @@ write:
 align	CELL
 
 emit:
-	dq	4|FLAG
+	dq	4
 	dq	`emit`
 	dq	write
 
@@ -1237,12 +1237,10 @@ native:
 	dq	lit
 	dq	link
 	dq	fetch.x
-	dq	fetch.x
 	dq	lit
-	dq	FLAG
-	dq	and.x
+	dq	negate
 	dq	enter
-	dq	bool.x
+	dq	less.x
 	dq	not.x
 
 	dq	if.x
@@ -1263,10 +1261,6 @@ skipstring:
 .x:
 	dq	enter
 	dq	string.x
-
-	dq	lit
-	dq	~FLAG
-	dq	and.x
 
 	dq	enter
 	dq	addresssplit.x
@@ -1333,10 +1327,6 @@ find:
 	dq	fetch.x
 	dq	enter
 	dq	string.x
-	dq	lit
-	dq	FLAG
-	dq	not.x
-	dq	and.x
 	dq	enter
 	dq	strcmp.x
 	dq	enter
