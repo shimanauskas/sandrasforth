@@ -62,6 +62,13 @@ enter:
 	mov	r13,	[r12]
 	jmp	r13
 
+execute:
+	push	r12
+	mov	r12,	rax
+	DROP
+	mov	r13,	[r12]
+	jmp	r13
+
 exit:
 	pop	r12
 	NEXT
@@ -1253,14 +1260,49 @@ native:
 
 	dq	exit
 
+immediate:
+	dq	9
+	dq	`immediate`
+	dq	native
+
+.x:
+	dq	lit
+	dq	link
+	dq	fetch.x
+	dq	fetch.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
+	dq	branch0
+	dq	.exit
+	
+	dq	lit
+	dq	link
+	dq	fetch.x
+
+	dq	enter
+	dq	skipstring.x
+
+	dq	lit
+	dq	CELL
+	dq	add.x
+
+	dq	execute
+.exit:
+	dq	exit
+
 skipstring:
 	dq	10
 	dq	`skipstring`
-	dq	native
+	dq	immediate
 
 .x:
 	dq	enter
 	dq	string.x
+
+	dq	lit
+	dq	~FLAG
+	dq	and.x
 
 	dq	enter
 	dq	addresssplit.x
@@ -1327,6 +1369,9 @@ find:
 	dq	fetch.x
 	dq	enter
 	dq	string.x
+	dq	lit
+	dq	~FLAG
+	dq	and.x
 	dq	enter
 	dq	strcmp.x
 	dq	enter
@@ -1334,6 +1379,19 @@ find:
 	dq	not.x
 
 	dq	if.x
+
+	dq	enter
+	dq	immediate.x
+
+	dq	lit
+	dq	link
+	dq	fetch.x
+	dq	fetch.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
+	dq	branch1
+	dq	.exit
 
 	dq	enter
 	dq	native.x
@@ -1352,11 +1410,14 @@ find:
 	dq	enter
 	dq	compile.x
 
+.exit:
+	dq	pull.x
+	dq	drop.x
 	dq	jump
 	dq	token.x
 
 binary:
-	dq	6
+	dq	6|FLAG
 	dq	`binary`
 	dq	find
 
@@ -1369,7 +1430,7 @@ binary:
 	dq	exit
 
 decimal:
-	dq	7
+	dq	7|FLAG
 	dq	`decimal`
 	dq	binary
 
