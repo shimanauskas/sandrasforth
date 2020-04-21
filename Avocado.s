@@ -1281,7 +1281,7 @@ immediate:
 	dq	fetch.x
 
 	dq	enter
-	dq	skipstring.x
+	dq	skipString.x
 
 	dq	lit
 	dq	CELL
@@ -1291,9 +1291,9 @@ immediate:
 .exit:
 	dq	exit
 
-skipstring:
+skipString:
 	dq	10
-	dq	`skipstring`
+	dq	`skipString`
 	dq	immediate
 
 .x:
@@ -1320,7 +1320,7 @@ skipstring:
 find:
 	dq	4
 	dq	`find`
-	dq	skipstring
+	dq	skipString
 
 .x:
 	dq	lit
@@ -1340,7 +1340,7 @@ find:
 	dq	link
 	dq	fetch.x
 	dq	enter
-	dq	skipstring.x
+	dq	skipString.x
 	dq	fetch.x
 	dq	store.x
 	dq	jump
@@ -1401,7 +1401,7 @@ find:
 	dq	fetch.x
 
 	dq	enter
-	dq	skipstring.x
+	dq	skipString.x
 
 	dq	lit
 	dq	CELL
