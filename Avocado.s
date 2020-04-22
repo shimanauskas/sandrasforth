@@ -650,9 +650,9 @@ terminate:
 	dq	storeByte.x
 	dq	exit
 
-strcmp:
-	dq	6
-	dq	`strcmp`
+stringCompare:
+	dq	13
+	dq	`stringCompare`
 	dq	terminate
 
 .x:
@@ -715,7 +715,7 @@ strcmp:
 start:
 	dq	5
 	dq	`start`
-	dq	strcmp
+	dq	stringCompare
 
 .x:
 	dq	lit
@@ -1373,7 +1373,7 @@ find:
 	dq	~FLAG
 	dq	and.x
 	dq	enter
-	dq	strcmp.x
+	dq	stringCompare.x
 	dq	enter
 	dq	bool.x
 	dq	not.x
