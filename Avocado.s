@@ -661,14 +661,14 @@ stringCompare:
 	dq	swap.x
 	dq	pull.x
 	dq	enter
-	dq	.if_equal
+	dq	.ifEqual
 	dq	push.x
 	dq	drop.x
 	dq	drop.x
 	dq	pull.x
 	dq	exit
 
-.if_equal:
+.ifEqual:
 	dq	sub.x
 	dq	dup.x
 	dq	enter
