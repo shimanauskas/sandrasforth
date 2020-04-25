@@ -470,9 +470,9 @@ negative:
 	dq	bool.x
 	dq	exit
 
-addresslower:
+addressLower:
 	dq	12
-	dq	`addresslower`
+	dq	`addressLower`
 	dq	negative
 
 .x:
@@ -481,10 +481,10 @@ addresslower:
 	dq	and.x
 	dq	exit
 
-addressupper:
+addressUpper:
 	dq	12
-	dq	`addressupper`
-	dq	addresslower
+	dq	`addressUpper`
+	dq	addressLower
 
 .x:
 	dq	lit
@@ -492,25 +492,25 @@ addressupper:
 	dq	and.x
 	dq	exit
 
-addresssplit:
+addressSplit:
 	dq	12
-	dq	`addresssplit`
-	dq	addressupper
+	dq	`addressSplit`
+	dq	addressUpper
 
 .x:
 	dq	dup.x
 	dq	enter
-	dq	addresslower.x
+	dq	addressLower.x
 	dq	push.x
 	dq	enter
-	dq	addressupper.x
+	dq	addressUpper.x
 	dq	pull.x
 	dq	exit
 
 string:
 	dq	6
 	dq	`string`
-	dq	addresssplit
+	dq	addressSplit
 
 .x:
 	dq	dup.x
@@ -1305,7 +1305,7 @@ skipString:
 	dq	and.x
 
 	dq	enter
-	dq	addresssplit.x
+	dq	addressSplit.x
 
 	dq	push.x
 	dq	add.x
