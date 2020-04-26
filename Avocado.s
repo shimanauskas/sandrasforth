@@ -1260,10 +1260,36 @@ native:
 
 	dq	exit
 
+skipString:
+	dq	10
+	dq	`skipString`
+	dq	native
+
+.x:
+	dq	enter
+	dq	string.x
+
+	dq	lit
+	dq	~FLAG
+	dq	and.x
+
+	dq	enter
+	dq	addressSplit.x
+
+	dq	push.x
+	dq	add.x
+	dq	pull.x
+
+	dq	if.x
+	dq	lit
+	dq	CELL
+	dq	add.x
+	dq	exit
+
 immediate:
 	dq	9
 	dq	`immediate`
-	dq	native
+	dq	skipString
 
 .x:
 	dq	lit
@@ -1291,36 +1317,10 @@ immediate:
 .exit:
 	dq	exit
 
-skipString:
-	dq	10
-	dq	`skipString`
-	dq	immediate
-
-.x:
-	dq	enter
-	dq	string.x
-
-	dq	lit
-	dq	~FLAG
-	dq	and.x
-
-	dq	enter
-	dq	addressSplit.x
-
-	dq	push.x
-	dq	add.x
-	dq	pull.x
-
-	dq	if.x
-	dq	lit
-	dq	CELL
-	dq	add.x
-	dq	exit
-
 find:
 	dq	4
 	dq	`find`
-	dq	skipString
+	dq	immediate
 
 .x:
 	dq	lit
