@@ -1317,10 +1317,45 @@ immediate:
 .exit:
 	dq	exit
 
+mediate:
+	dq	7
+	dq	`mediate`
+	dq	immediate
+
+.x:
+	dq	lit
+	dq	link
+	dq	fetch.x
+	dq	fetch.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
+	dq	branch1
+	dq	.exit
+
+	dq	enter
+	dq	native.x
+
+	dq	lit
+	dq	link
+	dq	fetch.x
+
+	dq	enter
+	dq	skipString.x
+
+	dq	lit
+	dq	CELL
+	dq	add.x
+
+	dq	enter
+	dq	compile.x
+.exit:
+	dq	exit
+
 find:
 	dq	4
 	dq	`find`
-	dq	immediate
+	dq	mediate
 
 .x:
 	dq	lit
@@ -1383,32 +1418,8 @@ find:
 	dq	enter
 	dq	immediate.x
 
-	dq	lit
-	dq	link
-	dq	fetch.x
-	dq	fetch.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
-	dq	branch1
-	dq	.exit
-
 	dq	enter
-	dq	native.x
-
-	dq	lit
-	dq	link
-	dq	fetch.x
-
-	dq	enter
-	dq	skipString.x
-
-	dq	lit
-	dq	CELL
-	dq	add.x
-
-	dq	enter
-	dq	compile.x
+	dq	mediate.x
 
 .exit:
 	dq	pull.x
