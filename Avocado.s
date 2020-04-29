@@ -1299,8 +1299,7 @@ immediate:
 	dq	lit
 	dq	FLAG
 	dq	and.x
-	dq	branch0
-	dq	.exit
+	dq	if.x
 	
 	dq	lit
 	dq	link
@@ -1314,7 +1313,7 @@ immediate:
 	dq	add.x
 
 	dq	execute
-.exit:
+
 	dq	exit
 
 mediate:
@@ -1330,8 +1329,10 @@ mediate:
 	dq	lit
 	dq	FLAG
 	dq	and.x
-	dq	branch1
-	dq	.exit
+	dq	enter
+	dq	bool.x
+	dq	not.x
+	dq	if.x
 
 	dq	enter
 	dq	native.x
@@ -1349,7 +1350,7 @@ mediate:
 
 	dq	enter
 	dq	compile.x
-.exit:
+
 	dq	exit
 
 find:
