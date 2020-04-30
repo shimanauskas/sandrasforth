@@ -568,56 +568,10 @@ mshiftr:
 	dq	jump
 	dq	.loop
 
-mrotl:
-	dq	5
-	dq	`mrotl`
-	dq	mshiftr
-
-.x:
-	dq	enter
-	dq	.loop
-	dq	drop.x
-	dq	exit
-
-.loop:
-	dq	dup.x
-	dq	if.x
-	dq	push.x
-	dq	rotateLeft.x
-	dq	pull.x
-	dq	lit
-	dq	1
-	dq	sub.x
-	dq	jump
-	dq	.loop
-
-mrotr:
-	dq	5
-	dq	`mrotr`
-	dq	mrotl
-
-.x:
-	dq	enter
-	dq	.loop
-	dq	drop.x
-	dq	exit
-
-.loop:
-	dq	dup.x
-	dq	if.x
-	dq	push.x
-	dq	rotateRight.x
-	dq	pull.x
-	dq	lit
-	dq	1
-	dq	sub.x
-	dq	jump
-	dq	.loop
-
 less:
 	dq	4
 	dq	`less`
-	dq	mrotr
+	dq	mshiftr
 
 .x:
 	dq	over.x
