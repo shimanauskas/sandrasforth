@@ -522,56 +522,10 @@ string:
 	dq	fetch.x
 	dq	exit
 
-mshiftl:
-	dq	7
-	dq	`mshiftl`
-	dq	string
-
-.x:
-	dq	enter
-	dq	.loop
-	dq	drop.x
-	dq	exit
-
-.loop:
-	dq	dup.x
-	dq	if.x
-	dq	push.x
-	dq	shiftLeft.x
-	dq	pull.x
-	dq	lit
-	dq	1
-	dq	sub.x
-	dq	jump
-	dq	.loop
-
-mshiftr:
-	dq	7
-	dq	`mshiftr`
-	dq	mshiftl
-
-.x:
-	dq	enter
-	dq	.loop
-	dq	drop.x
-	dq	exit
-
-.loop:
-	dq	dup.x
-	dq	if.x
-	dq	push.x
-	dq	shiftRight.x
-	dq	pull.x
-	dq	lit
-	dq	1
-	dq	sub.x
-	dq	jump
-	dq	.loop
-
 less:
 	dq	4
 	dq	`less`
-	dq	mshiftr
+	dq	string
 
 .x:
 	dq	over.x
