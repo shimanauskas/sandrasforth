@@ -533,18 +533,29 @@ less:
 	dq	xor.x
 	dq	enter
 	dq	negative.x
-	dq	branch0
+
+	dq	dup.x
+	dq	enter
 	dq	.0
 
-	dq	drop.x
+	dq	enter
+	dq	.1
+
 	dq	enter
 	dq	negative.x
 	dq	exit
 
 .0:
+	dq	if.x
+	dq	push.x
+	dq	drop.x
+	dq	pull.x
+	dq	exit
+
+.1:
+	dq	not.x
+	dq	if.x
 	dq	sub.x
-	dq	enter
-	dq	negative.x
 	dq	exit
 
 terminate:
