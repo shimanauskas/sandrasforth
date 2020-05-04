@@ -1341,7 +1341,6 @@ find:
 	dq	enter
 	dq	mediate.x
 
-.exit:
 	dq	pull.x
 	dq	drop.x
 	dq	jump
