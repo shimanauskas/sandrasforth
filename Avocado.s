@@ -1311,6 +1311,9 @@ find:
 	dq	if.x
 	dq	enter
 	dq	tokenError.x
+
+	dq	pull.x
+	dq	drop.x
 	dq	jump
 	dq	start.x
 
