@@ -1285,8 +1285,18 @@ find:
 	dq	store.x
 
 .find:
+	dq	lit
+	dq	link
+	dq	fetch.x
+	dq	branch1
+	dq	.0
+	
 	dq	enter
-	dq	.not_found
+	dq	tokenError.x
+	dq	jump
+	dq	start.x
+
+.0:
 	dq	enter
 	dq	.found
 	dq	lit
@@ -1300,22 +1310,6 @@ find:
 	dq	store.x
 	dq	jump
 	dq	.find
-
-.not_found:
-	dq	lit
-	dq	link
-	dq	fetch.x
-	dq	enter
-	dq	bool.x
-	dq	not.x
-	dq	if.x
-	dq	enter
-	dq	tokenError.x
-
-	dq	pull.x
-	dq	drop.x
-	dq	jump
-	dq	start.x
 
 .found:
 	dq	lit
