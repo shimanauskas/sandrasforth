@@ -1297,21 +1297,6 @@ find:
 	dq	start.x
 
 .0:
-	dq	enter
-	dq	.found
-	dq	lit
-	dq	link
-	dq	lit
-	dq	link
-	dq	fetch.x
-	dq	enter
-	dq	skipString.x
-	dq	fetch.x
-	dq	store.x
-	dq	jump
-	dq	.find
-
-.found:
 	dq	lit
 	dq	output
 	dq	enter
@@ -1326,11 +1311,9 @@ find:
 	dq	and.x
 	dq	enter
 	dq	stringCompare.x
-	dq	enter
-	dq	bool.x
-	dq	not.x
 
-	dq	if.x
+	dq	branch1
+	dq	.1
 
 	dq	enter
 	dq	immediate.x
@@ -1338,10 +1321,21 @@ find:
 	dq	enter
 	dq	mediate.x
 
-	dq	pull.x
-	dq	drop.x
 	dq	jump
 	dq	token.x
+
+.1:
+	dq	lit
+	dq	link
+	dq	lit
+	dq	link
+	dq	fetch.x
+	dq	enter
+	dq	skipString.x
+	dq	fetch.x
+	dq	store.x
+	dq	jump
+	dq	.find
 
 binary:
 	dq	6|FLAG
