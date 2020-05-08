@@ -1161,7 +1161,7 @@ native:
 
 .x:
 	dq	lit
-	dq	link
+	dq	linkPointer
 	dq	fetch.x
 	dq	lit
 	dq	negate
@@ -1212,7 +1212,7 @@ immediate:
 
 .x:
 	dq	lit
-	dq	link
+	dq	linkPointer
 	dq	fetch.x
 	dq	fetch.x
 	dq	lit
@@ -1221,7 +1221,7 @@ immediate:
 	dq	if.x
 	
 	dq	lit
-	dq	link
+	dq	linkPointer
 	dq	fetch.x
 
 	dq	enter
@@ -1242,7 +1242,7 @@ mediate:
 
 .x:
 	dq	lit
-	dq	link
+	dq	linkPointer
 	dq	fetch.x
 	dq	fetch.x
 	dq	lit
@@ -1257,7 +1257,7 @@ mediate:
 	dq	native.x
 
 	dq	lit
-	dq	link
+	dq	linkPointer
 	dq	fetch.x
 
 	dq	enter
@@ -1279,14 +1279,14 @@ find:
 
 .x:
 	dq	lit
-	dq	link
+	dq	linkPointer
 	dq	lit
 	dq	number
 	dq	store.x
 
 .find:
 	dq	lit
-	dq	link
+	dq	linkPointer
 	dq	fetch.x
 	dq	branch1
 	dq	.0
@@ -1302,7 +1302,7 @@ find:
 	dq	enter
 	dq	string.x
 	dq	lit
-	dq	link
+	dq	linkPointer
 	dq	fetch.x
 	dq	enter
 	dq	string.x
@@ -1326,9 +1326,9 @@ find:
 
 .1:
 	dq	lit
-	dq	link
+	dq	linkPointer
 	dq	lit
-	dq	link
+	dq	linkPointer
 	dq	fetch.x
 	dq	enter
 	dq	skipString.x
@@ -1447,6 +1447,6 @@ codePointer:
 inputPointer:
 	resq	1
 
-link:
+linkPointer:
 	resq	1
 
