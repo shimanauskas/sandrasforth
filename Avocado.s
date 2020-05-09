@@ -1205,19 +1205,13 @@ skipString:
 	dq	add.x
 	dq	exit
 
+
 immediate:
 	dq	9
 	dq	`immediate`
 	dq	skipString
 
 .x:
-	dq	lit
-	dq	linkPointer
-	dq	fetch.x
-	dq	fetch.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
 	dq	if.x
 	
 	dq	lit
@@ -1241,15 +1235,6 @@ mediate:
 	dq	immediate
 
 .x:
-	dq	lit
-	dq	linkPointer
-	dq	fetch.x
-	dq	fetch.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
-	dq	enter
-	dq	bool.x
 	dq	not.x
 	dq	if.x
 
@@ -1315,6 +1300,17 @@ find:
 	dq	branch1
 	dq	.1
 
+	dq	lit
+	dq	linkPointer
+	dq	fetch.x
+	dq	fetch.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
+	dq	enter
+	dq	bool.x
+
+	dq	dup.x	
 	dq	enter
 	dq	immediate.x
 
