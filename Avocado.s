@@ -1283,10 +1283,6 @@ find:
 
 .0:
 	dq	lit
-	dq	output
-	dq	enter
-	dq	string.x
-	dq	lit
 	dq	linkPointer
 	dq	fetch.x
 	dq	enter
@@ -1294,6 +1290,10 @@ find:
 	dq	lit
 	dq	~FLAG
 	dq	and.x
+	dq	lit
+	dq	output
+	dq	enter
+	dq	string.x
 	dq	enter
 	dq	stringCompare.x
 
