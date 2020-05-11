@@ -1273,18 +1273,17 @@ find:
 	dq	lit
 	dq	linkPointer
 	dq	fetch.x
+	dq	dup.x
 	dq	branch1
 	dq	.0
 	
+	dq	drop.x
 	dq	enter
 	dq	tokenError.x
 	dq	jump
 	dq	start.x
 
 .0:
-	dq	lit
-	dq	linkPointer
-	dq	fetch.x
 	dq	enter
 	dq	string.x
 	dq	lit
