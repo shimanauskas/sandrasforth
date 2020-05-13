@@ -1284,6 +1284,7 @@ find:
 	dq	start.x
 
 .0:
+	dq	dup.x
 	dq	enter
 	dq	string.x
 	dq	lit
@@ -1299,9 +1300,6 @@ find:
 	dq	branch1
 	dq	.1
 
-	dq	lit
-	dq	linkPointer
-	dq	fetch.x
 	dq	fetch.x
 	dq	lit
 	dq	FLAG
@@ -1320,6 +1318,7 @@ find:
 	dq	token.x
 
 .1:
+	dq	drop.x
 	dq	lit
 	dq	linkPointer
 	dq	lit
