@@ -961,9 +961,41 @@ literal:
 	dq	output+CELL
 	dq	enter
 	dq	isLiteral.x
-	dq	branch1
+	dq	branch0
+	dq	.isLiteral
+
+	dq	lit
+	dq	last
+
+	dq	enter
 	dq	find.x
 
+	dq	dup.x
+
+	dq	branch0
+	dq	.error
+
+	dq	dup.x
+	dq	fetch.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
+	dq	enter
+	dq	bool.x
+
+	dq	over.x
+	dq	over.x
+
+	dq	enter
+	dq	immediate.x
+
+	dq	enter
+	dq	mediate.x
+
+	dq	jump
+	dq	token.x
+
+.isLiteral:
 	dq	lit
 	dq	output+CELL
 	dq	dup.x
@@ -1263,22 +1295,11 @@ find:
 	dq	mediate
 
 .x:
-	dq	lit
-	dq	last
-
-.find:
 	dq	fetch.x
 	dq	dup.x
-	dq	branch1
-	dq	.0
-	
-	dq	drop.x
-	dq	enter
-	dq	tokenError.x
-	dq	jump
-	dq	start.x
+	dq	branch0
+	dq	.exit
 
-.0:
 	dq	dup.x
 	dq	enter
 	dq	string.x
@@ -1291,35 +1312,16 @@ find:
 	dq	string.x
 	dq	enter
 	dq	stringCompare.x
+	dq	branch0
+	dq	.exit
 
-	dq	branch1
-	dq	.1
-
-	dq	dup.x
-	dq	fetch.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
-	dq	enter
-	dq	bool.x
-
-	dq	over.x
-	dq	over.x
-
-	dq	enter
-	dq	immediate.x
-
-	dq	enter
-	dq	mediate.x
-
-	dq	jump
-	dq	token.x
-
-.1:
 	dq	enter
 	dq	skipString.x
 	dq	jump
-	dq	.find
+	dq	.x
+
+.exit:
+	dq	exit
 
 binary:
 	dq	6|FLAG
