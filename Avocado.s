@@ -1161,9 +1161,6 @@ native:
 
 .x:
 	dq	lit
-	dq	linkPointer
-	dq	fetch.x
-	dq	lit
 	dq	negate
 	dq	enter
 	dq	less.x
@@ -1212,12 +1209,9 @@ immediate:
 	dq	skipString
 
 .x:
-	dq	if.x
+	dq	branch0
+	dq	.exit
 	
-	dq	lit
-	dq	linkPointer
-	dq	fetch.x
-
 	dq	enter
 	dq	skipString.x
 
@@ -1229,21 +1223,23 @@ immediate:
 
 	dq	exit
 
+.exit:
+	dq	drop.x
+	dq	exit
+
 mediate:
 	dq	7
 	dq	`mediate`
 	dq	immediate
 
 .x:
-	dq	not.x
-	dq	if.x
+	dq	branch1
+	dq	.exit
+
+	dq	dup.x
 
 	dq	enter
 	dq	native.x
-
-	dq	lit
-	dq	linkPointer
-	dq	fetch.x
 
 	dq	enter
 	dq	skipString.x
@@ -1257,6 +1253,10 @@ mediate:
 
 	dq	exit
 
+.exit:
+	dq	drop.x
+	dq	exit
+
 find:
 	dq	4
 	dq	`find`
@@ -1264,14 +1264,9 @@ find:
 
 .x:
 	dq	lit
-	dq	linkPointer
-	dq	lit
-	dq	number
-	dq	store.x
+	dq	last
 
 .find:
-	dq	lit
-	dq	linkPointer
 	dq	fetch.x
 	dq	dup.x
 	dq	branch1
@@ -1300,6 +1295,7 @@ find:
 	dq	branch1
 	dq	.1
 
+	dq	dup.x
 	dq	fetch.x
 	dq	lit
 	dq	FLAG
@@ -1307,7 +1303,9 @@ find:
 	dq	enter
 	dq	bool.x
 
-	dq	dup.x	
+	dq	over.x
+	dq	over.x
+
 	dq	enter
 	dq	immediate.x
 
@@ -1318,16 +1316,8 @@ find:
 	dq	token.x
 
 .1:
-	dq	drop.x
-	dq	lit
-	dq	linkPointer
-	dq	lit
-	dq	linkPointer
-	dq	fetch.x
 	dq	enter
 	dq	skipString.x
-	dq	fetch.x
-	dq	store.x
 	dq	jump
 	dq	.find
 
@@ -1419,6 +1409,9 @@ prompt:
 	dq	2
 	dq	`# `
 
+last:
+	dq	number
+
 section	.bss
 
 align	PAGE
@@ -1439,8 +1432,5 @@ codePointer:
 	resq	1
 
 inputPointer:
-	resq	1
-
-linkPointer:
 	resq	1
 
