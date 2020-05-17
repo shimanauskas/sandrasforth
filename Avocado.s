@@ -1007,6 +1007,8 @@ literal:
 
 	dq	enter
 	dq	convertSigned.x
+	dq	enter
+	dq	negate.x
 
 	dq	dup.x
 	dq	lit
@@ -1111,8 +1113,6 @@ convertSigned:
 	dq	push.x
 	dq	drop.x
 	dq	pull.x
-	dq	enter
-	dq	negate.x
 	dq	exit
 
 convertUnsigned:
