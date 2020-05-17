@@ -838,8 +838,43 @@ token:
 	dq	pull.x
 	dq	store.x
 
-	dq	jump
+	dq	lit
+	dq	output+CELL
+	dq	enter
+	dq	isLiteral.x
+	dq	branch0
 	dq	literal.x
+
+	dq	lit
+	dq	last
+
+	dq	enter
+	dq	find.x
+
+	dq	dup.x
+
+	dq	branch0
+	dq	literal.error
+
+	dq	dup.x
+	dq	fetch.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
+	dq	enter
+	dq	bool.x
+
+	dq	over.x
+	dq	over.x
+
+	dq	enter
+	dq	immediate.x
+
+	dq	enter
+	dq	mediate.x
+
+	dq	jump
+	dq	token.x
 
 isDigit:
 	dq	7
@@ -957,45 +992,6 @@ literal:
 	dq	tokenError
 
 .x:
-	dq	lit
-	dq	output+CELL
-	dq	enter
-	dq	isLiteral.x
-	dq	branch0
-	dq	.isLiteral
-
-	dq	lit
-	dq	last
-
-	dq	enter
-	dq	find.x
-
-	dq	dup.x
-
-	dq	branch0
-	dq	.error
-
-	dq	dup.x
-	dq	fetch.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
-	dq	enter
-	dq	bool.x
-
-	dq	over.x
-	dq	over.x
-
-	dq	enter
-	dq	immediate.x
-
-	dq	enter
-	dq	mediate.x
-
-	dq	jump
-	dq	token.x
-
-.isLiteral:
 	dq	lit
 	dq	output+CELL
 	dq	dup.x
