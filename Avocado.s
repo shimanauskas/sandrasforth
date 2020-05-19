@@ -1006,7 +1006,7 @@ literal:
 	dq	add.x
 
 	dq	enter
-	dq	convertSigned.x
+	dq	literalUnsigned.x
 	dq	enter
 	dq	negate.x
 
@@ -1025,7 +1025,7 @@ literal:
 
 .unsigned:
 	dq	enter
-	dq	convertUnsigned.x
+	dq	literalUnsigned.x
 
 	dq	dup.x
 	dq	lit
@@ -1047,9 +1047,9 @@ literal:
 	dq	jump
 	dq	start.x
 
-convertSigned:
-	dq	13
-	dq	`convertSigned`
+literalUnsigned:
+	dq	15
+	dq	`literalUnsigned`
 	dq	literal
 
 .x:
@@ -1104,74 +1104,7 @@ convertSigned:
 	dq	drop.x
 	dq	drop.x
 	dq	lit
-	dq	0
-	dq	exit
-
-.exit:
-	dq	drop.x
-.exit2:
-	dq	push.x
-	dq	drop.x
-	dq	pull.x
-	dq	exit
-
-convertUnsigned:
-	dq	15
-	dq	`convertUnsigned`
-	dq	convertSigned
-
-.x:
-	dq	lit
-	dq	0
-
-.loop:
-	dq	over.x
-	dq	fetchByte.x
-
-	dq	dup.x
-	dq	branch0
-	dq	.exit
-
-	dq	lit
-	dq	`0`
-	dq	sub.x
-
-	dq	push.x
-	dq	push.x
-
-	dq	lit
-	dq	1
-	dq	add.x
-
-	dq	pull.x
-	dq	lit
-	dq	base
-	dq	fetch.x
-	dq	mul.x
-
-	dq	branch1
-	dq	.exit3
-
-	dq	pull.x
-	dq	add.x
-
-	dq	dup.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
-	dq	branch1
-	dq	.exit2
-
-	dq	jump
-	dq	.loop
-
-.exit3:
-	dq	pull.x
-	dq	drop.x
-	dq	drop.x
-	dq	drop.x
-	dq	lit
-	dq	FLAG
+	dq	-1
 	dq	exit
 
 .exit:
@@ -1185,7 +1118,7 @@ convertUnsigned:
 native:
 	dq	6
 	dq	`native`
-	dq	convertUnsigned
+	dq	literalUnsigned
 
 .x:
 	dq	lit
