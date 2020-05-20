@@ -1062,7 +1062,7 @@ literalUnsigned:
 
 	dq	dup.x
 	dq	branch0
-	dq	.exit
+	dq	.exit0
 
 	dq	lit
 	dq	`0`
@@ -1082,37 +1082,28 @@ literalUnsigned:
 	dq	mul.x
 
 	dq	branch1
-	dq	.exit3
+	dq	.exit1
 
 	dq	pull.x
 	dq	add.x
 
-	dq	dup.x
-	dq	lit
-	dq	FLAG
-	dq	enter
-	dq	less.x
-	dq	branch1
-	dq	.exit2
-
 	dq	jump
 	dq	.loop
 
-.exit3:
+.exit0:
+	dq	drop.x
+	dq	push.x
+	dq	drop.x
+	dq	pull.x
+	dq	exit
+
+.exit1:
 	dq	pull.x
 	dq	drop.x
 	dq	drop.x
 	dq	drop.x
 	dq	lit
 	dq	-1
-	dq	exit
-
-.exit:
-	dq	drop.x
-.exit2:
-	dq	push.x
-	dq	drop.x
-	dq	pull.x
 	dq	exit
 
 native:
