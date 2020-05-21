@@ -994,8 +994,8 @@ literal:
 .x:
 	dq	lit
 	dq	output+CELL
-	dq	dup.x
 
+	dq	dup.x
 	dq	enter
 	dq	points2Sign.x	
 	dq	branch1
@@ -1007,6 +1007,7 @@ literal:
 
 	dq	enter
 	dq	literalUnsigned.x
+
 	dq	enter
 	dq	negate.x
 
