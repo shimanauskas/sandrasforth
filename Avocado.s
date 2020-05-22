@@ -853,9 +853,16 @@ token:
 
 	dq	dup.x
 
-	dq	branch0
-	dq	literal.error
+	dq	branch1
+	dq	.continue
 
+	dq	drop.x
+	dq	enter
+	dq	tokenError.x
+	dq	jump
+	dq	start.x
+
+.continue:
 	dq	dup.x
 	dq	fetch.x
 	dq	lit
@@ -1015,9 +1022,16 @@ literal:
 	dq	lit
 	dq	FLAG
 	dq	and.x
-	dq	branch0
-	dq	.error
+	dq	branch1
+	dq	.compile0
 
+	dq	drop.x
+	dq	enter
+	dq	tokenError.x
+	dq	jump
+	dq	start.x
+
+.compile0:
 	dq	enter
 	dq	compileLiteral.x
 
@@ -1032,21 +1046,21 @@ literal:
 	dq	lit
 	dq	FLAG
 	dq	and.x
-	dq	branch1
-	dq	.error
+	dq	branch0
+	dq	.compile1
 
-	dq	enter	
-	dq	compileLiteral.x
-
-	dq	jump
-	dq	token.x
-
-.error:
 	dq	drop.x
 	dq	enter
 	dq	tokenError.x
 	dq	jump
 	dq	start.x
+
+.compile1:
+	dq	enter	
+	dq	compileLiteral.x
+
+	dq	jump
+	dq	token.x
 
 literalUnsigned:
 	dq	15
