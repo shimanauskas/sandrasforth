@@ -1032,11 +1032,8 @@ literal:
 	dq	start.x
 
 .compile0:
-	dq	enter
-	dq	compileLiteral.x
-
 	dq	jump
-	dq	token.x
+	dq	.compile1
 
 .unsigned:
 	dq	enter
