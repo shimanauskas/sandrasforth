@@ -1005,8 +1005,10 @@ literal:
 	dq	dup.x
 	dq	enter
 	dq	points2Sign.x	
+
+.if0:
 	dq	branch1
-	dq	.unsigned
+	dq	.else0
 
 	dq	lit
 	dq	1
@@ -1022,8 +1024,10 @@ literal:
 	dq	lit
 	dq	FLAG
 	dq	and.x
+
+.if1:
 	dq	branch1
-	dq	.compile0
+	dq	.then1
 
 	dq	drop.x
 	dq	enter
@@ -1031,11 +1035,11 @@ literal:
 	dq	jump
 	dq	start.x
 
-.compile0:
+.then1:
 	dq	jump
-	dq	.compile1
+	dq	.then0
 
-.unsigned:
+.else0:
 	dq	enter
 	dq	literalUnsigned.x
 
@@ -1043,8 +1047,10 @@ literal:
 	dq	lit
 	dq	FLAG
 	dq	and.x
+
+.if2:
 	dq	branch0
-	dq	.compile1
+	dq	.then2
 
 	dq	drop.x
 	dq	enter
@@ -1052,7 +1058,8 @@ literal:
 	dq	jump
 	dq	start.x
 
-.compile1:
+.then2:
+.then0:
 	dq	enter	
 	dq	compileLiteral.x
 
