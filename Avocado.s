@@ -1080,9 +1080,18 @@ literalUnsigned:
 	dq	fetchByte.x
 
 	dq	dup.x
-	dq	branch0
-	dq	.exit0
 
+.if0:
+	dq	branch1
+	dq	.then0
+
+	dq	drop.x
+	dq	push.x
+	dq	drop.x
+	dq	pull.x
+	dq	exit
+
+.then0:
 	dq	lit
 	dq	`0`
 	dq	sub.x
@@ -1100,23 +1109,10 @@ literalUnsigned:
 	dq	fetch.x
 	dq	mul.x
 
-	dq	branch1
-	dq	.exit1
+.if1:
+	dq	branch0
+	dq	.then1
 
-	dq	pull.x
-	dq	add.x
-
-	dq	jump
-	dq	.loop
-
-.exit0:
-	dq	drop.x
-	dq	push.x
-	dq	drop.x
-	dq	pull.x
-	dq	exit
-
-.exit1:
 	dq	pull.x
 	dq	drop.x
 	dq	drop.x
@@ -1124,6 +1120,13 @@ literalUnsigned:
 	dq	lit
 	dq	-1
 	dq	exit
+
+.then1:
+	dq	pull.x
+	dq	add.x
+
+	dq	jump
+	dq	.loop
 
 native:
 	dq	6
