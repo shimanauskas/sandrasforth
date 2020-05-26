@@ -926,8 +926,10 @@ isLiteral:
 	dq	dup.x
 	dq	enter
 	dq	points2Sign.x
+
+.if0:
 	dq	branch1
-	dq	.loop
+	dq	.then0
 
 	dq	lit
 	dq	1
@@ -935,39 +937,47 @@ isLiteral:
 
 	dq	dup.x
 	dq	fetchByte.x
+
+.if1:
 	dq	branch1
-	dq	.loop
+	dq	.then1
 
 	dq	drop.x
 	dq	lit
 	dq	-1
 	dq	exit
 
+.then1:
+.then0:
 .loop:
 	dq	dup.x
 	dq	fetchByte.x
+
+.if2:
 	dq	branch1
-	dq	.0
+	dq	.then2
 
 	dq	drop.x
 	dq	lit
 	dq	0
 	dq	exit
 
-.0:
+.then2:
 	dq	dup.x
 	dq	fetchByte.x
 	dq	enter
 	dq	isDigit.x
+
+.if3:
 	dq	branch0
-	dq	.1
+	dq	.then3
 
 	dq	drop.x
 	dq	lit
 	dq	-1
 	dq	exit
 
-.1:
+.then3:
 	dq	lit
 	dq	1
 	dq	add.x
