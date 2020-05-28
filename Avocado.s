@@ -875,10 +875,10 @@ token:
 	dq	over.x
 
 	dq	enter
-	dq	immediate.x
+	dq	mediate.x
 
 	dq	enter
-	dq	mediate.x
+	dq	immediate.x
 
 	dq	jump
 	dq	token.x
@@ -1275,10 +1275,35 @@ find:
 .exit:
 	dq	exit
 
+loop:
+	dq	1|FLAG
+	dq	`[`
+	dq	find
+
+.x:
+	dq	lit
+	dq	codePointer
+	dq	fetch.x
+	dq	exit
+
+pool:
+	dq	1|FLAG
+	dq	`]`
+	dq	loop
+
+.x:
+	dq	lit
+	dq	jump
+	dq	enter
+	dq	compile.x
+	dq	enter
+	dq	compile.x
+	dq	exit
+
 binary:
 	dq	6|FLAG
 	dq	`binary`
-	dq	find
+	dq	pool
 
 .x:
 	dq	lit
