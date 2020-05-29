@@ -62,13 +62,6 @@ enter:
 	mov	r13,	[r12]
 	jmp	r13
 
-execute:
-	push	r12
-	mov	r12,	rax
-	DROP
-	mov	r13,	[r12]
-	jmp	r13
-
 exit:
 	pop	r12
 	NEXT
@@ -457,10 +450,19 @@ bool:
 	dq	not.x
 	dq	exit
 
+execute:
+	dq	7
+	dq	`execute`
+	dq	bool
+
+.x:
+	dq	push.x
+	dq	exit
+
 negative:
 	dq	8
 	dq	`negative`
-	dq	bool
+	dq	execute
 
 .x:
 	dq	lit
@@ -1199,11 +1201,8 @@ immediate:
 	dq	enter
 	dq	skipString.x
 
-	dq	lit
-	dq	CELL
-	dq	add.x
-
-	dq	execute
+	dq	enter
+	dq	execute.x
 
 	dq	exit
 
