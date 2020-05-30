@@ -444,10 +444,16 @@ bool:
 
 .x:
 	dq	dup.x
-	dq	if.x
+
+.if:
+	dq	branch0
+	dq	.then
+
 	dq	dup.x
 	dq	xor.x
 	dq	not.x
+
+.then:
 	dq	exit
 
 execute:
