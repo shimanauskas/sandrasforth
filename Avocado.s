@@ -542,28 +542,21 @@ less:
 	dq	enter
 	dq	negative.x
 
-	dq	dup.x
-	dq	enter
-	dq	.0
+.if:
+	dq	branch0
+	dq	.else
 
-	dq	enter
-	dq	.1
+	dq	drop.x
 
+	dq	jump
+	dq	.then	
+
+.else:
+	dq	sub.x
+
+.then:
 	dq	enter
 	dq	negative.x
-	dq	exit
-
-.0:
-	dq	if.x
-	dq	push.x
-	dq	drop.x
-	dq	pull.x
-	dq	exit
-
-.1:
-	dq	not.x
-	dq	if.x
-	dq	sub.x
 	dq	exit
 
 terminate:
