@@ -580,28 +580,28 @@ stringCompare:
 	dq	enter
 	dq	swap.x
 	dq	pull.x
-	dq	enter
-	dq	.equalLength
-	dq	push.x
-	dq	drop.x
-	dq	drop.x
-	dq	pull.x
-	dq	exit
-
-.equalLength:
 	dq	sub.x
 	dq	dup.x
 	dq	enter
 	dq	bool.x
 	dq	not.x
-	dq	if.x
+
+.if:
+	dq	branch0
+	dq	.then
+	
 	dq	drop.x
 	dq	enter
 	dq	.loop
 	dq	drop.x
 	dq	fetchByte.x
-	dq	pull.x
+	dq	exit
+
+.then:
+	dq	push.x
 	dq	drop.x
+	dq	drop.x
+	dq	pull.x
 	dq	exit
 
 .loop:
