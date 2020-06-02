@@ -586,9 +586,9 @@ stringCompare:
 	dq	bool.x
 	dq	not.x
 
-.if:
+.if0:
 	dq	branch0
-	dq	.then
+	dq	.then0
 	
 	dq	drop.x
 	dq	enter
@@ -597,7 +597,7 @@ stringCompare:
 	dq	fetchByte.x
 	dq	exit
 
-.then:
+.then0:
 	dq	push.x
 	dq	drop.x
 	dq	drop.x
@@ -620,7 +620,11 @@ stringCompare:
 	dq	not.x
 	dq	pull.x
 	dq	and.x
-	dq	if.x
+
+.if1:
+	dq	branch0
+	dq	.then1
+	
 	dq	lit
 	dq	1
 	dq	add.x
@@ -631,6 +635,9 @@ stringCompare:
 	dq	pull.x
 	dq	jump
 	dq	.loop
+
+.then1:
+	dq	exit
 
 start:
 	dq	5
