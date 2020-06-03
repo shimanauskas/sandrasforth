@@ -736,12 +736,19 @@ skipWhitespace:
 	dq	not.x
 	dq	pull.x
 	dq	and.x
-	dq	if.x
+
+.if:
+	dq	branch0
+	dq	.then
+	
 	dq	lit
 	dq	1
 	dq	add.x
 	dq	jump
 	dq	skipWhitespace.x
+
+.then:
+	dq	exit
 
 extractToken:
 	dq	12
