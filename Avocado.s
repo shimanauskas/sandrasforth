@@ -787,9 +787,15 @@ extractToken:
 	dq	pull.x
 	dq	and.x
 
-	dq	if.x
+.if:
+	dq	branch0
+	dq	.then
+	
 	dq	jump
 	dq	.x
+
+.then:
+	dq	exit
 
 ; Extract next token from the input.
 
