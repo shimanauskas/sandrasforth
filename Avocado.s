@@ -1171,7 +1171,9 @@ native:
 	dq	less.x
 	dq	not.x
 
-	dq	if.x
+.if:
+	dq	branch0
+	dq	.then
 
 	dq	lit
 	dq	enter
@@ -1179,6 +1181,7 @@ native:
 	dq	enter
 	dq	compile.x
 
+.then:
 	dq	exit
 
 skipString:
