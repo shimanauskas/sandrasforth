@@ -1204,12 +1204,16 @@ skipString:
 	dq	add.x
 	dq	pull.x
 
-	dq	if.x
+.if:
+	dq	branch0
+	dq	.then
+	
 	dq	lit
 	dq	CELL
 	dq	add.x
-	dq	exit
 
+.then:
+	dq	exit
 
 immediate:
 	dq	9
