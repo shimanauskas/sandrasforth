@@ -88,23 +88,10 @@ branch1:
 
 align	CELL
 
-if:
-	dq	1
-	dq	`?`
-	dq	0
-
-.x:
-	test	rax,	rax
-	DROP
-	jz	exit
-	NEXT
-
-align	CELL
-
 dup:
 	dq	3
 	dq	`dup`
-	dq	if
+	dq	0
 
 .x:
 	DUP
