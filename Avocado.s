@@ -801,23 +801,11 @@ token:
 	
 	dq	dup.x
 	dq	fetchByte.x
-	dq	branch1
-	dq	.0
 
-	dq	drop.x
+.if0:
+	dq	branch0
+	dq	.then0
 
-	dq	lit
-	dq	exit
-	dq	enter
-	dq	compile.x
-
-	dq	enter
-	dq	code
-
-	dq	jump
-	dq	start.x
-
-.0:
 	dq	push.x
 
 	dq	lit
@@ -861,16 +849,10 @@ token:
 
 	dq	dup.x
 
-	dq	branch1
-	dq	.continue
+.if1:
+	dq	branch0
+	dq	.then1
 
-	dq	drop.x
-	dq	enter
-	dq	tokenError.x
-	dq	jump
-	dq	start.x
-
-.continue:
 	dq	dup.x
 	dq	fetch.x
 	dq	lit
@@ -890,6 +872,27 @@ token:
 
 	dq	jump
 	dq	token.x
+
+.then1:
+	dq	drop.x
+	dq	enter
+	dq	tokenError.x
+	dq	jump
+	dq	start.x
+
+.then0:
+	dq	drop.x
+
+	dq	lit
+	dq	exit
+	dq	enter
+	dq	compile.x
+
+	dq	enter
+	dq	code
+
+	dq	jump
+	dq	start.x
 
 isDigit:
 	dq	7
