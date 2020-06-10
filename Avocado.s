@@ -938,8 +938,12 @@ isLiteral:
 	dq	enter
 	dq	points2Sign.x
 
+	dq	enter
+	dq	bool.x
+	dq	not.x
+
 .if0:
-	dq	branch1
+	dq	branch0
 	dq	.then0
 
 	dq	lit
