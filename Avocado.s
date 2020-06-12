@@ -953,8 +953,12 @@ isLiteral:
 	dq	dup.x
 	dq	fetchByte.x
 
+	dq	enter
+	dq	bool.x
+	dq	not.x
+
 .if1:
-	dq	branch1
+	dq	branch0
 	dq	.then1
 
 	dq	drop.x
