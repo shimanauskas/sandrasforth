@@ -1040,9 +1040,32 @@ literal:
 	dq	points2Sign.x	
 
 .if0:
-	dq	branch1
+	dq	branch0
 	dq	.else0
 
+	dq	enter
+	dq	literalUnsigned.x
+
+	dq	dup.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
+
+.if1:
+	dq	branch0
+	dq	.then2
+
+	dq	drop.x
+	dq	enter
+	dq	tokenError.x
+	dq	jump
+	dq	start.x
+
+.then1:
+	dq	jump
+	dq	.then0
+
+.else0:
 	dq	lit
 	dq	1
 	dq	add.x
@@ -1058,32 +1081,9 @@ literal:
 	dq	FLAG
 	dq	and.x
 
-.if1:
+.if2:
 	dq	branch1
 	dq	.then1
-
-	dq	drop.x
-	dq	enter
-	dq	tokenError.x
-	dq	jump
-	dq	start.x
-
-.then1:
-	dq	jump
-	dq	.then0
-
-.else0:
-	dq	enter
-	dq	literalUnsigned.x
-
-	dq	dup.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
-
-.if2:
-	dq	branch0
-	dq	.then2
 
 	dq	drop.x
 	dq	enter
