@@ -1053,7 +1053,7 @@ literal:
 
 .if1:
 	dq	branch0
-	dq	.then2
+	dq	.then1
 
 	dq	drop.x
 	dq	enter
@@ -1083,7 +1083,7 @@ literal:
 
 .if2:
 	dq	branch1
-	dq	.then1
+	dq	.then2
 
 	dq	drop.x
 	dq	enter
