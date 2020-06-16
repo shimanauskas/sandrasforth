@@ -1080,9 +1080,12 @@ literal:
 	dq	lit
 	dq	FLAG
 	dq	and.x
+	dq	enter
+	dq	bool.x
+	dq	not.x
 
 .if2:
-	dq	branch1
+	dq	branch0
 	dq	.then2
 
 	dq	drop.x
