@@ -1250,8 +1250,13 @@ mediate:
 	dq	immediate
 
 .x:
-	dq	branch1
-	dq	.exit
+	dq	enter
+	dq	bool.x
+	dq	not.x
+
+.if:
+	dq	branch0
+	dq	.then
 
 	dq	dup.x
 
@@ -1270,7 +1275,7 @@ mediate:
 
 	dq	exit
 
-.exit:
+.then:
 	dq	drop.x
 	dq	exit
 
