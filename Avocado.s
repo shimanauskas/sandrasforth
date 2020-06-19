@@ -1374,9 +1374,18 @@ number:
 	dq	lit
 	dq	FLAG
 	dq	and.x
-	dq	branch1
-	dq	.negative
 
+.if:
+	dq	branch0
+	dq	.then
+
+	dq	enter
+	dq	negate.x
+	dq	lit
+	dq	`-`
+	dq	emit.x
+
+.then:
 .natural:
 	dq	dup.x
 	dq	lit
@@ -1405,15 +1414,6 @@ number:
 	dq	.natural
 	dq	jump
 	dq	.print
-
-.negative:
-	dq	enter
-	dq	negate.x
-	dq	lit
-	dq	`-`
-	dq	emit.x
-	dq	jump
-	dq	.natural
 
 base:
 	dq	10
