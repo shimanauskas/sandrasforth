@@ -1375,9 +1375,9 @@ number:
 	dq	FLAG
 	dq	and.x
 
-.if:
+.if0:
 	dq	branch0
-	dq	.then
+	dq	.then0
 
 	dq	enter
 	dq	negate.x
@@ -1385,7 +1385,7 @@ number:
 	dq	`-`
 	dq	emit.x
 
-.then:
+.then0:
 .natural:
 	dq	dup.x
 	dq	lit
@@ -1396,8 +1396,17 @@ number:
 	dq	div.x
 	dq	push.x
 	dq	dup.x
-	dq	branch1
-	dq	.recurse
+
+.if1:
+	dq	branch0
+	dq	.then1
+
+	dq	enter
+	dq	.natural
+	dq	jump
+	dq	.print
+
+.then1:
 	dq	drop.x
 
 .print:
@@ -1408,12 +1417,6 @@ number:
 	dq	add.x
 	dq	emit.x
 	dq	exit
-
-.recurse:
-	dq	enter
-	dq	.natural
-	dq	jump
-	dq	.print
 
 base:
 	dq	10
