@@ -79,13 +79,6 @@ branch0:
 	add r12,	CELL
 	NEXT
 
-branch1:
-	test rax,	rax
-	DROP
-	jnz jump
-	add r12,	CELL
-	NEXT
-
 align	CELL
 
 dup:
