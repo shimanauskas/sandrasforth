@@ -1380,7 +1380,6 @@ number:
 
 .then0:
 .natural:
-	dq	dup.x
 	dq	lit
 	dq	0
 	dq	lit
@@ -1396,19 +1395,14 @@ number:
 
 	dq	enter
 	dq	.natural
-	dq	jump
-	dq	.print
 
 .then1:
-	dq	drop.x
-
-.print:
-	dq	drop.x
 	dq	pull.x
 	dq	lit
 	dq	`0`
 	dq	add.x
 	dq	emit.x
+	dq	drop.x
 	dq	exit
 
 base:
