@@ -854,15 +854,36 @@ token:
 	dq	enter
 	dq	bool.x
 
-	dq	over.x
-	dq	over.x
+.if2:
+	dq	branch0
+	dq	.else2
+	
+	dq	enter
+	dq	skipString.x
 
 	dq	enter
-	dq	mediate.x
+	dq	execute.x
+
+	dq	jump
+	dq	.then2
+
+.else2:
+	dq	dup.x
 
 	dq	enter
-	dq	immediate.x
+	dq	native.x
 
+	dq	enter
+	dq	skipString.x
+
+	dq	lit
+	dq	CELL
+	dq	add.x
+
+	dq	enter
+	dq	compile.x
+
+.then2:
 	dq	jump
 	dq	token.x
 
@@ -1216,66 +1237,10 @@ skipString:
 .then:
 	dq	exit
 
-immediate:
-	dq	9
-	dq	`immediate`
-	dq	skipString
-
-.x:
-	dq	branch0
-	dq	.exit
-	
-	dq	enter
-	dq	skipString.x
-
-	dq	enter
-	dq	execute.x
-
-	dq	exit
-
-.exit:
-	dq	drop.x
-	dq	exit
-
-mediate:
-	dq	7
-	dq	`mediate`
-	dq	immediate
-
-.x:
-	dq	enter
-	dq	bool.x
-	dq	not.x
-
-.if:
-	dq	branch0
-	dq	.then
-
-	dq	dup.x
-
-	dq	enter
-	dq	native.x
-
-	dq	enter
-	dq	skipString.x
-
-	dq	lit
-	dq	CELL
-	dq	add.x
-
-	dq	enter
-	dq	compile.x
-
-	dq	exit
-
-.then:
-	dq	drop.x
-	dq	exit
-
 find:
 	dq	4
 	dq	`find`
-	dq	mediate
+	dq	skipString
 
 .x:
 	dq	fetch.x
