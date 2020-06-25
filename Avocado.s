@@ -831,9 +831,15 @@ token:
 	dq	output+CELL
 	dq	enter
 	dq	isLiteral.x
+
+.if1:
 	dq	branch0
+	dq	.then1
+
+	dq	jump
 	dq	literal.x
 
+.then1:
 	dq	lit
 	dq	last
 
@@ -842,9 +848,9 @@ token:
 
 	dq	dup.x
 
-.if1:
+.if2:
 	dq	branch0
-	dq	.then1
+	dq	.then2
 
 	dq	dup.x
 	dq	fetch.x
@@ -854,9 +860,9 @@ token:
 	dq	enter
 	dq	bool.x
 
-.if2:
+.if3:
 	dq	branch0
-	dq	.else2
+	dq	.else3
 	
 	dq	enter
 	dq	skipString.x
@@ -865,9 +871,9 @@ token:
 	dq	execute.x
 
 	dq	jump
-	dq	.then2
+	dq	.then3
 
-.else2:
+.else3:
 	dq	dup.x
 
 	dq	enter
@@ -883,11 +889,11 @@ token:
 	dq	enter
 	dq	compile.x
 
-.then2:
+.then3:
 	dq	jump
 	dq	token.x
 
-.then1:
+.then2:
 	dq	drop.x
 	dq	enter
 	dq	tokenError.x
@@ -977,7 +983,7 @@ isLiteral:
 
 	dq	drop.x
 	dq	lit
-	dq	-1
+	dq	0
 	dq	exit
 
 .then1:
@@ -996,7 +1002,7 @@ isLiteral:
 
 	dq	drop.x
 	dq	lit
-	dq	0
+	dq	-1
 	dq	exit
 
 .then2:
@@ -1011,7 +1017,7 @@ isLiteral:
 
 	dq	drop.x
 	dq	lit
-	dq	-1
+	dq	0
 	dq	exit
 
 .then3:
