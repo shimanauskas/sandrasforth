@@ -836,8 +836,26 @@ token:
 	dq	branch0
 	dq	.then1
 
-	dq	jump
+	dq	enter
 	dq	literal.x
+
+.if2:
+	dq	branch0
+	dq	.then2
+
+	dq	drop.x
+	dq	enter
+	dq	tokenError.x
+
+	dq	jump
+	dq	start.x
+
+.then2:
+	dq	enter	
+	dq	compileLiteral.x
+
+	dq	jump
+	dq	token.x
 
 .then1:
 	dq	lit
@@ -848,9 +866,9 @@ token:
 
 	dq	dup.x
 
-.if2:
+.if3:
 	dq	branch0
-	dq	.then2
+	dq	.then3
 
 	dq	dup.x
 	dq	fetch.x
@@ -860,9 +878,9 @@ token:
 	dq	enter
 	dq	bool.x
 
-.if3:
+.if4:
 	dq	branch0
-	dq	.else3
+	dq	.else4
 	
 	dq	enter
 	dq	skipString.x
@@ -871,9 +889,9 @@ token:
 	dq	execute.x
 
 	dq	jump
-	dq	.then3
+	dq	.then4
 
-.else3:
+.else4:
 	dq	dup.x
 
 	dq	enter
@@ -889,11 +907,11 @@ token:
 	dq	enter
 	dq	compile.x
 
-.then3:
+.then4:
 	dq	jump
 	dq	token.x
 
-.then2:
+.then3:
 	dq	drop.x
 	dq	enter
 	dq	tokenError.x
@@ -1059,9 +1077,9 @@ literal:
 	dq	enter
 	dq	points2Sign.x	
 
-.if0:
+.if:
 	dq	branch0
-	dq	.else0
+	dq	.then
 
 	dq	enter
 	dq	literalUnsigned.x
@@ -1071,21 +1089,9 @@ literal:
 	dq	FLAG
 	dq	and.x
 
-.if1:
-	dq	branch0
-	dq	.then1
+	dq	exit
 
-	dq	drop.x
-	dq	enter
-	dq	tokenError.x
-	dq	jump
-	dq	start.x
-
-.then1:
-	dq	jump
-	dq	.then0
-
-.else0:
+.then:
 	dq	lit
 	dq	1
 	dq	add.x
@@ -1104,23 +1110,7 @@ literal:
 	dq	bool.x
 	dq	not.x
 
-.if2:
-	dq	branch0
-	dq	.then2
-
-	dq	drop.x
-	dq	enter
-	dq	tokenError.x
-	dq	jump
-	dq	start.x
-
-.then2:
-.then0:
-	dq	enter	
-	dq	compileLiteral.x
-
-	dq	jump
-	dq	token.x
+	dq	exit
 
 literalUnsigned:
 	dq	15
