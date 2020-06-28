@@ -828,37 +828,6 @@ token:
 	dq	store.x
 
 	dq	lit
-	dq	output+CELL
-	dq	enter
-	dq	isLiteral.x
-
-.if1:
-	dq	branch0
-	dq	.then1
-
-	dq	enter
-	dq	literal.x
-
-.if2:
-	dq	branch0
-	dq	.then2
-
-	dq	drop.x
-	dq	enter
-	dq	tokenError.x
-
-	dq	jump
-	dq	start.x
-
-.then2:
-	dq	enter	
-	dq	compileLiteral.x
-
-	dq	jump
-	dq	token.x
-
-.then1:
-	dq	lit
 	dq	last
 
 	dq	enter
@@ -866,9 +835,9 @@ token:
 
 	dq	dup.x
 
-.if3:
+.if1:
 	dq	branch0
-	dq	.then3
+	dq	.then1
 
 	dq	dup.x
 	dq	fetch.x
@@ -878,9 +847,9 @@ token:
 	dq	enter
 	dq	bool.x
 
-.if4:
+.if2:
 	dq	branch0
-	dq	.else4
+	dq	.else2
 	
 	dq	enter
 	dq	skipString.x
@@ -889,9 +858,9 @@ token:
 	dq	execute.x
 
 	dq	jump
-	dq	.then4
+	dq	.then2
 
-.else4:
+.else2:
 	dq	dup.x
 
 	dq	enter
@@ -907,16 +876,33 @@ token:
 	dq	enter
 	dq	compile.x
 
-.then4:
+.then2:
 	dq	jump
 	dq	token.x
 
-.then3:
+.then1:
+	dq	drop.x
+
+	dq	enter
+	dq	literal.x
+
+.if3:
+	dq	branch0
+	dq	.then3
+
 	dq	drop.x
 	dq	enter
 	dq	tokenError.x
+
 	dq	jump
 	dq	start.x
+
+.then3:
+	dq	enter	
+	dq	compileLiteral.x
+
+	dq	jump
+	dq	token.x
 
 .then0:
 	dq	drop.x
@@ -932,32 +918,10 @@ token:
 	dq	jump
 	dq	start.x
 
-isDigit:
-	dq	7
-	dq	`isDigit`
-	dq	token
-
-.x:
-	dq	lit
-	dq	`0`
-	dq	sub.x
-
-	dq	lit
-	dq	0
-
-	dq	lit
-	dq	base
-	dq	fetch.x	
-
-	dq	div.x
-	dq	drop.x
-
-	dq	exit
-
 points2Sign:
 	dq	11
 	dq	`points2Sign`
-	dq	isDigit
+	dq	token
 
 .x:
 	dq	fetchByte.x
@@ -966,90 +930,10 @@ points2Sign:
 	dq	sub.x
 	dq	exit
 
-isLiteral:
-	dq	9
-	dq	`isLiteral`
-	dq	points2Sign
-
-.x:
-	dq	dup.x
-	dq	enter
-	dq	points2Sign.x
-
-	dq	enter
-	dq	bool.x
-	dq	not.x
-
-.if0:
-	dq	branch0
-	dq	.then0
-
-	dq	lit
-	dq	1
-	dq	add.x
-
-	dq	dup.x
-	dq	fetchByte.x
-
-	dq	enter
-	dq	bool.x
-	dq	not.x
-
-.if1:
-	dq	branch0
-	dq	.then1
-
-	dq	drop.x
-	dq	lit
-	dq	0
-	dq	exit
-
-.then1:
-.then0:
-.loop:
-	dq	dup.x
-	dq	fetchByte.x
-
-	dq	enter
-	dq	bool.x
-	dq	not.x
-
-.if2:
-	dq	branch0
-	dq	.then2
-
-	dq	drop.x
-	dq	lit
-	dq	-1
-	dq	exit
-
-.then2:
-	dq	dup.x
-	dq	fetchByte.x
-	dq	enter
-	dq	isDigit.x
-
-.if3:
-	dq	branch0
-	dq	.then3
-
-	dq	drop.x
-	dq	lit
-	dq	0
-	dq	exit
-
-.then3:
-	dq	lit
-	dq	1
-	dq	add.x
-
-	dq	jump
-	dq	.loop
-
 tokenError:
 	dq	10
 	dq	`tokenError`
-	dq	isLiteral
+	dq	points2Sign
 
 .x:
 	dq	lit
@@ -1144,7 +1028,30 @@ literalUnsigned:
 	dq	lit
 	dq	`0`
 	dq	sub.x
+	dq	dup.x
 
+	dq	lit
+	dq	0
+
+	dq	lit
+	dq	base
+	dq	fetch.x	
+
+	dq	div.x
+	dq	drop.x
+
+.if1:
+	dq	branch0
+	dq	.then1
+
+	dq	drop.x
+	dq	drop.x
+	dq	drop.x
+	dq	lit
+	dq	-1
+	dq	exit
+
+.then1:
 	dq	push.x
 	dq	push.x
 
@@ -1158,9 +1065,9 @@ literalUnsigned:
 	dq	fetch.x
 	dq	mul.x
 
-.if1:
+.if2:
 	dq	branch0
-	dq	.then1
+	dq	.then2
 
 	dq	pull.x
 	dq	drop.x
@@ -1170,7 +1077,7 @@ literalUnsigned:
 	dq	-1
 	dq	exit
 
-.then1:
+.then2:
 	dq	pull.x
 	dq	add.x
 
