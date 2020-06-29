@@ -654,8 +654,11 @@ start:
 	dq	code
 	dq	store.x
 
-	dq	jump
+	dq	enter
 	dq	token.x
+
+	dq	jump
+	dq	start.x
 
 compile:
 	dq	7
@@ -891,11 +894,8 @@ token:
 	dq	.then3
 
 	dq	drop.x
-	dq	enter
-	dq	tokenError.x
-
 	dq	jump
-	dq	start.x
+	dq	tokenError.x
 
 .then3:
 	dq	enter	
@@ -912,11 +912,8 @@ token:
 	dq	enter
 	dq	compile.x
 
-	dq	enter
-	dq	code
-
 	dq	jump
-	dq	start.x
+	dq	code
 
 points2Sign:
 	dq	11
