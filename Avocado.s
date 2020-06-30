@@ -894,8 +894,17 @@ token:
 	dq	.then3
 
 	dq	drop.x
-	dq	jump
-	dq	tokenError.x
+	dq	lit
+	dq	output
+	dq	enter
+	dq	string.x
+	dq	write.x
+	dq	lit
+	dq	error
+	dq	enter
+	dq	string.x
+	dq	write.x
+	dq	exit
 
 .then3:
 	dq	enter	
@@ -927,28 +936,10 @@ points2Sign:
 	dq	sub.x
 	dq	exit
 
-tokenError:
-	dq	10
-	dq	`tokenError`
-	dq	points2Sign
-
-.x:
-	dq	lit
-	dq	output
-	dq	enter
-	dq	string.x
-	dq	write.x
-	dq	lit
-	dq	error
-	dq	enter
-	dq	string.x
-	dq	write.x
-	dq	exit
-
 literal:
 	dq	7
 	dq	`literal`
-	dq	tokenError
+	dq	points2Sign
 
 .x:
 	dq	lit
