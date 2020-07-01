@@ -684,24 +684,10 @@ compile:
 	dq	store.x
 	dq	exit
 
-compileLiteral:
-	dq	14
-	dq	`compileLiteral`
-	dq	compile
-
-.x:
-	dq	lit
-	dq	lit
-	dq	enter
-	dq	compile.x
-	dq	enter
-	dq	compile.x
-	dq	exit
-
 skipWhitespace:
 	dq	14
 	dq	`skipWhitespace`
-	dq	compileLiteral
+	dq	compile
 
 .x:
 	dq	dup.x
@@ -907,8 +893,12 @@ token:
 	dq	exit
 
 .then3:
-	dq	enter	
-	dq	compileLiteral.x
+	dq	lit
+	dq	lit
+	dq	enter
+	dq	compile.x
+	dq	enter
+	dq	compile.x
 
 	dq	jump
 	dq	token.x
