@@ -619,51 +619,10 @@ stringCompare:
 .then1:
 	dq	exit
 
-start:
-	dq	5
-	dq	`start`
-	dq	stringCompare
-
-.x:
-	dq	lit
-	dq	prompt
-	dq	enter
-	dq	string.x
-	dq	write.x
-
-	dq	lit
-	dq	inputPointer
-
-	dq	lit
-	dq	input
-	dq	lit
-	dq	PAGE
-
-	dq	read.x
-
-	dq	over.x
-	dq	add.x
-	dq	enter
-	dq	terminate.x
-
-	dq	store.x
-
-	dq	lit
-	dq	codePointer
-	dq	lit
-	dq	code
-	dq	store.x
-
-	dq	enter
-	dq	token.x
-
-	dq	jump
-	dq	start.x
-
 compile:
 	dq	7
 	dq	`compile`
-	dq	start
+	dq	stringCompare
 
 .x:
 	dq	push.x
@@ -1251,6 +1210,47 @@ number:
 	dq	drop.x
 	dq	exit
 
+start:
+	dq	5
+	dq	`start`
+	dq	number
+
+.x:
+	dq	lit
+	dq	prompt
+	dq	enter
+	dq	string.x
+	dq	write.x
+
+	dq	lit
+	dq	inputPointer
+
+	dq	lit
+	dq	input
+	dq	lit
+	dq	PAGE
+
+	dq	read.x
+
+	dq	over.x
+	dq	add.x
+	dq	enter
+	dq	terminate.x
+
+	dq	store.x
+
+	dq	lit
+	dq	codePointer
+	dq	lit
+	dq	code
+	dq	store.x
+
+	dq	enter
+	dq	token.x
+
+	dq	jump
+	dq	start.x
+
 base:
 	dq	10
 
@@ -1263,7 +1263,7 @@ prompt:
 	dq	`# `
 
 last:
-	dq	number
+	dq	start
 
 section	.bss
 
