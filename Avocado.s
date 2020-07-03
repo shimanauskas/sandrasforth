@@ -873,30 +873,20 @@ token:
 	dq	jump
 	dq	code
 
-points2Sign:
-	dq	11
-	dq	`points2Sign`
-	dq	token
-
-.x:
-	dq	fetchByte.x
-	dq	lit
-	dq	`-`
-	dq	sub.x
-	dq	exit
-
 literal:
 	dq	7
 	dq	`literal`
-	dq	points2Sign
+	dq	token
 
 .x:
 	dq	lit
 	dq	output+CELL
 
 	dq	dup.x
-	dq	enter
-	dq	points2Sign.x	
+	dq	fetchByte.x
+	dq	lit
+	dq	`-`
+	dq	sub.x
 
 .if:
 	dq	branch0
