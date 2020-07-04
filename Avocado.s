@@ -725,158 +725,10 @@ extractToken:
 .then:
 	dq	exit
 
-; Extract next token from the input.
-
-token:
-	dq	5
-	dq	`token`
-	dq	extractToken
-
-.x:
-	dq	lit
-	dq	inputPointer
-	dq	fetch.x
-
-	dq	enter
-	dq	skipWhitespace.x
-	
-	dq	dup.x
-	dq	fetchByte.x
-
-.if0:
-	dq	branch0
-	dq	.then0
-
-	dq	push.x
-
-	dq	lit
-	dq	output
-	dq	lit
-	dq	output+CELL
-
-	dq	pull.x
-
-	dq	enter
-	dq	extractToken.x
-
-	dq	push.x
-
-	dq	dup.x
-	dq	enter
-	dq	terminate.x
-
-	dq	lit
-	dq	output+CELL
-	dq	sub.x
-	dq	store.x
-
-	dq	lit
-	dq	inputPointer
-	dq	pull.x
-	dq	store.x
-
-	dq	lit
-	dq	last
-
-	dq	enter
-	dq	find.x
-
-	dq	dup.x
-
-.if1:
-	dq	branch0
-	dq	.then1
-
-	dq	dup.x
-	dq	fetch.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
-	dq	enter
-	dq	bool.x
-
-.if2:
-	dq	branch0
-	dq	.else2
-	
-	dq	enter
-	dq	skipString.x
-
-	dq	enter
-	dq	execute.x
-
-	dq	jump
-	dq	.then2
-
-.else2:
-	dq	dup.x
-
-	dq	enter
-	dq	native.x
-
-	dq	enter
-	dq	skipString.x
-
-	dq	lit
-	dq	CELL
-	dq	add.x
-
-	dq	enter
-	dq	compile.x
-
-.then2:
-	dq	jump
-	dq	token.x
-
-.then1:
-	dq	drop.x
-
-	dq	enter
-	dq	literal.x
-
-.if3:
-	dq	branch0
-	dq	.then3
-
-	dq	drop.x
-	dq	lit
-	dq	output
-	dq	enter
-	dq	string.x
-	dq	write.x
-	dq	lit
-	dq	error
-	dq	enter
-	dq	string.x
-	dq	write.x
-	dq	exit
-
-.then3:
-	dq	lit
-	dq	lit
-	dq	enter
-	dq	compile.x
-	dq	enter
-	dq	compile.x
-
-	dq	jump
-	dq	token.x
-
-.then0:
-	dq	drop.x
-
-	dq	lit
-	dq	exit
-	dq	enter
-	dq	compile.x
-
-	dq	jump
-	dq	code
-
 literal:
 	dq	7
 	dq	`literal`
-	dq	token
+	dq	extractToken
 
 .x:
 	dq	lit
@@ -1200,10 +1052,158 @@ number:
 	dq	drop.x
 	dq	exit
 
+; Extract next token from the input.
+
+token:
+	dq	5
+	dq	`token`
+	dq	number
+
+.x:
+	dq	lit
+	dq	inputPointer
+	dq	fetch.x
+
+	dq	enter
+	dq	skipWhitespace.x
+	
+	dq	dup.x
+	dq	fetchByte.x
+
+.if0:
+	dq	branch0
+	dq	.then0
+
+	dq	push.x
+
+	dq	lit
+	dq	output
+	dq	lit
+	dq	output+CELL
+
+	dq	pull.x
+
+	dq	enter
+	dq	extractToken.x
+
+	dq	push.x
+
+	dq	dup.x
+	dq	enter
+	dq	terminate.x
+
+	dq	lit
+	dq	output+CELL
+	dq	sub.x
+	dq	store.x
+
+	dq	lit
+	dq	inputPointer
+	dq	pull.x
+	dq	store.x
+
+	dq	lit
+	dq	last
+
+	dq	enter
+	dq	find.x
+
+	dq	dup.x
+
+.if1:
+	dq	branch0
+	dq	.then1
+
+	dq	dup.x
+	dq	fetch.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
+	dq	enter
+	dq	bool.x
+
+.if2:
+	dq	branch0
+	dq	.else2
+	
+	dq	enter
+	dq	skipString.x
+
+	dq	enter
+	dq	execute.x
+
+	dq	jump
+	dq	.then2
+
+.else2:
+	dq	dup.x
+
+	dq	enter
+	dq	native.x
+
+	dq	enter
+	dq	skipString.x
+
+	dq	lit
+	dq	CELL
+	dq	add.x
+
+	dq	enter
+	dq	compile.x
+
+.then2:
+	dq	jump
+	dq	token.x
+
+.then1:
+	dq	drop.x
+
+	dq	enter
+	dq	literal.x
+
+.if3:
+	dq	branch0
+	dq	.then3
+
+	dq	drop.x
+	dq	lit
+	dq	output
+	dq	enter
+	dq	string.x
+	dq	write.x
+	dq	lit
+	dq	error
+	dq	enter
+	dq	string.x
+	dq	write.x
+	dq	exit
+
+.then3:
+	dq	lit
+	dq	lit
+	dq	enter
+	dq	compile.x
+	dq	enter
+	dq	compile.x
+
+	dq	jump
+	dq	token.x
+
+.then0:
+	dq	drop.x
+
+	dq	lit
+	dq	exit
+	dq	enter
+	dq	compile.x
+
+	dq	jump
+	dq	code
+
 start:
 	dq	5
 	dq	`start`
-	dq	number
+	dq	token
 
 .x:
 	dq	lit
