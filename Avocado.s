@@ -539,21 +539,10 @@ less:
 	dq	negative.x
 	dq	exit
 
-terminate:
-	dq	9
-	dq	`terminate`
-	dq	less
-
-.x:
-	dq	lit
-	dq	0
-	dq	storeByte.x
-	dq	exit
-
 stringCompare:
 	dq	13
 	dq	`stringCompare`
-	dq	terminate
+	dq	string
 
 .x:
 	dq	push.x
@@ -1089,8 +1078,9 @@ token:
 	dq	push.x
 
 	dq	dup.x
-	dq	enter
-	dq	terminate.x
+	dq	lit
+	dq	0
+	dq	storeByte.x
 
 	dq	lit
 	dq	output+CELL
@@ -1224,8 +1214,9 @@ start:
 
 	dq	over.x
 	dq	add.x
-	dq	enter
-	dq	terminate.x
+	dq	lit
+	dq	0
+	dq	storeByte.x
 
 	dq	store.x
 
