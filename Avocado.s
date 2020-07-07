@@ -458,40 +458,20 @@ negative:
 	dq	bool.x
 	dq	exit
 
-addressLower:
-	dq	12
-	dq	`addressLower`
-	dq	negative
-
-.x:
-	dq	lit
-	dq	CELL-1
-	dq	and.x
-	dq	exit
-
-addressUpper:
-	dq	12
-	dq	`addressUpper`
-	dq	addressLower
-
-.x:
-	dq	lit
-	dq	~(CELL-1)
-	dq	and.x
-	dq	exit
-
 addressSplit:
 	dq	12
 	dq	`addressSplit`
-	dq	addressUpper
+	dq	negative
 
 .x:
 	dq	dup.x
-	dq	enter
-	dq	addressLower.x
+	dq	lit
+	dq	CELL-1
+	dq	and.x
 	dq	push.x
-	dq	enter
-	dq	addressUpper.x
+	dq	lit
+	dq	~(CELL-1)
+	dq	and.x
 	dq	pull.x
 	dq	exit
 
