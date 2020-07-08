@@ -458,27 +458,10 @@ negative:
 	dq	bool.x
 	dq	exit
 
-addressSplit:
-	dq	12
-	dq	`addressSplit`
-	dq	negative
-
-.x:
-	dq	dup.x
-	dq	lit
-	dq	CELL-1
-	dq	and.x
-	dq	push.x
-	dq	lit
-	dq	~(CELL-1)
-	dq	and.x
-	dq	pull.x
-	dq	exit
-
 string:
 	dq	6
 	dq	`string`
-	dq	addressSplit
+	dq	negative
 
 .x:
 	dq	dup.x
@@ -870,10 +853,15 @@ skipString:
 	dq	~FLAG
 	dq	and.x
 
-	dq	enter
-	dq	addressSplit.x
-
+	dq	dup.x
+	dq	lit
+	dq	CELL-1
+	dq	and.x
 	dq	push.x
+
+	dq	lit
+	dq	~(CELL-1)
+	dq	and.x
 	dq	add.x
 	dq	pull.x
 
