@@ -403,24 +403,10 @@ negate:
 	dq	add.x
 	dq	exit
 
-swap:
-	dq	4
-	dq	`swap`
-	dq	negate
-
-.x:
-	dq	over.x
-	dq	push.x
-	dq	push.x
-	dq	drop.x
-	dq	pull.x
-	dq	pull.x
-	dq	exit
-
 bool:
 	dq	4
 	dq	`bool`
-	dq	swap
+	dq	negate
 
 .x:
 	dq	dup.x
@@ -509,8 +495,12 @@ stringCompare:
 
 .x:
 	dq	push.x
-	dq	enter
-	dq	swap.x
+	dq	over.x
+	dq	push.x
+	dq	push.x
+	dq	drop.x
+	dq	pull.x
+	dq	pull.x
 	dq	pull.x
 	dq	sub.x
 	dq	dup.x
