@@ -342,7 +342,7 @@ align	CELL
 read:
 	dq	4
 	dq	`read`
-	dq	store
+	dq	storeByte
 
 .x:
 	mov	rdx,	rax		; Count.
@@ -491,7 +491,7 @@ less:
 stringCompare:
 	dq	13
 	dq	`stringCompare`
-	dq	string
+	dq	less
 
 .x:
 	dq	push.x
