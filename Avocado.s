@@ -503,20 +503,15 @@ stringCompare:
 	dq	pull.x
 	dq	pull.x
 	dq	sub.x
-	dq	dup.x
 
 .if0:
 	dq	branch0
 	dq	.then0
 
-	dq	push.x
 	dq	drop.x
-	dq	drop.x
-	dq	pull.x
 	dq	exit
 
 .then0:
-	dq	drop.x
 	dq	enter
 	dq	.loop
 	dq	drop.x
