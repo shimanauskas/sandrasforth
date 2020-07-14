@@ -496,11 +496,6 @@ stringCompare:
 .x:
 	dq	push.x
 	dq	over.x
-	dq	push.x
-	dq	push.x
-	dq	drop.x
-	dq	pull.x
-	dq	pull.x
 	dq	pull.x
 	dq	sub.x
 
@@ -509,9 +504,13 @@ stringCompare:
 	dq	.then0
 
 	dq	drop.x
+	dq	drop.x
 	dq	exit
 
 .then0:
+	dq	push.x
+	dq	drop.x
+	dq	pull.x
 	dq	enter
 	dq	.loop
 	dq	drop.x
