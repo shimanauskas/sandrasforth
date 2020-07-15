@@ -834,27 +834,25 @@ skipString:
 	dq	~FLAG
 	dq	and.x
 
-	dq	dup.x
 	dq	lit
-	dq	CELL-1
-	dq	and.x
-	dq	push.x
-
+	dq	0
 	dq	lit
-	dq	~(CELL-1)
-	dq	and.x
-	dq	add.x
-	dq	pull.x
+	dq	CELL
+	dq	div.x
 
 .if:
 	dq	branch0
 	dq	.then
 	
 	dq	lit
-	dq	CELL
+	dq	1
 	dq	add.x
 
 .then:
+	dq	shiftLeft.x
+	dq	shiftLeft.x
+	dq	shiftLeft.x
+	dq	add.x
 	dq	exit
 
 find:
