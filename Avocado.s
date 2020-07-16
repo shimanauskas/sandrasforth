@@ -831,10 +831,6 @@ skipString:
 	dq	string.x
 
 	dq	lit
-	dq	~FLAG
-	dq	and.x
-
-	dq	lit
 	dq	0
 	dq	lit
 	dq	CELL
@@ -862,6 +858,9 @@ find:
 
 .x:
 	dq	fetch.x
+	dq	lit
+	dq	~FLAG
+	dq	and.x
 	dq	dup.x
 	dq	branch0
 	dq	.exit
@@ -869,9 +868,6 @@ find:
 	dq	dup.x
 	dq	enter
 	dq	string.x
-	dq	lit
-	dq	~FLAG
-	dq	and.x
 	dq	lit
 	dq	output
 	dq	enter
@@ -890,9 +886,9 @@ find:
 	dq	exit
 
 loop:
-	dq	1|FLAG
+	dq	1
 	dq	`[`
-	dq	find
+	dq	find+(1<<63)
 
 .x:
 	dq	lit
@@ -901,9 +897,9 @@ loop:
 	dq	exit
 
 pool:
-	dq	1|FLAG
+	dq	1
 	dq	`]`
-	dq	loop
+	dq	loop+(1<<63)
 
 .x:
 	dq	lit
@@ -915,9 +911,9 @@ pool:
 	dq	exit
 
 binary:
-	dq	6|FLAG
+	dq	6
 	dq	`binary`
-	dq	pool
+	dq	pool+(1<<63)
 
 .x:
 	dq	lit
@@ -928,9 +924,9 @@ binary:
 	dq	exit
 
 decimal:
-	dq	7|FLAG
+	dq	7
 	dq	`decimal`
-	dq	binary
+	dq	binary+(1<<63)
 
 .x:
 	dq	lit
@@ -1051,6 +1047,8 @@ token:
 	dq	branch0
 	dq	.then1
 
+	dq	enter
+	dq	skipString.x
 	dq	dup.x
 	dq	fetch.x
 	dq	lit
@@ -1064,9 +1062,6 @@ token:
 	dq	.else2
 	
 	dq	enter
-	dq	skipString.x
-
-	dq	enter
 	dq	execute.x
 
 	dq	jump
@@ -1077,9 +1072,6 @@ token:
 
 	dq	enter
 	dq	native.x
-
-	dq	enter
-	dq	skipString.x
 
 	dq	lit
 	dq	CELL
