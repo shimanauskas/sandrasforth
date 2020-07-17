@@ -1054,8 +1054,6 @@ token:
 	dq	lit
 	dq	FLAG
 	dq	and.x
-	dq	enter
-	dq	bool.x
 
 .if2:
 	dq	branch0
