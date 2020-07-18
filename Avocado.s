@@ -862,8 +862,10 @@ find:
 	dq	~FLAG
 	dq	and.x
 	dq	dup.x
+
+.if0:
 	dq	branch0
-	dq	.exit
+	dq	.then0
 
 	dq	dup.x
 	dq	enter
@@ -874,15 +876,18 @@ find:
 	dq	string.x
 	dq	enter
 	dq	stringCompare.x
+
+.if1:
 	dq	branch0
-	dq	.exit
+	dq	.then1
 
 	dq	enter
 	dq	skipString.x
 	dq	jump
 	dq	.x
 
-.exit:
+.then1:
+.then0:
 	dq	exit
 
 loop:
