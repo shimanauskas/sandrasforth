@@ -893,7 +893,7 @@ find:
 loop:
 	dq	1
 	dq	`[`
-	dq	find+(1<<63)
+	dq	find+FLAG
 
 .x:
 	dq	lit
@@ -904,7 +904,7 @@ loop:
 pool:
 	dq	1
 	dq	`]`
-	dq	loop+(1<<63)
+	dq	loop+FLAG
 
 .x:
 	dq	lit
@@ -918,7 +918,7 @@ pool:
 binary:
 	dq	6
 	dq	`binary`
-	dq	pool+(1<<63)
+	dq	pool+FLAG
 
 .x:
 	dq	lit
@@ -931,7 +931,7 @@ binary:
 decimal:
 	dq	7
 	dq	`decimal`
-	dq	binary+(1<<63)
+	dq	binary+FLAG
 
 .x:
 	dq	lit
