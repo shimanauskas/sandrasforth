@@ -890,10 +890,41 @@ find:
 .then0:
 	dq	exit
 
+if:
+	dq	2
+	dq	`if`
+	dq	find+FLAG
+
+.x:
+	dq	lit
+	dq	branch0
+	dq	enter
+	dq	compile.x
+	dq	lit
+	dq	codePointer
+	dq	fetch.x
+	dq	lit
+	dq	0
+	dq	enter
+	dq	compile.x
+	dq	exit
+
+then:
+	dq	4
+	dq	`then`
+	dq	if+FLAG
+
+.x:
+	dq	lit
+	dq	codePointer
+	dq	fetch.x
+	dq	store.x
+	dq	exit
+
 loop:
 	dq	1
 	dq	`[`
-	dq	find+FLAG
+	dq	then+FLAG
 
 .x:
 	dq	lit
