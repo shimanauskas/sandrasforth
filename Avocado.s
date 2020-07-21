@@ -909,10 +909,33 @@ if:
 	dq	compile.x
 	dq	exit
 
+else:
+	dq	4
+	dq	`else`
+	dq	if+FLAG
+
+.x:
+	dq	lit
+	dq	jump
+	dq	enter
+	dq	compile.x
+	dq	lit
+	dq	codePointer
+	dq	fetch.x
+	dq	push.x
+	dq	lit
+	dq	0
+	dq	enter
+	dq	compile.x
+	dq	enter
+	dq	then.x
+	dq	pull.x
+	dq	exit
+
 then:
 	dq	4
 	dq	`then`
-	dq	if+FLAG
+	dq	else+FLAG
 
 .x:
 	dq	lit
