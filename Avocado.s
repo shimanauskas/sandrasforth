@@ -520,9 +520,6 @@ stringCompare:
 .loop:
 	dq	over.x
 	dq	over.x
-	dq	dup.x
-	dq	fetchByte.x
-	dq	push.x
 	dq	fetchByte.x
 	dq	push.x
 	dq	fetchByte.x
@@ -531,7 +528,8 @@ stringCompare:
 	dq	enter
 	dq	bool.x
 	dq	not.x
-	dq	pull.x
+	dq	over.x
+	dq	fetchByte.x
 	dq	and.x
 
 .if1:
