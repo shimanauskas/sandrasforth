@@ -511,8 +511,10 @@ stringCompare:
 	dq	push.x
 	dq	drop.x
 	dq	pull.x
+
 	dq	enter
 	dq	.loop
+
 	dq	drop.x
 	dq	fetchByte.x
 	dq	exit
@@ -524,10 +526,12 @@ stringCompare:
 	dq	push.x
 	dq	fetchByte.x
 	dq	pull.x
+
 	dq	xor.x
 	dq	enter
 	dq	bool.x
 	dq	not.x
+
 	dq	over.x
 	dq	fetchByte.x
 	dq	and.x
@@ -540,10 +544,12 @@ stringCompare:
 	dq	1
 	dq	add.x
 	dq	push.x
+
 	dq	lit
 	dq	1
 	dq	add.x
 	dq	pull.x
+
 	dq	jump
 	dq	.loop
 
