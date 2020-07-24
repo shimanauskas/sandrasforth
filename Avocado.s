@@ -512,14 +512,7 @@ stringCompare:
 	dq	drop.x
 	dq	pull.x
 
-	dq	enter
-	dq	.loop
-
-	dq	drop.x
-	dq	fetchByte.x
-	dq	exit
-
-.loop:
+.begin:
 	dq	over.x
 	dq	over.x
 	dq	fetchByte.x
@@ -536,9 +529,9 @@ stringCompare:
 	dq	fetchByte.x
 	dq	and.x
 
-.if1:
+.while:
 	dq	branch0
-	dq	.then1
+	dq	.do
 	
 	dq	lit
 	dq	1
@@ -551,9 +544,11 @@ stringCompare:
 	dq	pull.x
 
 	dq	jump
-	dq	.loop
+	dq	.begin
+.do:
 
-.then1:
+	dq	drop.x
+	dq	fetchByte.x
 	dq	exit
 
 compile:
