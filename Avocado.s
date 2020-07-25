@@ -499,15 +499,15 @@ stringCompare:
 	dq	pull.x
 	dq	sub.x
 
-.if0:
+.if:
 	dq	branch0
-	dq	.then0
+	dq	.then
 
 	dq	drop.x
 	dq	drop.x
 	dq	exit
 
-.then0:
+.then:
 	dq	push.x
 	dq	drop.x
 	dq	pull.x
