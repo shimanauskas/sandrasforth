@@ -716,26 +716,15 @@ literalUnsigned:
 	dq	lit
 	dq	0
 
-.loop:
+.begin:
 	dq	over.x
 	dq	fetchByte.x
-
 	dq	dup.x
-	dq	enter
-	dq	bool.x
-	dq	not.x
 
-.if0:
+.while:
 	dq	branch0
-	dq	.then0
+	dq	.do
 
-	dq	drop.x
-	dq	push.x
-	dq	drop.x
-	dq	pull.x
-	dq	exit
-
-.then0:
 	dq	lit
 	dq	`0`
 	dq	sub.x
@@ -751,9 +740,9 @@ literalUnsigned:
 	dq	div.x
 	dq	drop.x
 
-.if1:
+.if0:
 	dq	branch0
-	dq	.then1
+	dq	.then0
 
 	dq	drop.x
 	dq	drop.x
@@ -762,7 +751,7 @@ literalUnsigned:
 	dq	-1
 	dq	exit
 
-.then1:
+.then0:
 	dq	push.x
 	dq	push.x
 
@@ -776,9 +765,9 @@ literalUnsigned:
 	dq	fetch.x
 	dq	mul.x
 
-.if2:
+.if1:
 	dq	branch0
-	dq	.then2
+	dq	.then1
 
 	dq	pull.x
 	dq	drop.x
@@ -788,12 +777,19 @@ literalUnsigned:
 	dq	-1
 	dq	exit
 
-.then2:
+.then1:
 	dq	pull.x
 	dq	add.x
 
 	dq	jump
-	dq	.loop
+	dq	.begin
+.do:
+
+	dq	drop.x
+	dq	push.x
+	dq	drop.x
+	dq	pull.x
+	dq	exit
 
 native:
 	dq	6
