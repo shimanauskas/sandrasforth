@@ -728,7 +728,6 @@ literalUnsigned:
 	dq	lit
 	dq	`0`
 	dq	sub.x
-	dq	dup.x
 
 	dq	lit
 	dq	0
@@ -738,20 +737,8 @@ literalUnsigned:
 	dq	fetch.x	
 
 	dq	div.x
-	dq	drop.x
 
-.if0:
-	dq	branch0
-	dq	.then0
-
-	dq	drop.x
-	dq	drop.x
-	dq	drop.x
-	dq	lit
-	dq	-1
-	dq	exit
-
-.then0:
+	dq	push.x
 	dq	push.x
 	dq	push.x
 
@@ -765,9 +752,12 @@ literalUnsigned:
 	dq	fetch.x
 	dq	mul.x
 
-.if1:
+	dq	pull.x
+	dq	or.x
+
+.if:
 	dq	branch0
-	dq	.then1
+	dq	.then
 
 	dq	pull.x
 	dq	drop.x
@@ -777,7 +767,7 @@ literalUnsigned:
 	dq	-1
 	dq	exit
 
-.then1:
+.then:
 	dq	pull.x
 	dq	add.x
 
