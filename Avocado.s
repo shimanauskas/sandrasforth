@@ -735,18 +735,11 @@ literalUnsigned:
 	dq	lit
 	dq	base
 	dq	fetch.x	
-
 	dq	div.x
 
 	dq	push.x
 	dq	push.x
-	dq	push.x
 
-	dq	lit
-	dq	1
-	dq	add.x
-
-	dq	pull.x
 	dq	lit
 	dq	base
 	dq	fetch.x
@@ -770,6 +763,12 @@ literalUnsigned:
 .then:
 	dq	pull.x
 	dq	add.x
+
+	dq	push.x
+	dq	lit
+	dq	1
+	dq	add.x
+	dq	pull.x
 
 	dq	jump
 	dq	.begin
