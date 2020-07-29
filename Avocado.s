@@ -719,11 +719,13 @@ literalUnsigned:
 .begin:
 	dq	over.x
 	dq	fetchByte.x
-	dq	dup.x
 
 .while:
 	dq	branch0
 	dq	.do
+
+	dq	over.x
+	dq	fetchByte.x
 
 	dq	lit
 	dq	`0`
@@ -774,7 +776,6 @@ literalUnsigned:
 	dq	.begin
 .do:
 
-	dq	drop.x
 	dq	push.x
 	dq	drop.x
 	dq	pull.x
