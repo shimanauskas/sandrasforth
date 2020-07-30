@@ -985,7 +985,7 @@ number:
 	dq	`.`
 	dq	decimal
 
-.signed:
+.x:
 	dq	dup.x
 	dq	lit
 	dq	FLAG
