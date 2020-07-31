@@ -72,7 +72,7 @@ jump:
 	mov	r13,	[r12]
 	jmp	r13
 
-branch0:
+jump0:
 	test rax,	rax
 	DROP
 	jz jump
@@ -412,7 +412,7 @@ bool:
 	dq	dup.x
 
 .if:
-	dq	branch0
+	dq	jump0
 	dq	.then
 
 	dq	dup.x
@@ -472,7 +472,7 @@ less:
 	dq	negative.x
 
 .if:
-	dq	branch0
+	dq	jump0
 	dq	.else
 
 	dq	drop.x
@@ -500,7 +500,7 @@ stringCompare:
 	dq	sub.x
 
 .if:
-	dq	branch0
+	dq	jump0
 	dq	.then
 
 	dq	drop.x
@@ -530,7 +530,7 @@ stringCompare:
 	dq	and.x
 
 .while:
-	dq	branch0
+	dq	jump0
 	dq	.do
 	
 	dq	lit
@@ -598,7 +598,7 @@ skipWhitespace:
 	dq	and.x
 
 .if:
-	dq	branch0
+	dq	jump0
 	dq	.then
 	
 	dq	lit
@@ -648,7 +648,7 @@ extractToken:
 	dq	and.x
 
 .if:
-	dq	branch0
+	dq	jump0
 	dq	.then
 	
 	dq	jump
@@ -673,7 +673,7 @@ literal:
 	dq	sub.x
 
 .if:
-	dq	branch0
+	dq	jump0
 	dq	.then
 
 	dq	enter
@@ -721,7 +721,7 @@ literalUnsigned:
 	dq	fetchByte.x
 
 .while:
-	dq	branch0
+	dq	jump0
 	dq	.do
 
 	dq	over.x
@@ -751,7 +751,7 @@ literalUnsigned:
 	dq	or.x
 
 .if:
-	dq	branch0
+	dq	jump0
 	dq	.then
 
 	dq	pull.x
@@ -794,7 +794,7 @@ native:
 	dq	not.x
 
 .if:
-	dq	branch0
+	dq	jump0
 	dq	.then
 
 	dq	lit
@@ -822,7 +822,7 @@ skipString:
 	dq	div.x
 
 .if:
-	dq	branch0
+	dq	jump0
 	dq	.then
 	
 	dq	lit
@@ -849,7 +849,7 @@ find:
 	dq	dup.x
 
 .if0:
-	dq	branch0
+	dq	jump0
 	dq	.then0
 
 	dq	dup.x
@@ -863,7 +863,7 @@ find:
 	dq	stringCompare.x
 
 .if1:
-	dq	branch0
+	dq	jump0
 	dq	.then1
 
 	dq	enter
@@ -882,7 +882,7 @@ if:
 
 .x:
 	dq	lit
-	dq	branch0
+	dq	jump0
 	dq	enter
 	dq	compile.x
 	dq	lit
@@ -992,7 +992,7 @@ number:
 	dq	and.x
 
 .if0:
-	dq	branch0
+	dq	jump0
 	dq	.then0
 
 	dq	enter
@@ -1013,7 +1013,7 @@ number:
 	dq	dup.x
 
 .if1:
-	dq	branch0
+	dq	jump0
 	dq	.then1
 
 	dq	enter
@@ -1047,7 +1047,7 @@ token:
 	dq	fetchByte.x
 
 .if0:
-	dq	branch0
+	dq	jump0
 	dq	.then0
 
 	dq	push.x
@@ -1088,7 +1088,7 @@ token:
 	dq	dup.x
 
 .if1:
-	dq	branch0
+	dq	jump0
 	dq	.then1
 
 	dq	enter
@@ -1100,7 +1100,7 @@ token:
 	dq	and.x
 
 .if2:
-	dq	branch0
+	dq	jump0
 	dq	.else2
 	
 	dq	enter
@@ -1133,7 +1133,7 @@ token:
 	dq	literal.x
 
 .if3:
-	dq	branch0
+	dq	jump0
 	dq	.then3
 
 	dq	drop.x
