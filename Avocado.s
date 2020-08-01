@@ -581,6 +581,7 @@ skipWhitespace:
 	dq	compile
 
 .x:
+.begin:
 	dq	dup.x
 	dq	fetchByte.x
 	dq	lit
@@ -597,17 +598,18 @@ skipWhitespace:
 	dq	pull.x
 	dq	and.x
 
-.if:
+.while:
 	dq	jump0
-	dq	.then
+	dq	.do
 	
 	dq	lit
 	dq	1
 	dq	add.x
-	dq	jump
-	dq	skipWhitespace.x
 
-.then:
+	dq	jump
+	dq	.begin
+.do:
+
 	dq	exit
 
 extractToken:
