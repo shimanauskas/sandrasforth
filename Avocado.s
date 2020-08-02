@@ -618,6 +618,7 @@ extractToken:
 	dq	skipWhitespace
 
 .x:
+.begin:
 	dq	over.x
 	dq	over.x
 
@@ -649,14 +650,14 @@ extractToken:
 	dq	pull.x
 	dq	and.x
 
-.if:
+.while:
 	dq	jump0
-	dq	.then
+	dq	.do
 	
 	dq	jump
-	dq	.x
+	dq	.begin
+.do:
 
-.then:
 	dq	exit
 
 literal:
