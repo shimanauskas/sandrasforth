@@ -575,10 +575,32 @@ compile:
 	dq	store.x
 	dq	exit
 
+range:
+	dq	5
+	dq	`range`
+	dq	compile
+
+.x:
+	dq	push.x
+	dq	over.x
+	dq	push.x
+	dq	enter
+	dq	less.x
+	dq	not.x
+	dq	pull.x
+	dq	pull.x
+	dq	lit
+	dq	1
+	dq	add.x
+	dq	enter
+	dq	less.x
+	dq	and.x
+	dq	exit
+
 skipWhitespace:
 	dq	14
 	dq	`skipWhitespace`
-	dq	compile
+	dq	range
 
 .x:
 .begin:
@@ -586,17 +608,10 @@ skipWhitespace:
 	dq	fetchByte.x
 	dq	lit
 	dq	1
-	dq	over.x
 	dq	lit
-	dq	`!`
+	dq	20h
 	dq	enter
-	dq	less.x
-	dq	push.x
-	dq	enter
-	dq	less.x
-	dq	not.x
-	dq	pull.x
-	dq	and.x
+	dq	range.x
 
 .while:
 	dq	jump0
@@ -638,17 +653,10 @@ extractToken:
 	dq	fetchByte.x
 	dq	lit
 	dq	`!`
-	dq	over.x
 	dq	lit
-	dq	7Fh
+	dq	`~`
 	dq	enter
-	dq	less.x
-	dq	push.x
-	dq	enter
-	dq	less.x
-	dq	not.x
-	dq	pull.x
-	dq	and.x
+	dq	range.x
 
 .while:
 	dq	jump0
