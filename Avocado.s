@@ -488,10 +488,42 @@ less:
 	dq	negative.x
 	dq	exit
 
+more:
+	dq	4
+	dq	`more`
+	dq	less
+
+.x:
+	dq	over.x
+	dq	over.x
+	dq	xor.x
+	dq	enter
+	dq	negative.x
+
+.if:
+	dq	jump0
+	dq	.else
+
+	dq	drop.x
+	dq	not.x
+
+	dq	jump
+	dq	.then	
+
+.else:
+	dq	sub.x
+	dq	enter
+	dq	negate.x
+
+.then:
+	dq	enter
+	dq	negative.x
+	dq	exit
+
 stringCompare:
 	dq	13
 	dq	`stringCompare`
-	dq	less
+	dq	more
 
 .x:
 	dq	push.x
