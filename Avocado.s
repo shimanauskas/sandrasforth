@@ -621,11 +621,9 @@ range:
 	dq	not.x
 	dq	pull.x
 	dq	pull.x
-	dq	lit
-	dq	1
-	dq	add.x
 	dq	enter
-	dq	less.x
+	dq	more.x
+	dq	not.x
 	dq	and.x
 	dq	exit
 
