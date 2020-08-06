@@ -391,10 +391,19 @@ section	.data
 
 align	CELL
 
+execute:
+	dq	7
+	dq	`execute`
+	dq	emit
+
+.x:
+	dq	push.x
+	dq	exit
+
 negate:
 	dq	6
 	dq	`negate`
-	dq	emit
+	dq	execute
 
 .x:
 	dq	not.x
@@ -422,19 +431,10 @@ bool:
 .then:
 	dq	exit
 
-execute:
-	dq	7
-	dq	`execute`
-	dq	bool
-
-.x:
-	dq	push.x
-	dq	exit
-
 negative:
 	dq	8
 	dq	`negative`
-	dq	execute
+	dq	bool
 
 .x:
 	dq	lit
@@ -829,7 +829,7 @@ native:
 
 .x:
 	dq	lit
-	dq	negate
+	dq	execute
 	dq	enter
 	dq	less.x
 	dq	not.x
