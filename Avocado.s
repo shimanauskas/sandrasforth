@@ -444,25 +444,10 @@ negative:
 	dq	bool.x
 	dq	exit
 
-string:
-	dq	6
-	dq	`string`
-	dq	negative
-
-.x:
-	dq	dup.x
-	dq	push.x
-	dq	lit
-	dq	CELL
-	dq	add.x
-	dq	pull.x
-	dq	fetch.x
-	dq	exit
-
 less:
 	dq	4
 	dq	`less`
-	dq	string
+	dq	negative
 
 .x:
 	dq	over.x
@@ -520,10 +505,25 @@ more:
 	dq	negative.x
 	dq	exit
 
+string:
+	dq	6
+	dq	`string`
+	dq	more
+
+.x:
+	dq	dup.x
+	dq	push.x
+	dq	lit
+	dq	CELL
+	dq	add.x
+	dq	pull.x
+	dq	fetch.x
+	dq	exit
+
 stringCompare:
 	dq	13
 	dq	`stringCompare`
-	dq	more
+	dq	string
 
 .x:
 	dq	push.x
