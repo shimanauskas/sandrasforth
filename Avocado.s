@@ -1043,7 +1043,15 @@ number:
 	dq	emit.x
 
 .then0:
-.natural:
+	dq	jump
+	dq	natural.x
+
+natural:
+	dq	7
+	dq	`natural`
+	dq	number
+
+.x:
 	dq	lit
 	dq	0
 	dq	lit
@@ -1058,7 +1066,7 @@ number:
 	dq	.then1
 
 	dq	enter
-	dq	.natural
+	dq	.x
 
 .then1:
 	dq	pull.x
@@ -1074,7 +1082,7 @@ number:
 token:
 	dq	5
 	dq	`token`
-	dq	number
+	dq	natural
 
 .x:
 	dq	lit
