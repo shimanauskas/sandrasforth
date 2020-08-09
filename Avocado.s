@@ -1038,9 +1038,18 @@ number:
 
 	dq	enter
 	dq	negate.x
+
+	dq	lit
+	dq	output
 	dq	lit
 	dq	`-`
-	dq	emit.x
+	dq	storeByte.x
+
+	dq	lit
+	dq	output
+	dq	lit
+	dq	1
+	dq	write.x
 
 .then0:
 	dq	jump
