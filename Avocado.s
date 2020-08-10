@@ -1032,9 +1032,9 @@ number:
 	dq	FLAG
 	dq	and.x
 
-.if0:
+.if:
 	dq	jump0
-	dq	.then0
+	dq	.then
 
 	dq	enter
 	dq	negate.x
@@ -1051,7 +1051,7 @@ number:
 	dq	1
 	dq	write.x
 
-.then0:
+.then:
 	dq	jump
 	dq	natural.x
 
@@ -1070,14 +1070,14 @@ natural:
 	dq	push.x
 	dq	dup.x
 
-.if1:
+.if:
 	dq	jump0
-	dq	.then1
+	dq	.then
 
 	dq	enter
 	dq	.x
 
-.then1:
+.then:
 	dq	pull.x
 	dq	lit
 	dq	`0`
