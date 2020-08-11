@@ -1062,6 +1062,24 @@ natural:
 
 .x:
 	dq	lit
+	dq	output
+	dq	lit
+	dq	0
+	dq	store.x
+
+	dq	enter
+	dq	.recurse
+
+	dq	lit
+	dq	output
+	dq	enter
+	dq	string.x
+	dq	write.x
+
+	dq	exit
+	
+.recurse:
+	dq	lit
 	dq	0
 	dq	lit
 	dq	base
@@ -1075,15 +1093,32 @@ natural:
 	dq	.then
 
 	dq	enter
-	dq	.x
+	dq	.recurse
 
 .then:
+	dq	lit
+	dq	output+CELL
+	dq	lit
+	dq	output
+	dq	fetch.x
+	dq	add.x
+
 	dq	pull.x
 	dq	lit
 	dq	`0`
 	dq	add.x
-	dq	emit.x
+	dq	storeByte.x
 	dq	drop.x
+
+	dq	lit
+	dq	output
+	dq	dup.x
+	dq	fetch.x
+	dq	lit
+	dq	1
+	dq	add.x
+	dq	store.x
+
 	dq	exit
 
 ; Extract next token from the input.
