@@ -369,24 +369,6 @@ write:
 	lea	rbp,	[rbp-CELL*2]
 	NEXT
 
-align	CELL
-
-emit:
-	dq	4
-	dq	`emit`
-	dq	write
-
-.x:
-	mov	rdx,	1		; Count.
-	DUP
-	mov	rsi,	rbp		; Address.
-	mov	rdi,	1		; stdout
-	mov	rax,	2000004h	; sys_write
-	syscall
-	mov	rax,	[rbp-CELL]
-	lea	rbp,	[rbp-CELL*2]
-	NEXT
-
 section	.data
 
 align	CELL
@@ -394,7 +376,7 @@ align	CELL
 execute:
 	dq	7
 	dq	`execute`
-	dq	emit
+	dq	write
 
 .x:
 	dq	push.x
