@@ -963,12 +963,29 @@ loop:
 	dq	fetch.x
 	dq	exit
 
-pool:
-	dq	1
-	dq	`]`
+while:
+	dq	5
+	dq	`while`
 	dq	loop+FLAG
 
 .x:
+	dq	jump
+	dq	if.x
+
+pool:
+	dq	1
+	dq	`]`
+	dq	while+FLAG
+
+.x:
+	dq	lit
+	dq	codePointer
+	dq	fetch.x
+	dq	lit
+	dq	CELL*2
+	dq	add.x
+	dq	store.x
+
 	dq	lit
 	dq	jump
 	dq	enter
