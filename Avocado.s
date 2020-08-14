@@ -804,35 +804,10 @@ literalUnsigned:
 	dq	pull.x
 	dq	exit
 
-native:
-	dq	6
-	dq	`native`
-	dq	literalUnsigned
-
-.x:
-	dq	lit
-	dq	execute
-	dq	enter
-	dq	less.x
-	dq	not.x
-
-.if:
-	dq	jump0
-	dq	.then
-
-	dq	lit
-	dq	enter
-
-	dq	enter
-	dq	compile.x
-
-.then:
-	dq	exit
-
 skipString:
 	dq	10
 	dq	`skipString`
-	dq	native
+	dq	literalUnsigned
 
 .x:
 	dq	enter
@@ -1204,9 +1179,23 @@ token:
 .else2:
 	dq	dup.x
 
+	dq	lit
+	dq	execute
 	dq	enter
-	dq	native.x
+	dq	less.x
+	dq	not.x
 
+.if3:
+	dq	jump0
+	dq	.then3
+
+	dq	lit
+	dq	enter
+
+	dq	enter
+	dq	compile.x
+
+.then3:
 	dq	lit
 	dq	CELL
 	dq	add.x
@@ -1224,9 +1213,9 @@ token:
 	dq	enter
 	dq	literal.x
 
-.if3:
+.if4:
 	dq	jump0
-	dq	.then3
+	dq	.then4
 
 	dq	drop.x
 	dq	lit
@@ -1241,7 +1230,7 @@ token:
 	dq	write.x
 	dq	exit
 
-.then3:
+.then4:
 	dq	lit
 	dq	lit
 	dq	enter
