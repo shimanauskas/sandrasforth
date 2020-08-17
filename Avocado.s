@@ -1044,6 +1044,8 @@ natural:
 	dq	enter
 	dq	.recurse
 
+	dq	drop.x
+
 	dq	lit
 	dq	output
 	dq	enter
@@ -1082,7 +1084,6 @@ natural:
 	dq	`0`
 	dq	add.x
 	dq	storeByte.x
-	dq	drop.x
 
 	dq	lit
 	dq	output
