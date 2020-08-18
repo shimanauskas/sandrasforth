@@ -927,9 +927,9 @@ then:
 	dq	store.x
 	dq	exit
 
-loop:
-	dq	1
-	dq	`[`
+begin:
+	dq	5
+	dq	`begin`
 	dq	then+FLAG
 
 .x:
@@ -941,15 +941,15 @@ loop:
 while:
 	dq	5
 	dq	`while`
-	dq	loop+FLAG
+	dq	begin+FLAG
 
 .x:
 	dq	jump
 	dq	if.x
 
-pool:
-	dq	1
-	dq	`]`
+do:
+	dq	2
+	dq	`do`
 	dq	while+FLAG
 
 .x:
@@ -972,7 +972,7 @@ pool:
 binary:
 	dq	6
 	dq	`binary`
-	dq	pool+FLAG
+	dq	do+FLAG
 
 .x:
 	dq	lit
