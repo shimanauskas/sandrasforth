@@ -73,10 +73,11 @@ jump:
 	jmp	r13
 
 jump0:
-	test rax,	rax
+	mov	rbx,	rax
 	DROP
-	jz jump
-	add r12,	CELL
+	test	rbx,	rbx
+	jz	jump
+	add	r12,	CELL
 	NEXT
 
 align	CELL
