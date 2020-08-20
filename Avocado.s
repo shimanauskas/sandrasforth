@@ -29,7 +29,7 @@
 
 %macro	DROP	0
 	mov	rax,	[rbp]
-	lea	rbp,	[rbp-CELL]
+	sub	rbp,	CELL
 %endmacro
 
 %macro	NEXT	0
