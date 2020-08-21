@@ -27,9 +27,9 @@
 	mov	[rbp],	rax
 %endmacro
 
-%macro	DROP	0
-	mov	rax,	[rbp]
-	sub	rbp,	CELL
+%macro	DROP	1
+	mov	rax,	[rbp-CELL*(%1-1)]
+	sub	rbp,	CELL*%1
 %endmacro
 
 %macro	NEXT	0
@@ -74,7 +74,7 @@ jump:
 
 jump0:
 	mov	rbx,	rax
-	DROP
+	DROP	1
 	test	rbx,	rbx
 	jz	jump
 	add	r12,	CELL
@@ -99,7 +99,7 @@ drop:
 	dq	dup
 
 .x:
-	DROP
+	DROP	1
 	NEXT
 
 align	CELL
@@ -124,7 +124,7 @@ push:
 
 .x:
 	push	rax
-	DROP
+	DROP	1
 	NEXT
 
 align	CELL
@@ -204,7 +204,7 @@ and:
 
 .x:
 	and	[rbp],	rax
-	DROP
+	DROP	1
 	NEXT
 
 align	CELL
@@ -216,7 +216,7 @@ or:
 
 .x:
 	or	[rbp],	rax
-	DROP
+	DROP	1
 	NEXT
 
 align	CELL
@@ -228,7 +228,7 @@ xor:
 
 .x:
 	xor	[rbp],	rax
-	DROP
+	DROP	1
 	NEXT
 
 align	CELL
@@ -240,7 +240,7 @@ add:
 
 .x:
 	add	[rbp],	rax
-	DROP
+	DROP	1
 	NEXT
 
 align	CELL
@@ -252,7 +252,7 @@ sub:
 
 .x:
 	sub	[rbp],	rax
-	DROP
+	DROP	1
 	NEXT
 
 align	CELL
@@ -264,7 +264,7 @@ mul:
 
 .x:
 	mov	rbx,	rax
-	DROP
+	DROP	1
 	mul	rbx
 	DUP
 	mov	rax,	rdx
@@ -279,9 +279,9 @@ div:
 
 .x:
 	mov	rbx,	rax
-	DROP
+	DROP	1
 	mov	rdx,	rax
-	DROP
+	DROP	1
 	div	rbx
 	DUP
 	mov	rax,	rdx
