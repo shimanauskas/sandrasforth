@@ -308,8 +308,7 @@ store:
 .x:
 	mov	rbx,	[rbp]
 	mov	[rbx],	rax
-	mov	rax,	[rbp-CELL]
-	lea	rbp,	[rbp-CELL*2]
+	DROP	2
 	NEXT
 
 align	CELL
@@ -334,8 +333,7 @@ storeByte:
 .x:
 	mov	rbx,	[rbp]
 	mov	[rbx],	al
-	mov	rax,	[rbp-CELL]
-	lea	rbp,	[rbp-CELL*2]
+	DROP	2
 	NEXT
 
 align	CELL
@@ -366,8 +364,7 @@ write:
 	mov	rdi,	1		; stdout
 	mov	rax,	2000004h	; sys_write
 	syscall
-	mov	rax,	[rbp-CELL]
-	lea	rbp,	[rbp-CELL*2]
+	DROP	2
 	NEXT
 
 section	.data
