@@ -459,30 +459,12 @@ more:
 	dq	less
 
 .x:
-	dq	over.x
-	dq	over.x
-	dq	xor.x
+	dq	lit
+	dq	1
+	dq	add.x
 	dq	enter
-	dq	negative.x
-
-.if:
-	dq	jump0
-	dq	.else
-
-	dq	drop.x
+	dq	less.x
 	dq	not.x
-
-	dq	jump
-	dq	.then	
-
-.else:
-	dq	sub.x
-	dq	enter
-	dq	negate.x
-
-.then:
-	dq	enter
-	dq	negative.x
 	dq	exit
 
 string:
