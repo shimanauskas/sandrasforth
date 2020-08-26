@@ -682,10 +682,13 @@ literal:
 	dq	enter
 	dq	literalUnsigned.x
 
+	dq	push.x
 	dq	dup.x
 	dq	lit
 	dq	FLAG
 	dq	and.x
+	dq	pull.x
+	dq	or.x
 
 	dq	exit
 
@@ -697,9 +700,9 @@ literal:
 	dq	enter
 	dq	literalUnsigned.x
 
+	dq	push.x
 	dq	enter
 	dq	negate.x
-
 	dq	dup.x
 	dq	lit
 	dq	FLAG
@@ -707,6 +710,8 @@ literal:
 	dq	enter
 	dq	bool.x
 	dq	not.x
+	dq	pull.x
+	dq	or.x
 
 	dq	exit
 
@@ -759,8 +764,9 @@ literalUnsigned:
 
 	dq	pull.x
 	dq	drop.x
+	dq	push.x
 	dq	drop.x
-	dq	drop.x
+	dq	pull.x
 	dq	lit
 	dq	-1
 	dq	exit
@@ -782,6 +788,8 @@ literalUnsigned:
 	dq	push.x
 	dq	drop.x
 	dq	pull.x
+	dq	lit
+	dq	0
 	dq	exit
 
 skipString:
