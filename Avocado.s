@@ -677,7 +677,7 @@ literal:
 
 .if:
 	dq	jump0
-	dq	.then
+	dq	.else
 
 	dq	enter
 	dq	literalUnsigned.x
@@ -687,12 +687,11 @@ literal:
 	dq	lit
 	dq	FLAG
 	dq	and.x
-	dq	pull.x
-	dq	or.x
 
-	dq	exit
+	dq	jump
+	dq	.then
 
-.then:
+.else:
 	dq	lit
 	dq	1
 	dq	add.x
@@ -710,6 +709,8 @@ literal:
 	dq	enter
 	dq	bool.x
 	dq	not.x
+
+.then:
 	dq	pull.x
 	dq	or.x
 
