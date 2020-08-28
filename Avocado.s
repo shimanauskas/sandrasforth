@@ -724,18 +724,14 @@ literalUnsigned:
 .x:
 	dq	lit
 	dq	0
+	dq	dup.x
+	dq	push.x
 
 .begin:
 	dq	over.x
 	dq	fetchByte.x
 
-.while:
-	dq	jump0
-	dq	.do
-
-	dq	over.x
-	dq	fetchByte.x
-
+	dq	dup.x
 	dq	lit
 	dq	`0`
 	dq	sub.x
@@ -749,7 +745,15 @@ literalUnsigned:
 	dq	div.x
 
 	dq	push.x
-	dq	push.x
+
+	dq	enter
+	dq	bool.x
+	dq	not.x
+	dq	and.x
+
+.while:
+	dq	jump0
+	dq	.do
 
 	dq	lit
 	dq	base
@@ -757,22 +761,13 @@ literalUnsigned:
 	dq	mul.x
 
 	dq	pull.x
-	dq	or.x
-
-.if:
-	dq	jump0
-	dq	.then
-
 	dq	pull.x
 	dq	drop.x
+	dq	over.x
+
+	dq	push.x
 	dq	push.x
 	dq	drop.x
-	dq	pull.x
-	dq	lit
-	dq	-1
-	dq	exit
-
-.then:
 	dq	pull.x
 	dq	add.x
 
@@ -789,8 +784,11 @@ literalUnsigned:
 	dq	push.x
 	dq	drop.x
 	dq	pull.x
-	dq	lit
-	dq	0
+
+	dq	pull.x
+	dq	drop.x
+	dq	pull.x
+
 	dq	exit
 
 skipString:
