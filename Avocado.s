@@ -222,8 +222,8 @@ or:
 align	CELL
 
 xor:
-	dq	1
-	dq	`^`
+	dq	3
+	dq	`xor`
 	dq	or
 
 .x:
