@@ -733,24 +733,56 @@ literalUnsigned:
 	dq	fetchByte.x
 
 	dq	dup.x
+
 	dq	lit
 	dq	`0`
 	dq	sub.x
 
-	dq	lit
-	dq	0
-
-	dq	lit
-	dq	base
-	dq	fetch.x	
-	dq	div.x
-
+	dq	dup.x
+	dq	push.x
 	dq	push.x
 
+.if:
+	dq	jump0
+	dq	.else
+
+	dq	pull.x
+	dq	lit
+	dq	0
+	dq	lit
+	dq	base
+	dq	fetch.x
+	dq	lit
+	dq	1
+	dq	sub.x
 	dq	enter
-	dq	bool.x
+	dq	range.x
+
+	dq	dup.x
 	dq	not.x
-	dq	and.x
+
+.if1:
+	dq	jump0
+	dq	.then1
+
+	dq	pull.x
+	dq	pull.x
+	dq	drop.x
+	dq	lit
+	dq	-1
+	dq	push.x
+	dq	push.x
+
+.then1:
+	dq	jump
+	dq	.then
+
+.else:
+	dq	pull.x
+	dq	dup.x
+	dq	xor.x
+
+.then:
 
 .while:
 	dq	jump0
@@ -770,6 +802,7 @@ literalUnsigned:
 	dq	push.x
 	dq	drop.x
 	dq	pull.x
+
 	dq	add.x
 
 	dq	push.x
