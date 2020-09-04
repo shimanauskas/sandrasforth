@@ -660,10 +660,73 @@ extractToken:
 
 	dq	exit
 
+isLiteral:
+	dq	9
+	dq	`isLiteral`
+	dq	extractToken
+
+.x:
+	dq	lit
+	dq	output+CELL
+
+	dq	dup.x
+	dq	fetchByte.x
+	dq	lit
+	dq	`-`
+	dq	sub.x
+
+	dq	enter
+	dq	bool.x
+	dq	not.x
+
+.if:
+	dq	jump0
+	dq	.then
+
+	dq	lit
+	dq	1
+	dq	add.x
+.then:
+.begin:
+	dq	dup.x
+	dq	fetchByte.x
+	
+	dq	dup.x
+	dq	lit
+	dq	`0`
+	dq	sub.x
+	dq	lit
+	dq	0
+	dq	lit
+	dq	base
+	dq	fetch.x
+	dq	lit
+	dq	1
+	dq	sub.x
+	dq	enter
+	dq	range.x
+	dq	and.x
+
+.while:
+	dq	jump0
+	dq	.do
+
+	dq	lit
+	dq	1
+	dq	add.x
+
+	dq	jump
+	dq	.begin
+.do:
+
+	dq	fetchByte.x
+
+	dq	exit
+
 literal:
 	dq	7
 	dq	`literal`
-	dq	extractToken
+	dq	isLiteral
 
 .x:
 	dq	lit
@@ -692,6 +755,7 @@ literal:
 	dq	.then
 
 .else:
+
 	dq	lit
 	dq	1
 	dq	add.x
@@ -738,51 +802,7 @@ literalUnsigned:
 	dq	`0`
 	dq	sub.x
 
-	dq	dup.x
 	dq	push.x
-	dq	push.x
-
-.if:
-	dq	jump0
-	dq	.else
-
-	dq	pull.x
-	dq	lit
-	dq	0
-	dq	lit
-	dq	base
-	dq	fetch.x
-	dq	lit
-	dq	1
-	dq	sub.x
-	dq	enter
-	dq	range.x
-
-	dq	dup.x
-	dq	not.x
-
-.if1:
-	dq	jump0
-	dq	.then1
-
-	dq	pull.x
-	dq	pull.x
-	dq	drop.x
-	dq	lit
-	dq	-1
-	dq	push.x
-	dq	push.x
-
-.then1:
-	dq	jump
-	dq	.then
-
-.else:
-	dq	pull.x
-	dq	dup.x
-	dq	xor.x
-
-.then:
 
 .while:
 	dq	jump0
@@ -1233,7 +1253,7 @@ token:
 	dq	drop.x
 
 	dq	enter
-	dq	literal.x
+	dq	isLiteral.x
 
 .if4:
 	dq	jump0
@@ -1253,6 +1273,28 @@ token:
 	dq	exit
 
 .then4:
+	dq	enter
+	dq	literal.x
+
+.if5:
+	dq	jump0
+	dq	.then5
+
+	dq	drop.x
+	dq	lit
+	dq	output
+	dq	enter
+	dq	string.x
+	dq	write.x
+	dq	lit
+	dq	error
+	dq	enter
+	dq	string.x
+	dq	write.x
+	dq	exit
+
+.then5:
+
 	dq	lit
 	dq	lit
 	dq	enter
