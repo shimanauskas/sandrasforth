@@ -1287,7 +1287,7 @@ token:
 	dq	string.x
 	dq	write.x
 	dq	lit
-	dq	error
+	dq	overflow
 	dq	enter
 	dq	string.x
 	dq	write.x
@@ -1364,6 +1364,10 @@ base:
 error:
 	dq	3
 	dq	` ?\n`
+
+overflow:
+	dq	3
+	dq	` !\n`
 
 prompt:
 	dq	2
