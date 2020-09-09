@@ -789,7 +789,6 @@ literalUnsigned:
 	dq	lit
 	dq	0
 	dq	dup.x
-	dq	not.x
 	dq	push.x
 
 .begin:
