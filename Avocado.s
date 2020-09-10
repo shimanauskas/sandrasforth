@@ -795,14 +795,6 @@ literalUnsigned:
 	dq	over.x
 	dq	fetchByte.x
 
-	dq	dup.x
-
-	dq	lit
-	dq	`0`
-	dq	sub.x
-
-	dq	push.x
-
 .while:
 	dq	jump0
 	dq	.do
@@ -811,17 +803,15 @@ literalUnsigned:
 	dq	base
 	dq	fetch.x
 	dq	mul.x
-
-	dq	pull.x
 	dq	pull.x
 	dq	drop.x
+	dq	push.x
+
 	dq	over.x
-
-	dq	push.x
-	dq	push.x
-	dq	drop.x
-	dq	pull.x
-
+	dq	fetchByte.x
+	dq	lit
+	dq	`0`
+	dq	sub.x
 	dq	add.x
 
 	dq	push.x
@@ -837,9 +827,6 @@ literalUnsigned:
 	dq	push.x
 	dq	drop.x
 	dq	pull.x
-
-	dq	pull.x
-	dq	drop.x
 	dq	pull.x
 
 	dq	exit
