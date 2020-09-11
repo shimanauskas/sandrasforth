@@ -794,6 +794,13 @@ literalUnsigned:
 .begin:
 	dq	over.x
 	dq	fetchByte.x
+	dq	pull.x
+	dq	dup.x
+	dq	push.x
+	dq	enter
+	dq	bool.x
+	dq	not.x
+	dq	and.x
 
 .while:
 	dq	jump0
