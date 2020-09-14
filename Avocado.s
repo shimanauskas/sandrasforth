@@ -411,10 +411,31 @@ bool:
 .then:
 	dq	exit
 
+isZero:
+	dq	6
+	dq	`isZero`
+	dq	bool
+
+.x:
+	dq	dup.x
+
+.if:
+	dq	jump0
+	dq	.then
+
+	dq	dup.x
+	dq	xor.x
+	dq	not.x
+
+.then:
+	dq	not.x
+
+	dq	exit
+
 negative:
 	dq	8
 	dq	`negative`
-	dq	bool
+	dq	isZero
 
 .x:
 	dq	lit
