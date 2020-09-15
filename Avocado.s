@@ -537,8 +537,7 @@ stringCompare:
 
 	dq	xor.x
 	dq	enter
-	dq	bool.x
-	dq	not.x
+	dq	isZero.x
 
 	dq	over.x
 	dq	fetchByte.x
