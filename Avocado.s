@@ -696,8 +696,7 @@ isLiteral:
 	dq	sub.x
 
 	dq	enter
-	dq	bool.x
-	dq	not.x
+	dq	isZero.x
 
 .if:
 	dq	jump0
