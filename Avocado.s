@@ -790,8 +790,7 @@ literal:
 	dq	FLAG
 	dq	and.x
 	dq	enter
-	dq	bool.x
-	dq	not.x
+	dq	isZero.x
 
 .then:
 	dq	pull.x
