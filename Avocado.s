@@ -816,8 +816,7 @@ literalUnsigned:
 	dq	dup.x
 	dq	push.x
 	dq	enter
-	dq	bool.x
-	dq	not.x
+	dq	isZero.x
 	dq	and.x
 
 .while:
