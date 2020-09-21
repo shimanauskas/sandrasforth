@@ -417,19 +417,9 @@ isZero:
 	dq	bool
 
 .x:
-	dq	dup.x
-
-.if:
-	dq	jump0
-	dq	.then
-
-	dq	dup.x
-	dq	xor.x
+	dq	enter
+	dq	bool.x
 	dq	not.x
-
-.then:
-	dq	not.x
-
 	dq	exit
 
 negative:
