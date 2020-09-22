@@ -794,6 +794,15 @@ literalUnsigned:
 	dq	literal
 
 .x:
+	dq	enter
+	dq	isLiteral.x
+	dq	enter
+	dq	isZero.x
+
+.if:
+	dq	jump0
+	dq	.then
+
 	dq	lit
 	dq	0
 	dq	dup.x
@@ -843,6 +852,11 @@ literalUnsigned:
 	dq	pull.x
 	dq	pull.x
 
+	dq	exit
+
+.then:
+	dq	lit
+	dq	-1
 	dq	exit
 
 skipString:
