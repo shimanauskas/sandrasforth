@@ -759,6 +759,11 @@ literal:
 	dq	lit
 	dq	FLAG
 	dq	and.x
+	dq	enter
+	dq	bool.x
+	dq	lit
+	dq	~FLAG
+	dq	and.x
 
 	dq	jump
 	dq	.then
@@ -781,6 +786,9 @@ literal:
 	dq	and.x
 	dq	enter
 	dq	isZero.x
+	dq	lit
+	dq	~FLAG
+	dq	and.x
 
 .then:
 	dq	pull.x
@@ -1289,6 +1297,10 @@ token:
 .then4:
 	dq	enter
 	dq	literal.x
+	dq	lit
+	dq	0
+	dq	enter
+	dq	more.x
 
 .if5:
 	dq	jump0
