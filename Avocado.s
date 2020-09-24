@@ -1275,12 +1275,19 @@ token:
 	dq	drop.x
 
 	dq	enter
-	dq	isLiteral.x
+	dq	literal.x
+	dq	dup.x
+
+	dq	lit
+	dq	0
+	dq	enter
+	dq	less.x
 
 .if4:
 	dq	jump0
 	dq	.then4
 
+	dq	drop.x
 	dq	drop.x
 	dq	lit
 	dq	output
@@ -1295,8 +1302,6 @@ token:
 	dq	exit
 
 .then4:
-	dq	enter
-	dq	literal.x
 	dq	lit
 	dq	0
 	dq	enter
