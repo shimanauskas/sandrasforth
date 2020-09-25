@@ -676,26 +676,8 @@ isLiteral:
 	dq	extractToken
 
 .x:
-	dq	lit
-	dq	output+CELL
-
 	dq	dup.x
-	dq	fetchByte.x
-	dq	lit
-	dq	`-`
-	dq	sub.x
 
-	dq	enter
-	dq	isZero.x
-
-.if:
-	dq	jump0
-	dq	.then
-
-	dq	lit
-	dq	1
-	dq	add.x
-.then:
 .begin:
 	dq	dup.x
 	dq	fetchByte.x
