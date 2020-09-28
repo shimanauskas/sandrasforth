@@ -711,6 +711,8 @@ isLiteral:
 .do:
 
 	dq	fetchByte.x
+	dq	enter
+	dq	isZero.x
 
 	dq	exit
 
@@ -786,8 +788,6 @@ literalUnsigned:
 .x:
 	dq	enter
 	dq	isLiteral.x
-	dq	enter
-	dq	isZero.x
 
 .if:
 	dq	jump0
