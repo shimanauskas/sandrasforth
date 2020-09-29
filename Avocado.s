@@ -716,74 +716,10 @@ isLiteral:
 
 	dq	exit
 
-literal:
-	dq	7
-	dq	`literal`
-	dq	isLiteral
-
-.x:
-	dq	lit
-	dq	output+CELL
-
-	dq	dup.x
-	dq	fetchByte.x
-	dq	lit
-	dq	`-`
-	dq	sub.x
-
-.if:
-	dq	jump0
-	dq	.else
-
-	dq	enter
-	dq	literalUnsigned.x
-
-	dq	push.x
-	dq	dup.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
-	dq	enter
-	dq	bool.x
-	dq	lit
-	dq	~FLAG
-	dq	and.x
-
-	dq	jump
-	dq	.then
-
-.else:
-
-	dq	lit
-	dq	1
-	dq	add.x
-
-	dq	enter
-	dq	literalUnsigned.x
-
-	dq	push.x
-	dq	enter
-	dq	negate.x
-	dq	dup.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
-	dq	enter
-	dq	isZero.x
-	dq	lit
-	dq	~FLAG
-	dq	and.x
-
-.then:
-	dq	pull.x
-	dq	or.x
-
-	dq	exit
-
 literalUnsigned:
 	dq	15
 	dq	`literalUnsigned`
-	dq	literal
+	dq	isLiteral
 
 .x:
 	dq	enter
@@ -849,10 +785,74 @@ literalUnsigned:
 	dq	-1
 	dq	exit
 
+literal:
+	dq	7
+	dq	`literal`
+	dq	literalUnsigned
+
+.x:
+	dq	lit
+	dq	output+CELL
+
+	dq	dup.x
+	dq	fetchByte.x
+	dq	lit
+	dq	`-`
+	dq	sub.x
+
+.if:
+	dq	jump0
+	dq	.else
+
+	dq	enter
+	dq	literalUnsigned.x
+
+	dq	push.x
+	dq	dup.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
+	dq	enter
+	dq	bool.x
+	dq	lit
+	dq	~FLAG
+	dq	and.x
+
+	dq	jump
+	dq	.then
+
+.else:
+
+	dq	lit
+	dq	1
+	dq	add.x
+
+	dq	enter
+	dq	literalUnsigned.x
+
+	dq	push.x
+	dq	enter
+	dq	negate.x
+	dq	dup.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
+	dq	enter
+	dq	isZero.x
+	dq	lit
+	dq	~FLAG
+	dq	and.x
+
+.then:
+	dq	pull.x
+	dq	or.x
+
+	dq	exit
+
 skipString:
 	dq	10
 	dq	`skipString`
-	dq	literalUnsigned
+	dq	literal
 
 .x:
 	dq	enter
