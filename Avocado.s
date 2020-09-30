@@ -670,9 +670,9 @@ extractToken:
 
 	dq	exit
 
-isLiteral:
-	dq	9
-	dq	`isLiteral`
+isLiteralUnsigned:
+	dq	17
+	dq	`isLiteralUnsigned`
 	dq	extractToken
 
 .x:
@@ -719,11 +719,11 @@ isLiteral:
 literalUnsigned:
 	dq	15
 	dq	`literalUnsigned`
-	dq	isLiteral
+	dq	isLiteralUnsigned
 
 .x:
 	dq	enter
-	dq	isLiteral.x
+	dq	isLiteralUnsigned.x
 
 .if:
 	dq	jump0
