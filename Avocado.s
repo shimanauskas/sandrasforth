@@ -713,7 +713,6 @@ isLiteralUnsigned:
 	dq	fetchByte.x
 	dq	enter
 	dq	isZero.x
-
 	dq	exit
 
 literalUnsigned:
@@ -777,7 +776,6 @@ literalUnsigned:
 	dq	drop.x
 	dq	pull.x
 	dq	pull.x
-
 	dq	exit
 
 .then:
@@ -846,7 +844,6 @@ literal:
 .then:
 	dq	pull.x
 	dq	or.x
-
 	dq	exit
 
 skipString:
@@ -1096,9 +1093,8 @@ natural:
 	dq	enter
 	dq	string.x
 	dq	write.x
-
 	dq	exit
-	
+
 .recurse:
 	dq	lit
 	dq	0
@@ -1138,7 +1134,6 @@ natural:
 	dq	1
 	dq	add.x
 	dq	store.x
-
 	dq	exit
 
 ; Extract next token from the input.
@@ -1307,7 +1302,6 @@ token:
 	dq	exit
 
 .then5:
-
 	dq	lit
 	dq	lit
 	dq	enter
