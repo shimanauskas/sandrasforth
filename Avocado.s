@@ -780,7 +780,7 @@ literalUnsigned:
 
 .then:
 	dq	lit
-	dq	-1
+	dq	FLAG
 	dq	exit
 
 literal:
