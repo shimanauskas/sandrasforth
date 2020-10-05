@@ -807,11 +807,8 @@ literal:
 
 	dq	push.x
 	dq	dup.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
 	dq	enter
-	dq	bool.x
+	dq	negative.x
 	dq	lit
 	dq	~FLAG
 	dq	and.x
@@ -832,11 +829,9 @@ literal:
 	dq	enter
 	dq	negate.x
 	dq	dup.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
 	dq	enter
-	dq	isZero.x
+	dq	negative.x
+	dq	not.x
 	dq	lit
 	dq	~FLAG
 	dq	and.x
