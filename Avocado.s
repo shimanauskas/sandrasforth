@@ -809,9 +809,6 @@ literal:
 	dq	dup.x
 	dq	enter
 	dq	negative.x
-	dq	lit
-	dq	~FLAG
-	dq	and.x
 
 	dq	jump
 	dq	.then
@@ -832,11 +829,11 @@ literal:
 	dq	enter
 	dq	negative.x
 	dq	not.x
+
+.then:
 	dq	lit
 	dq	~FLAG
 	dq	and.x
-
-.then:
 	dq	pull.x
 	dq	or.x
 	dq	exit
