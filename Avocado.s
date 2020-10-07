@@ -30,7 +30,7 @@ align	CELL
 	dq	LENGTH
 	db	%2,	0
 align	CELL
-	dq	LINK|%3
+	dq	LINK+%3
 %define	LINK	%1
 .x:
 %endmacro
