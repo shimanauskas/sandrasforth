@@ -21,6 +21,19 @@
 %define	CELL	8
 %define	PAGE	1000h
 %define FLAG	8000000000000000h
+%define	LINK	0
+
+%macro	DEFINE	2-3 0
+align	CELL
+%1:
+%strlen	LENGTH	%2
+	dq	LENGTH
+	db	%2,	0
+align	CELL
+	dq	LINK|%3
+%define	LINK	%1
+.x:
+%endmacro
 
 %macro	DUP	0
 	add	rbp,	CELL
