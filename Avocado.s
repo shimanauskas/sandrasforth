@@ -93,65 +93,29 @@ jump0:
 	add	r12,	CELL
 	NEXT
 
-align	CELL
-
-dup:
-	dq	3
-	dq	`dup`
-	dq	0
-
-.x:
+DEFINE	dup,	"dup"
 	DUP
 	NEXT
 
-align	CELL
-
-drop:
-	dq	4
-	dq	`drop`
-	dq	dup
-
-.x:
+DEFINE	drop,	"drop"
 	DROP	1
 	NEXT
 
-align	CELL
-
-over:
-	dq	4
-	dq	`over`
-	dq	drop
-
-.x:
+DEFINE	over,	"over"
 	lea	rbp,	[rbp+CELL]
 	mov	[rbp],	rax
 	mov	rax,	[rbp-CELL]
 	NEXT
 
-align	CELL
-
-push:
-	dq	4
-	dq	`push`
-	dq	over
-
-.x:
+DEFINE	push,	"push"
 	push	rax
 	DROP	1
 	NEXT
 
-align	CELL
-
-pull:
-	dq	4
-	dq	`pull`
-	dq	push
-
-.x:
+DEFINE	pull,	"pull"
 	DUP
 	pop	rax
 	NEXT
-
 
 align	CELL
 
