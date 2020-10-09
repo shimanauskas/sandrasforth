@@ -117,47 +117,19 @@ DEFINE	pull,	"pull"
 	pop	rax
 	NEXT
 
-align	CELL
-
-shiftLeft:
-	dq	9
-	dq	`shiftLeft`
-	dq	pull
-
-.x:
+DEFINE	shiftLeft,	"shiftLeft"
 	shl	rax,	1
 	NEXT
 
-align	CELL
-
-shiftRight:
-	dq	10
-	dq	`shiftRight`
-	dq	shiftLeft
-
-.x:
+DEFINE	shiftRight,	"shiftRight"
 	shr	rax,	1
 	NEXT
 
-align	CELL
-
-rotateLeft:
-	dq	10
-	dq	`rotateLeft`
-	dq	shiftRight
-
-.x:
+DEFINE	rotateLeft,	"rotateLeft"
 	rol	rax,	1
 	NEXT
 
-align	CELL
-
-rotateRight:
-	dq	11
-	dq	`rotateRight`
-	dq	rotateLeft
-
-.x:
+DEFINE	rotateRight,	"rotateRight"
 	ror	rax,	1
 	NEXT
 
