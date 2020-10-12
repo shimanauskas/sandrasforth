@@ -133,49 +133,21 @@ DEFINE	rotateRight,	"rotateRight"
 	ror	rax,	1
 	NEXT
 
-align	CELL
-
-not:
-	dq	1
-	dq	`!`
-	dq	rotateRight
-
-.x:
+DEFINE	not,	"!"
 	not	rax
 	NEXT
 
-align	CELL
-
-and:
-	dq	3
-	dq	`and`
-	dq	not
-
-.x:
+DEFINE	and,	"and"
 	and	[rbp],	rax
 	DROP	1
 	NEXT
 
-align	CELL
-
-or:
-	dq	2
-	dq	`or`
-	dq	and
-
-.x:
+DEFINE	or,	"or"
 	or	[rbp],	rax
 	DROP	1
 	NEXT
 
-align	CELL
-
-xor:
-	dq	3
-	dq	`xor`
-	dq	or
-
-.x:
+DEFINE	xor,	"xor"
 	xor	[rbp],	rax
 	DROP	1
 	NEXT
