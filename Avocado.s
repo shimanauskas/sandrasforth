@@ -152,38 +152,17 @@ DEFINE	xor,	"xor"
 	DROP	1
 	NEXT
 
-align	CELL
-
-add:
-	dq	1
-	dq	`+`
-	dq	xor
-
-.x:
+DEFINE	add,	"+"
 	add	[rbp],	rax
 	DROP	1
 	NEXT
 
-align	CELL
-
-sub:
-	dq	1
-	dq	`-`
-	dq	add
-
-.x:
+DEFINE	sub,	"-"
 	sub	[rbp],	rax
 	DROP	1
 	NEXT
 
-align	CELL
-
-mul:
-	dq	1
-	dq	`*`
-	dq	sub
-
-.x:
+DEFINE	mul,	"*"
 	mov	rbx,	rax
 	DROP	1
 	mul	rbx
@@ -191,14 +170,7 @@ mul:
 	mov	rax,	rdx
 	NEXT
 
-align	CELL
-
-div:
-	dq	1
-	dq	`/`
-	dq	mul
-
-.x:
+DEFINE	div,	"/"
 	mov	rbx,	rax
 	DROP	1
 	mov	rdx,	rax
