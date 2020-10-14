@@ -180,50 +180,22 @@ DEFINE	div,	"/"
 	mov	rax,	rdx
 	NEXT
 
-align	CELL
-
-fetch:
-	dq	5
-	dq	`fetch`
-	dq	div
-
-.x:
+DEFINE	fetch,	"fetch"
 	mov	rax,	[rax]
 	NEXT
 
-align	CELL
-
-store:
-	dq	5
-	dq	`store`
-	dq	fetch
-
-.x:
+DEFINE	store,	"store"
 	mov	rbx,	[rbp]
 	mov	[rbx],	rax
 	DROP	2
 	NEXT
 
-align	CELL
-
-fetchByte:
-	dq	9
-	dq	`fetchByte`
-	dq	store
-
-.x:
+DEFINE	fetchByte,	"fetchByte"
 	mov	al,	[rax]
 	and	rax,	0xFF
 	NEXT	
 
-align	CELL
-
-storeByte:
-	dq	9
-	dq	`storeByte`
-	dq	fetchByte
-
-.x:
+DEFINE	storeByte,	"storeByte"
 	mov	rbx,	[rbp]
 	mov	[rbx],	al
 	DROP	2
