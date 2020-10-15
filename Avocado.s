@@ -201,14 +201,7 @@ DEFINE	storeByte,	"storeByte"
 	DROP	2
 	NEXT
 
-align	CELL
-
-read:
-	dq	4
-	dq	`read`
-	dq	storeByte
-
-.x:
+DEFINE	read,	"read"
 	mov	rdx,	rax		; Count.
 	mov	rsi,	[rbp]		; Address.
 	mov	rdi,	0		; stdin
@@ -216,14 +209,7 @@ read:
 	syscall
 	NEXT
 
-align	CELL
-
-write:
-	dq	5
-	dq	`write`
-	dq	read
-
-.x:
+DEFINE	write,	"write"
 	mov	rdx,	rax		; Count.
 	mov	rsi,	[rbp]		; Address.
 	mov	rdi,	1		; stdout
