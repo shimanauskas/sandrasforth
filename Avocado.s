@@ -220,23 +220,11 @@ DEFINE	write,	"write"
 
 section	.data
 
-align	CELL
-
-execute:
-	dq	7
-	dq	`execute`
-	dq	write
-
-.x:
+DEFINE	execute,	"execute"
 	dq	push.x
 	dq	exit
 
-negate:
-	dq	6
-	dq	`negate`
-	dq	execute
-
-.x:
+DEFINE	negate,	"negate"
 	dq	not.x
 	dq	lit
 	dq	1
