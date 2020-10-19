@@ -231,12 +231,7 @@ DEFINE	negate,	"negate"
 	dq	add.x
 	dq	exit
 
-bool:
-	dq	4
-	dq	`bool`
-	dq	negate
-
-.x:
+DEFINE	bool,	"bool"
 	dq	dup.x
 
 .if:
@@ -250,12 +245,7 @@ bool:
 .then:
 	dq	exit
 
-isZero:
-	dq	6
-	dq	`isZero`
-	dq	bool
-
-.x:
+DEFINE	isZero,	"isZero"
 	dq	enter
 	dq	bool.x
 	dq	not.x
