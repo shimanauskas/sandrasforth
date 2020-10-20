@@ -251,12 +251,7 @@ DEFINE	isZero,	"isZero"
 	dq	not.x
 	dq	exit
 
-negative:
-	dq	8
-	dq	`negative`
-	dq	isZero
-
-.x:
+DEFINE	negative,	"negative"
 	dq	lit
 	dq	FLAG
 	dq	and.x
@@ -681,16 +676,10 @@ skipString:
 	dq	lit
 	dq	CELL
 	dq	div.x
-
-.if:
-	dq	jump0
-	dq	.then
-	
+	dq	drop.x
 	dq	lit
 	dq	1
 	dq	add.x
-
-.then:
 	dq	shiftLeft.x
 	dq	shiftLeft.x
 	dq	shiftLeft.x
