@@ -259,12 +259,7 @@ DEFINE	negative,	"negative"
 	dq	bool.x
 	dq	exit
 
-less:
-	dq	4
-	dq	`less`
-	dq	negative
-
-.x:
+DEFINE	less,	"less"
 	dq	over.x
 	dq	over.x
 	dq	xor.x
@@ -288,12 +283,7 @@ less:
 	dq	negative.x
 	dq	exit
 
-more:
-	dq	4
-	dq	`more`
-	dq	less
-
-.x:
+DEFINE	more,	"more"
 	dq	lit
 	dq	1
 	dq	add.x
