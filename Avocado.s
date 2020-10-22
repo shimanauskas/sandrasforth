@@ -292,12 +292,7 @@ DEFINE	more,	"more"
 	dq	not.x
 	dq	exit
 
-string:
-	dq	6
-	dq	`string`
-	dq	more
-
-.x:
+DEFINE	string,	"string"
 	dq	dup.x
 	dq	push.x
 	dq	lit
@@ -307,12 +302,7 @@ string:
 	dq	fetch.x
 	dq	exit
 
-stringCompare:
-	dq	13
-	dq	`stringCompare`
-	dq	string
-
-.x:
+DEFINE	stringCompare,	"stringCompare"
 	dq	push.x
 	dq	over.x
 	dq	pull.x
