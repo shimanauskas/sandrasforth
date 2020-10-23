@@ -359,12 +359,7 @@ DEFINE	stringCompare,	"stringCompare"
 	dq	fetchByte.x
 	dq	exit
 
-compile:
-	dq	7
-	dq	`compile`
-	dq	stringCompare
-
-.x:
+DEFINE	compile,	"compile"
 	dq	push.x
 	dq	lit
 	dq	codePointer
