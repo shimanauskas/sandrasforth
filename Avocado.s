@@ -378,12 +378,7 @@ DEFINE	compile,	"compile"
 	dq	store.x
 	dq	exit
 
-range:
-	dq	5
-	dq	`range`
-	dq	compile
-
-.x:
+DEFINE	range,	"range"
 	dq	push.x
 	dq	over.x
 	dq	push.x
