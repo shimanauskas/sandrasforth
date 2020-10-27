@@ -393,12 +393,7 @@ DEFINE	range,	"range"
 	dq	and.x
 	dq	exit
 
-skipWhitespace:
-	dq	14
-	dq	`skipWhitespace`
-	dq	range
-
-.x:
+DEFINE	skipWhitespace,	"skipWhitespace"
 .begin:
 	dq	dup.x
 	dq	fetchByte.x
@@ -423,12 +418,7 @@ skipWhitespace:
 
 	dq	exit
 
-extractToken:
-	dq	12
-	dq	`extractToken`
-	dq	skipWhitespace
-
-.x:
+DEFINE	extractToken,	"extractToken"
 .begin:
 	dq	over.x
 	dq	over.x
