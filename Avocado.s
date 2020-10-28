@@ -454,12 +454,7 @@ DEFINE	extractToken,	"extractToken"
 
 	dq	exit
 
-isLiteralUnsigned:
-	dq	17
-	dq	`isLiteralUnsigned`
-	dq	extractToken
-
-.x:
+DEFINE	isLiteralUnsigned,	"isLiteralUnsigned"
 	dq	dup.x
 
 .begin:
@@ -499,12 +494,7 @@ isLiteralUnsigned:
 	dq	isZero.x
 	dq	exit
 
-literalUnsigned:
-	dq	15
-	dq	`literalUnsigned`
-	dq	isLiteralUnsigned
-
-.x:
+DEFINE	literalUnsigned,	"literalUnsigned"
 	dq	enter
 	dq	isLiteralUnsigned.x
 
@@ -567,12 +557,7 @@ literalUnsigned:
 	dq	FLAG
 	dq	exit
 
-literal:
-	dq	7
-	dq	`literal`
-	dq	literalUnsigned
-
-.x:
+DEFINE	literal,	"literal"
 	dq	lit
 	dq	output+CELL
 
@@ -598,7 +583,6 @@ literal:
 	dq	.then
 
 .else:
-
 	dq	lit
 	dq	1
 	dq	add.x
