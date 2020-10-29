@@ -606,27 +606,15 @@ DEFINE	literal,	"literal"
 	dq	or.x
 	dq	exit
 
-skipString:
-	dq	10
-	dq	`skipString`
-	dq	literal
-
-.x:
+DEFINE	skipString,	"skipString"
 	dq	enter
 	dq	string.x
-
 	dq	lit
-	dq	0
+	dq	~(CELL-1)
+	dq	and.x
 	dq	lit
 	dq	CELL
-	dq	div.x
-	dq	drop.x
-	dq	lit
-	dq	1
 	dq	add.x
-	dq	shiftLeft.x
-	dq	shiftLeft.x
-	dq	shiftLeft.x
 	dq	add.x
 	dq	exit
 
