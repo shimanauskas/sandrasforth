@@ -618,23 +618,19 @@ DEFINE	skipString,	"skipString"
 	dq	add.x
 	dq	exit
 
-find:
-	dq	4
-	dq	`find`
-	dq	skipString
-
-.x:
+DEFINE	find,	"find"
+.begin:
 	dq	fetch.x
 	dq	lit
 	dq	~FLAG
 	dq	and.x
 	dq	dup.x
-
-.if0:
-	dq	jump0
-	dq	.then0
-
 	dq	dup.x
+
+.if:
+	dq	jump0
+	dq	.then
+
 	dq	enter
 	dq	string.x
 	dq	lit
@@ -644,17 +640,18 @@ find:
 	dq	enter
 	dq	stringCompare.x
 
-.if1:
+.then:
+.while:
 	dq	jump0
-	dq	.then1
+	dq	.do
 
 	dq	enter
 	dq	skipString.x
-	dq	jump
-	dq	.x
 
-.then1:
-.then0:
+	dq	jump
+	dq	.begin
+.do:
+
 	dq	exit
 
 if:
