@@ -654,12 +654,7 @@ DEFINE	find,	"find"
 
 	dq	exit
 
-if:
-	dq	2
-	dq	`if`
-	dq	find+FLAG
-
-.x:
+DEFINE	if,	"if",	FLAG
 	dq	lit
 	dq	jump0
 	dq	enter
@@ -673,12 +668,7 @@ if:
 	dq	compile.x
 	dq	exit
 
-else:
-	dq	4
-	dq	`else`
-	dq	if+FLAG
-
-.x:
+DEFINE	else,	"else",	FLAG
 	dq	lit
 	dq	jump
 	dq	enter
@@ -696,44 +686,24 @@ else:
 	dq	pull.x
 	dq	exit
 
-then:
-	dq	4
-	dq	`then`
-	dq	else+FLAG
-
-.x:
+DEFINE	then,	"then",	FLAG
 	dq	lit
 	dq	codePointer
 	dq	fetch.x
 	dq	store.x
 	dq	exit
 
-begin:
-	dq	5
-	dq	`begin`
-	dq	then+FLAG
-
-.x:
+DEFINE	begin,	"begin",	FLAG
 	dq	lit
 	dq	codePointer
 	dq	fetch.x
 	dq	exit
 
-while:
-	dq	5
-	dq	`while`
-	dq	begin+FLAG
-
-.x:
+DEFINE	while,	"while",	FLAG
 	dq	jump
 	dq	if.x
 
-do:
-	dq	2
-	dq	`do`
-	dq	while+FLAG
-
-.x:
+DEFINE	do,	"do",	FLAG
 	dq	lit
 	dq	codePointer
 	dq	fetch.x
