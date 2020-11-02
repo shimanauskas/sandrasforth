@@ -720,12 +720,7 @@ DEFINE	do,	"do",	FLAG
 	dq	compile.x
 	dq	exit
 
-binary:
-	dq	6
-	dq	`binary`
-	dq	do+FLAG
-
-.x:
+DEFINE	binary,	"binary",	FLAG
 	dq	lit
 	dq	base
 	dq	lit
@@ -733,12 +728,7 @@ binary:
 	dq	store.x
 	dq	exit
 
-decimal:
-	dq	7
-	dq	`decimal`
-	dq	binary+FLAG
-
-.x:
+DEFINE	decimal,	"decimal",	FLAG
 	dq	lit
 	dq	base
 	dq	lit
