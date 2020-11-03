@@ -736,12 +736,7 @@ DEFINE	decimal,	"decimal",	FLAG
 	dq	store.x
 	dq	exit
 
-number:
-	dq	1
-	dq	`.`
-	dq	decimal
-
-.x:
+DEFINE	number,	"."
 	dq	dup.x
 	dq	lit
 	dq	FLAG
@@ -770,12 +765,7 @@ number:
 	dq	jump
 	dq	natural.x
 
-natural:
-	dq	7
-	dq	`natural`
-	dq	number
-
-.x:
+DEFINE	natural,	"natural"
 	dq	lit
 	dq	output
 	dq	lit
