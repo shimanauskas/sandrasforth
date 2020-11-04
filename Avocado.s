@@ -827,12 +827,7 @@ DEFINE	natural,	"natural"
 
 ; Extract next token from the input.
 
-token:
-	dq	5
-	dq	`token`
-	dq	natural
-
-.x:
+DEFINE	token,	"token"
 	dq	lit
 	dq	inputPointer
 	dq	fetch.x
@@ -1012,12 +1007,7 @@ token:
 	dq	jump
 	dq	code
 
-start:
-	dq	5
-	dq	`start`
-	dq	token
-
-.x:
+DEFINE	start,	"start"
 	dq	lit
 	dq	prompt
 	dq	enter
