@@ -1060,7 +1060,7 @@ prompt:
 	dq	`# `
 
 last:
-	dq	start
+	dq	LINK
 
 section	.bss
 
