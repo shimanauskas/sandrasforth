@@ -26,12 +26,12 @@
 %macro	DEFINE	2-3 0
 align	CELL
 %1:
-%strlen	LENGTH	%2
+	%strlen	LENGTH	%2
 	dq	LENGTH
 	db	%2,	0
-align	CELL
+	align	CELL
 	dq	LINK+%3
-%define	LINK	%1
+	%define	LINK	%1
 .x:
 %endmacro
 
