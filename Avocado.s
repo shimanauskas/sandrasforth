@@ -606,54 +606,6 @@ DEFINE	literal,	"literal"
 	dq	or.x
 	dq	exit
 
-DEFINE	skipString,	"skipString"
-	dq	enter
-	dq	string.x
-	dq	lit
-	dq	~(CELL-1)
-	dq	and.x
-	dq	lit
-	dq	CELL
-	dq	add.x
-	dq	add.x
-	dq	exit
-
-DEFINE	find,	"find"
-.begin:
-	dq	fetch.x
-	dq	lit
-	dq	~FLAG
-	dq	and.x
-	dq	dup.x
-	dq	dup.x
-
-.if:
-	dq	jump0
-	dq	.then
-
-	dq	enter
-	dq	string.x
-	dq	lit
-	dq	output
-	dq	enter
-	dq	string.x
-	dq	enter
-	dq	stringCompare.x
-
-.then:
-.while:
-	dq	jump0
-	dq	.do
-
-	dq	enter
-	dq	skipString.x
-
-	dq	jump
-	dq	.begin
-.do:
-
-	dq	exit
-
 DEFINE	if,	"if",	FLAG
 	dq	lit
 	dq	jump0
@@ -823,6 +775,54 @@ DEFINE	natural,	"natural"
 	dq	1
 	dq	add.x
 	dq	store.x
+	dq	exit
+
+DEFINE	skipString,	"skipString"
+	dq	enter
+	dq	string.x
+	dq	lit
+	dq	~(CELL-1)
+	dq	and.x
+	dq	lit
+	dq	CELL
+	dq	add.x
+	dq	add.x
+	dq	exit
+
+DEFINE	find,	"find"
+.begin:
+	dq	fetch.x
+	dq	lit
+	dq	~FLAG
+	dq	and.x
+	dq	dup.x
+	dq	dup.x
+
+.if:
+	dq	jump0
+	dq	.then
+
+	dq	enter
+	dq	string.x
+	dq	lit
+	dq	output
+	dq	enter
+	dq	string.x
+	dq	enter
+	dq	stringCompare.x
+
+.then:
+.while:
+	dq	jump0
+	dq	.do
+
+	dq	enter
+	dq	skipString.x
+
+	dq	jump
+	dq	.begin
+.do:
+
 	dq	exit
 
 ; Extract next token from the input.
