@@ -606,88 +606,6 @@ DEFINE	literal,	"literal"
 	dq	or.x
 	dq	exit
 
-DEFINE	if,	"if",	FLAG
-	dq	lit
-	dq	jump0
-	dq	enter
-	dq	compile.x
-	dq	lit
-	dq	codePointer
-	dq	fetch.x
-	dq	lit
-	dq	0
-	dq	enter
-	dq	compile.x
-	dq	exit
-
-DEFINE	else,	"else",	FLAG
-	dq	lit
-	dq	jump
-	dq	enter
-	dq	compile.x
-	dq	lit
-	dq	codePointer
-	dq	fetch.x
-	dq	push.x
-	dq	lit
-	dq	0
-	dq	enter
-	dq	compile.x
-	dq	enter
-	dq	then.x
-	dq	pull.x
-	dq	exit
-
-DEFINE	then,	"then",	FLAG
-	dq	lit
-	dq	codePointer
-	dq	fetch.x
-	dq	store.x
-	dq	exit
-
-DEFINE	begin,	"begin",	FLAG
-	dq	lit
-	dq	codePointer
-	dq	fetch.x
-	dq	exit
-
-DEFINE	while,	"while",	FLAG
-	dq	jump
-	dq	if.x
-
-DEFINE	do,	"do",	FLAG
-	dq	lit
-	dq	codePointer
-	dq	fetch.x
-	dq	lit
-	dq	CELL*2
-	dq	add.x
-	dq	store.x
-
-	dq	lit
-	dq	jump
-	dq	enter
-	dq	compile.x
-	dq	enter
-	dq	compile.x
-	dq	exit
-
-DEFINE	binary,	"binary",	FLAG
-	dq	lit
-	dq	base
-	dq	lit
-	dq	2
-	dq	store.x
-	dq	exit
-
-DEFINE	decimal,	"decimal",	FLAG
-	dq	lit
-	dq	base
-	dq	lit
-	dq	10
-	dq	store.x
-	dq	exit
-
 DEFINE	number,	"."
 	dq	dup.x
 	dq	lit
@@ -774,6 +692,88 @@ DEFINE	natural,	"natural"
 	dq	lit
 	dq	1
 	dq	add.x
+	dq	store.x
+	dq	exit
+
+DEFINE	if,	"if",	FLAG
+	dq	lit
+	dq	jump0
+	dq	enter
+	dq	compile.x
+	dq	lit
+	dq	codePointer
+	dq	fetch.x
+	dq	lit
+	dq	0
+	dq	enter
+	dq	compile.x
+	dq	exit
+
+DEFINE	else,	"else",	FLAG
+	dq	lit
+	dq	jump
+	dq	enter
+	dq	compile.x
+	dq	lit
+	dq	codePointer
+	dq	fetch.x
+	dq	push.x
+	dq	lit
+	dq	0
+	dq	enter
+	dq	compile.x
+	dq	enter
+	dq	then.x
+	dq	pull.x
+	dq	exit
+
+DEFINE	then,	"then",	FLAG
+	dq	lit
+	dq	codePointer
+	dq	fetch.x
+	dq	store.x
+	dq	exit
+
+DEFINE	begin,	"begin",	FLAG
+	dq	lit
+	dq	codePointer
+	dq	fetch.x
+	dq	exit
+
+DEFINE	while,	"while",	FLAG
+	dq	jump
+	dq	if.x
+
+DEFINE	do,	"do",	FLAG
+	dq	lit
+	dq	codePointer
+	dq	fetch.x
+	dq	lit
+	dq	CELL*2
+	dq	add.x
+	dq	store.x
+
+	dq	lit
+	dq	jump
+	dq	enter
+	dq	compile.x
+	dq	enter
+	dq	compile.x
+	dq	exit
+
+DEFINE	binary,	"binary",	FLAG
+	dq	lit
+	dq	base
+	dq	lit
+	dq	2
+	dq	store.x
+	dq	exit
+
+DEFINE	decimal,	"decimal",	FLAG
+	dq	lit
+	dq	base
+	dq	lit
+	dq	10
 	dq	store.x
 	dq	exit
 
