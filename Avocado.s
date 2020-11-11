@@ -695,6 +695,22 @@ DEFINE	natural,	"natural"
 	dq	store.x
 	dq	exit
 
+DEFINE	binary,	"binary",	FLAG
+	dq	lit
+	dq	base
+	dq	lit
+	dq	2
+	dq	store.x
+	dq	exit
+
+DEFINE	decimal,	"decimal",	FLAG
+	dq	lit
+	dq	base
+	dq	lit
+	dq	10
+	dq	store.x
+	dq	exit
+
 DEFINE	if,	"if",	FLAG
 	dq	lit
 	dq	jump0
@@ -759,22 +775,6 @@ DEFINE	do,	"do",	FLAG
 	dq	compile.x
 	dq	enter
 	dq	compile.x
-	dq	exit
-
-DEFINE	binary,	"binary",	FLAG
-	dq	lit
-	dq	base
-	dq	lit
-	dq	2
-	dq	store.x
-	dq	exit
-
-DEFINE	decimal,	"decimal",	FLAG
-	dq	lit
-	dq	base
-	dq	lit
-	dq	10
-	dq	store.x
 	dq	exit
 
 DEFINE	skipString,	"skipString"
