@@ -643,7 +643,7 @@ DEFINE	natural,	"natural"
 	dq	store.x
 
 	dq	enter
-	dq	.recurse
+	dq	naturalRecurse.x
 
 	dq	drop.x
 
@@ -654,7 +654,7 @@ DEFINE	natural,	"natural"
 	dq	write.x
 	dq	exit
 
-.recurse:
+DEFINE	naturalRecurse,	"naturalRecurse"
 	dq	lit
 	dq	0
 	dq	lit
@@ -669,7 +669,7 @@ DEFINE	natural,	"natural"
 	dq	.then
 
 	dq	enter
-	dq	.recurse
+	dq	naturalRecurse.x
 
 .then:
 	dq	lit
