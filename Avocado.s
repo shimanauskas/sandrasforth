@@ -606,54 +606,6 @@ DEFINE	literal,	"literal"
 	dq	or.x
 	dq	exit
 
-DEFINE	number,	"."
-	dq	dup.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
-
-.if:
-	dq	jump0
-	dq	.then
-
-	dq	enter
-	dq	negate.x
-
-	dq	lit
-	dq	output
-	dq	lit
-	dq	`-`
-	dq	storeByte.x
-
-	dq	lit
-	dq	output
-	dq	lit
-	dq	1
-	dq	write.x
-
-.then:
-	dq	jump
-	dq	natural.x
-
-DEFINE	natural,	"natural"
-	dq	lit
-	dq	output
-	dq	lit
-	dq	0
-	dq	store.x
-
-	dq	enter
-	dq	naturalRecurse.x
-
-	dq	drop.x
-
-	dq	lit
-	dq	output
-	dq	enter
-	dq	string.x
-	dq	write.x
-	dq	exit
-
 DEFINE	naturalRecurse,	"naturalRecurse"
 	dq	lit
 	dq	0
@@ -694,6 +646,54 @@ DEFINE	naturalRecurse,	"naturalRecurse"
 	dq	add.x
 	dq	store.x
 	dq	exit
+
+DEFINE	natural,	"natural"
+	dq	lit
+	dq	output
+	dq	lit
+	dq	0
+	dq	store.x
+
+	dq	enter
+	dq	naturalRecurse.x
+
+	dq	drop.x
+
+	dq	lit
+	dq	output
+	dq	enter
+	dq	string.x
+	dq	write.x
+	dq	exit
+
+DEFINE	number,	"."
+	dq	dup.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
+
+.if:
+	dq	jump0
+	dq	.then
+
+	dq	enter
+	dq	negate.x
+
+	dq	lit
+	dq	output
+	dq	lit
+	dq	`-`
+	dq	storeByte.x
+
+	dq	lit
+	dq	output
+	dq	lit
+	dq	1
+	dq	write.x
+
+.then:
+	dq	jump
+	dq	natural.x
 
 DEFINE	binary,	"binary",	FLAG
 	dq	lit
