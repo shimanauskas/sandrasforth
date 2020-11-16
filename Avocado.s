@@ -828,6 +828,7 @@ DEFINE	find,	"find"
 ; Extract next token from the input.
 
 DEFINE	token,	"token"
+.begin:
 	dq	lit
 	dq	inputPointer
 	dq	fetch.x
@@ -838,9 +839,9 @@ DEFINE	token,	"token"
 	dq	dup.x
 	dq	fetchByte.x
 
-.if0:
+.while:
 	dq	jump0
-	dq	.then0
+	dq	.do
 
 	dq	push.x
 
@@ -994,9 +995,9 @@ DEFINE	token,	"token"
 	dq	compile.x
 
 	dq	jump
-	dq	token.x
+	dq	.begin
+.do:
 
-.then0:
 	dq	drop.x
 
 	dq	lit
