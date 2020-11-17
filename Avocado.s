@@ -418,6 +418,35 @@ DEFINE	skipWhitespace,	"skipWhitespace"
 
 	dq	exit
 
+DEFINE	wordLength,	"wordLength"
+	dq	dup.x
+
+.begin:
+	dq	dup.x
+	dq	fetchByte.x
+	dq	lit
+	dq	`!`
+	dq	lit
+	dq	`~`
+	dq	enter
+	dq	range.x
+
+.while:
+	dq	jump0
+	dq	.do
+
+	dq	lit
+	dq	1
+	dq	add.x
+	
+	dq	jump
+	dq	.begin
+.do:
+
+	dq	over.x
+	dq	sub.x
+	dq	exit
+
 DEFINE	extractToken,	"extractToken"
 .begin:
 	dq	over.x
