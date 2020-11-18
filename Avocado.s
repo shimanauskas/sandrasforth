@@ -292,6 +292,29 @@ DEFINE	more,	"more"
 	dq	not.x
 	dq	exit
 
+DEFINE	lesser,	"lesser"
+	dq	over.x
+	dq	over.x
+	dq	enter
+	dq	less.x
+
+.if:
+	dq	jump0
+	dq	.else
+
+	dq	drop.x
+
+	dq	jump
+	dq	.then
+
+.else:
+	dq	push.x
+	dq	drop.x
+	dq	pull.x
+
+.then:
+	dq	exit
+
 DEFINE	string,	"string"
 	dq	dup.x
 	dq	push.x
