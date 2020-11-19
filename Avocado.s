@@ -325,6 +325,33 @@ DEFINE	string,	"string"
 	dq	fetch.x
 	dq	exit
 
+DEFINE	stringAdvance,	"stringAdvance"
+	dq	dup.x
+	dq	push.x
+	dq	over.x
+	dq	push.x
+	dq	push.x
+	dq	drop.x
+	dq	pull.x
+	dq	add.x
+	dq	pull.x
+	dq	pull.x
+	dq	sub.x
+	dq	dup.x
+	dq	enter
+	dq	negative.x
+
+.if:
+	dq	jump0
+	dq	.then
+
+	dq	add.x
+	dq	lit
+	dq	0
+
+.then:
+	dq	exit
+
 DEFINE	stringCompare,	"stringCompare"
 	dq	push.x
 	dq	over.x
