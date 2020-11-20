@@ -409,6 +409,59 @@ DEFINE	stringCompare,	"stringCompare"
 	dq	fetchByte.x
 	dq	exit
 
+DEFINE	stringPut,	"stringPut"	; addrBuffer, addrString, sizeString
+	dq	dup.x
+	dq	push.x
+	dq	push.x
+	dq	over.x
+	dq	pull.x
+	dq	store.x
+	dq	push.x
+	dq	lit
+	dq	CELL
+	dq	add.x
+	dq	pull.x
+	dq	pull.x
+
+.begin:
+	dq	dup.x
+
+.while:
+	dq	jump0
+	dq	.do
+
+	dq	push.x
+
+	dq	over.x
+	dq	over.x
+	dq	fetchByte.x
+	dq	storeByte.x
+
+	dq	lit
+	dq	1
+	dq	add.x
+	dq	push.x
+	dq	lit
+	dq	1
+	dq	add.x
+	dq	pull.x
+
+	dq	pull.x
+	dq	lit
+	dq	1
+	dq	sub.x
+
+	dq	jump
+	dq	.begin
+.do:
+
+	dq	drop.x
+	dq	drop.x
+	dq	lit
+	dq	0
+	dq	storeByte.x
+	dq	exit
+
 DEFINE	compile,	"compile"
 	dq	push.x
 	dq	lit
@@ -922,33 +975,25 @@ DEFINE	token,	"token"
 	dq	jump0
 	dq	.do
 
+	dq	dup.x
+	dq	push.x
 	dq	push.x
 
 	dq	lit
 	dq	output
-	dq	lit
-	dq	output+CELL
-
 	dq	pull.x
-
 	dq	enter
-	dq	extractToken.x
-
-	dq	push.x
-
+	dq	wordLength.x
 	dq	dup.x
-	dq	lit
-	dq	0
-	dq	storeByte.x
-
-	dq	lit
-	dq	output+CELL
-	dq	sub.x
-	dq	store.x
+	dq	push.x
+	dq	enter
+	dq	stringPut.x
 
 	dq	lit
 	dq	inputPointer
 	dq	pull.x
+	dq	pull.x
+	dq	add.x
 	dq	store.x
 
 	dq	lit
