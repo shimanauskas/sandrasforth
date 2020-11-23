@@ -961,10 +961,6 @@ DEFINE	find,	"find"
 
 DEFINE	token,	"token"
 .begin:
-	dq	lit
-	dq	inputPointer
-	dq	fetch.x
-
 	dq	enter
 	dq	skipWhitespace.x
 	
@@ -989,12 +985,10 @@ DEFINE	token,	"token"
 	dq	enter
 	dq	stringPut.x
 
-	dq	lit
-	dq	inputPointer
 	dq	pull.x
 	dq	pull.x
 	dq	add.x
-	dq	store.x
+	dq	push.x		; Push the input pointer
 
 	dq	lit
 	dq	last
@@ -1019,7 +1013,7 @@ DEFINE	token,	"token"
 .if2:
 	dq	jump0
 	dq	.else2
-	
+
 	dq	enter
 	dq	execute.x
 
@@ -1054,6 +1048,7 @@ DEFINE	token,	"token"
 	dq	compile.x
 
 .then2:
+	dq	pull.x		; Pull the input pointer
 	dq	jump
 	dq	token.x
 
@@ -1085,6 +1080,9 @@ DEFINE	token,	"token"
 	dq	enter
 	dq	string.x
 	dq	write.x
+
+	dq	pull.x
+	dq	drop.x		; Drop the input pointer
 	dq	exit
 
 .then4:
@@ -1108,6 +1106,9 @@ DEFINE	token,	"token"
 	dq	enter
 	dq	string.x
 	dq	write.x
+
+	dq	pull.x
+	dq	drop.x		; Drop the input pointer
 	dq	exit
 
 .then5:
@@ -1117,12 +1118,13 @@ DEFINE	token,	"token"
 	dq	compile.x
 	dq	enter
 	dq	compile.x
+	dq	pull.x		; Pull the input pointer
 
 	dq	jump
 	dq	.begin
 .do:
 
-	dq	drop.x
+	dq	drop.x		; Drop the input pointer
 
 	dq	lit
 	dq	exit
@@ -1140,9 +1142,6 @@ DEFINE	start,	"start"
 	dq	write.x
 
 	dq	lit
-	dq	inputPointer
-
-	dq	lit
 	dq	input
 	dq	lit
 	dq	PAGE
@@ -1154,8 +1153,6 @@ DEFINE	start,	"start"
 	dq	lit
 	dq	0
 	dq	storeByte.x
-
-	dq	store.x
 
 	dq	lit
 	dq	codePointer
@@ -1204,8 +1201,5 @@ code:
 	resb	PAGE
 
 codePointer:
-	resq	1
-
-inputPointer:
 	resq	1
 
