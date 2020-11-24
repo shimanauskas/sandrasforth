@@ -53,12 +53,12 @@ align	CELL
 
 section	.text
 
-global	_main
+global	start
 
-_main:
+start:
 	mov	rbp,	stack
 	xor	rax,	rax
-	mov	r12,	start.x
+	mov	r12,	main.x
 	mov	r13,	[r12]
 	jmp	r13
 
@@ -1134,7 +1134,7 @@ DEFINE	token,	"token"
 	dq	jump
 	dq	code
 
-DEFINE	start,	"start"
+DEFINE	main,	"main"
 	dq	lit
 	dq	prompt
 	dq	enter
@@ -1164,7 +1164,7 @@ DEFINE	start,	"start"
 	dq	token.x
 
 	dq	jump
-	dq	start.x
+	dq	main.x
 
 base:
 	dq	10
