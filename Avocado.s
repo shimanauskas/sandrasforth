@@ -409,20 +409,7 @@ DEFINE	stringCompare,	"stringCompare"
 	dq	fetchByte.x
 	dq	exit
 
-DEFINE	stringPut,	"stringPut"	; addrBuffer, addrString, sizeString
-	dq	dup.x
-	dq	push.x
-	dq	push.x
-	dq	over.x
-	dq	pull.x
-	dq	store.x
-	dq	push.x
-	dq	lit
-	dq	CELL
-	dq	add.x
-	dq	pull.x
-	dq	pull.x
-
+DEFINE	memoryCopy,	"memoryCopy"	; addressDestination, addressSource, size
 .begin:
 	dq	dup.x
 
@@ -454,6 +441,25 @@ DEFINE	stringPut,	"stringPut"	; addrBuffer, addrString, sizeString
 	dq	jump
 	dq	.begin
 .do:
+
+	dq	exit
+
+DEFINE	stringPut,	"stringPut"	; addrBuffer, addrString, sizeString
+	dq	dup.x
+	dq	push.x
+	dq	push.x
+	dq	over.x
+	dq	pull.x
+	dq	store.x
+	dq	push.x
+	dq	lit
+	dq	CELL
+	dq	add.x
+	dq	pull.x
+	dq	pull.x
+
+	dq	enter
+	dq	memoryCopy.x
 
 	dq	drop.x
 	dq	drop.x
