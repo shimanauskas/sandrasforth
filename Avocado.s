@@ -963,8 +963,6 @@ DEFINE	find,	"find"
 
 	dq	exit
 
-; Extract next token from the input.
-
 DEFINE	token,	"token"
 .begin:
 	dq	enter
