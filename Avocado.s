@@ -503,6 +503,10 @@ DEFINE	range,	"range"
 	dq	exit
 
 DEFINE	skipWhitespace,	"skipWhitespace"
+	dq	over.x
+	dq	dup.x
+	dq	push.x
+
 .begin:
 	dq	dup.x
 	dq	fetchByte.x
@@ -516,7 +520,7 @@ DEFINE	skipWhitespace,	"skipWhitespace"
 .while:
 	dq	jump0
 	dq	.do
-	
+
 	dq	lit
 	dq	1
 	dq	add.x
@@ -525,6 +529,10 @@ DEFINE	skipWhitespace,	"skipWhitespace"
 	dq	.begin
 .do:
 
+	dq	pull.x
+	dq	sub.x
+	dq	enter
+	dq	stringAdvance.x
 	dq	exit
 
 DEFINE	wordLength,	"wordLength"
@@ -967,32 +975,35 @@ DEFINE	token,	"token"
 .begin:
 	dq	enter
 	dq	skipWhitespace.x
-	
-	dq	dup.x
+
+	dq	over.x
 	dq	fetchByte.x
 
 .while:
 	dq	jump0
 	dq	.do
 
+	dq	over.x
+	dq	enter
+	dq	wordLength.x
 	dq	dup.x
+	dq	push.x
 	dq	push.x
 	dq	push.x
 
 	dq	lit
 	dq	output
 	dq	pull.x
-	dq	enter
-	dq	wordLength.x
-	dq	dup.x
-	dq	push.x
+	dq	pull.x
 	dq	enter
 	dq	stringPut.x
 
 	dq	pull.x
-	dq	pull.x
-	dq	add.x
-	dq	push.x		; Push the input pointer
+	dq	enter
+	dq	stringAdvance.x
+
+	dq	push.x		; Push input string size
+	dq	push.x		; Push input string pointer
 
 	dq	lit
 	dq	last
@@ -1052,7 +1063,8 @@ DEFINE	token,	"token"
 	dq	compile.x
 
 .then2:
-	dq	pull.x		; Pull the input pointer
+	dq	pull.x		; Pull input string pointer
+	dq	pull.x		; Pull input string size
 	dq	jump
 	dq	token.x
 
@@ -1085,8 +1097,10 @@ DEFINE	token,	"token"
 	dq	string.x
 	dq	write.x
 
-	dq	pull.x
-	dq	drop.x		; Drop the input pointer
+	dq	pull.x		; Pull input string pointer
+	dq	pull.x		; Pull input string size
+	dq	drop.x		; Drop input string size
+	dq	drop.x		; Drop input string pointer
 	dq	exit
 
 .then4:
@@ -1111,8 +1125,10 @@ DEFINE	token,	"token"
 	dq	string.x
 	dq	write.x
 
-	dq	pull.x
-	dq	drop.x		; Drop the input pointer
+	dq	pull.x		; Pull input string pointer
+	dq	pull.x		; Pull input string size
+	dq	drop.x		; Drop input string size
+	dq	drop.x		; Drop input string pointer
 	dq	exit
 
 .then5:
@@ -1122,13 +1138,15 @@ DEFINE	token,	"token"
 	dq	compile.x
 	dq	enter
 	dq	compile.x
-	dq	pull.x		; Pull the input pointer
+	dq	pull.x		; Pull input string pointer
+	dq	pull.x		; Pull input string size
 
 	dq	jump
 	dq	.begin
 .do:
 
-	dq	drop.x		; Drop the input pointer
+	dq	drop.x		; Drop input string size
+	dq	drop.x		; Drop input string pointer
 
 	dq	lit
 	dq	exit
@@ -1152,6 +1170,7 @@ DEFINE	main,	"main"
 
 	dq	read.x
 
+	dq	over.x
 	dq	over.x
 	dq	add.x
 	dq	lit
