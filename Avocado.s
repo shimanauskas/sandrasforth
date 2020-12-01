@@ -444,6 +444,50 @@ DEFINE	memoryCopy,	"memoryCopy"	; addressDestination, addressSource, size
 
 	dq	exit
 
+DEFINE	stringCopy, 	"stringCopy"	; stringPointerDestination, stringSizeDestination, stringPointerSource, stringSizeSource
+	; Interleave string descriptors
+	dq	push.x
+	dq	over.x
+	dq	push.x
+	dq	push.x
+	dq	drop.x
+	dq	pull.x
+	dq	pull.x
+	dq	pull.x
+
+	dq	enter
+	dq	lesser.x
+
+	; Save lesser string size for later
+	dq	dup.x
+	dq	push.x
+
+	; Save destination string pointer for later
+	dq	push.x
+	dq	push.x
+	dq	dup.x
+	dq	pull.x
+	dq	pull.x
+
+	dq	enter
+	dq	memoryCopy.x
+
+	; Terminate the destination string
+	dq	drop.x
+	dq	drop.x
+	dq	lit
+	dq	0
+	dq	storeByte.x
+
+	; Put destination string head
+	dq	lit
+	dq	CELL
+	dq	sub.x
+	dq	pull.x
+	dq	store.x
+
+	dq	exit
+
 DEFINE	stringPut,	"stringPut"	; addrBuffer, addrString, sizeString
 	dq	dup.x
 	dq	push.x
@@ -992,11 +1036,13 @@ DEFINE	token,	"token"
 	dq	push.x
 
 	dq	lit
-	dq	output
+	dq	output+CELL
+	dq	lit
+	dq	PAGE-CELL
 	dq	pull.x
 	dq	pull.x
 	dq	enter
-	dq	stringPut.x
+	dq	stringCopy.x
 
 	dq	pull.x
 	dq	enter
