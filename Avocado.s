@@ -488,30 +488,6 @@ DEFINE	stringCopy, 	"stringCopy"	; stringPointerDestination, stringSizeDestinati
 
 	dq	exit
 
-DEFINE	stringPut,	"stringPut"	; addrBuffer, addrString, sizeString
-	dq	dup.x
-	dq	push.x
-	dq	push.x
-	dq	over.x
-	dq	pull.x
-	dq	store.x
-	dq	push.x
-	dq	lit
-	dq	CELL
-	dq	add.x
-	dq	pull.x
-	dq	pull.x
-
-	dq	enter
-	dq	memoryCopy.x
-
-	dq	drop.x
-	dq	drop.x
-	dq	lit
-	dq	0
-	dq	storeByte.x
-	dq	exit
-
 DEFINE	compile,	"compile"
 	dq	push.x
 	dq	lit
@@ -606,42 +582,6 @@ DEFINE	wordLength,	"wordLength"
 
 	dq	over.x
 	dq	sub.x
-	dq	exit
-
-DEFINE	extractToken,	"extractToken"
-.begin:
-	dq	over.x
-	dq	over.x
-
-	dq	fetchByte.x
-	dq	storeByte.x
-
-	dq	lit
-	dq	1
-	dq	add.x
-	dq	push.x
-	dq	lit
-	dq	1
-	dq	add.x
-	dq	pull.x
-
-	dq	dup.x
-	dq	fetchByte.x
-	dq	lit
-	dq	`!`
-	dq	lit
-	dq	`~`
-	dq	enter
-	dq	range.x
-
-.while:
-	dq	jump0
-	dq	.do
-	
-	dq	jump
-	dq	.begin
-.do:
-
 	dq	exit
 
 DEFINE	isLiteralUnsigned,	"isLiteralUnsigned"
