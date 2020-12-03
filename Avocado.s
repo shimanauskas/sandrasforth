@@ -409,7 +409,14 @@ DEFINE	stringCompare,	"stringCompare"
 	dq	fetchByte.x
 	dq	exit
 
-DEFINE	memoryCopy,	"memoryCopy"	; addressDestination, addressSource, size
+DEFINE	memoryCopy,	"memoryCopy"	; addressDestination, addressSource, size -- addressDestination
+	; Save destination address underneath to use later as the return value
+	dq	push.x
+	dq	push.x
+	dq	dup.x
+	dq	pull.x
+	dq	pull.x
+
 .begin:
 	dq	dup.x
 
@@ -442,6 +449,9 @@ DEFINE	memoryCopy,	"memoryCopy"	; addressDestination, addressSource, size
 	dq	.begin
 .do:
 
+	dq	drop.x
+	dq	drop.x
+	dq	drop.x
 	dq	exit
 
 DEFINE	stringCopy, 	"stringCopy"	; stringPointerDestination, stringSizeDestination, stringPointerSource, stringSizeSource
@@ -462,30 +472,24 @@ DEFINE	stringCopy, 	"stringCopy"	; stringPointerDestination, stringSizeDestinati
 	dq	dup.x
 	dq	push.x
 
-	; Save destination string pointer for later
-	dq	push.x
-	dq	push.x
-	dq	dup.x
-	dq	pull.x
-	dq	pull.x
-
 	dq	enter
 	dq	memoryCopy.x
 
-	; Terminate the destination string
-	dq	drop.x
-	dq	drop.x
-	dq	lit
-	dq	0
-	dq	storeByte.x
+	dq	pull.x
 
 	; Put destination string head
+	dq	over.x
 	dq	lit
 	dq	CELL
 	dq	sub.x
-	dq	pull.x
+	dq	over.x
 	dq	store.x
 
+	; Terminate the destination string
+	dq	add.x
+	dq	lit
+	dq	0
+	dq	storeByte.x
 	dq	exit
 
 DEFINE	compile,	"compile"
