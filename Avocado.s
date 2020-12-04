@@ -454,7 +454,7 @@ DEFINE	memoryCopy,	"memoryCopy"	; addressDestination, addressSource, size -- add
 	dq	drop.x
 	dq	exit
 
-DEFINE	stringCopy, 	"stringCopy"	; stringPointerDestination, stringSizeDestination, stringPointerSource, stringSizeSource
+DEFINE	stringCopy, 	"stringCopy"	; stringPointerDestination, stringSizeDestination, stringPointerSource, stringSizeSource -- stringPointerDestination, stringSizeDestination
 	; Interleave string descriptors
 	dq	push.x
 	dq	over.x
@@ -484,6 +484,10 @@ DEFINE	stringCopy, 	"stringCopy"	; stringPointerDestination, stringSizeDestinati
 	dq	sub.x
 	dq	over.x
 	dq	store.x
+
+	; Save destination string descriptor for use as the return values
+	dq	over.x
+	dq	over.x
 
 	; Terminate the destination string
 	dq	add.x
@@ -974,8 +978,6 @@ DEFINE	token,	"token"
 	dq	over.x
 	dq	enter
 	dq	wordLength.x
-	dq	dup.x
-	dq	push.x
 	dq	push.x
 	dq	push.x
 
@@ -988,7 +990,10 @@ DEFINE	token,	"token"
 	dq	enter
 	dq	stringCopy.x
 
+	dq	push.x
+	dq	drop.x
 	dq	pull.x
+
 	dq	enter
 	dq	stringAdvance.x
 
