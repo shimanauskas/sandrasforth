@@ -454,6 +454,18 @@ DEFINE	memoryCopy,	"memoryCopy"	; addressDestination, addressSource, size -- add
 	dq	drop.x
 	dq	exit
 
+DEFINE	stringTerminate,	"stringTerminate"	; stringPointer, stringSize -- stringPointer, stringSize
+	; Save string descriptor for use as return values
+	dq	over.x
+	dq	over.x
+
+	; Terminate the string
+	dq	add.x
+	dq	lit
+	dq	0
+	dq	storeByte.x
+	dq	exit
+
 DEFINE	stringCopy, 	"stringCopy"	; stringPointerDestination, stringSizeDestination, stringPointerSource, stringSizeSource -- stringPointerDestination, stringSizeDestination
 	; Interleave string descriptors
 	dq	push.x
@@ -485,15 +497,8 @@ DEFINE	stringCopy, 	"stringCopy"	; stringPointerDestination, stringSizeDestinati
 	dq	over.x
 	dq	store.x
 
-	; Save destination string descriptor for use as the return values
-	dq	over.x
-	dq	over.x
-
-	; Terminate the destination string
-	dq	add.x
-	dq	lit
-	dq	0
-	dq	storeByte.x
+	dq	enter
+	dq	stringTerminate.x
 	dq	exit
 
 DEFINE	compile,	"compile"
@@ -1165,12 +1170,8 @@ DEFINE	main,	"main"
 
 	dq	read.x
 
-	dq	over.x
-	dq	over.x
-	dq	add.x
-	dq	lit
-	dq	0
-	dq	storeByte.x
+	dq	enter
+	dq	stringTerminate.x
 
 	dq	lit
 	dq	codePointer
