@@ -352,25 +352,31 @@ DEFINE	stringAdvance,	"stringAdvance"
 .then:
 	dq	exit
 
-DEFINE	stringCompare,	"stringCompare"
+DEFINE	stringCompare,	"stringCompare"		; string1Address, string1Size, string2Address, string2Size -- comparisonValue
+	; Interleave string descriptors
 	dq	push.x
 	dq	over.x
+	dq	push.x
+	dq	push.x
+	dq	drop.x
 	dq	pull.x
-	dq	sub.x
+	dq	pull.x
+	dq	pull.x
 
-.if:
+	dq	xor.x
+
+.if:	; If string sizes are not equal
 	dq	jump0
 	dq	.then
 
+	; Drop the string addresses and return error
 	dq	drop.x
 	dq	drop.x
+	dq	lit
+	dq	-1
 	dq	exit
 
 .then:
-	dq	push.x
-	dq	drop.x
-	dq	pull.x
-
 .begin:
 	dq	over.x
 	dq	over.x
