@@ -352,8 +352,7 @@ DEFINE	stringAdvance,	"stringAdvance"
 .then:
 	dq	exit
 
-DEFINE	stringCompare,	"stringCompare"		; string1Address, string1Size, string2Address, string2Size -- comparisonValue
-	; Interleave string descriptors
+DEFINE	interleave, "interleave"		; A, B, C, D -- A, C, B, D
 	dq	push.x
 	dq	over.x
 	dq	push.x
@@ -362,7 +361,11 @@ DEFINE	stringCompare,	"stringCompare"		; string1Address, string1Size, string2Add
 	dq	pull.x
 	dq	pull.x
 	dq	pull.x
+	dq	exit
 
+DEFINE	stringCompare,	"stringCompare"		; string1Address, string1Size, string2Address, string2Size -- comparisonValue
+	dq	enter
+	dq	interleave.x
 	dq	xor.x
 
 .if:	; If string sizes are not equal
@@ -473,16 +476,8 @@ DEFINE	stringTerminate,	"stringTerminate"	; stringPointer, stringSize -- stringP
 	dq	exit
 
 DEFINE	stringCopy, 	"stringCopy"	; stringPointerDestination, stringSizeDestination, stringPointerSource, stringSizeSource -- stringPointerDestination, stringSizeDestination
-	; Interleave string descriptors
-	dq	push.x
-	dq	over.x
-	dq	push.x
-	dq	push.x
-	dq	drop.x
-	dq	pull.x
-	dq	pull.x
-	dq	pull.x
-
+	dq	enter
+	dq	interleave.x
 	dq	enter
 	dq	lesser.x
 
