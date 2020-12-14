@@ -101,6 +101,10 @@ DEFINE	drop,	"drop"
 	DROP	1
 	NEXT
 
+DEFINE	nip,	"nip"			; A, B -- B
+	sub	rbp,	CELL
+	NEXT
+
 DEFINE	over,	"over"
 	lea	rbp,	[rbp+CELL]
 	mov	[rbp],	rax
