@@ -312,9 +312,7 @@ DEFINE	lesser,	"lesser"
 	dq	.then
 
 .else:
-	dq	push.x
-	dq	drop.x
-	dq	pull.x
+	dq	nip.x
 
 .then:
 	dq	exit
@@ -334,9 +332,7 @@ DEFINE	stringAdvance,	"stringAdvance"
 	dq	push.x
 	dq	over.x
 	dq	push.x
-	dq	push.x
-	dq	drop.x
-	dq	pull.x
+	dq	nip.x
 	dq	add.x
 	dq	pull.x
 	dq	pull.x
@@ -360,9 +356,7 @@ DEFINE	interleave, "interleave"		; A, B, C, D -- A, C, B, D
 	dq	push.x
 	dq	over.x
 	dq	push.x
-	dq	push.x
-	dq	drop.x
-	dq	pull.x
+	dq	nip.x
 	dq	pull.x
 	dq	pull.x
 	dq	exit
@@ -694,9 +688,7 @@ DEFINE	literalUnsigned,	"literalUnsigned"
 	dq	.begin
 .do:
 
-	dq	push.x
-	dq	drop.x
-	dq	pull.x
+	dq	nip.x
 	dq	pull.x
 	dq	exit
 
@@ -1000,9 +992,7 @@ DEFINE	token,	"token"
 	dq	enter
 	dq	stringCopy.x
 
-	dq	push.x
-	dq	drop.x
-	dq	pull.x
+	dq	nip.x
 
 	dq	enter
 	dq	stringAdvance.x
