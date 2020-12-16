@@ -1070,63 +1070,49 @@ DEFINE	token,	"token"
 	dq	literal.x
 	dq	dup.x
 
-	dq	lit
-	dq	0
-	dq	enter
-	dq	less.x
-
-.if4:
+.if4:	; Zero means there was no error
 	dq	jump0
 	dq	.then4
 
-	dq	drop.x
-	dq	drop.x
 	dq	lit
 	dq	output
 	dq	enter
 	dq	string.x
 	dq	write.x
+
+	dq	enter
+	dq	negative.x
+
+.if5:	; Negative means that it is neither a literal nor a defined word
+	dq	jump0
+	dq	.else5
+
 	dq	lit
 	dq	error
 	dq	enter
 	dq	string.x
 	dq	write.x
 
-	dq	pull.x		; Pull input string pointer
-	dq	pull.x		; Pull input string size
-	dq	drop.x		; Drop input string size
-	dq	drop.x		; Drop input string pointer
-	dq	exit
-
-.then4:
-	dq	lit
-	dq	0
-	dq	enter
-	dq	more.x
-
-.if5:
-	dq	jump0
+	dq	jump
 	dq	.then5
 
-	dq	drop.x
-	dq	lit
-	dq	output
-	dq	enter
-	dq	string.x
-	dq	write.x
+.else5: ; Positive but non-zero means that the literal is too big or too small
 	dq	lit
 	dq	overflow
 	dq	enter
 	dq	string.x
 	dq	write.x
 
+.then5:
 	dq	pull.x		; Pull input string pointer
 	dq	pull.x		; Pull input string size
 	dq	drop.x		; Drop input string size
 	dq	drop.x		; Drop input string pointer
+	dq	drop.x		; Drop literal's erroneous conversion
 	dq	exit
 
-.then5:
+.then4:
+	dq	drop.x
 	dq	lit
 	dq	lit
 	dq	enter
