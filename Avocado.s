@@ -1010,7 +1010,7 @@ DEFINE	token,	"token"
 
 .if1:
 	dq	jump0
-	dq	.then1
+	dq	.else1
 
 	dq	enter
 	dq	skipString.x
@@ -1058,19 +1058,17 @@ DEFINE	token,	"token"
 	dq	compile.x
 
 .then2:
-	dq	pull.x		; Pull input string pointer
-	dq	pull.x		; Pull input string size
 	dq	jump
-	dq	token.x
+	dq	.then1
 
-.then1:
-	dq	drop.x
+.else1:
+	dq	drop.x		; Drop zero link
 
 	dq	enter
 	dq	literal.x
 	dq	dup.x
 
-.if4:	; Zero means there was no error
+.if4:	; Was there an error?
 	dq	jump0
 	dq	.then4
 
@@ -1112,13 +1110,15 @@ DEFINE	token,	"token"
 	dq	exit
 
 .then4:
-	dq	drop.x
+	dq	drop.x		; Drop literal's error code
 	dq	lit
 	dq	lit
 	dq	enter
 	dq	compile.x
 	dq	enter
 	dq	compile.x
+
+.then1:
 	dq	pull.x		; Pull input string pointer
 	dq	pull.x		; Pull input string size
 
