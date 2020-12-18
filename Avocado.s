@@ -1087,9 +1087,6 @@ DEFINE	token,	"token"
 
 	dq	lit
 	dq	error
-	dq	enter
-	dq	string.x
-	dq	write.x
 
 	dq	jump
 	dq	.then5
@@ -1097,11 +1094,12 @@ DEFINE	token,	"token"
 .else5: ; Positive but non-zero means that the literal is too big or too small
 	dq	lit
 	dq	overflow
+
+.then5:
 	dq	enter
 	dq	string.x
 	dq	write.x
 
-.then5:
 	dq	pull.x		; Pull input string pointer
 	dq	pull.x		; Pull input string size
 	dq	drop.x		; Drop input string size
