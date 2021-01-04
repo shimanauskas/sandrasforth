@@ -278,8 +278,8 @@ DEFINE	less,	"less"
 
 	dq	jump
 	dq	.then	
-
 .else:
+
 	dq	sub.x
 
 .then:
@@ -310,8 +310,8 @@ DEFINE	lesser,	"lesser"
 
 	dq	jump
 	dq	.then
-
 .else:
+
 	dq	nip.x
 
 .then:
@@ -721,8 +721,8 @@ DEFINE	literal,	"literal"
 
 	dq	jump
 	dq	.then
-
 .else:
+
 	dq	lit
 	dq	1
 	dq	add.x
@@ -1029,8 +1029,8 @@ DEFINE	token,	"token"
 
 	dq	jump
 	dq	.then2
-
 .else2:
+
 	dq	dup.x
 
 	dq	lit
@@ -1060,10 +1060,9 @@ DEFINE	token,	"token"
 .then2:
 	dq	jump
 	dq	.then1
-
 .else1:
-	dq	drop.x		; Drop zero link
 
+	dq	drop.x		; Drop zero link
 	dq	enter
 	dq	literal.x
 	dq	dup.x
@@ -1090,8 +1089,8 @@ DEFINE	token,	"token"
 
 	dq	jump
 	dq	.then5
-
 .else5: ; Positive but non-zero means that the literal is too big or too small
+
 	dq	lit
 	dq	overflow
 
