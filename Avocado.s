@@ -917,7 +917,7 @@ DEFINE	do,	"do",	FLAG
 	dq	compile.x
 	dq	exit
 
-DEFINE	skipString,	"skipString"
+DEFINE	stringSkip,	"stringSkip"
 	dq	enter
 	dq	string.x
 	dq	lit
@@ -957,7 +957,7 @@ DEFINE	find,	"find"
 	dq	.do
 
 	dq	enter
-	dq	skipString.x
+	dq	stringSkip.x
 
 	dq	jump
 	dq	.begin
@@ -1013,7 +1013,7 @@ DEFINE	token,	"token"
 	dq	.else1
 
 	dq	enter
-	dq	skipString.x
+	dq	stringSkip.x
 	dq	dup.x
 	dq	fetch.x
 	dq	lit
