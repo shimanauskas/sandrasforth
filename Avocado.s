@@ -1000,12 +1000,8 @@ DEFINE	token,	"token"
 	dq	push.x		; Push input string size
 	dq	push.x		; Push input string pointer
 
-	dq	lit
-	dq	last
-
 	dq	enter
-	dq	find.x
-
+	dq	literal.x
 	dq	dup.x
 
 .if1:
@@ -1013,63 +1009,12 @@ DEFINE	token,	"token"
 	dq	.else1
 
 	dq	enter
-	dq	stringSkip.x
-	dq	dup.x
-	dq	fetch.x
-	dq	lit
-	dq	FLAG
-	dq	and.x
+	dq	negative.x
+	dq	not.x
 
 .if2:
 	dq	jump0
-	dq	.else2
-
-	dq	enter
-	dq	execute.x
-
-	dq	jump
 	dq	.then2
-.else2:
-
-	dq	dup.x
-
-	dq	lit
-	dq	execute
-	dq	enter
-	dq	less.x
-	dq	not.x
-
-.if3:
-	dq	jump0
-	dq	.then3
-
-	dq	lit
-	dq	enter
-
-	dq	enter
-	dq	compile.x
-
-.then3:
-	dq	lit
-	dq	CELL
-	dq	add.x
-
-	dq	enter
-	dq	compile.x
-
-.then2:
-	dq	jump
-	dq	.then1
-.else1:
-
-	dq	drop.x		; Drop zero link
-	dq	enter
-	dq	literal.x
-	dq	dup.x
-
-.if4:	; Was there an error?
-	dq	jump0
-	dq	.then4
 
 	dq	lit
 	dq	output
@@ -1077,24 +1022,8 @@ DEFINE	token,	"token"
 	dq	string.x
 	dq	write.x
 
-	dq	enter
-	dq	negative.x
-
-.if5:	; Negative means that it is neither a literal nor a defined word
-	dq	jump0
-	dq	.else5
-
-	dq	lit
-	dq	error
-
-	dq	jump
-	dq	.then5
-.else5: ; Positive but non-zero means that the literal is too big or too small
-
 	dq	lit
 	dq	overflow
-
-.then5:
 	dq	enter
 	dq	string.x
 	dq	write.x
@@ -1105,8 +1034,12 @@ DEFINE	token,	"token"
 	dq	drop.x		; Drop input string pointer
 	dq	drop.x		; Drop literal's erroneous conversion
 	dq	exit
+.then2:
 
-.then4:
+	dq	jump
+	dq	.then1
+.else1:
+
 	dq	drop.x		; Drop literal's error code
 	dq	lit
 	dq	lit
@@ -1115,7 +1048,93 @@ DEFINE	token,	"token"
 	dq	enter
 	dq	compile.x
 
+	dq	pull.x
+	dq	pull.x
+	dq	jump
+	dq	token.x
+
 .then1:
+	dq	drop.x		; Drop literal's erroneous conversion
+
+	dq	lit
+	dq	last
+
+	dq	enter
+	dq	find.x
+
+	dq	dup.x
+
+.if3:
+	dq	jump0
+	dq	.else3
+
+	dq	enter
+	dq	stringSkip.x
+	dq	dup.x
+	dq	fetch.x
+	dq	lit
+	dq	FLAG
+	dq	and.x
+
+.if4:
+	dq	jump0
+	dq	.else4
+
+	dq	enter
+	dq	execute.x
+
+	dq	jump
+	dq	.then4
+.else4:
+
+	dq	dup.x
+
+	dq	lit
+	dq	execute
+	dq	enter
+	dq	less.x
+	dq	not.x
+
+.if5:
+	dq	jump0
+	dq	.then5
+
+	dq	lit
+	dq	enter
+
+	dq	enter
+	dq	compile.x
+
+.then5:
+	dq	lit
+	dq	CELL
+	dq	add.x
+
+	dq	enter
+	dq	compile.x
+
+.then4:
+	dq	jump
+	dq	.then3
+.else3:
+	dq	drop.x
+	dq	lit
+	dq	output
+	dq	enter
+	dq	string.x
+	dq	write.x
+	dq	lit
+	dq	error
+	dq	enter
+	dq	string.x
+	dq	write.x
+	dq	pull.x
+	dq	pull.x
+	dq	drop.x
+	dq	drop.x
+	dq	exit
+
+.then3:
 	dq	pull.x		; Pull input string pointer
 	dq	pull.x		; Pull input string size
 
