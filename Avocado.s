@@ -598,6 +598,11 @@ DEFINE	wordLength,	"wordLength"
 
 DEFINE	isLiteralUnsigned,	"isLiteralUnsigned"
 	dq	dup.x
+	dq	fetchByte.x
+
+.if:
+	dq	jump0
+	dq	.then
 
 .begin:
 	dq	dup.x
@@ -636,14 +641,38 @@ DEFINE	isLiteralUnsigned,	"isLiteralUnsigned"
 	dq	isZero.x
 	dq	exit
 
-DEFINE	literalUnsigned,	"literalUnsigned"
+.then:
+	dq	drop.x
+	dq	lit
+	dq	0
+	dq	exit
+
+DEFINE	isLiteral,	"isLiteral"
+	dq	lit
+	dq	output+CELL
+
+	dq	dup.x
+	dq	fetchByte.x
+	dq	lit
+	dq	`-`
+	dq	sub.x
 	dq	enter
-	dq	isLiteralUnsigned.x
+	dq	isZero.x
 
 .if:
 	dq	jump0
 	dq	.then
 
+	dq	lit
+	dq	1
+	dq	add.x
+
+.then:
+	dq	enter
+	dq	isLiteralUnsigned.x
+	dq	exit
+
+DEFINE	literalUnsigned,	"literalUnsigned"
 	dq	lit
 	dq	0
 	dq	dup.x
@@ -690,11 +719,6 @@ DEFINE	literalUnsigned,	"literalUnsigned"
 
 	dq	nip.x
 	dq	pull.x
-	dq	exit
-
-.then:
-	dq	lit
-	dq	FLAG
 	dq	exit
 
 DEFINE	literal,	"literal"
@@ -1001,16 +1025,14 @@ DEFINE	token,	"token"
 	dq	push.x		; Push input string pointer
 
 	dq	enter
-	dq	literal.x
-	dq	dup.x
+	dq	isLiteral.x
 
 .if1:
 	dq	jump0
-	dq	.else1
+	dq	.then1
 
 	dq	enter
-	dq	negative.x
-	dq	not.x
+	dq	literal.x
 
 .if2:
 	dq	jump0
@@ -1034,13 +1056,8 @@ DEFINE	token,	"token"
 	dq	drop.x		; Drop input string pointer
 	dq	drop.x		; Drop literal's erroneous conversion
 	dq	exit
+
 .then2:
-
-	dq	jump
-	dq	.then1
-.else1:
-
-	dq	drop.x		; Drop literal's error code
 	dq	lit
 	dq	lit
 	dq	enter
@@ -1054,8 +1071,6 @@ DEFINE	token,	"token"
 	dq	token.x
 
 .then1:
-	dq	drop.x		; Drop literal's erroneous conversion
-
 	dq	lit
 	dq	last
 
