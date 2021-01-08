@@ -763,9 +763,6 @@ DEFINE	literal,	"literal"
 	dq	not.x
 
 .then:
-	dq	lit
-	dq	~FLAG
-	dq	and.x
 	dq	pull.x
 	dq	or.x
 	dq	exit
