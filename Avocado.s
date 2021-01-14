@@ -18,6 +18,17 @@
 ; r14	unused
 ; r15	unused
 
+;%define LINUX 1
+%define MACOS 1
+
+%ifdef	LINUX
+	%define	SYS_read 0
+	%define SYS_write 1
+%elif	MACOS
+	%define	SYS_read 0x2000003
+	%define SYS_write 0x2000004
+%endif
+
 %define	CELL	8
 %define	PAGE	1000h
 %define FLAG	8000000000000000h
@@ -209,7 +220,7 @@ DEFINE	read,	"read"
 	mov	rdx,	rax		; Count.
 	mov	rsi,	[rbp]		; Address.
 	mov	rdi,	0		; stdin
-	mov	rax,	2000003h	; sys_read
+	mov	rax,	SYS_read	; sys_read
 	syscall
 	NEXT
 
@@ -217,7 +228,7 @@ DEFINE	write,	"write"
 	mov	rdx,	rax		; Count.
 	mov	rsi,	[rbp]		; Address.
 	mov	rdi,	1		; stdout
-	mov	rax,	2000004h	; sys_write
+	mov	rax,	SYS_write	; sys_write
 	syscall
 	DROP	2
 	NEXT
