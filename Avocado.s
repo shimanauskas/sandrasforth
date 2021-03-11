@@ -113,8 +113,7 @@ DEFINE	nip,	"nip"			; A, B -- B
 	NEXT
 
 DEFINE	over,	"over"
-	lea	rbp,	[rbp+CELL]
-	mov	[rbp],	rax
+	DUP
 	mov	rax,	[rbp-CELL]
 	NEXT
 
