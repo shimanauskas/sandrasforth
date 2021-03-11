@@ -14,7 +14,7 @@
 ; r11	unused
 
 ; r12	code pointer
-; r13	code word
+; r13	unused
 ; r14	unused
 ; r15	unused
 
@@ -58,8 +58,7 @@ align	CELL
 
 %macro	NEXT	0
 	add	r12,	CELL
-	mov	r13,	[r12]
-	jmp	r13
+	jmp	[r12]
 %endmacro
 
 section	.text
@@ -70,8 +69,7 @@ start:
 	mov	rbp,	stack
 	xor	rax,	rax
 	mov	r12,	main.x
-	mov	r13,	[r12]
-	jmp	r13
+	jmp	[r12]
 
 lit:
 	DUP
@@ -83,8 +81,7 @@ enter:
 	add	r12,	CELL
 	push	r12
 	mov	r12,	[r12]
-	mov	r13,	[r12]
-	jmp	r13
+	jmp	[r12]
 
 exit:
 	pop	r12
@@ -93,8 +90,7 @@ exit:
 jump:
 	add	r12,	CELL
 	mov	r12,	[r12]
-	mov	r13,	[r12]
-	jmp	r13
+	jmp	[r12]
 
 jump0:
 	mov	rbx,	rax
