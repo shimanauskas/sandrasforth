@@ -1,6 +1,6 @@
 ; rax	top of data stack / syscall number
 ; rbx	temporary
-; rcx	unused (destroyed upon syscall?)
+; rcx	unused / destroyed upon syscall
 ; rdx	syscall
 
 ; rsi	syscall
@@ -11,7 +11,7 @@
 ; r8	syscall
 ; r9	syscall
 ; r10	syscall
-; r11	unused
+; r11	unused / destroyed upon syscall
 
 ; r12	code pointer
 ; r13	unused
