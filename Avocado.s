@@ -68,6 +68,7 @@ global	start
 start:
 	mov	rbp,	stack
 	xor	rax,	rax
+
 	mov	r12,	main.x
 	jmp	[r12]
 
