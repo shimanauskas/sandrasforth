@@ -1231,4 +1231,4 @@ code:
 	resb PAGE
 
 codePointer:
-	resq 1
+	resb CELL
