@@ -18,20 +18,20 @@
 ; r14	unused
 ; r15	unused
 
-%include	"platform.s"
+%include "platform.s"
 
-%ifdef	LINUX
-	%define	SYS_read 0
+%ifdef LINUX
+	%define SYS_read 0
 	%define SYS_write 1
-%elif	MACOS
-	%define	SYS_read 0x2000003
+%elif MACOS
+	%define SYS_read 0x2000003
 	%define SYS_write 0x2000004
 %endif
 
-%define	CELL	8
-%define	PAGE	1000h
-%define FLAG	8000000000000000h
-%define	LINK	0
+%define CELL 8
+%define PAGE 1000h
+%define FLAG 8000000000000000h
+%define LINK 0
 
 %macro	STRING	2
 align	CELL
