@@ -18,8 +18,7 @@
 ; r14	unused
 ; r15	unused
 
-;%define LINUX 1
-%define MACOS 1
+%include	"platform.s"
 
 %ifdef	LINUX
 	%define	SYS_read 0
