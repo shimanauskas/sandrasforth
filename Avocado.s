@@ -1210,25 +1210,25 @@ base:
 last:
 	dq	LINK
 
-STRING	error, ` ?\n`
-STRING	overflow, ` !\n`
-STRING	prompt, `# `
+STRING error, ` ?\n`
+STRING overflow, ` !\n`
+STRING prompt, `# `
 
-section	.bss
+section .bss
 
-align	PAGE
+align PAGE
 
 stack:
-	resb	PAGE
+	resb PAGE
 
 input:
-	resb	PAGE
+	resb PAGE
 
 output:
-	resb	PAGE
+	resb PAGE
 
 code:
-	resb	PAGE
+	resb PAGE
 
 codePointer:
-	resq	1
+	resq 1
