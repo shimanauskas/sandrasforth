@@ -1207,12 +1207,12 @@ DEFINE	main,	"main"
 base:
 	dq	10
 
+last:
+	dq	LINK
+
 STRING	error, ` ?\n`
 STRING	overflow, ` !\n`
 STRING	prompt, `# `
-
-last:
-	dq	LINK
 
 section	.bss
 
