@@ -33,35 +33,35 @@
 %define FLAG 8000000000000000h
 %define LINK 0
 
-%macro	STRING	2
-align	CELL
+%macro STRING 2
+align CELL
 %1:
-	%strlen	LENGTH	%2
-	dq	LENGTH
-	db	%2,	0
-	align	CELL
+	%strlen LENGTH %2
+	dq LENGTH
+	db %2, 0
+align CELL
 %endmacro
 
-%macro	DEFINE	2-3 0
-	STRING	%1,	%2
-	dq	LINK+%3
-	%define	LINK	%1
+%macro DEFINE 2-3 0
+	STRING %1, %2
+	dq LINK+%3
+	%define LINK %1
 .x:
 %endmacro
 
-%macro	DUP	0
-	add	rbp,	CELL
-	mov	[rbp],	rax
+%macro DUP 0
+	add rbp, CELL
+	mov [rbp], rax
 %endmacro
 
-%macro	DROP	1
-	mov	rax,	[rbp-CELL*(%1-1)]
-	sub	rbp,	CELL*%1
+%macro DROP 1
+	mov rax, [rbp-CELL*(%1-1)]
+	sub rbp, CELL*%1
 %endmacro
 
-%macro	NEXT	0
-	add	r12,	CELL
-	jmp	[r12]
+%macro NEXT 0
+	add r12, CELL
+	jmp [r12]
 %endmacro
 
 section	.text
