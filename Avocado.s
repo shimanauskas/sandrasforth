@@ -34,13 +34,17 @@
 %define FLAG	8000000000000000h
 %define	LINK	0
 
-%macro	DEFINE	2-3 0
+%macro	STRING	2
 align	CELL
 %1:
 	%strlen	LENGTH	%2
 	dq	LENGTH
 	db	%2,	0
 	align	CELL
+%endmacro
+
+%macro	DEFINE	2-3 0
+	STRING	%1,	%2
 	dq	LINK+%3
 	%define	LINK	%1
 .x:
@@ -1204,17 +1208,9 @@ DEFINE	main,	"main"
 base:
 	dq	10
 
-error:
-	dq	3
-	dq	` ?\n`
-
-overflow:
-	dq	3
-	dq	` !\n`
-
-prompt:
-	dq	2
-	dq	`# `
+STRING	error, ` ?\n`
+STRING	overflow, ` !\n`
+STRING	prompt, `# `
 
 last:
 	dq	LINK
