@@ -767,6 +767,11 @@ DEFINE	literal,	"literal"
 	dq	push.x
 	dq	enter
 	dq	negate.x
+
+	dq	lit		;
+	dq	FLAG		;
+	dq	or.x		;
+
 	dq	dup.x
 	dq	enter
 	dq	negative.x
@@ -849,6 +854,10 @@ DEFINE	number,	"."
 
 	dq	enter
 	dq	negate.x
+
+	dq	lit
+	dq	~FLAG
+	dq	and.x
 
 	dq	lit
 	dq	output
