@@ -949,7 +949,7 @@ DEFINE token, "token"
 	dq dup.x
 
 .if3:
-	dq jump0, .else3
+	dq jump0, .then3
 
 	dq enter, stringSkip.x
 	dq dup.x
@@ -985,8 +985,9 @@ DEFINE token, "token"
 	dq enter, compile.x
 
 .then4:
-	dq jump, .then3
-.else3:
+	dq jump, .x
+
+.then3:
 	dq drop.x
 	dq lit, output
 	dq enter, string.x
@@ -996,8 +997,6 @@ DEFINE token, "token"
 	dq write.x
 	dq exit
 
-.then3:
-	dq jump, .begin
 .do:
 
 	dq lit, exit
