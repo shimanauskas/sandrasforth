@@ -64,172 +64,172 @@ align CELL
 	jmp [r12]
 %endmacro
 
-section	.text
+section .text
 
-global	start
+global start
 
 start:
-	mov	rbp,	stack
-	xor	rax,	rax
+	mov rbp, stack
+	xor rax, rax
 
-	mov	r12,	main.x
-	jmp	[r12]
+	mov r12, main.x
+	jmp [r12]
 
 lit:
 	DUP
-	add	r12,	CELL
-	mov	rax,	[r12]
+	add r12, CELL
+	mov rax, [r12]
 	NEXT
 
 enter:
-	add	r12,	CELL
-	push	r12
-	mov	r12,	[r12]
-	jmp	[r12]
+	add r12, CELL
+	push r12
+	mov r12, [r12]
+	jmp [r12]
 
 exit:
-	pop	r12
+	pop r12
 	NEXT
 
 jump:
-	add	r12,	CELL
-	mov	r12,	[r12]
-	jmp	[r12]
+	add r12, CELL
+	mov r12, [r12]
+	jmp [r12]
 
 jump0:
-	mov	rbx,	rax
-	DROP	1
-	test	rbx,	rbx
-	jz	jump
-	add	r12,	CELL
+	mov rbx, rax
+	DROP 1
+	test rbx, rbx
+	jz jump
+	add r12, CELL
 	NEXT
 
-DEFINE	dup,	"dup"
+DEFINE dup, "dup"
 	DUP
 	NEXT
 
-DEFINE	drop,	"drop"
-	DROP	1
+DEFINE drop, "drop"
+	DROP 1
 	NEXT
 
-DEFINE	nip,	"nip"			; A, B -- B
-	sub	rbp,	CELL
+DEFINE nip, "nip"		; A, B -- B
+	sub rbp, CELL
 	NEXT
 
-DEFINE	over,	"over"
+DEFINE over, "over"
 	DUP
-	mov	rax,	[rbp-CELL]
+	mov rax, [rbp-CELL]
 	NEXT
 
-DEFINE	push,	"push"
-	push	rax
-	DROP	1
+DEFINE push, "push"
+	push rax
+	DROP 1
 	NEXT
 
-DEFINE	pull,	"pull"
+DEFINE pull, "pull"
 	DUP
-	pop	rax
+	pop rax
 	NEXT
 
-DEFINE	shiftLeft,	"shiftLeft"
-	shl	rax,	1
+DEFINE shiftLeft, "shiftLeft"
+	shl rax, 1
 	NEXT
 
-DEFINE	shiftRight,	"shiftRight"
-	shr	rax,	1
+DEFINE shiftRight, "shiftRight"
+	shr rax, 1
 	NEXT
 
-DEFINE	rotateLeft,	"rotateLeft"
-	rol	rax,	1
+DEFINE rotateLeft, "rotateLeft"
+	rol rax, 1
 	NEXT
 
-DEFINE	rotateRight,	"rotateRight"
-	ror	rax,	1
+DEFINE rotateRight, "rotateRight"
+	ror rax, 1
 	NEXT
 
-DEFINE	not,	"!"
-	not	rax
+DEFINE not, "!"
+	not rax
 	NEXT
 
-DEFINE	and,	"and"
-	and	[rbp],	rax
-	DROP	1
+DEFINE and, "and"
+	and [rbp], rax
+	DROP 1
 	NEXT
 
-DEFINE	or,	"or"
-	or	[rbp],	rax
-	DROP	1
+DEFINE or, "or"
+	or [rbp], rax
+	DROP 1
 	NEXT
 
-DEFINE	xor,	"xor"
-	xor	[rbp],	rax
-	DROP	1
+DEFINE xor, "xor"
+	xor [rbp], rax
+	DROP 1
 	NEXT
 
-DEFINE	add,	"+"
-	add	[rbp],	rax
-	DROP	1
+DEFINE add, "+"
+	add [rbp], rax
+	DROP 1
 	NEXT
 
-DEFINE	sub,	"-"
-	sub	[rbp],	rax
-	DROP	1
+DEFINE sub, "-"
+	sub [rbp], rax
+	DROP 1
 	NEXT
 
-DEFINE	mul,	"*"
-	mov	rbx,	rax
-	DROP	1
-	mul	rbx
+DEFINE mul, "*"
+	mov rbx, rax
+	DROP 1
+	mul rbx
 	DUP
-	mov	rax,	rdx
+	mov rax, rdx
 	NEXT
 
-DEFINE	div,	"/"
-	mov	rbx,	rax
-	DROP	1
-	mov	rdx,	rax
-	DROP	1
-	div	rbx
+DEFINE div, "/"
+	mov rbx, rax
+	DROP 1
+	mov rdx, rax
+	DROP 1
+	div rbx
 	DUP
-	mov	rax,	rdx
+	mov rax, rdx
 	NEXT
 
-DEFINE	fetch,	"fetch"
-	mov	rax,	[rax]
+DEFINE fetch, "fetch"
+	mov rax, [rax]
 	NEXT
 
-DEFINE	store,	"store"
-	mov	rbx,	[rbp]
-	mov	[rbx],	rax
-	DROP	2
+DEFINE store, "store"
+	mov rbx, [rbp]
+	mov [rbx], rax
+	DROP 2
 	NEXT
 
-DEFINE	fetchByte,	"fetchByte"
-	mov	al,	[rax]
-	and	rax,	0xFF
-	NEXT	
-
-DEFINE	storeByte,	"storeByte"
-	mov	rbx,	[rbp]
-	mov	[rbx],	al
-	DROP	2
+DEFINE fetchByte, "fetchByte"
+	mov al, [rax]
+	and rax, 0xFF
 	NEXT
 
-DEFINE	read,	"read"
-	mov	rdx,	rax		; Count.
-	mov	rsi,	[rbp]		; Address.
-	mov	rdi,	0		; stdin
-	mov	rax,	SYS_read	; sys_read
+DEFINE storeByte, "storeByte"
+	mov rbx, [rbp]
+	mov [rbx], al
+	DROP 2
+	NEXT
+
+DEFINE read, "read"
+	mov rdx, rax		; Count.
+	mov rsi, [rbp]		; Address.
+	mov rdi, 0		; stdin
+	mov rax, SYS_read	; sys_read
 	syscall
 	NEXT
 
-DEFINE	write,	"write"
-	mov	rdx,	rax		; Count.
-	mov	rsi,	[rbp]		; Address.
-	mov	rdi,	1		; stdout
-	mov	rax,	SYS_write	; sys_write
+DEFINE write, "write"
+	mov rdx, rax		; Count.
+	mov rsi, [rbp]		; Address.
+	mov rdi, 1		; stdout
+	mov rax, SYS_write	; sys_write
 	syscall
-	DROP	2
+	DROP 2
 	NEXT
 
 section	.data
