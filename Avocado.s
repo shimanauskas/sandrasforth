@@ -983,7 +983,7 @@ DEFINE token, "token"
 	dq enter, compile.x
 
 .then4:
-	dq jump, .x
+	dq jump, token.x
 
 .then3:
 	dq drop.x
