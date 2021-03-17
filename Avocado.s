@@ -271,9 +271,8 @@ DEFINE negative, "negative"
 	dq lit
 	dq FLAG
 	dq and.x
-	dq enter
+	dq jump
 	dq bool.x
-	dq exit
 
 DEFINE less, "less"
 	dq over.x
@@ -295,9 +294,8 @@ DEFINE less, "less"
 	dq sub.x
 
 .then:
-	dq enter
+	dq jump
 	dq negative.x
-	dq exit
 
 DEFINE more, "more"
 	dq lit
@@ -508,9 +506,8 @@ DEFINE stringCopy, "stringCopy"			; stringPointerDestination, stringSizeDestinat
 	dq over.x
 	dq store.x
 
-	dq enter
+	dq jump
 	dq stringTerminate.x
-	dq exit
 
 DEFINE compile, "compile"
 	dq push.x
@@ -575,9 +572,8 @@ DEFINE skipWhitespace, "skipWhitespace"
 
 	dq pull.x
 	dq sub.x
-	dq enter
+	dq jump
 	dq stringAdvance.x
-	dq exit
 
 DEFINE wordLength, "wordLength"
 	dq dup.x
@@ -649,9 +645,8 @@ DEFINE isLiteralUnsigned, "isLiteralUnsigned"
 .do:
 
 	dq fetchByte.x
-	dq enter
+	dq jump
 	dq isZero.x
-	dq exit
 
 .then:
 	dq drop.x
@@ -680,9 +675,8 @@ DEFINE isLiteral, "isLiteral"
 	dq add.x
 
 .then:
-	dq enter
+	dq jump
 	dq isLiteralUnsigned.x
-	dq exit
 
 DEFINE literalUnsigned, "literalUnsigned"
 	dq lit
@@ -903,9 +897,8 @@ DEFINE if, "if", FLAG
 	dq fetch.x
 	dq lit
 	dq 0
-	dq enter
+	dq jump
 	dq compile.x
-	dq exit
 
 DEFINE else, "else", FLAG
 	dq lit
@@ -955,9 +948,8 @@ DEFINE do, "do", FLAG
 	dq jump
 	dq enter
 	dq compile.x
-	dq enter
+	dq jump
 	dq compile.x
-	dq exit
 
 DEFINE stringSkip, "stringSkip"
 	dq enter
