@@ -242,8 +242,7 @@ DEFINE execute, "execute"
 
 DEFINE negate, "negate"
 	dq not.x
-	dq lit
-	dq 1
+	dq lit, 1
 	dq add.x
 	dq exit
 
@@ -251,8 +250,7 @@ DEFINE bool, "bool"
 	dq dup.x
 
 .if:
-	dq jump0
-	dq .then
+	dq jump0, .then
 
 	dq dup.x
 	dq xor.x
@@ -268,58 +266,47 @@ DEFINE isZero, "isZero"
 	dq exit
 
 DEFINE negative, "negative"
-	dq lit
-	dq FLAG
+	dq lit, FLAG
 	dq and.x
-	dq jump
-	dq bool.x
+	dq jump, bool.x
 
 DEFINE less, "less"
 	dq over.x
 	dq over.x
 	dq xor.x
-	dq enter
-	dq negative.x
+	dq enter, negative.x
 
 .if:
-	dq jump0
-	dq .else
+	dq jump0, .else
 
 	dq drop.x
 
-	dq jump
-	dq .then
+	dq jump, .then
 .else:
 
 	dq sub.x
 
 .then:
-	dq jump
-	dq negative.x
+	dq jump, negative.x
 
 DEFINE more, "more"
-	dq lit
-	dq 1
+	dq lit, 1
 	dq add.x
-	dq enter
-	dq less.x
+	dq enter, less.x
 	dq not.x
 	dq exit
 
 DEFINE lesser, "lesser"
 	dq over.x
 	dq over.x
-	dq enter
-	dq less.x
+	dq enter, less.x
 
 .if:
-	dq jump0
-	dq .else
+	dq jump0, .else
 
 	dq drop.x
 
-	dq jump
-	dq .then
+	dq jump, .then
 .else:
 
 	dq nip.x
@@ -330,8 +317,7 @@ DEFINE lesser, "lesser"
 DEFINE string, "string"
 	dq dup.x
 	dq push.x
-	dq lit
-	dq CELL
+	dq lit, CELL
 	dq add.x
 	dq pull.x
 	dq fetch.x
@@ -348,16 +334,13 @@ DEFINE stringAdvance, "stringAdvance"
 	dq pull.x
 	dq sub.x
 	dq dup.x
-	dq enter
-	dq negative.x
+	dq enter, negative.x
 
 .if:
-	dq jump0
-	dq .then
+	dq jump0, .then
 
 	dq add.x
-	dq lit
-	dq 0
+	dq lit, 0
 
 .then:
 	dq exit
@@ -377,14 +360,12 @@ DEFINE stringCompare, "stringCompare"	; string1Address, string1Size, string2Addr
 	dq xor.x
 
 .if:	; If string sizes are not equal
-	dq jump0
-	dq .then
+	dq jump0, .then
 
 	; Drop the string addresses and return error
 	dq drop.x
 	dq drop.x
-	dq lit
-	dq -1
+	dq lit, -1
 	dq exit
 
 .then:
@@ -397,29 +378,24 @@ DEFINE stringCompare, "stringCompare"	; string1Address, string1Size, string2Addr
 	dq pull.x
 
 	dq xor.x
-	dq enter
-	dq isZero.x
+	dq enter, isZero.x
 
 	dq over.x
 	dq fetchByte.x
 	dq and.x
 
 .while:
-	dq jump0
-	dq .do
+	dq jump0, .do
 
-	dq lit
-	dq 1
+	dq lit, 1
 	dq add.x
 	dq push.x
 
-	dq lit
-	dq 1
+	dq lit, 1
 	dq add.x
 	dq pull.x
 
-	dq jump
-	dq .begin
+	dq jump, .begin
 .do:
 
 	dq drop.x
@@ -438,8 +414,7 @@ DEFINE memoryCopy, "memoryCopy"		; addressDestination, addressSource, size -- ad
 	dq dup.x
 
 .while:
-	dq jump0
-	dq .do
+	dq jump0, .do
 
 	dq push.x
 
@@ -448,22 +423,18 @@ DEFINE memoryCopy, "memoryCopy"		; addressDestination, addressSource, size -- ad
 	dq fetchByte.x
 	dq storeByte.x
 
-	dq lit
-	dq 1
+	dq lit, 1
 	dq add.x
 	dq push.x
-	dq lit
-	dq 1
+	dq lit, 1
 	dq add.x
 	dq pull.x
 
 	dq pull.x
-	dq lit
-	dq 1
+	dq lit, 1
 	dq sub.x
 
-	dq jump
-	dq .begin
+	dq jump, .begin
 .do:
 
 	dq drop.x
@@ -478,52 +449,42 @@ DEFINE stringTerminate, "stringTerminate"	; stringPointer, stringSize -- stringP
 
 	; Terminate the string
 	dq add.x
-	dq lit
-	dq 0
+	dq lit, 0
 	dq storeByte.x
 	dq exit
 
 DEFINE stringCopy, "stringCopy"			; stringPointerDestination, stringSizeDestination, stringPointerSource, stringSizeSource -- stringPointerDestination, stringSizeDestination
-	dq enter
-	dq interleave.x
-	dq enter
-	dq lesser.x
+	dq enter, interleave.x
+	dq enter, lesser.x
 
 	; Save lesser string size for later
 	dq dup.x
 	dq push.x
 
-	dq enter
-	dq memoryCopy.x
+	dq enter, memoryCopy.x
 
 	dq pull.x
 
 	; Put destination string head
 	dq over.x
-	dq lit
-	dq CELL
+	dq lit, CELL
 	dq sub.x
 	dq over.x
 	dq store.x
 
-	dq jump
-	dq stringTerminate.x
+	dq jump, stringTerminate.x
 
 DEFINE compile, "compile"
 	dq push.x
-	dq lit
-	dq codePointer
+	dq lit, codePointer
 	dq fetch.x
 	dq pull.x
 	dq store.x
 
-	dq lit
-	dq codePointer
-	dq lit
-	dq codePointer
+	dq lit, codePointer
+	dq lit, codePointer
 	dq fetch.x
-	dq lit
-	dq CELL
+	dq lit, CELL
 	dq add.x
 	dq store.x
 	dq exit
@@ -551,29 +512,22 @@ DEFINE skipWhitespace, "skipWhitespace"
 .begin:
 	dq dup.x
 	dq fetchByte.x
-	dq lit
-	dq 1
-	dq lit
-	dq 20h
-	dq enter
-	dq range.x
+	dq lit, 1
+	dq lit, 20h
+	dq enter, range.x
 
 .while:
-	dq jump0
-	dq .do
+	dq jump0, .do
 
-	dq lit
-	dq 1
+	dq lit, 1
 	dq add.x
 
-	dq jump
-	dq .begin
+	dq jump, .begin
 .do:
 
 	dq pull.x
 	dq sub.x
-	dq jump
-	dq stringAdvance.x
+	dq jump, stringAdvance.x
 
 DEFINE wordLength, "wordLength"
 	dq dup.x
@@ -581,23 +535,17 @@ DEFINE wordLength, "wordLength"
 .begin:
 	dq dup.x
 	dq fetchByte.x
-	dq lit
-	dq `!`
-	dq lit
-	dq `~`
-	dq enter
-	dq range.x
+	dq lit, `!`
+	dq lit, `~`
+	dq enter, range.x
 
 .while:
-	dq jump0
-	dq .do
+	dq jump0, .do
 
-	dq lit
-	dq 1
+	dq lit, 1
 	dq add.x
 
-	dq jump
-	dq .begin
+	dq jump, .begin
 .do:
 
 	dq over.x
@@ -609,78 +557,60 @@ DEFINE isLiteralUnsigned, "isLiteralUnsigned"
 	dq fetchByte.x
 
 .if:
-	dq jump0
-	dq .then
+	dq jump0, .then
 
 .begin:
 	dq dup.x
 	dq fetchByte.x
 
 	dq dup.x
-	dq lit
-	dq `0`
+	dq lit, `0`
 	dq sub.x
-	dq lit
-	dq 0
-	dq lit
-	dq base
+	dq lit, 0
+	dq lit, base
 	dq fetch.x
-	dq lit
-	dq 1
+	dq lit, 1
 	dq sub.x
-	dq enter
-	dq range.x
+	dq enter, range.x
 	dq and.x
 
 .while:
-	dq jump0
-	dq .do
+	dq jump0, .do
 
-	dq lit
-	dq 1
+	dq lit, 1
 	dq add.x
 
-	dq jump
-	dq .begin
+	dq jump, .begin
 .do:
 
 	dq fetchByte.x
-	dq jump
-	dq isZero.x
+	dq jump, isZero.x
 
 .then:
 	dq drop.x
-	dq lit
-	dq 0
+	dq lit, 0
 	dq exit
 
 DEFINE isLiteral, "isLiteral"
-	dq lit
-	dq output+CELL
+	dq lit, output+CELL
 
 	dq dup.x
 	dq fetchByte.x
-	dq lit
-	dq `-`
+	dq lit, `-`
 	dq sub.x
-	dq enter
-	dq isZero.x
+	dq enter, isZero.x
 
 .if:
-	dq jump0
-	dq .then
+	dq jump0, .then
 
-	dq lit
-	dq 1
+	dq lit, 1
 	dq add.x
 
 .then:
-	dq jump
-	dq isLiteralUnsigned.x
+	dq jump, isLiteralUnsigned.x
 
 DEFINE literalUnsigned, "literalUnsigned"
-	dq lit
-	dq 0
+	dq lit, 0
 	dq dup.x
 	dq push.x
 
@@ -690,16 +620,13 @@ DEFINE literalUnsigned, "literalUnsigned"
 	dq pull.x
 	dq dup.x
 	dq push.x
-	dq enter
-	dq isZero.x
+	dq enter, isZero.x
 	dq and.x
 
 .while:
-	dq jump0
-	dq .do
+	dq jump0, .do
 
-	dq lit
-	dq base
+	dq lit, base
 	dq fetch.x
 	dq mul.x
 	dq pull.x
@@ -708,19 +635,16 @@ DEFINE literalUnsigned, "literalUnsigned"
 
 	dq over.x
 	dq fetchByte.x
-	dq lit
-	dq `0`
+	dq lit, `0`
 	dq sub.x
 	dq add.x
 
 	dq push.x
-	dq lit
-	dq 1
+	dq lit, 1
 	dq add.x
 	dq pull.x
 
-	dq jump
-	dq .begin
+	dq jump, .begin
 .do:
 
 	dq nip.x
@@ -728,49 +652,38 @@ DEFINE literalUnsigned, "literalUnsigned"
 	dq exit
 
 DEFINE literal, "literal"
-	dq lit
-	dq output+CELL
+	dq lit, output+CELL
 
 	dq dup.x
 	dq fetchByte.x
-	dq lit
-	dq `-`
+	dq lit, `-`
 	dq sub.x
 
 .if:
-	dq jump0
-	dq .else
+	dq jump0, .else
 
-	dq enter
-	dq literalUnsigned.x
+	dq enter, literalUnsigned.x
 
 	dq push.x
 	dq dup.x
-	dq enter
-	dq negative.x
+	dq enter, negative.x
 
-	dq jump
-	dq .then
+	dq jump, .then
 .else:
 
-	dq lit
-	dq 1
+	dq lit, 1
 	dq add.x
 
-	dq enter
-	dq literalUnsigned.x
+	dq enter, literalUnsigned.x
 
 	dq push.x
-	dq enter
-	dq negate.x
+	dq enter, negate.x
 
-	dq lit
-	dq FLAG
+	dq lit, FLAG
 	dq or.x
 
 	dq dup.x
-	dq enter
-	dq negative.x
+	dq enter, negative.x
 	dq not.x
 
 .then:
@@ -779,186 +692,137 @@ DEFINE literal, "literal"
 	dq exit
 
 DEFINE naturalRecurse, "naturalRecurse"
-	dq lit
-	dq 0
-	dq lit
-	dq base
+	dq lit, 0
+	dq lit, base
 	dq fetch.x
 	dq div.x
 	dq push.x
 	dq dup.x
 
 .if:
-	dq jump0
-	dq .then
+	dq jump0, .then
 
-	dq enter
-	dq naturalRecurse.x
+	dq enter, naturalRecurse.x
 
 .then:
-	dq lit
-	dq output+CELL
-	dq lit
-	dq output
+	dq lit, output+CELL
+	dq lit, output
 	dq fetch.x
 	dq add.x
 
 	dq pull.x
-	dq lit
-	dq `0`
+	dq lit, `0`
 	dq add.x
 	dq storeByte.x
 
-	dq lit
-	dq output
+	dq lit, output
 	dq dup.x
 	dq fetch.x
-	dq lit
-	dq 1
+	dq lit, 1
 	dq add.x
 	dq store.x
 	dq exit
 
 DEFINE natural, "natural"
-	dq lit
-	dq output
-	dq lit
-	dq 0
+	dq lit, output
+	dq lit, 0
 	dq store.x
 
-	dq enter
-	dq naturalRecurse.x
+	dq enter, naturalRecurse.x
 
 	dq drop.x
 
-	dq lit
-	dq output
-	dq enter
-	dq string.x
+	dq lit, output
+	dq enter, string.x
 	dq write.x
 	dq exit
 
 DEFINE number, "."
 	dq dup.x
-	dq lit
-	dq FLAG
+	dq lit, FLAG
 	dq and.x
 
 .if:
-	dq jump0
-	dq .then
+	dq jump0, .then
 
-	dq enter
-	dq negate.x
+	dq enter, negate.x
 
-	dq lit
-	dq ~FLAG
+	dq lit, ~FLAG
 	dq and.x
 
-	dq lit
-	dq output
-	dq lit
-	dq `-`
+	dq lit, output
+	dq lit, `-`
 	dq storeByte.x
 
-	dq lit
-	dq output
-	dq lit
-	dq 1
+	dq lit, output
+	dq lit, 1
 	dq write.x
 
 .then:
-	dq jump
-	dq natural.x
+	dq jump, natural.x
 
 DEFINE binary, "binary", FLAG
-	dq lit
-	dq base
-	dq lit
-	dq 2
+	dq lit, base
+	dq lit, 2
 	dq store.x
 	dq exit
 
 DEFINE decimal, "decimal", FLAG
-	dq lit
-	dq base
-	dq lit
-	dq 10
+	dq lit, base
+	dq lit, 10
 	dq store.x
 	dq exit
 
 DEFINE if, "if", FLAG
-	dq lit
-	dq jump0
-	dq enter
-	dq compile.x
-	dq lit
-	dq codePointer
+	dq lit, jump0
+	dq enter, compile.x
+	dq lit, codePointer
 	dq fetch.x
-	dq lit
-	dq 0
-	dq jump
-	dq compile.x
+	dq lit, 0
+	dq jump, compile.x
 
 DEFINE else, "else", FLAG
-	dq lit
-	dq jump
-	dq enter
-	dq compile.x
-	dq lit
-	dq codePointer
+	dq lit, jump
+	dq enter, compile.x
+	dq lit, codePointer
 	dq fetch.x
 	dq push.x
-	dq lit
-	dq 0
-	dq enter
-	dq compile.x
-	dq enter
-	dq then.x
+	dq lit, 0
+	dq enter, compile.x
+	dq enter, then.x
 	dq pull.x
 	dq exit
 
 DEFINE then, "then", FLAG
-	dq lit
-	dq codePointer
+	dq lit, codePointer
 	dq fetch.x
 	dq store.x
 	dq exit
 
 DEFINE begin, "begin", FLAG
-	dq lit
-	dq codePointer
+	dq lit, codePointer
 	dq fetch.x
 	dq exit
 
 DEFINE while, "while", FLAG
-	dq jump
-	dq if.x
+	dq jump, if.x
 
 DEFINE do, "do", FLAG
-	dq lit
-	dq codePointer
+	dq lit, codePointer
 	dq fetch.x
-	dq lit
-	dq CELL*2
+	dq lit, CELL*2
 	dq add.x
 	dq store.x
 
-	dq lit
-	dq jump
-	dq enter
-	dq compile.x
-	dq jump
-	dq compile.x
+	dq lit, jump
+	dq enter, compile.x
+	dq jump, compile.x
 
 DEFINE stringSkip, "stringSkip"
-	dq enter
-	dq string.x
-	dq lit
-	dq ~(CELL-1)
+	dq enter, string.x
+	dq lit, ~(CELL-1)
 	dq and.x
-	dq lit
-	dq CELL
+	dq lit, CELL
 	dq add.x
 	dq add.x
 	dq exit
@@ -966,98 +830,74 @@ DEFINE stringSkip, "stringSkip"
 DEFINE find, "find"
 .begin:
 	dq fetch.x
-	dq lit
-	dq ~FLAG
+	dq lit, ~FLAG
 	dq and.x
 	dq dup.x
 	dq dup.x
 
 .if:
-	dq jump0
-	dq .then
+	dq jump0, .then
 
-	dq enter
-	dq string.x
-	dq lit
-	dq output
-	dq enter
-	dq string.x
-	dq enter
-	dq stringCompare.x
+	dq enter, string.x
+	dq lit, output
+	dq enter, string.x
+	dq enter, stringCompare.x
 
 .then:
 .while:
-	dq jump0
-	dq .do
+	dq jump0, .do
 
-	dq enter
-	dq stringSkip.x
+	dq enter, stringSkip.x
 
-	dq jump
-	dq .begin
+	dq jump, .begin
 .do:
 
 	dq exit
 
 DEFINE token, "token"
 .begin:
-	dq enter
-	dq skipWhitespace.x
+	dq enter, skipWhitespace.x
 
 	dq over.x
 	dq fetchByte.x
 
 .while:
-	dq jump0
-	dq .do
+	dq jump0, .do
 
 	dq over.x
-	dq enter
-	dq wordLength.x
+	dq enter, wordLength.x
 	dq push.x
 	dq push.x
 
-	dq lit
-	dq output+CELL
-	dq lit
-	dq PAGE-CELL
+	dq lit, output+CELL
+	dq lit, PAGE-CELL
 	dq pull.x
 	dq pull.x
-	dq enter
-	dq stringCopy.x
+	dq enter, stringCopy.x
 
 	dq nip.x
 
-	dq enter
-	dq stringAdvance.x
+	dq enter, stringAdvance.x
 
 	dq push.x		; Push input string size
 	dq push.x		; Push input string pointer
 
-	dq enter
-	dq isLiteral.x
+	dq enter, isLiteral.x
 
 .if1:
-	dq jump0
-	dq .then1
+	dq jump0, .then1
 
-	dq enter
-	dq literal.x
+	dq enter, literal.x
 
 .if2:
-	dq jump0
-	dq .then2
+	dq jump0, .then2
 
-	dq lit
-	dq output
-	dq enter
-	dq string.x
+	dq lit, output
+	dq enter, string.x
 	dq write.x
 
-	dq lit
-	dq overflow
-	dq enter
-	dq string.x
+	dq lit, overflow
+	dq enter, string.x
 	dq write.x
 
 	dq pull.x		; Pull input string pointer
@@ -1068,90 +908,66 @@ DEFINE token, "token"
 	dq exit
 
 .then2:
-	dq lit
-	dq lit
-	dq enter
-	dq compile.x
-	dq enter
-	dq compile.x
+	dq lit, lit
+	dq enter, compile.x
+	dq enter, compile.x
 
 	dq pull.x
 	dq pull.x
-	dq jump
-	dq token.x
+	dq jump, token.x
 
 .then1:
-	dq lit
-	dq last
+	dq lit, last
 
-	dq enter
-	dq find.x
+	dq enter, find.x
 
 	dq dup.x
 
 .if3:
-	dq jump0
-	dq .else3
+	dq jump0, .else3
 
-	dq enter
-	dq stringSkip.x
+	dq enter, stringSkip.x
 	dq dup.x
 	dq fetch.x
-	dq lit
-	dq FLAG
+	dq lit, FLAG
 	dq and.x
 
 .if4:
-	dq jump0
-	dq .else4
+	dq jump0, .else4
 
-	dq enter
-	dq execute.x
+	dq enter, execute.x
 
-	dq jump
-	dq .then4
+	dq jump, .then4
 .else4:
 
 	dq dup.x
 
-	dq lit
-	dq execute
-	dq enter
-	dq less.x
+	dq lit, execute
+	dq enter, less.x
 	dq not.x
 
 .if5:
-	dq jump0
-	dq .then5
+	dq jump0, .then5
 
-	dq lit
-	dq enter
+	dq lit, enter
 
-	dq enter
-	dq compile.x
+	dq enter, compile.x
 
 .then5:
-	dq lit
-	dq CELL
+	dq lit, CELL
 	dq add.x
 
-	dq enter
-	dq compile.x
+	dq enter, compile.x
 
 .then4:
-	dq jump
-	dq .then3
+	dq jump, .then3
 .else3:
 	dq drop.x
-	dq lit
-	dq output
-	dq enter
-	dq string.x
+	dq lit, output
+	dq enter, string.x
 	dq write.x
-	dq lit
-	dq error
-	dq enter
-	dq string.x
+	dq lit, error
+	dq enter, string.x
 	dq write.x
 	dq pull.x
 	dq pull.x
@@ -1163,46 +979,34 @@ DEFINE token, "token"
 	dq pull.x		; Pull input string pointer
 	dq pull.x		; Pull input string size
 
-	dq jump
-	dq .begin
+	dq jump, .begin
 .do:
 
 	dq drop.x		; Drop input string size
 	dq drop.x		; Drop input string pointer
 
-	dq lit
-	dq exit
-	dq enter
-	dq compile.x
+	dq lit, exit
+	dq enter, compile.x
 
-	dq jump
-	dq code
+	dq jump, code
 
 DEFINE main, "main"
-	dq lit
-	dq prompt
-	dq enter
-	dq string.x
+	dq lit, prompt
+	dq enter, string.x
 	dq write.x
 
-	dq lit
-	dq input
-	dq lit
-	dq PAGE
+	dq lit, input
+	dq lit, PAGE
 
 	dq read.x
 
-	dq enter
-	dq stringTerminate.x
+	dq enter, stringTerminate.x
 
-	dq lit
-	dq codePointer
-	dq lit
-	dq code
+	dq lit, codePointer
+	dq lit, code
 	dq store.x
 
-	dq enter
-	dq token.x
+	dq enter, token.x
 
 	dq jump
 	dq main.x
