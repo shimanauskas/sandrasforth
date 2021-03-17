@@ -770,9 +770,9 @@ DEFINE literal, "literal"
 	dq enter
 	dq negate.x
 
-	dq lit			;
-	dq FLAG			;
-	dq or.x			;
+	dq lit
+	dq FLAG
+	dq or.x
 
 	dq dup.x
 	dq enter
