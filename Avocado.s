@@ -856,13 +856,37 @@ DEFINE find, "find"
 
 DEFINE token, "token"
 .begin:
+	dq lit, inputPointer
+	dq fetch.x
+	dq lit, inputLength
+	dq fetch.x
+
 	dq enter, skipWhitespace.x
 
 	dq over.x
 	dq fetchByte.x
+	dq push.x
+
+	dq push.x		; Push input string size
+	dq push.x		; Push input string pointer
+
+	dq lit, inputPointer
+	dq pull.x
+	dq store.x
+
+	dq lit, inputLength
+	dq pull.x
+	dq store.x
+
+	dq pull.x
 
 .while:
 	dq jump0, .do
+
+	dq lit, inputPointer
+	dq fetch.x
+	dq lit, inputLength
+	dq fetch.x
 
 	dq over.x
 	dq enter, wordLength.x
@@ -882,6 +906,14 @@ DEFINE token, "token"
 	dq push.x		; Push input string size
 	dq push.x		; Push input string pointer
 
+	dq lit, inputPointer
+	dq pull.x
+	dq store.x
+
+	dq lit, inputLength
+	dq pull.x
+	dq store.x
+
 	dq enter, isLiteral.x
 
 .if1:
@@ -900,10 +932,6 @@ DEFINE token, "token"
 	dq enter, string.x
 	dq write.x
 
-	dq pull.x		; Pull input string pointer
-	dq pull.x		; Pull input string size
-	dq drop.x		; Drop input string size
-	dq drop.x		; Drop input string pointer
 	dq drop.x		; Drop literal's erroneous conversion
 	dq exit
 
@@ -911,9 +939,6 @@ DEFINE token, "token"
 	dq lit, lit
 	dq enter, compile.x
 	dq enter, compile.x
-
-	dq pull.x
-	dq pull.x
 	dq jump, token.x
 
 .then1:
@@ -969,21 +994,11 @@ DEFINE token, "token"
 	dq lit, error
 	dq enter, string.x
 	dq write.x
-	dq pull.x
-	dq pull.x
-	dq drop.x
-	dq drop.x
 	dq exit
 
 .then3:
-	dq pull.x		; Pull input string pointer
-	dq pull.x		; Pull input string size
-
 	dq jump, .begin
 .do:
-
-	dq drop.x		; Drop input string size
-	dq drop.x		; Drop input string pointer
 
 	dq lit, exit
 	dq enter, compile.x
@@ -1001,6 +1016,17 @@ DEFINE main, "main"
 	dq read.x
 
 	dq enter, stringTerminate.x
+
+	dq push.x
+	dq push.x
+
+	dq lit, inputPointer
+	dq pull.x
+	dq store.x
+
+	dq lit, inputLength
+	dq pull.x
+	dq store.x
 
 	dq lit, codePointer
 	dq lit, code
@@ -1039,3 +1065,10 @@ code:
 
 codePointer:
 	resb CELL
+
+inputPointer:
+	resb CELL
+
+inputLength:
+	resb CELL
+
