@@ -18,6 +18,8 @@
 ; r14	unused
 ; r15	unused
 
+; Our stacks grow downward.
+
 %include "platform.s"
 
 %ifdef LINUX
@@ -50,13 +52,13 @@ align CELL
 %endmacro
 
 %macro DUP 0
-	add rbp, CELL
+	sub rbp, CELL
 	mov [rbp], rax
 %endmacro
 
 %macro DROP 1
-	mov rax, [rbp-CELL*(%1-1)]
-	sub rbp, CELL*%1
+	mov rax, [rbp+CELL*(%1-1)]
+	add rbp, CELL*%1
 %endmacro
 
 %macro NEXT 0
@@ -113,12 +115,12 @@ DEFINE drop, "drop"
 	NEXT
 
 DEFINE nip, "nip"		; A, B -- B
-	sub rbp, CELL
+	add rbp, CELL
 	NEXT
 
 DEFINE over, "over"
 	DUP
-	mov rax, [rbp-CELL]
+	mov rax, [rbp+CELL]
 	NEXT
 
 DEFINE push, "push"
@@ -1227,8 +1229,8 @@ section .bss
 
 align PAGE
 
-stack:
 	resb PAGE
+stack:
 
 input:
 	resb PAGE
