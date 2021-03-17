@@ -1002,7 +1002,6 @@ DEFINE token, "token"
 
 	dq lit, exit
 	dq enter, compile.x
-
 	dq jump, code
 
 DEFINE main, "main"
@@ -1071,4 +1070,3 @@ inputPointer:
 
 inputLength:
 	resb CELL
-
