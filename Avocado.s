@@ -975,13 +975,11 @@ DEFINE token, "token"
 	dq jump0, .then5
 
 	dq lit, enter
-
 	dq enter, compile.x
 
 .then5:
 	dq lit, CELL
 	dq add.x
-
 	dq enter, compile.x
 
 .then4:
@@ -998,7 +996,6 @@ DEFINE token, "token"
 	dq exit
 
 .do:
-
 	dq lit, exit
 	dq enter, compile.x
 	dq jump, code
