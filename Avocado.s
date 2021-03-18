@@ -323,28 +323,6 @@ DEFINE string, "string"
 	dq fetch.x
 	dq exit
 
-DEFINE stringAdvance, "stringAdvance"
-	dq dup.x
-	dq push.x
-	dq over.x
-	dq push.x
-	dq nip.x
-	dq add.x
-	dq pull.x
-	dq pull.x
-	dq sub.x
-	dq dup.x
-	dq enter, negative.x
-
-.if:
-	dq jump0, .then
-
-	dq add.x
-	dq lit, 0
-
-.then:
-	dq exit
-
 DEFINE interleave, "interleave"		; A, B, C, D -- A, C, B, D
 	dq push.x
 	dq over.x
@@ -402,46 +380,6 @@ DEFINE stringCompare, "stringCompare"	; string1Address, string1Size, string2Addr
 	dq fetchByte.x
 	dq exit
 
-DEFINE memoryCopy, "memoryCopy"		; addressDestination, addressSource, size -- addressDestination
-	; Save destination address underneath to use later as the return value
-	dq push.x
-	dq push.x
-	dq dup.x
-	dq pull.x
-	dq pull.x
-
-.begin:
-	dq dup.x
-
-.while:
-	dq jump0, .do
-
-	dq push.x
-
-	dq over.x
-	dq over.x
-	dq fetchByte.x
-	dq storeByte.x
-
-	dq lit, 1
-	dq add.x
-	dq push.x
-	dq lit, 1
-	dq add.x
-	dq pull.x
-
-	dq pull.x
-	dq lit, 1
-	dq sub.x
-
-	dq jump, .begin
-.do:
-
-	dq drop.x
-	dq drop.x
-	dq drop.x
-	dq exit
-
 DEFINE stringTerminate, "stringTerminate"	; stringPointer, stringSize -- stringPointer, stringSize
 	; Save string descriptor for use as return values
 	dq over.x
@@ -452,27 +390,6 @@ DEFINE stringTerminate, "stringTerminate"	; stringPointer, stringSize -- stringP
 	dq lit, 0
 	dq storeByte.x
 	dq exit
-
-DEFINE stringCopy, "stringCopy"			; stringPointerDestination, stringSizeDestination, stringPointerSource, stringSizeSource -- stringPointerDestination, stringSizeDestination
-	dq enter, interleave.x
-	dq enter, lesser.x
-
-	; Save lesser string size for later
-	dq dup.x
-	dq push.x
-
-	dq enter, memoryCopy.x
-
-	dq pull.x
-
-	; Put destination string head
-	dq over.x
-	dq lit, CELL
-	dq sub.x
-	dq over.x
-	dq store.x
-
-	dq jump, stringTerminate.x
 
 DEFINE compile, "compile"
 	dq push.x
@@ -505,10 +422,6 @@ DEFINE range, "range"
 	dq exit
 
 DEFINE skipWhitespace, "skipWhitespace"
-	dq over.x
-	dq dup.x
-	dq push.x
-
 .begin:
 	dq dup.x
 	dq fetchByte.x
@@ -525,16 +438,18 @@ DEFINE skipWhitespace, "skipWhitespace"
 	dq jump, .begin
 .do:
 
-	dq pull.x
-	dq sub.x
-	dq jump, stringAdvance.x
+	dq exit
 
-DEFINE wordLength, "wordLength"
-	dq dup.x
+DEFINE extractToken, "extractToken"
+	dq push.x
+	dq lit, output+CELL
+	dq pull.x
 
 .begin:
-	dq dup.x
+	dq over.x
+	dq over.x
 	dq fetchByte.x
+	dq dup.x
 	dq lit, `!`
 	dq lit, `~`
 	dq enter, range.x
@@ -542,14 +457,33 @@ DEFINE wordLength, "wordLength"
 .while:
 	dq jump0, .do
 
+	dq storeByte.x
 	dq lit, 1
 	dq add.x
+	dq push.x
+	dq lit, 1
+	dq add.x
+	dq pull.x
 
 	dq jump, .begin
 .do:
-
-	dq over.x
+	dq drop.x
+	dq drop.x
+	dq push.x
+	dq lit, output+CELL
 	dq sub.x
+	dq push.x
+	dq lit, output
+	dq pull.x
+	dq store.x
+	dq pull.x
+
+	dq lit, output
+	dq enter, string.x
+	dq enter, stringTerminate.x
+	dq drop.x
+	dq drop.x
+
 	dq exit
 
 DEFINE isLiteralUnsigned, "isLiteralUnsigned"
@@ -857,61 +791,26 @@ DEFINE find, "find"
 DEFINE token, "token"
 .begin:
 	dq lit, inputPointer
-	dq fetch.x
-	dq lit, inputLength
+	dq lit, inputPointer
 	dq fetch.x
 
 	dq enter, skipWhitespace.x
 
-	dq over.x
+	dq dup.x
 	dq fetchByte.x
+
 	dq push.x
-
-	dq push.x		; Push input string size
-	dq push.x		; Push input string pointer
-
-	dq lit, inputPointer
-	dq pull.x
 	dq store.x
-
-	dq lit, inputLength
-	dq pull.x
-	dq store.x
-
 	dq pull.x
 
 .while:
 	dq jump0, .do
 
 	dq lit, inputPointer
-	dq fetch.x
-	dq lit, inputLength
-	dq fetch.x
-
-	dq over.x
-	dq enter, wordLength.x
-	dq push.x
-	dq push.x
-
-	dq lit, output+CELL
-	dq lit, PAGE-CELL
-	dq pull.x
-	dq pull.x
-	dq enter, stringCopy.x
-
-	dq nip.x
-
-	dq enter, stringAdvance.x
-
-	dq push.x		; Push input string size
-	dq push.x		; Push input string pointer
-
 	dq lit, inputPointer
-	dq pull.x
-	dq store.x
+	dq fetch.x
 
-	dq lit, inputLength
-	dq pull.x
+	dq enter, extractToken.x
 	dq store.x
 
 	dq enter, isLiteral.x
@@ -1005,6 +904,8 @@ DEFINE main, "main"
 	dq enter, string.x
 	dq write.x
 
+	dq lit, inputPointer
+
 	dq lit, input
 	dq lit, PAGE
 
@@ -1012,15 +913,7 @@ DEFINE main, "main"
 
 	dq enter, stringTerminate.x
 
-	dq push.x
-	dq push.x
-
-	dq lit, inputPointer
-	dq pull.x
-	dq store.x
-
-	dq lit, inputLength
-	dq pull.x
+	dq drop.x
 	dq store.x
 
 	dq lit, codePointer
@@ -1062,7 +955,4 @@ codePointer:
 	resb CELL
 
 inputPointer:
-	resb CELL
-
-inputLength:
 	resb CELL
