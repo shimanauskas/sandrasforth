@@ -445,19 +445,12 @@ DEFINE extractToken, "extractToken"
 	dq lit, output+CELL
 	dq pull.x
 
-.begin:
+.repeat:
 	dq over.x
 	dq over.x
 	dq fetchByte.x
-	dq dup.x
-	dq lit, `!`
-	dq lit, `~`
-	dq enter, range.x
-
-.while:
-	dq jump0, .do
-
 	dq storeByte.x
+
 	dq lit, 1
 	dq add.x
 	dq push.x
@@ -465,10 +458,16 @@ DEFINE extractToken, "extractToken"
 	dq add.x
 	dq pull.x
 
-	dq jump, .begin
-.do:
-	dq drop.x
-	dq drop.x
+	dq dup.x
+	dq fetchByte.x
+	dq lit, `!`
+	dq lit, `~`
+	dq enter, range.x
+	dq not.x
+
+.until:
+	dq jump0, .repeat
+
 	dq push.x
 	dq lit, output+CELL
 	dq sub.x
