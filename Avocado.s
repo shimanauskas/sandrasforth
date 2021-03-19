@@ -380,12 +380,7 @@ DEFINE stringCompare, "stringCompare"	; string1Address, string1Size, string2Addr
 	dq fetchByte.x
 	dq exit
 
-DEFINE stringTerminate, "stringTerminate"	; stringPointer, stringSize -- stringPointer, stringSize
-	; Save string descriptor for use as return values
-	dq over.x
-	dq over.x
-
-	; Terminate the string
+DEFINE stringTerminate, "stringTerminate"	; stringPointer, stringSize --
 	dq add.x
 	dq lit, 0
 	dq storeByte.x
@@ -479,11 +474,7 @@ DEFINE extractToken, "extractToken"
 
 	dq lit, output
 	dq enter, string.x
-	dq enter, stringTerminate.x
-	dq drop.x
-	dq drop.x
-
-	dq exit
+	dq jump, stringTerminate.x
 
 DEFINE isLiteralUnsigned, "isLiteralUnsigned"
 	dq dup.x
@@ -910,9 +901,9 @@ DEFINE main, "main"
 
 	dq read.x
 
+	dq over.x
 	dq enter, stringTerminate.x
 
-	dq drop.x
 	dq store.x
 
 	dq lit, codePointer
