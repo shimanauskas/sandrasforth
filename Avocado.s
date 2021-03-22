@@ -779,7 +779,6 @@ DEFINE find, "find"
 	dq exit
 
 DEFINE token, "token"
-.begin:
 	dq lit, inputPointer
 	dq lit, inputPointer
 	dq fetch.x
@@ -793,8 +792,8 @@ DEFINE token, "token"
 	dq store.x
 	dq pull.x
 
-.while:
-	dq jump0, .do
+.if1:
+	dq jump0, .then1
 
 	dq lit, inputPointer
 	dq lit, inputPointer
@@ -805,13 +804,13 @@ DEFINE token, "token"
 
 	dq enter, isLiteral.x
 
-.if1:
-	dq jump0, .then1
+.if2:
+	dq jump0, .then2
 
 	dq enter, literal.x
 
-.if2:
-	dq jump0, .then2
+.if3:
+	dq jump0, .then3
 
 	dq lit, output
 	dq enter, string.x
@@ -824,21 +823,21 @@ DEFINE token, "token"
 	dq drop.x		; Drop literal's erroneous conversion
 	dq exit
 
-.then2:
+.then3:
 	dq lit, lit
 	dq enter, compile.x
 	dq enter, compile.x
 	dq jump, token.x
 
-.then1:
+.then2:
 	dq lit, last
 
 	dq enter, find.x
 
 	dq dup.x
 
-.if3:
-	dq jump0, .then3
+.if4:
+	dq jump0, .then4
 
 	dq enter, stringSkip.x
 	dq dup.x
@@ -846,13 +845,13 @@ DEFINE token, "token"
 	dq lit, FLAG
 	dq and.x
 
-.if4:
-	dq jump0, .else4
+.if5:
+	dq jump0, .else5
 
 	dq enter, execute.x
 
-	dq jump, .then4
-.else4:
+	dq jump, .then5
+.else5:
 
 	dq dup.x
 
@@ -860,21 +859,21 @@ DEFINE token, "token"
 	dq enter, less.x
 	dq not.x
 
-.if5:
-	dq jump0, .then5
+.if6:
+	dq jump0, .then6
 
 	dq lit, enter
 	dq enter, compile.x
 
-.then5:
+.then6:
 	dq lit, CELL
 	dq add.x
 	dq enter, compile.x
 
-.then4:
+.then5:
 	dq jump, token.x
 
-.then3:
+.then4:
 	dq drop.x
 	dq lit, output
 	dq enter, string.x
@@ -884,7 +883,7 @@ DEFINE token, "token"
 	dq write.x
 	dq exit
 
-.do:
+.then1:
 	dq lit, exit
 	dq enter, compile.x
 	dq jump, code
