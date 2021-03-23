@@ -812,6 +812,8 @@ DEFINE token, "token"
 .if3:
 	dq jump0, .then3
 
+	dq drop.x		; Drop literal's erroneous conversion
+
 	dq lit, output
 	dq enter, string.x
 	dq write.x
@@ -820,7 +822,6 @@ DEFINE token, "token"
 	dq enter, string.x
 	dq write.x
 
-	dq drop.x		; Drop literal's erroneous conversion
 	dq exit
 
 .then3:
