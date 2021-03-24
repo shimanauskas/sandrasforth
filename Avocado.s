@@ -876,12 +876,15 @@ DEFINE token, "token"
 
 .then4:
 	dq drop.x
+
 	dq lit, output
 	dq enter, string.x
 	dq write.x
+
 	dq lit, error
 	dq enter, string.x
 	dq write.x
+
 	dq exit
 
 .then1:
