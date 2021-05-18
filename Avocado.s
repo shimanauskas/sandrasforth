@@ -822,7 +822,7 @@ DEFINE token, "token"
 	dq enter, string.x
 	dq write.x
 
-	dq exit
+	dq jump, main.x
 
 .then3:
 	dq lit, lit
@@ -885,10 +885,12 @@ DEFINE token, "token"
 	dq enter, string.x
 	dq write.x
 
-	dq exit
+	dq jump, main.x
 
 .then1:
-	dq lit, exit
+	dq lit, jump
+	dq enter, compile.x
+	dq lit, main.x
 	dq enter, compile.x
 	dq jump, code
 
@@ -913,10 +915,7 @@ DEFINE main, "main"
 	dq lit, code
 	dq store.x
 
-	dq enter, token.x
-
-	dq jump
-	dq main.x
+	dq jump, token.x
 
 base:
 	dq 10
