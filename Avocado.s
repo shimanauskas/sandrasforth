@@ -888,11 +888,10 @@ DEFINE token, "token"
 	dq jump, main.x
 
 .then1:
-	dq lit, jump
+	dq lit, exit
 	dq enter, compile.x
-	dq lit, main.x
-	dq enter, compile.x
-	dq jump, code
+	dq enter, code
+	dq jump, main.x
 
 DEFINE main, "main"
 	dq lit, prompt
