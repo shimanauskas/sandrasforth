@@ -533,30 +533,61 @@ DEFINE isLiteral, "isLiteral"
 .then:
 	dq jump, isLiteralUnsigned.x
 
-DEFINE literalUnsigned, "literalUnsigned"
-	dq lit, 0
+DEFINE literal, "literal"
+	dq lit, 1		; Sign
+
+	dq lit, output+CELL
 	dq dup.x
+	dq fetchByte.x
+	dq lit, `-`
+	dq sub.x
+	dq enter, isZero.x
+
+.if1:
+	dq jump0, .then1
+
+	dq lit, 1
+	dq add.x
+
+	dq push.x
+	dq enter, negate.x	; Negate sign
+	dq pull.x
+
+.then1:
+	dq lit, 0
 	dq push.x
 
 .begin:
-	dq over.x
-	dq fetchByte.x
-	dq pull.x
 	dq dup.x
-	dq push.x
-	dq enter, isZero.x
-	dq and.x
+	dq fetchByte.x
 
 .while:
 	dq jump0, .do
 
+	dq pull.x
 	dq lit, base
 	dq fetch.x
 	dq mul.x
-	dq pull.x
-	dq drop.x
-	dq push.x
 
+.if2:
+	dq jump0, .then2
+
+	dq drop.x		; Drop erroneous conversion
+	dq drop.x		; Drop token buffer address
+
+	; Report an overflow error restart from the beginning
+
+	dq lit, output
+	dq enter, string.x
+	dq write.x
+
+	dq lit, overflow
+	dq enter, string.x
+	dq write.x
+
+	dq jump, main.x
+
+.then2:
 	dq over.x
 	dq fetchByte.x
 	dq lit, `0`
@@ -566,54 +597,20 @@ DEFINE literalUnsigned, "literalUnsigned"
 	dq push.x
 	dq lit, 1
 	dq add.x
-	dq pull.x
 
 	dq jump, .begin
 .do:
 
-	dq nip.x
-	dq pull.x
-	dq exit
+	dq drop.x		; Drop token buffer address
+	dq pull.x		; Pull literal
 
-DEFINE literal, "literal"
-	dq lit, output+CELL
+	dq mul.x		; Multiply by sign
+	dq drop.x
 
-	dq dup.x
-	dq fetchByte.x
-	dq lit, `-`
-	dq sub.x
-
-.if:
-	dq jump0, .else
-
-	dq enter, literalUnsigned.x
-
-	dq push.x
-	dq dup.x
-	dq enter, negative.x
-
-	dq jump, .then
-.else:
-
-	dq lit, 1
-	dq add.x
-
-	dq enter, literalUnsigned.x
-
-	dq push.x
-	dq enter, negate.x
-
-	dq lit, FLAG
-	dq or.x
-
-	dq dup.x
-	dq enter, negative.x
-	dq not.x
-
-.then:
-	dq pull.x
-	dq or.x
-	dq exit
+	dq lit, lit
+	dq enter, compile.x
+	dq enter, compile.x
+	dq jump, token.x	; Take care of the next token
 
 DEFINE naturalRecurse, "naturalRecurse"
 	dq lit, 0
@@ -803,34 +800,9 @@ DEFINE token, "token"
 	dq store.x
 
 	dq enter, isLiteral.x
+	dq enter, isZero.x
+	dq jump0, literal.x
 
-.if2:
-	dq jump0, .then2
-
-	dq enter, literal.x
-
-.if3:
-	dq jump0, .then3
-
-	dq drop.x		; Drop literal's erroneous conversion
-
-	dq lit, output
-	dq enter, string.x
-	dq write.x
-
-	dq lit, overflow
-	dq enter, string.x
-	dq write.x
-
-	dq jump, main.x
-
-.then3:
-	dq lit, lit
-	dq enter, compile.x
-	dq enter, compile.x
-	dq jump, token.x
-
-.then2:
 	dq lit, last
 
 	dq enter, find.x
