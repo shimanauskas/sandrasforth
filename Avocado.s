@@ -804,9 +804,7 @@ DEFINE token, "token"
 	dq jump0, literal.x
 
 	dq lit, last
-
 	dq enter, find.x
-
 	dq dup.x
 
 .if4:
