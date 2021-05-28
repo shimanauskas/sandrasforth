@@ -575,7 +575,7 @@ DEFINE literal, "literal"
 	dq drop.x		; Drop erroneous conversion
 	dq drop.x		; Drop token buffer address
 
-	; Report an overflow error restart from the beginning
+	; Report an overflow error and restart from the beginning
 
 	dq lit, output
 	dq enter, string.x
