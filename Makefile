@@ -1,12 +1,12 @@
-Avocado-Linux: Avocado.s
+avocado-linux: avocado.s
 	echo "%define LINUX 1" > platform.s
-	nasm -o Avocado-Linux.o -f elf64 Avocado.s
-	ld -o Avocado-Linux -e start -static Avocado-Linux.o
+	nasm -o avocado-linux.o -f elf64 avocado.s
+	ld -o avocado-linux -e start -static avocado-linux.o
 
-Avocado-macOS: Avocado.s
+avocado-macos: avocado.s
 	echo "%define MACOS 1" > platform.s
-	nasm -o Avocado-macOS.o -f macho64 Avocado.s
-	ld -o Avocado-macOS -e start -static Avocado-macOS.o
+	nasm -o avocado-macos.o -f macho64 avocado.s
+	ld -o avocado-macos -e start -static avocado-macos.o
 
 clean:
-	rm -f Avocado-Linux Avocado-macOS Avocado-Linux.o Avocado-macOS.o platform.s
+	rm -f avocado-linux avocado-macos avocado-linux.o avocado-macos.o platform.s
