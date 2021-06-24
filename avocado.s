@@ -25,9 +25,11 @@
 %ifdef LINUX
 	%define SYS_read 0
 	%define SYS_write 1
+	%define SYS_exit 60
 %elif MACOS
 	%define SYS_read 0x2000003
 	%define SYS_write 0x2000004
+	%define SYS_exit 0x2000001
 %endif
 
 %define CELL 8
@@ -233,6 +235,11 @@ DEFINE write, "write"
 	syscall
 	DROP 2
 	NEXT
+
+DEFINE bye, "bye"
+	xor rdi, rdi
+	mov rax, SYS_exit
+	syscall
 
 section .data
 
