@@ -675,9 +675,6 @@ DEFINE number, "."
 
 	dq enter, negate.x
 
-	dq lit, ~FLAG
-	dq and.x
-
 	dq lit, output
 	dq lit, `-`
 	dq storeByte.x
