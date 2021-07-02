@@ -60,7 +60,7 @@ align CELL
 
 %macro DROP 1
 	mov rax, [rbp+CELL*(%1-1)]
-	add rbp, CELL*%1
+	lea rbp, [rbp+CELL*%1]
 %endmacro
 
 %macro NEXT 0
@@ -101,9 +101,8 @@ jump:
 	jmp [r12]
 
 jump0:
-	mov rbx, rax
+	test rax, rax
 	DROP 1
-	test rbx, rbx
 	jz jump
 	add r12, CELL
 	NEXT
@@ -240,6 +239,8 @@ DEFINE bye, "bye"
 	xor rdi, rdi
 	mov rax, SYS_exit
 	syscall
+
+codeEnd:
 
 section .data
 
