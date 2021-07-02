@@ -355,11 +355,9 @@ DEFINE stringCompare, "stringCompare"	; string1Address, string1Size, string2Addr
 .then:
 .begin:
 	dq over.x
+	dq fetchByte.x
 	dq over.x
 	dq fetchByte.x
-	dq push.x
-	dq fetchByte.x
-	dq pull.x
 
 	dq xor.x
 	dq enter, isZero.x
