@@ -667,8 +667,7 @@ DEFINE natural, "natural"
 
 DEFINE number, "."
 	dq dup.x
-	dq lit, FLAG
-	dq and.x
+	dq enter, negative.x
 
 .if:
 	dq jump0, .then
@@ -817,8 +816,7 @@ DEFINE token, "token"
 	dq enter, stringSkip.x
 	dq dup.x
 	dq fetch.x
-	dq lit, FLAG
-	dq and.x
+	dq enter, negative.x		; Check for immediate flag.
 
 .if5:
 	dq jump0, .else5
