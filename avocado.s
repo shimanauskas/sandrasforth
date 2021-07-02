@@ -240,8 +240,6 @@ DEFINE bye, "bye"
 	mov rax, SYS_exit
 	syscall
 
-codeEnd:
-
 section .data
 
 DEFINE execute, "execute"
