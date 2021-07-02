@@ -302,24 +302,6 @@ DEFINE more, "more"
 	dq not.x
 	dq exit
 
-DEFINE lesser, "lesser"
-	dq over.x
-	dq over.x
-	dq enter, less.x
-
-.if:
-	dq jump0, .else
-
-	dq drop.x
-
-	dq jump, .then
-.else:
-
-	dq nip.x
-
-.then:
-	dq exit
-
 DEFINE string, "string"
 	dq dup.x
 	dq push.x
