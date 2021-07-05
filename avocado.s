@@ -189,12 +189,11 @@ DEFINE mul, "*"
 
 DEFINE div, "/"
 	mov rbx, rax
-	DROP 1
-	mov rdx, rax
-	DROP 1
+	mov rdx, [rbp]
+	lea rbp, [rbp+CELL]
+	mov rax, [rbp]
 	div rbx
-	DUP
-	mov rax, rdx
+	mov [rbp], rdx
 	NEXT
 
 DEFINE fetch, "fetch"
@@ -603,23 +602,31 @@ DEFINE naturalRecurse, "naturalRecurse"
 	dq lit, base
 	dq fetch.x
 	dq div.x
-	dq push.x
 	dq dup.x
 
-.if:
-	dq jump0, .then
+.if1:
+	dq jump0, .then1
+
+	dq dup.x
+
+.then1:
+.if2:
+	dq jump0, .then2
 
 	dq enter, naturalRecurse.x
 
-.then:
-	dq lit, output+CELL
+.then2:
 	dq lit, output
 	dq fetch.x
 	dq add.x
 
-	dq pull.x
 	dq lit, `0`
 	dq add.x
+
+	dq push.x
+	dq lit, output+CELL
+	dq pull.x
+
 	dq storeByte.x
 
 	dq lit, output
@@ -636,8 +643,6 @@ DEFINE natural, "natural"
 	dq store.x
 
 	dq enter, naturalRecurse.x
-
-	dq drop.x
 
 	dq lit, output
 	dq enter, string.x
