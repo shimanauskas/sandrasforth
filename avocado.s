@@ -202,7 +202,7 @@ DEFINE fetch, "fetch"
 
 DEFINE store, "store"
 	mov rbx, [rbp]
-	mov [rbx], rax
+	mov [rax], rbx
 	DROP 2
 	NEXT
 
@@ -212,8 +212,8 @@ DEFINE fetchByte, "fetchByte"
 	NEXT
 
 DEFINE storeByte, "storeByte"
-	mov rbx, [rbp]
-	mov [rbx], al
+	mov bl, [rbp]
+	mov [rax], bl
 	DROP 2
 	NEXT
 
@@ -365,24 +365,16 @@ DEFINE stringCompare, "stringCompare"	; string1Address, string1Size, string2Addr
 	dq fetchByte.x
 	dq exit
 
-DEFINE stringTerminate, "stringTerminate"	; stringPointer, stringSize --
-	dq add.x
-	dq lit, 0
-	dq storeByte.x
-	dq exit
-
 DEFINE compile, "compile"
-	dq push.x
 	dq lit, codePointer
 	dq fetch.x
-	dq pull.x
 	dq store.x
 
-	dq lit, codePointer
 	dq lit, codePointer
 	dq fetch.x
 	dq lit, CELL
 	dq add.x
+	dq lit, codePointer
 	dq store.x
 	dq exit
 
@@ -421,14 +413,12 @@ DEFINE skipWhitespace, "skipWhitespace"
 	dq exit
 
 DEFINE extractToken, "extractToken"
-	dq push.x
 	dq lit, output+CELL
-	dq pull.x
 
 .repeat:
 	dq over.x
-	dq over.x
 	dq fetchByte.x
+	dq over.x
 	dq storeByte.x
 
 	dq lit, 1
@@ -438,7 +428,7 @@ DEFINE extractToken, "extractToken"
 	dq add.x
 	dq pull.x
 
-	dq dup.x
+	dq over.x
 	dq fetchByte.x
 	dq lit, `!`
 	dq lit, `~`
@@ -448,18 +438,17 @@ DEFINE extractToken, "extractToken"
 .until:
 	dq jump0, .repeat
 
-	dq push.x
 	dq lit, output+CELL
 	dq sub.x
-	dq push.x
 	dq lit, output
-	dq pull.x
 	dq store.x
-	dq pull.x
 
+	dq lit, 0
 	dq lit, output
 	dq enter, string.x
-	dq jump, stringTerminate.x
+	dq add.x
+	dq storeByte.x
+	dq exit
 
 DEFINE isLiteralUnsigned, "isLiteralUnsigned"
 	dq dup.x
@@ -616,30 +605,27 @@ DEFINE naturalRecurse, "naturalRecurse"
 	dq enter, naturalRecurse.x
 
 .then2:
-	dq lit, output
-	dq fetch.x
-	dq add.x
-
 	dq lit, `0`
 	dq add.x
 
-	dq push.x
+	dq lit, output
+	dq fetch.x
 	dq lit, output+CELL
-	dq pull.x
+	dq add.x
 
 	dq storeByte.x
 
 	dq lit, output
-	dq dup.x
 	dq fetch.x
 	dq lit, 1
 	dq add.x
+	dq lit, output
 	dq store.x
 	dq exit
 
 DEFINE natural, "natural"
-	dq lit, output
 	dq lit, 0
+	dq lit, output
 	dq store.x
 
 	dq enter, naturalRecurse.x
@@ -658,8 +644,8 @@ DEFINE number, "."
 
 	dq enter, negate.x
 
-	dq lit, output
 	dq lit, `-`
+	dq lit, output
 	dq storeByte.x
 
 	dq lit, output
@@ -670,14 +656,14 @@ DEFINE number, "."
 	dq jump, natural.x
 
 DEFINE binary, "binary", FLAG
-	dq lit, base
 	dq lit, 2
+	dq lit, base
 	dq store.x
 	dq exit
 
 DEFINE decimal, "decimal", FLAG
-	dq lit, base
 	dq lit, 10
+	dq lit, base
 	dq store.x
 	dq exit
 
@@ -702,8 +688,10 @@ DEFINE else, "else", FLAG
 	dq exit
 
 DEFINE then, "then", FLAG
+	dq push.x
 	dq lit, codePointer
 	dq fetch.x
+	dq pull.x
 	dq store.x
 	dq exit
 
@@ -716,10 +704,12 @@ DEFINE while, "while", FLAG
 	dq jump, if.x
 
 DEFINE do, "do", FLAG
+	dq push.x
 	dq lit, codePointer
 	dq fetch.x
 	dq lit, CELL*2
 	dq add.x
+	dq pull.x
 	dq store.x
 
 	dq lit, jump
@@ -764,7 +754,6 @@ DEFINE find, "find"
 
 DEFINE token, "token"
 	dq lit, inputPointer
-	dq lit, inputPointer
 	dq fetch.x
 
 	dq enter, skipWhitespace.x
@@ -773,6 +762,7 @@ DEFINE token, "token"
 	dq fetchByte.x
 
 	dq push.x
+	dq lit, inputPointer
 	dq store.x
 	dq pull.x
 
@@ -780,10 +770,10 @@ DEFINE token, "token"
 	dq jump0, .then1
 
 	dq lit, inputPointer
-	dq lit, inputPointer
 	dq fetch.x
 
 	dq enter, extractToken.x
+	dq lit, inputPointer
 	dq store.x
 
 	dq enter, isLiteral.x
@@ -854,20 +844,21 @@ DEFINE main, "main"
 	dq enter, string.x
 	dq write.x
 
-	dq lit, inputPointer
-
+	dq lit, 0
 	dq lit, input
 	dq lit, PAGE
 
 	dq read.x
 
 	dq over.x
-	dq enter, stringTerminate.x
-
+	dq lit, inputPointer
 	dq store.x
 
-	dq lit, codePointer
+	dq add.x
+	dq storeByte.x
+
 	dq lit, code
+	dq lit, codePointer
 	dq store.x
 
 	dq jump, token.x
