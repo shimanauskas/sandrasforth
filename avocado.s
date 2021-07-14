@@ -301,6 +301,58 @@ DEFINE more, "more"
 	dq not.x
 	dq exit
 
+DEFINE getChar, "getChar"
+	dq lit, inputPtr
+	dq fetch.x
+	dq lit, inputTop
+	dq fetch.x
+	dq xor.x
+
+.if1:
+	dq jump0, .then1
+
+	dq lit, inputPtr
+	dq fetch.x
+	dq fetchByte.x
+
+	dq lit, inputPtr
+	dq fetch.x
+	dq lit, 1
+	dq add.x
+	dq lit, inputPtr
+	dq store.x	
+
+	dq exit
+
+.then1:
+	dq lit, inputNEW
+	dq lit, PAGE
+	dq read.x
+	dq nip.x
+	dq dup.x
+	dq enter, negative.x
+	dq over.x
+	dq enter, isZero.x
+	dq or.x
+
+.if2:
+	dq jump0, .then2
+
+	dq drop.x
+	dq bye.x
+
+.then2:
+	dq lit, inputNEW
+	dq add.x
+	dq lit, inputTop
+	dq store.x
+
+	dq lit, inputNEW
+	dq lit, inputPtr
+	dq store.x
+
+	dq jump, getChar.x
+
 DEFINE string, "string"
 	dq dup.x
 	dq push.x
@@ -869,6 +921,12 @@ base:
 last:
 	dq LINK
 
+inputPtr:
+	dq inputNEW
+
+inputTop:
+	dq inputNEW
+
 STRING error, ` ?\n`
 STRING overflow, ` !\n`
 STRING prompt, `# `
@@ -881,6 +939,9 @@ align PAGE
 stack:
 
 input:
+	resb PAGE
+
+inputNEW:
 	resb PAGE
 
 output:
