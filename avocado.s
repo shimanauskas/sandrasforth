@@ -353,6 +353,48 @@ DEFINE getChar, "getChar"
 
 	dq jump, getChar.x
 
+DEFINE putChar, "putChar"
+	dq dup.x
+	dq lit, outputPtr
+	dq fetch.x
+	dq storeByte.x
+
+	dq lit, outputPtr
+	dq fetch.x
+	dq lit, 1
+	dq add.x
+	dq lit, outputPtr
+	dq store.x
+
+	dq lit, 10
+	dq xor.x
+	dq enter, isZero.x
+
+	dq lit, outputPtr
+	dq fetch.x
+	dq lit, outputNEW+PAGE
+	dq xor.x
+	dq enter, isZero.x
+
+	dq or.x
+
+.if:
+	dq jump0, .then1
+
+	dq lit, outputNEW
+	dq lit, outputPtr
+	dq fetch.x
+	dq lit, outputNEW
+	dq sub.x
+	dq write.x
+
+	dq lit, outputNEW
+	dq lit, outputPtr
+	dq store.x
+
+.then1:
+	dq exit
+
 DEFINE string, "string"
 	dq dup.x
 	dq push.x
@@ -927,6 +969,9 @@ inputPtr:
 inputTop:
 	dq inputNEW
 
+outputPtr:
+	dq outputNEW
+
 STRING error, ` ?\n`
 STRING overflow, ` !\n`
 STRING prompt, `# `
@@ -945,6 +990,9 @@ inputNEW:
 	resb PAGE
 
 output:
+	resb PAGE
+
+outputNEW:
 	resb PAGE
 
 code:
