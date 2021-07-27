@@ -395,6 +395,10 @@ DEFINE putChar, "putChar"
 .then1:
 	dq exit
 
+DEFINE newLine, "newLine"
+	dq lit, `\n`
+	dq jump, putChar.x
+
 DEFINE string, "string"
 	dq dup.x
 	dq push.x
