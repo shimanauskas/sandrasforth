@@ -658,6 +658,7 @@ DEFINE literal, "literal"
 	dq enter, string.x
 	dq write.x
 
+	dq enter, newLine.x
 	dq jump, main.x
 
 .then2:
@@ -752,7 +753,8 @@ DEFINE number, "."
 	dq write.x
 
 .then:
-	dq jump, natural.x
+	dq enter, natural.x
+	dq jump, newLine.x
 
 DEFINE binary, "binary", FLAG
 	dq lit, 2
@@ -930,6 +932,7 @@ DEFINE token, "token"
 	dq enter, string.x
 	dq write.x
 
+	dq enter, newLine.x
 	dq jump, main.x
 
 .then1:
@@ -977,8 +980,8 @@ inputTop:
 outputPtr:
 	dq outputNEW
 
-STRING error, ` ?\n`
-STRING overflow, ` !\n`
+STRING error, ` ?`
+STRING overflow, ` !`
 STRING prompt, `# `
 
 section .bss
