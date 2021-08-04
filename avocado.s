@@ -686,7 +686,7 @@ DEFINE literal, "literal"
 	dq enter, compile.x
 	dq jump, token.x	; Take care of the next token
 
-DEFINE naturalRecurse, "naturalRecurse"
+DEFINE natural, "natural"
 	dq lit, 0
 	dq lit, base
 	dq fetch.x
@@ -702,38 +702,12 @@ DEFINE naturalRecurse, "naturalRecurse"
 .if2:
 	dq jump0, .then2
 
-	dq enter, naturalRecurse.x
+	dq enter, natural.x
 
 .then2:
 	dq lit, `0`
 	dq add.x
-
-	dq lit, output
-	dq fetch.x
-	dq lit, output+CELL
-	dq add.x
-
-	dq storeByte.x
-
-	dq lit, output
-	dq fetch.x
-	dq lit, 1
-	dq add.x
-	dq lit, output
-	dq store.x
-	dq exit
-
-DEFINE natural, "natural"
-	dq lit, 0
-	dq lit, output
-	dq store.x
-
-	dq enter, naturalRecurse.x
-
-	dq lit, output
-	dq enter, string.x
-	dq write.x
-	dq exit
+	dq jump, putChar.x
 
 DEFINE number, "."
 	dq dup.x
@@ -745,12 +719,7 @@ DEFINE number, "."
 	dq enter, negate.x
 
 	dq lit, `-`
-	dq lit, output
-	dq storeByte.x
-
-	dq lit, output
-	dq lit, 1
-	dq write.x
+	dq enter, putChar.x
 
 .then:
 	dq enter, natural.x
