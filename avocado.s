@@ -491,6 +491,23 @@ DEFINE range, "range"
 	dq and.x
 	dq exit
 
+DEFINE getToken, "getToken"
+.begin:
+	dq enter, getChar.x
+	dq dup.x
+	dq lit, `!`
+	dq enter, less.x
+
+.while:
+	dq jump0, .do
+
+	dq drop.x
+
+	dq jump, .begin
+.do:
+
+	dq exit
+
 DEFINE skipWhitespace, "skipWhitespace"
 .begin:
 	dq dup.x
