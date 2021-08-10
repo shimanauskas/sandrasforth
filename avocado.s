@@ -492,19 +492,50 @@ DEFINE range, "range"
 	dq exit
 
 DEFINE getToken, "getToken"
-.begin:
+.begin1:
 	dq enter, getChar.x
 	dq dup.x
 	dq lit, `!`
 	dq enter, less.x
 
-.while:
-	dq jump0, .do
+.while1:
+	dq jump0, .do1
 
 	dq drop.x
 
-	dq jump, .begin
-.do:
+	dq jump, .begin1
+.do1:
+
+	dq lit, tokenBuf
+	dq push.x
+
+.begin2:
+	dq dup.x
+	dq lit, `!`
+	dq enter, less.x
+	dq not.x
+
+.while2:
+	dq jump0, .do2
+
+	dq pull.x
+	dq dup.x
+	dq lit, 1
+	dq add.x
+	dq push.x
+	dq storeByte.x
+
+	dq enter, getChar.x
+
+	dq jump, .begin2
+.do2:
+
+	dq drop.x
+
+	dq lit, tokenBuf
+	dq pull.x
+	dq lit, tokenBuf
+	dq sub.x
 
 	dq exit
 
@@ -987,6 +1018,9 @@ output:
 	resb PAGE
 
 outputNEW:
+	resb PAGE
+
+tokenBuf:
 	resb PAGE
 
 code:
