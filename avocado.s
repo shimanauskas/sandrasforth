@@ -834,6 +834,13 @@ DEFINE do, "do", FLAG
 	dq enter, compile.x
 	dq jump, compile.x
 
+DEFINE semiColon, ";", FLAG
+	dq lit, exit
+	dq enter, compile.x
+	dq enter, code
+	dq pull.x, drop.x
+	dq jump, main.x
+
 DEFINE stringSkip, "stringSkip"
 	dq enter, string.x
 	dq lit, ~(CELL-1)
