@@ -506,7 +506,7 @@ DEFINE getToken, "getToken"
 	dq jump, .begin1
 .do1:
 
-	dq lit, tokenBuf
+	dq lit, output+CELL
 	dq push.x
 
 .begin2:
@@ -532,10 +532,11 @@ DEFINE getToken, "getToken"
 
 	dq drop.x
 
-	dq lit, tokenBuf
 	dq pull.x
-	dq lit, tokenBuf
+	dq lit, output+CELL
 	dq sub.x
+	dq lit, output
+	dq store.x
 
 	dq exit
 
@@ -851,6 +852,8 @@ DEFINE stringSkip, "stringSkip"
 	dq exit
 
 DEFINE find, "find"
+	dq lit, last
+
 .begin:
 	dq fetch.x
 	dq lit, ~FLAG
@@ -905,7 +908,6 @@ DEFINE token, "token"
 	dq enter, isZero.x
 	dq jump0, literal.x
 
-	dq lit, last
 	dq enter, find.x
 	dq dup.x
 
@@ -1025,9 +1027,6 @@ output:
 	resb PAGE
 
 outputNEW:
-	resb PAGE
-
-tokenBuf:
 	resb PAGE
 
 code:
