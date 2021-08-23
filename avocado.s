@@ -492,11 +492,16 @@ DEFINE range, "range"
 	dq exit
 
 DEFINE getToken, "getToken"
+
+; The following loop reads input and discards spaces.
+; It returns the first non-space character.
+
 .begin1:
 	dq enter, getChar.x
 	dq dup.x
-	dq lit, `!`
-	dq enter, less.x
+	dq lit, ` `
+	dq xor.x
+	dq enter, isZero.x
 
 .while1:
 	dq jump0, .do1
@@ -537,29 +542,6 @@ DEFINE getToken, "getToken"
 	dq sub.x
 	dq lit, output
 	dq store.x
-
-	dq exit
-
-; skipSpaces reads input and discards spaces.
-; It returns the first non-space character.
-;
-; ( -- char )
-
-DEFINE skipSpaces, "skipSpaces"
-.begin:
-	dq enter, getChar.x
-	dq dup.x
-	dq lit, ` `
-	dq xor.x
-	dq enter, isZero.x
-
-.while:
-	dq jump0, .do
-
-	dq drop.x
-
-	dq jump, .begin
-.do:
 
 	dq exit
 
