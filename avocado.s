@@ -491,60 +491,6 @@ DEFINE range, "range"
 	dq and.x
 	dq exit
 
-DEFINE getToken, "getToken"
-
-; The following loop reads input and discards spaces.
-; It returns the first non-space character.
-
-.begin1:
-	dq enter, getChar.x
-	dq dup.x
-	dq lit, ` `
-	dq xor.x
-	dq enter, isZero.x
-
-.while1:
-	dq jump0, .do1
-
-	dq drop.x
-
-	dq jump, .begin1
-.do1:
-
-	dq lit, output+CELL
-	dq push.x
-
-.begin2:
-	dq dup.x
-	dq lit, `!`
-	dq enter, less.x
-	dq not.x
-
-.while2:
-	dq jump0, .do2
-
-	dq pull.x
-	dq dup.x
-	dq lit, 1
-	dq add.x
-	dq push.x
-	dq storeByte.x
-
-	dq enter, getChar.x
-
-	dq jump, .begin2
-.do2:
-
-	dq drop.x
-
-	dq pull.x
-	dq lit, output+CELL
-	dq sub.x
-	dq lit, output
-	dq store.x
-
-	dq exit
-
 DEFINE skipWhitespace, "skipWhitespace"
 .begin:
 	dq dup.x
@@ -701,6 +647,8 @@ DEFINE literal, "literal"
 	dq drop.x		; Drop erroneous conversion
 	dq drop.x		; Drop token buffer address
 	dq drop.x		; Drop sign
+	dq pull.x
+	dq drop.x		; Drop last getChar's return value
 
 	; Report an overflow error and restart from the beginning
 
@@ -738,7 +686,22 @@ DEFINE literal, "literal"
 	dq lit, lit
 	dq enter, compile.x
 	dq enter, compile.x
-	dq jump, token.x	; Take care of the next token
+
+	dq pull.x
+	dq lit, `\n`
+	dq xor.x
+	dq enter, isZero.x
+
+.if3:
+	dq jump0, .then3
+
+	dq lit, exit
+	dq enter, compile.x
+	dq enter, code
+	dq jump, main.x
+
+.then3:
+	dq jump, token.x
 
 DEFINE natural, "natural"
 	dq lit, 0
@@ -886,28 +849,69 @@ DEFINE find, "find"
 	dq exit
 
 DEFINE token, "token"
-	dq lit, inputPointer
-	dq fetch.x
 
-	dq enter, skipWhitespace.x
+; The following loop reads input and discards spaces.
+; It returns the first non-space character.
+
+.begin1:
+	dq enter, getChar.x
+	dq dup.x
+	dq lit, ` `
+	dq xor.x
+	dq enter, isZero.x
+
+.while1:
+	dq jump0, .do1
+
+	dq drop.x
+
+	dq jump, .begin1
+.do1:
 
 	dq dup.x
-	dq fetchByte.x
-
-	dq push.x
-	dq lit, inputPointer
-	dq store.x
-	dq pull.x
+	dq lit, `\n`
+	dq xor.x
 
 .if1:
 	dq jump0, .then1
 
-	dq lit, inputPointer
-	dq fetch.x
+	dq lit, output+CELL
+	dq push.x
 
-	dq enter, extractToken.x
-	dq lit, inputPointer
+.begin2:
+	dq dup.x
+	dq lit, `!`
+	dq enter, less.x
+	dq not.x
+
+.while2:
+	dq jump0, .do2
+
+	dq pull.x
+	dq dup.x
+	dq lit, 1
+	dq add.x
+	dq push.x
+	dq storeByte.x
+
+	dq enter, getChar.x
+
+	dq jump, .begin2
+.do2:
+
+	dq pull.x
+	dq lit, output+CELL
+	dq sub.x
+	dq lit, output
 	dq store.x
+
+	dq push.x		; Push last getChar's return value.
+
+	dq lit, 0
+	dq lit, output
+	dq enter, string.x
+	dq add.x
+	dq storeByte.x
 
 	dq enter, isLiteral.x
 	dq enter, isZero.x
@@ -917,12 +921,12 @@ DEFINE token, "token"
 	dq dup.x
 
 .if4:
-	dq jump0, .then4
+	dq jump0, .else4
 
 	dq enter, stringSkip.x
 	dq dup.x
 	dq fetch.x
-	dq enter, negative.x		; Check for immediate flag.
+	dq enter, negative.x	; Check for immediate flag.
 
 .if5:
 	dq jump0, .else5
@@ -950,10 +954,13 @@ DEFINE token, "token"
 	dq enter, compile.x
 
 .then5:
-	dq jump, token.x
 
-.then4:
+	dq jump, .then4
+.else4:
+
 	dq drop.x
+	dq pull.x
+	dq drop.x		; Drop last getChar's return value.
 
 	dq lit, output
 	dq enter, string.x
@@ -966,7 +973,26 @@ DEFINE token, "token"
 	dq enter, newLine.x
 	dq jump, main.x
 
+.then4:
+	dq pull.x
+	dq lit, `\n`
+	dq xor.x
+	dq enter, isZero.x
+
+.if7:
+	dq jump0, .then7
+
+	dq lit, exit
+	dq enter, compile.x
+	dq enter, code
+	dq jump, main.x
+
+.then7:
+	dq jump, token.x
+
 .then1:
+	dq pull.x
+	dq drop.x 		; Drop last getChar's return value.
 	dq lit, exit
 	dq enter, compile.x
 	dq enter, code
@@ -976,19 +1002,6 @@ DEFINE main, "main"
 	dq lit, prompt
 	dq enter, string.x
 	dq write.x
-
-	dq lit, 0
-	dq lit, input
-	dq lit, PAGE
-
-	dq read.x
-
-	dq over.x
-	dq lit, inputPointer
-	dq store.x
-
-	dq add.x
-	dq storeByte.x
 
 	dq lit, code
 	dq lit, codePointer
@@ -1022,9 +1035,6 @@ align PAGE
 	resb PAGE
 stack:
 
-input:
-	resb PAGE
-
 inputNEW:
 	resb PAGE
 
@@ -1038,7 +1048,4 @@ code:
 	resb PAGE
 
 codePointer:
-	resb CELL
-
-inputPointer:
 	resb CELL
