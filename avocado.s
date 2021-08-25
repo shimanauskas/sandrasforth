@@ -491,63 +491,6 @@ DEFINE range, "range"
 	dq and.x
 	dq exit
 
-DEFINE skipWhitespace, "skipWhitespace"
-.begin:
-	dq dup.x
-	dq fetchByte.x
-	dq lit, 1
-	dq lit, 20h
-	dq enter, range.x
-
-.while:
-	dq jump0, .do
-
-	dq lit, 1
-	dq add.x
-
-	dq jump, .begin
-.do:
-
-	dq exit
-
-DEFINE extractToken, "extractToken"
-	dq lit, output+CELL
-
-.repeat:
-	dq over.x
-	dq fetchByte.x
-	dq over.x
-	dq storeByte.x
-
-	dq lit, 1
-	dq add.x
-	dq push.x
-	dq lit, 1
-	dq add.x
-	dq pull.x
-
-	dq over.x
-	dq fetchByte.x
-	dq lit, `!`
-	dq lit, `~`
-	dq enter, range.x
-	dq not.x
-
-.until:
-	dq jump0, .repeat
-
-	dq lit, output+CELL
-	dq sub.x
-	dq lit, output
-	dq store.x
-
-	dq lit, 0
-	dq lit, output
-	dq enter, string.x
-	dq add.x
-	dq storeByte.x
-	dq exit
-
 DEFINE isLiteralUnsigned, "isLiteralUnsigned"
 	dq dup.x
 	dq fetchByte.x
