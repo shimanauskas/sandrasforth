@@ -531,7 +531,7 @@ DEFINE isLiteralUnsigned, "isLiteralUnsigned"
 	dq exit
 
 DEFINE isLiteral, "isLiteral"
-	dq lit, output+CELL
+	dq lit, bufToken+CELL
 
 	dq dup.x
 	dq fetchByte.x
@@ -551,7 +551,7 @@ DEFINE isLiteral, "isLiteral"
 DEFINE literal, "literal"
 	dq lit, 1		; Sign
 
-	dq lit, output+CELL
+	dq lit, bufToken+CELL
 	dq dup.x
 	dq fetchByte.x
 	dq lit, `-`
@@ -595,7 +595,7 @@ DEFINE literal, "literal"
 
 	; Report an overflow error and restart from the beginning
 
-	dq lit, output
+	dq lit, bufToken
 	dq enter, string.x
 	dq write.x
 
@@ -776,7 +776,7 @@ DEFINE find, "find"
 	dq jump0, .then
 
 	dq enter, string.x
-	dq lit, output
+	dq lit, bufToken
 	dq enter, string.x
 	dq enter, stringCompare.x
 
@@ -818,7 +818,7 @@ DEFINE token, "token"
 .if1:
 	dq jump0, .then1
 
-	dq lit, output+CELL
+	dq lit, bufToken+CELL
 	dq push.x
 
 .begin2:
@@ -843,15 +843,15 @@ DEFINE token, "token"
 .do2:
 
 	dq pull.x
-	dq lit, output+CELL
+	dq lit, bufToken+CELL
 	dq sub.x
-	dq lit, output
+	dq lit, bufToken
 	dq store.x
 
 	dq push.x		; Push last getChar's return value.
 
 	dq lit, 0
-	dq lit, output
+	dq lit, bufToken
 	dq enter, string.x
 	dq add.x
 	dq storeByte.x
@@ -905,7 +905,7 @@ DEFINE token, "token"
 	dq pull.x
 	dq drop.x		; Drop last getChar's return value.
 
-	dq lit, output
+	dq lit, bufToken
 	dq enter, string.x
 	dq write.x
 
@@ -981,10 +981,10 @@ stack:
 inputNEW:
 	resb PAGE
 
-output:
+outputNEW:
 	resb PAGE
 
-outputNEW:
+bufToken:
 	resb PAGE
 
 code:
