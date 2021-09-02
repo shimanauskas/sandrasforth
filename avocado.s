@@ -325,7 +325,7 @@ DEFINE getChar, "getChar"
 	dq exit
 
 .then1:
-	dq lit, inputNEW
+	dq lit, input
 	dq lit, PAGE
 	dq read.x
 	dq nip.x
@@ -342,12 +342,12 @@ DEFINE getChar, "getChar"
 	dq bye.x
 
 .then2:
-	dq lit, inputNEW
+	dq lit, input
 	dq add.x
 	dq lit, inputTop
 	dq store.x
 
-	dq lit, inputNEW
+	dq lit, input
 	dq lit, inputPtr
 	dq store.x
 
@@ -372,7 +372,7 @@ DEFINE putChar, "putChar"
 
 	dq lit, outputPtr
 	dq fetch.x
-	dq lit, outputNEW+PAGE
+	dq lit, output+PAGE
 	dq xor.x
 	dq enter, isZero.x
 
@@ -381,14 +381,14 @@ DEFINE putChar, "putChar"
 .if:
 	dq jump0, .then1
 
-	dq lit, outputNEW
+	dq lit, output
 	dq lit, outputPtr
 	dq fetch.x
-	dq lit, outputNEW
+	dq lit, output
 	dq sub.x
 	dq write.x
 
-	dq lit, outputNEW
+	dq lit, output
 	dq lit, outputPtr
 	dq store.x
 
@@ -959,13 +959,13 @@ last:
 	dq LINK
 
 inputPtr:
-	dq inputNEW
+	dq input
 
 inputTop:
-	dq inputNEW
+	dq input
 
 outputPtr:
-	dq outputNEW
+	dq output
 
 STRING error, ` ?`
 STRING overflow, ` !`
@@ -978,10 +978,10 @@ align PAGE
 	resb PAGE
 stack:
 
-inputNEW:
+input:
 	resb PAGE
 
-outputNEW:
+output:
 	resb PAGE
 
 bufToken:
