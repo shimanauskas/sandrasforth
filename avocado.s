@@ -18,8 +18,6 @@
 ; r14	unused
 ; r15	unused
 
-; Our stacks grow downward.
-
 %include "platform.s"
 
 %ifdef LINUX
@@ -73,7 +71,7 @@ section .text
 global start
 
 start:
-	mov rbp, stack
+	mov rbp, stack+PAGE	; Our stacks grow downward
 	xor rax, rax
 
 	mov r12, main.x
@@ -978,8 +976,8 @@ section .bss
 
 align PAGE
 
-	resb PAGE
 stack:
+	resb PAGE
 
 input:
 	resb PAGE
