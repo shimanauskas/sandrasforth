@@ -72,7 +72,7 @@ global start
 
 start:
 	mov rbp, stack+PAGE	; Our stacks grow downward
-	xor rax, rax
+	mov rax, -1		; Top-of-stack magic value aids in debugging
 
 	mov r12, main.x
 	jmp [r12]
