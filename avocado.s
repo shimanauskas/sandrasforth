@@ -464,15 +464,15 @@ DEFINE stringCompare, "stringCompare"	; string1Address, string1Size, string2Addr
 	dq exit
 
 DEFINE compile, "compile"
-	dq lit, codePointer
+	dq lit, codePtr
 	dq fetch.x
 	dq store.x
 
-	dq lit, codePointer
+	dq lit, codePtr
 	dq fetch.x
 	dq lit, CELL
 	dq add.x
-	dq lit, codePointer
+	dq lit, codePtr
 	dq store.x
 	dq exit
 
@@ -700,7 +700,7 @@ DEFINE decimal, "decimal", FLAG
 DEFINE if, "if", FLAG
 	dq lit, jump0
 	dq enter, compile.x
-	dq lit, codePointer
+	dq lit, codePtr
 	dq fetch.x
 	dq lit, 0
 	dq jump, compile.x
@@ -708,7 +708,7 @@ DEFINE if, "if", FLAG
 DEFINE else, "else", FLAG
 	dq lit, jump
 	dq enter, compile.x
-	dq lit, codePointer
+	dq lit, codePtr
 	dq fetch.x
 	dq push.x
 	dq lit, 0
@@ -719,14 +719,14 @@ DEFINE else, "else", FLAG
 
 DEFINE then, "then", FLAG
 	dq push.x
-	dq lit, codePointer
+	dq lit, codePtr
 	dq fetch.x
 	dq pull.x
 	dq store.x
 	dq exit
 
 DEFINE begin, "begin", FLAG
-	dq lit, codePointer
+	dq lit, codePtr
 	dq fetch.x
 	dq exit
 
@@ -735,7 +735,7 @@ DEFINE while, "while", FLAG
 
 DEFINE do, "do", FLAG
 	dq push.x
-	dq lit, codePointer
+	dq lit, codePtr
 	dq fetch.x
 	dq lit, CELL*2
 	dq add.x
@@ -947,7 +947,7 @@ DEFINE main, "main"
 	dq write.x
 
 	dq lit, code
-	dq lit, codePointer
+	dq lit, codePtr
 	dq store.x
 
 	dq jump, token.x
@@ -966,6 +966,9 @@ inputTop:
 
 outputPtr:
 	dq output
+
+codePtr:
+	dq code
 
 STRING error, ` ?`
 STRING overflow, ` !`
@@ -989,6 +992,3 @@ bufToken:
 
 code:
 	resb PAGE
-
-codePointer:
-	resb CELL
