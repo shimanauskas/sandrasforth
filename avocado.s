@@ -871,11 +871,9 @@ DEFINE token, "token"
 	dq enter, compile.x
 
 .then5:
-
 	dq jump, token.x
 
 .then4:
-
 	dq drop.x
 
 	dq lit, bufToken
