@@ -216,18 +216,18 @@ DEFINE storeByte, "storeByte"
 	NEXT
 
 DEFINE read, "read"
-	mov rdx, rax		; Count.
-	mov rsi, [rbp]		; Address.
+	mov rdx, rax		; Size
+	mov rsi, [rbp]		; Address
 	mov rdi, 0		; stdin
-	mov rax, SYS_read	; sys_read
+	mov rax, SYS_read
 	syscall
 	NEXT
 
 DEFINE write, "write"
-	mov rdx, rax		; Count.
-	mov rsi, [rbp]		; Address.
+	mov rdx, rax		; Size
+	mov rsi, [rbp]		; Address
 	mov rdi, 1		; stdout
-	mov rax, SYS_write	; sys_write
+	mov rax, SYS_write
 	syscall
 	DROP 2
 	NEXT
@@ -589,7 +589,7 @@ DEFINE literal, "literal"
 	dq drop.x		; Drop token buffer address
 	dq drop.x		; Drop sign
 
-	; Report an overflow error and restart from the beginning
+	; Report an overflow error and start from the beginning
 
 	dq lit, bufToken
 	dq enter, string.x
@@ -843,7 +843,7 @@ DEFINE token, "token"
 	dq enter, stringSkip.x
 	dq dup.x
 	dq fetch.x
-	dq enter, negative.x	; Check for immediate flag.
+	dq enter, negative.x	; Check for immediate flag
 
 .if5:
 	dq jump0, .else5
