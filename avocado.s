@@ -588,8 +588,6 @@ DEFINE literal, "literal"
 	dq drop.x		; Drop erroneous conversion
 	dq drop.x		; Drop token buffer address
 	dq drop.x		; Drop sign
-	dq pull.x
-	dq drop.x		; Drop last getChar's return value
 
 	; Report an overflow error and restart from the beginning
 
@@ -600,8 +598,8 @@ DEFINE literal, "literal"
 	dq lit, overflow
 	dq enter, string.x
 	dq write.x
-
 	dq enter, newLine.x
+
 	dq jump, main.x
 
 .then2:
@@ -628,20 +626,6 @@ DEFINE literal, "literal"
 	dq enter, compile.x
 	dq enter, compile.x
 
-	dq pull.x
-	dq lit, `\n`
-	dq xor.x
-	dq enter, isZero.x
-
-.if3:
-	dq jump0, .then3
-
-	dq lit, exit
-	dq enter, compile.x
-	dq enter, code
-	dq jump, main.x
-
-.then3:
 	dq jump, token.x
 
 DEFINE natural, "natural"
@@ -797,9 +781,8 @@ DEFINE token, "token"
 .begin1:
 	dq enter, getChar.x
 	dq dup.x
-	dq lit, ` `
-	dq xor.x
-	dq enter, isZero.x
+	dq lit, `!`
+	dq enter, less.x
 
 .while1:
 	dq jump0, .do1
@@ -808,13 +791,6 @@ DEFINE token, "token"
 
 	dq jump, .begin1
 .do1:
-
-	dq dup.x
-	dq lit, `\n`
-	dq xor.x
-
-.if1:
-	dq jump0, .then1
 
 	dq lit, bufToken+CELL
 	dq push.x
@@ -840,13 +816,13 @@ DEFINE token, "token"
 	dq jump, .begin2
 .do2:
 
+	dq drop.x		; Drop last getChar's return value
+
 	dq pull.x
 	dq lit, bufToken+CELL
 	dq sub.x
 	dq lit, bufToken
 	dq store.x
-
-	dq push.x		; Push last getChar's return value.
 
 	dq lit, 0
 	dq lit, bufToken
@@ -862,7 +838,7 @@ DEFINE token, "token"
 	dq dup.x
 
 .if4:
-	dq jump0, .else4
+	dq jump0, .then4
 
 	dq enter, stringSkip.x
 	dq dup.x
@@ -896,12 +872,11 @@ DEFINE token, "token"
 
 .then5:
 
-	dq jump, .then4
-.else4:
+	dq jump, token.x
+
+.then4:
 
 	dq drop.x
-	dq pull.x
-	dq drop.x		; Drop last getChar's return value.
 
 	dq lit, bufToken
 	dq enter, string.x
@@ -910,36 +885,17 @@ DEFINE token, "token"
 	dq lit, error
 	dq enter, string.x
 	dq write.x
-
 	dq enter, newLine.x
-	dq jump, main.x
 
-.then4:
-	dq pull.x
-	dq lit, `\n`
-	dq xor.x
-	dq enter, isZero.x
-
-.if7:
-	dq jump0, .then7
-
-	dq lit, exit
-	dq enter, compile.x
-	dq enter, code
-	dq jump, main.x
-
-.then7:
-	dq jump, token.x
-
-.then1:
-	dq pull.x
-	dq drop.x 		; Drop last getChar's return value.
-	dq lit, exit
-	dq enter, compile.x
-	dq enter, code
 	dq jump, main.x
 
 DEFINE main, "main"
+	dq lit, input
+	dq lit, inputPtr
+	dq over.x
+	dq lit, inputTop
+	dq store.x, store.x
+
 	dq lit, prompt
 	dq enter, string.x
 	dq write.x
