@@ -532,7 +532,7 @@ DEFINE isLiteralUnsigned, "isLiteralUnsigned"
 	dq fetchByte.x
 
 	dq dup.x
-	dq lit, `0`
+	dq lit, '0'
 	dq sub.x
 	dq lit, 0
 	dq lit, base
@@ -564,7 +564,7 @@ DEFINE isLiteral, "isLiteral"
 
 	dq dup.x
 	dq fetchByte.x
-	dq lit, `-`
+	dq lit, '-'
 	dq sub.x
 	dq enter, isZero.x
 
@@ -583,7 +583,7 @@ DEFINE literal, "literal"
 	dq lit, bufToken+CELL
 	dq dup.x
 	dq fetchByte.x
-	dq lit, `-`
+	dq lit, '-'
 	dq sub.x
 	dq enter, isZero.x
 
@@ -636,7 +636,7 @@ DEFINE literal, "literal"
 .then2:
 	dq over.x
 	dq fetchByte.x
-	dq lit, `0`
+	dq lit, '0'
 	dq sub.x
 	dq add.x
 
@@ -678,7 +678,7 @@ DEFINE natural, "natural"
 	dq enter, natural.x
 
 .then2:
-	dq lit, `0`
+	dq lit, '0'
 	dq add.x
 	dq jump, putChar.x
 
@@ -691,7 +691,7 @@ DEFINE number, "."
 
 	dq enter, negate.x
 
-	dq lit, `-`
+	dq lit, '-'
 	dq enter, putChar.x
 
 .then:
@@ -812,7 +812,7 @@ DEFINE token, "token"
 .begin1:
 	dq enter, getChar.x
 	dq dup.x
-	dq lit, `!`
+	dq lit, '!'
 	dq enter, less.x
 
 .while1:
@@ -828,7 +828,7 @@ DEFINE token, "token"
 
 .begin2:
 	dq dup.x
-	dq lit, `!`
+	dq lit, '!'
 	dq enter, less.x
 	dq not.x
 
@@ -953,9 +953,9 @@ outputPtr:
 codePtr:
 	dq code
 
-STRING error, ` ?`
-STRING overflow, ` !`
-STRING prompt, `# `
+STRING error, " ?"
+STRING overflow, " !"
+STRING prompt, "# "
 
 section .bss
 
