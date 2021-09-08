@@ -1,5 +1,7 @@
 # Avocado
-Being developed using nasm for Linux and macOS on x86-64 architecture.
+A Forth-like system for Linux and macOS on x86-64.
+
+Requires make, nasm and ld.
 
 Error reporting:
 * A word followed by a question mark means it is not found in the vocabulary and not a literal.
