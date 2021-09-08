@@ -443,14 +443,18 @@ DEFINE interleave, "interleave"		; A, B, C, D -- A, C, B, D
 	dq exit
 
 DEFINE stringCompare, "stringCompare"	; string1Address, string1Size, string2Address, string2Size -- comparisonValue
+
+	; Return immediately if string sizes are not equal
+
 	dq enter
 	dq interleave.x
 	dq xor.x
 
-.if:	; If string sizes are not equal
+.if:
 	dq jump0, .then
 
-	; Drop the string addresses and return error
+	; Drop string addresses, return error
+
 	dq drop.x
 	dq drop.x
 	dq lit, -1
@@ -802,8 +806,8 @@ DEFINE find, "find"
 
 DEFINE token, "token"
 
-; The following loop reads input and discards spaces.
-; It returns the first non-space character.
+	; The following loop reads input and discards spaces
+	; It returns the first non-space character
 
 .begin1:
 	dq enter, getChar.x
