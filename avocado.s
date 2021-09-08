@@ -324,7 +324,7 @@ DEFINE getChar, "getChar"
 
 .then1:
 	dq lit, input
-	dq lit, PAGE
+	dq lit, PAGE-2
 	dq read.x
 	dq nip.x
 	dq dup.x
@@ -342,6 +342,33 @@ DEFINE getChar, "getChar"
 .then2:
 	dq lit, input
 	dq add.x
+
+	; Append a terminating token upon end of input
+
+	dq dup.x
+	dq lit, 1
+	dq sub.x
+	dq fetchByte.x
+	dq lit, `\n`
+	dq xor.x
+	dq enter, isZero.x
+
+.if3:
+	dq jump0, .then3
+
+	dq lit, ';'
+	dq over.x
+	dq storeByte.x
+	dq lit, 1
+	dq add.x
+
+	dq lit, ' '
+	dq over.x
+	dq storeByte.x
+	dq lit,	1
+	dq add.x
+
+.then3:
 	dq lit, inputTop
 	dq store.x
 
