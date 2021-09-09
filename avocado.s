@@ -299,6 +299,21 @@ DEFINE more, "more"
 	dq not.x
 	dq exit
 
+DEFINE range, "range"
+	dq push.x
+	dq over.x
+	dq push.x
+	dq enter
+	dq less.x
+	dq not.x
+	dq pull.x
+	dq pull.x
+	dq enter
+	dq more.x
+	dq not.x
+	dq and.x
+	dq exit
+
 DEFINE getChar, "getChar"
 	dq lit, inputPtr
 	dq fetch.x
@@ -491,32 +506,13 @@ DEFINE stringCompare, "stringCompare"	; stringA, stringB -- comparisonValue
 	dq fetchByte.x
 	dq exit
 
-DEFINE compile, "compile"
-	dq lit, codePtr
-	dq fetch.x
-	dq store.x
-
-	dq lit, codePtr
-	dq fetch.x
+DEFINE stringSkip, "stringSkip"
+	dq enter, string.x
+	dq lit, ~(CELL-1)
+	dq and.x
 	dq lit, CELL
 	dq add.x
-	dq lit, codePtr
-	dq store.x
-	dq exit
-
-DEFINE range, "range"
-	dq push.x
-	dq over.x
-	dq push.x
-	dq enter
-	dq less.x
-	dq not.x
-	dq pull.x
-	dq pull.x
-	dq enter
-	dq more.x
-	dq not.x
-	dq and.x
+	dq add.x
 	dq exit
 
 DEFINE isLiteralUnsigned, "isLiteralUnsigned"
@@ -658,45 +654,6 @@ DEFINE literal, "literal"
 
 	dq jump, token.x
 
-DEFINE natural, "natural"
-	dq lit, 0
-	dq lit, base
-	dq fetch.x
-	dq div.x
-	dq dup.x
-
-.if1:
-	dq jump0, .then1
-
-	dq dup.x
-
-.then1:
-.if2:
-	dq jump0, .then2
-
-	dq enter, natural.x
-
-.then2:
-	dq lit, '0'
-	dq add.x
-	dq jump, putChar.x
-
-DEFINE number, "."
-	dq dup.x
-	dq enter, negative.x
-
-.if:
-	dq jump0, .then
-
-	dq enter, negate.x
-
-	dq lit, '-'
-	dq enter, putChar.x
-
-.then:
-	dq enter, natural.x
-	dq jump, newLine.x
-
 DEFINE binary, "binary", FLAG
 	dq lit, 2
 	dq lit, base
@@ -709,70 +666,12 @@ DEFINE decimal, "decimal", FLAG
 	dq store.x
 	dq exit
 
-DEFINE if, "if", FLAG
-	dq lit, jump0
-	dq enter, compile.x
-	dq lit, codePtr
-	dq fetch.x
-	dq lit, 0
-	dq jump, compile.x
-
-DEFINE else, "else", FLAG
-	dq lit, jump
-	dq enter, compile.x
-	dq lit, codePtr
-	dq fetch.x
-	dq push.x
-	dq lit, 0
-	dq enter, compile.x
-	dq enter, then.x
-	dq pull.x
-	dq exit
-
-DEFINE then, "then", FLAG
-	dq push.x
-	dq lit, codePtr
-	dq fetch.x
-	dq pull.x
-	dq store.x
-	dq exit
-
-DEFINE begin, "begin", FLAG
-	dq lit, codePtr
-	dq fetch.x
-	dq exit
-
-DEFINE while, "while", FLAG
-	dq jump, if.x
-
-DEFINE do, "do", FLAG
-	dq push.x
-	dq lit, codePtr
-	dq fetch.x
-	dq lit, CELL*2
-	dq add.x
-	dq pull.x
-	dq store.x
-
-	dq lit, jump
-	dq enter, compile.x
-	dq jump, compile.x
-
 DEFINE semiColon, ";", FLAG
 	dq lit, exit
 	dq enter, compile.x
 	dq enter, code
 	dq pull.x, drop.x
 	dq jump, main.x
-
-DEFINE stringSkip, "stringSkip"
-	dq enter, string.x
-	dq lit, ~(CELL-1)
-	dq and.x
-	dq lit, CELL
-	dq add.x
-	dq add.x
-	dq exit
 
 DEFINE find, "find"
 	dq lit, last
@@ -799,6 +698,19 @@ DEFINE find, "find"
 	dq jump, .begin
 .do:
 
+	dq exit
+
+DEFINE compile, "compile"
+	dq lit, codePtr
+	dq fetch.x
+	dq store.x
+
+	dq lit, codePtr
+	dq fetch.x
+	dq lit, CELL
+	dq add.x
+	dq lit, codePtr
+	dq store.x
 	dq exit
 
 DEFINE token, "token"
@@ -928,6 +840,96 @@ DEFINE main, "main"
 	dq store.x
 
 	dq jump, token.x
+
+; The following definitions should be moved out of core once we can compile them at runtime
+
+DEFINE if, "if", FLAG
+	dq lit, jump0
+	dq enter, compile.x
+	dq lit, codePtr
+	dq fetch.x
+	dq lit, 0
+	dq jump, compile.x
+
+DEFINE else, "else", FLAG
+	dq lit, jump
+	dq enter, compile.x
+	dq lit, codePtr
+	dq fetch.x
+	dq push.x
+	dq lit, 0
+	dq enter, compile.x
+	dq enter, then.x
+	dq pull.x
+	dq exit
+
+DEFINE then, "then", FLAG
+	dq push.x
+	dq lit, codePtr
+	dq fetch.x
+	dq pull.x
+	dq store.x
+	dq exit
+
+DEFINE begin, "begin", FLAG
+	dq lit, codePtr
+	dq fetch.x
+	dq exit
+
+DEFINE while, "while", FLAG
+	dq jump, if.x
+
+DEFINE do, "do", FLAG
+	dq push.x
+	dq lit, codePtr
+	dq fetch.x
+	dq lit, CELL*2
+	dq add.x
+	dq pull.x
+	dq store.x
+
+	dq lit, jump
+	dq enter, compile.x
+	dq jump, compile.x
+
+DEFINE natural, "natural"
+	dq lit, 0
+	dq lit, base
+	dq fetch.x
+	dq div.x
+	dq dup.x
+
+.if1:
+	dq jump0, .then1
+
+	dq dup.x
+
+.then1:
+.if2:
+	dq jump0, .then2
+
+	dq enter, natural.x
+
+.then2:
+	dq lit, '0'
+	dq add.x
+	dq jump, putChar.x
+
+DEFINE number, "."
+	dq dup.x
+	dq enter, negative.x
+
+.if:
+	dq jump0, .then
+
+	dq enter, negate.x
+
+	dq lit, '-'
+	dq enter, putChar.x
+
+.then:
+	dq enter, natural.x
+	dq jump, newLine.x
 
 base:
 	dq 10
