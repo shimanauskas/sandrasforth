@@ -1,6 +1,6 @@
-; rax	top of data stack / syscall number
+; rax	syscall number, top of data stack
 ; rbx	temporary
-; rcx	unused / destroyed upon syscall
+; rcx	syscall scratch, unused
 ; rdx	syscall argument
 
 ; rsi	syscall argument
@@ -8,10 +8,10 @@
 ; rbp	data stack pointer
 ; rsp	code stack pointer
 
-; r8	syscall argument
-; r9	syscall argument
-; r10	syscall argument
-; r11	unused / destroyed upon syscall
+; r8	syscall argument, unused
+; r9	syscall argument, unused
+; r10	syscall argument, unused
+; r11	syscall scratch, unused
 
 ; r12	threaded code pointer
 ; r13	unused
