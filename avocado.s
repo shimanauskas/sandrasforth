@@ -877,13 +877,12 @@ DEFINE token, "token"
 	dq enter, negative.x	; Check for immediate flag
 
 .if5:
-	dq jump0, .else5
+	dq jump0, .then5
 
 	dq enter, execute.x
+	dq jump, token.x
 
-	dq jump, .then5
-.else5:
-
+.then5:
 	dq dup.x
 
 	dq lit, execute
@@ -900,8 +899,6 @@ DEFINE token, "token"
 	dq lit, CELL
 	dq add.x
 	dq enter, compile.x
-
-.then5:
 	dq jump, token.x
 
 .then4:
