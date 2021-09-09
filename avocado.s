@@ -433,21 +433,12 @@ DEFINE string, "string"
 	dq fetch.x
 	dq exit
 
-DEFINE interleave, "interleave"		; A, B, C, D -- A, C, B, D
-	dq push.x
-	dq over.x
-	dq push.x
-	dq nip.x
-	dq pull.x
-	dq pull.x
-	dq exit
+DEFINE stringCompare, "stringCompare"	; stringA, stringB -- comparisonValue
 
-DEFINE stringCompare, "stringCompare"	; string1Address, string1Size, string2Address, string2Size -- comparisonValue
+	; Compare string sizes
 
-	; Return immediately if string sizes are not equal
-
-	dq enter
-	dq interleave.x
+	dq over.x, fetch.x
+	dq over.x, fetch.x
 	dq xor.x
 
 .if:
@@ -461,6 +452,14 @@ DEFINE stringCompare, "stringCompare"	; string1Address, string1Size, string2Addr
 	dq exit
 
 .then:
+	dq lit, CELL
+	dq add.x
+	dq push.x
+
+	dq lit, CELL
+	dq add.x
+	dq pull.x
+
 .begin:
 	dq over.x
 	dq fetchByte.x
@@ -788,9 +787,7 @@ DEFINE find, "find"
 .if:
 	dq jump0, .then
 
-	dq enter, string.x
 	dq lit, bufToken
-	dq enter, string.x
 	dq enter, stringCompare.x
 
 .then:
