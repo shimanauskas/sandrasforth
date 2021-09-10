@@ -611,22 +611,11 @@ DEFINE literal, "literal"
 .if2:
 	dq jump0, .then2
 
-	dq drop.x		; Drop erroneous conversion
-	dq drop.x		; Drop token buffer address
-	dq drop.x		; Drop sign
+	dq nip.x		; Nip token buffer address
+	dq nip.x		; Nip sign
 
-	; Report an overflow error and start from the beginning
-
-	dq lit, bufToken
-	dq enter, string.x
-	dq write.x
-
-	dq lit, overflow
-	dq enter, string.x
-	dq write.x
-	dq enter, newLine.x
-
-	dq jump, main.x
+	dq lit, -1
+	dq exit
 
 .then2:
 	dq over.x
@@ -648,11 +637,8 @@ DEFINE literal, "literal"
 	dq mul.x		; Multiply by sign
 	dq drop.x
 
-	dq lit, lit
-	dq enter, compile.x
-	dq enter, compile.x
-
-	dq jump, token.x
+	dq lit, 0
+	dq exit
 
 DEFINE binary, "binary", FLAG
 	dq lit, 2
@@ -771,9 +757,41 @@ DEFINE token, "token"
 	dq storeByte.x
 
 	dq enter, isLiteral.x
-	dq enter, isZero.x
-	dq jump0, literal.x
 
+.if0:
+	dq jump0, .then0
+
+	dq enter, literal.x
+
+.if1:
+	dq jump0, .then1
+
+	dq drop.x		; Drop erroneous conversion
+
+	; Report an overflow error and start from the beginning
+
+	dq lit, bufToken
+	dq enter, string.x
+	dq write.x
+
+	dq lit, overflow
+	dq enter, string.x
+	dq write.x
+	dq enter, newLine.x
+
+	dq jump, main.x
+
+.then1:
+
+	; Compile converted literal
+
+	dq lit, lit
+	dq enter, compile.x
+	dq enter, compile.x
+
+	dq jump, token.x
+
+.then0:
 	dq enter, find.x
 	dq dup.x
 
