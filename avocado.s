@@ -61,6 +61,10 @@ align CELL
 	lea rbp, [rbp+CELL*%1]
 %endmacro
 
+%macro NIP 0
+	add rbp, CELL
+%endmacro
+
 %macro NEXT 0
 	add r12, CELL
 	jmp [r12]
@@ -114,7 +118,7 @@ DEFINE drop, "drop"
 	NEXT
 
 DEFINE nip, "nip"		; A, B -- B
-	add rbp, CELL
+	NIP
 	NEXT
 
 DEFINE over, "over"
@@ -153,29 +157,28 @@ DEFINE not, "!"
 	NEXT
 
 DEFINE and, "and"
-	and [rbp], rax
-	DROP 1
+	and rax, [rbp]
+	NIP
 	NEXT
 
 DEFINE or, "or"
-	or [rbp], rax
-	DROP 1
+	or rax, [rbp]
+	NIP
 	NEXT
 
 DEFINE xor, "xor"
-	xor [rbp], rax
-	DROP 1
+	xor rax, [rbp]
+	NIP
 	NEXT
 
 DEFINE add, "+"
-	add [rbp], rax
-	DROP 1
+	add rax, [rbp]
+	NIP
 	NEXT
 
 DEFINE sub, "-"
-	sub [rbp], rax
-	DROP 1
-	NEXT
+	neg rax
+	jmp add.x
 
 DEFINE mul, "*"
 	mov rbx, rax
