@@ -321,8 +321,8 @@ DEFINE getChar, "getChar"
 	dq fetch.x
 	dq xor.x
 
-.if1:
-	dq jump0, .then1
+.if0:
+	dq jump0, .then0
 
 	dq lit, inputPtr
 	dq fetch.x
@@ -337,7 +337,7 @@ DEFINE getChar, "getChar"
 
 	dq exit
 
-.then1:
+.then0:
 	dq lit, input
 	dq lit, PAGE-2
 	dq read.x
@@ -348,13 +348,13 @@ DEFINE getChar, "getChar"
 	dq enter, isZero.x
 	dq or.x
 
-.if2:
-	dq jump0, .then2
+.if1:
+	dq jump0, .then1
 
 	dq drop.x
 	dq bye.x
 
-.then2:
+.then1:
 	dq lit, input
 	dq add.x
 
@@ -368,8 +368,8 @@ DEFINE getChar, "getChar"
 	dq xor.x
 	dq enter, isZero.x
 
-.if3:
-	dq jump0, .then3
+.if2:
+	dq jump0, .then2
 
 	dq lit, ';'
 	dq over.x
@@ -383,7 +383,7 @@ DEFINE getChar, "getChar"
 	dq lit,	1
 	dq add.x
 
-.then3:
+.then2:
 	dq lit, inputTop
 	dq store.x
 
@@ -419,7 +419,7 @@ DEFINE putChar, "putChar"
 	dq or.x
 
 .if:
-	dq jump0, .then1
+	dq jump0, .then
 
 	dq lit, output
 	dq lit, outputPtr
@@ -432,7 +432,7 @@ DEFINE putChar, "putChar"
 	dq lit, outputPtr
 	dq store.x
 
-.then1:
+.then:
 	dq exit
 
 DEFINE newLine, "newLine"
@@ -582,8 +582,8 @@ DEFINE literal, "literal"
 	dq sub.x
 	dq enter, isZero.x
 
-.if1:
-	dq jump0, .then1
+.if0:
+	dq jump0, .then0
 
 	dq lit, 1
 	dq add.x
@@ -592,7 +592,7 @@ DEFINE literal, "literal"
 	dq enter, negate.x	; Negate sign
 	dq pull.x
 
-.then1:
+.then0:
 	dq lit, 0
 	dq push.x
 
@@ -608,8 +608,8 @@ DEFINE literal, "literal"
 	dq fetch.x
 	dq mul.x
 
-.if2:
-	dq jump0, .then2
+.if1:
+	dq jump0, .then1
 
 	dq nip.x		; Nip token buffer address
 	dq nip.x		; Nip sign
@@ -617,7 +617,7 @@ DEFINE literal, "literal"
 	dq lit, -1
 	dq exit
 
-.then2:
+.then1:
 	dq over.x
 	dq fetchByte.x
 	dq lit, '0'
@@ -704,31 +704,31 @@ DEFINE token, "token"
 	; The following loop reads input and discards spaces
 	; It returns the first non-space character
 
-.begin1:
+.begin0:
 	dq enter, getChar.x
 	dq dup.x
 	dq lit, '!'
 	dq enter, less.x
 
-.while1:
-	dq jump0, .do1
+.while0:
+	dq jump0, .do0
 
 	dq drop.x
 
-	dq jump, .begin1
-.do1:
+	dq jump, .begin0
+.do0:
 
 	dq lit, bufToken+CELL
 	dq push.x
 
-.begin2:
+.begin1:
 	dq dup.x
 	dq lit, '!'
 	dq enter, less.x
 	dq not.x
 
-.while2:
-	dq jump0, .do2
+.while1:
+	dq jump0, .do1
 
 	dq pull.x
 	dq dup.x
@@ -739,8 +739,8 @@ DEFINE token, "token"
 
 	dq enter, getChar.x
 
-	dq jump, .begin2
-.do2:
+	dq jump, .begin1
+.do1:
 
 	dq drop.x		; Drop last getChar's return value
 
@@ -795,40 +795,40 @@ DEFINE token, "token"
 	dq enter, find.x
 	dq dup.x
 
-.if4:
-	dq jump0, .then4
+.if2:
+	dq jump0, .then2
 
 	dq enter, stringSkip.x
 	dq dup.x
 	dq fetch.x
 	dq enter, negative.x	; Check for immediate flag
 
-.if5:
-	dq jump0, .then5
+.if3:
+	dq jump0, .then3
 
 	dq enter, execute.x
 	dq jump, token.x
 
-.then5:
+.then3:
 	dq dup.x
 
 	dq lit, execute
 	dq enter, less.x
 	dq not.x
 
-.if6:
-	dq jump0, .then6
+.if4:
+	dq jump0, .then4
 
 	dq lit, enter
 	dq enter, compile.x
 
-.then6:
+.then4:
 	dq lit, CELL
 	dq add.x
 	dq enter, compile.x
 	dq jump, token.x
 
-.then4:
+.then2:
 	dq drop.x
 
 	dq lit, bufToken
@@ -917,18 +917,18 @@ DEFINE natural, "natural"
 	dq div.x
 	dq dup.x
 
-.if1:
-	dq jump0, .then1
+.if0:
+	dq jump0, .then0
 
 	dq dup.x
 
-.then1:
-.if2:
-	dq jump0, .then2
+.then0:
+.if1:
+	dq jump0, .then1
 
 	dq enter, natural.x
 
-.then2:
+.then1:
 	dq lit, '0'
 	dq add.x
 	dq jump, putChar.x
