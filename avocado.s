@@ -334,7 +334,6 @@ DEFINE getChar, "getChar"
 	dq add.x
 	dq lit, inputPtr
 	dq store.x	
-
 	dq exit
 
 .then0:
@@ -390,7 +389,6 @@ DEFINE getChar, "getChar"
 	dq lit, input
 	dq lit, inputPtr
 	dq store.x
-
 	dq jump, getChar.x
 
 DEFINE putChar, "putChar"
@@ -778,7 +776,6 @@ DEFINE token, "token"
 	dq enter, string.x
 	dq write.x
 	dq enter, newLine.x
-
 	dq jump, main.x
 
 .then1:
@@ -788,7 +785,6 @@ DEFINE token, "token"
 	dq lit, lit
 	dq enter, compile.x
 	dq enter, compile.x
-
 	dq jump, token.x
 
 .then0:
@@ -839,7 +835,6 @@ DEFINE token, "token"
 	dq enter, string.x
 	dq write.x
 	dq enter, newLine.x
-
 	dq jump, main.x
 
 DEFINE main, "main"
@@ -856,7 +851,6 @@ DEFINE main, "main"
 	dq lit, code
 	dq lit, codePtr
 	dq store.x
-
 	dq jump, token.x
 
 ; The following definitions should be moved out of core once we can compile them at runtime
