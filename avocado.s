@@ -266,8 +266,7 @@ DEFINE bool, "bool"
 	dq exit
 
 DEFINE isZero, "isZero"
-	dq enter
-	dq bool.x
+	dq enter, bool.x
 	dq not.x
 	dq exit
 
@@ -277,8 +276,7 @@ DEFINE negative, "negative"
 	dq jump, bool.x
 
 DEFINE less, "less"
-	dq over.x
-	dq over.x
+	dq over.x, over.x
 	dq xor.x
 	dq enter, negative.x
 
@@ -306,13 +304,10 @@ DEFINE range, "range"
 	dq push.x
 	dq over.x
 	dq push.x
-	dq enter
-	dq less.x
+	dq enter, less.x
 	dq not.x
-	dq pull.x
-	dq pull.x
-	dq enter
-	dq more.x
+	dq pull.x, pull.x
+	dq enter, more.x
 	dq not.x
 	dq and.x
 	dq exit
@@ -374,14 +369,12 @@ DEFINE getChar, "getChar"
 	dq jump0, .then2
 
 	dq lit, ';'
-	dq over.x
-	dq storeByte.x
+	dq over.x, storeByte.x
 	dq lit, 1
 	dq add.x
 
 	dq lit, ' '
-	dq over.x
-	dq storeByte.x
+	dq over.x, storeByte.x
 	dq lit,	1
 	dq add.x
 
@@ -407,7 +400,7 @@ DEFINE putChar, "putChar"
 	dq lit, outputPtr
 	dq store.x
 
-	dq lit, 10
+	dq lit, `\n`
 	dq xor.x
 	dq enter, isZero.x
 
@@ -462,8 +455,7 @@ DEFINE stringCompare, "stringCompare"	; stringA, stringB -- comparisonValue
 
 	; Drop string addresses, return error
 
-	dq drop.x
-	dq drop.x
+	dq drop.x, drop.x
 	dq lit, -1
 	dq exit
 
@@ -477,16 +469,13 @@ DEFINE stringCompare, "stringCompare"	; stringA, stringB -- comparisonValue
 	dq pull.x
 
 .begin:
-	dq over.x
-	dq fetchByte.x
-	dq over.x
-	dq fetchByte.x
+	dq over.x, fetchByte.x
+	dq over.x, fetchByte.x
 
 	dq xor.x
 	dq enter, isZero.x
 
-	dq over.x
-	dq fetchByte.x
+	dq over.x, fetchByte.x
 	dq and.x
 
 .while:
@@ -512,8 +501,7 @@ DEFINE stringSkip, "stringSkip"
 	dq lit, ~(CELL-1)
 	dq and.x
 	dq lit, CELL
-	dq add.x
-	dq add.x
+	dq add.x, add.x
 	dq exit
 
 DEFINE isLiteralUnsigned, "isLiteralUnsigned"
@@ -561,7 +549,7 @@ DEFINE isLiteral, "isLiteral"
 	dq dup.x
 	dq fetchByte.x
 	dq lit, '-'
-	dq sub.x
+	dq xor.x
 	dq enter, isZero.x
 
 .if:
@@ -580,7 +568,7 @@ DEFINE literal, "literal"
 	dq dup.x
 	dq fetchByte.x
 	dq lit, '-'
-	dq sub.x
+	dq xor.x
 	dq enter, isZero.x
 
 .if0:
@@ -612,15 +600,13 @@ DEFINE literal, "literal"
 .if1:
 	dq jump0, .then1
 
-	dq nip.x		; Nip token buffer address
-	dq nip.x		; Nip sign
+	dq nip.x, nip.x		; Nip token buffer address and sign
 
 	dq lit, -1
 	dq exit
 
 .then1:
-	dq over.x
-	dq fetchByte.x
+	dq over.x, fetchByte.x
 	dq lit, '0'
 	dq sub.x
 	dq add.x
@@ -667,8 +653,7 @@ DEFINE find, "find"
 	dq fetch.x
 	dq lit, ~FLAG
 	dq and.x
-	dq dup.x
-	dq dup.x
+	dq dup.x, dup.x
 
 .if:
 	dq jump0, .then
