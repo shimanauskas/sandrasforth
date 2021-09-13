@@ -647,7 +647,7 @@ DEFINE semiColon, ";", FLAG
 	dq enter, compile.x
 	dq enter, code
 	dq pull.x, drop.x
-	dq jump, main.x
+	dq exit
 
 DEFINE find, "find"
 	dq lit, last
@@ -766,8 +766,7 @@ DEFINE token, "token"
 	dq lit, overflow
 	dq enter, string.x
 	dq write.x
-	dq enter, newLine.x
-	dq jump, main.x
+	dq jump, newLine.x
 
 .then1:
 
@@ -825,24 +824,25 @@ DEFINE token, "token"
 	dq lit, error
 	dq enter, string.x
 	dq write.x
-	dq enter, newLine.x
-	dq jump, main.x
+	dq jump, newLine.x
 
 DEFINE main, "main"
+	dq lit, prompt
+	dq enter, string.x
+	dq write.x
+
+	dq enter, token.x
+
 	dq lit, input
 	dq lit, inputPtr
 	dq over.x
 	dq lit, inputTop
 	dq store.x, store.x
 
-	dq lit, prompt
-	dq enter, string.x
-	dq write.x
-
 	dq lit, code
 	dq lit, codePtr
 	dq store.x
-	dq jump, token.x
+	dq jump, main.x
 
 ; The following definitions should be moved out of core once we can compile them at runtime
 
