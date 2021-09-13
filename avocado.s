@@ -291,15 +291,15 @@ DEFINE bool, "bool"
 .then:
 	dq exit
 
-DEFINE isZero, "isZero"
-	dq enter, bool.x
-	dq not.x
-	dq exit
-
 DEFINE more, "more"
 	dq lit, 1
 	dq add.x
 	dq enter, less.x
+	dq not.x
+	dq exit
+
+DEFINE isZero, "isZero"
+	dq enter, bool.x
 	dq not.x
 	dq exit
 
