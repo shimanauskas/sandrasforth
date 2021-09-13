@@ -563,7 +563,7 @@ DEFINE getToken, "getToken"
 	dq storeByte.x
 	dq exit
 
-DEFINE isLit, "isLit"
+DEFINE isLiteral, "isLiteral"
 	dq lit, token+CELL
 
 	dq dup.x
@@ -743,7 +743,7 @@ DEFINE compile, "compile"
 
 DEFINE interpret, "interpret"
 	dq enter, getToken.x
-	dq enter, isLit.x
+	dq enter, isLiteral.x
 
 .if0:
 	dq jump0, .then0
