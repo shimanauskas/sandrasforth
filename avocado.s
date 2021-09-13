@@ -296,6 +296,10 @@ DEFINE more, "more"
 	dq not.x
 	dq exit
 
+DEFINE equals, "equals"
+	dq xor.x
+	dq jump, isZero.x
+
 DEFINE isZero, "isZero"
 	dq enter, bool.x
 	dq not.x
@@ -363,8 +367,7 @@ DEFINE getChar, "getChar"
 	dq sub.x
 	dq fetchByte.x
 	dq lit, `\n`
-	dq xor.x
-	dq enter, isZero.x
+	dq enter, equals.x
 
 .if2:
 	dq jump0, .then2
@@ -406,14 +409,12 @@ DEFINE putChar, "putChar"
 	dq store.x
 
 	dq lit, `\n`
-	dq xor.x
-	dq enter, isZero.x
+	dq enter, equals.x
 
 	dq lit, outputPtr
 	dq fetch.x
 	dq lit, output+PAGE
-	dq xor.x
-	dq enter, isZero.x
+	dq enter, equals.x
 
 	dq or.x
 
@@ -472,9 +473,7 @@ DEFINE strCmp, "strCmp"		; stringA, stringB -- comparisonValue
 .begin:
 	dq over.x, fetchByte.x
 	dq over.x, fetchByte.x
-
-	dq xor.x
-	dq enter, isZero.x
+	dq enter, equals.x
 
 	dq over.x, fetchByte.x
 	dq and.x
@@ -569,8 +568,7 @@ DEFINE isLiteral, "isLiteral"
 	dq dup.x
 	dq fetchByte.x
 	dq lit, '-'
-	dq xor.x
-	dq enter, isZero.x
+	dq enter, equals.x
 
 .if0:
 	dq jump0, .then0
@@ -624,8 +622,7 @@ DEFINE literal, "literal"
 	dq dup.x
 	dq fetchByte.x
 	dq lit, '-'
-	dq xor.x
-	dq enter, isZero.x
+	dq enter, equals.x
 
 .if0:
 	dq jump0, .then0
