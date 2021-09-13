@@ -686,7 +686,7 @@ DEFINE compile, "compile"
 	dq store.x
 	dq exit
 
-DEFINE token, "token"
+DEFINE interpret, "interpret"
 
 	; The following loop reads input and discards spaces
 	; It returns the first non-space character
@@ -772,7 +772,7 @@ DEFINE token, "token"
 	dq lit, lit
 	dq enter, compile.x
 	dq enter, compile.x
-	dq jump, token.x
+	dq jump, interpret.x
 
 .then0:
 	dq enter, find.x
@@ -790,7 +790,7 @@ DEFINE token, "token"
 	dq jump0, .then3
 
 	dq enter, execute.x
-	dq jump, token.x
+	dq jump, interpret.x
 
 .then3:
 	dq dup.x
@@ -809,7 +809,7 @@ DEFINE token, "token"
 	dq lit, CELL
 	dq add.x
 	dq enter, compile.x
-	dq jump, token.x
+	dq jump, interpret.x
 
 .then2:
 	dq drop.x
@@ -827,7 +827,7 @@ DEFINE main, "main"
 	dq enter, strLoad.x
 	dq write.x
 
-	dq enter, token.x
+	dq enter, interpret.x
 
 	dq lit, input
 	dq lit, inputPtr
