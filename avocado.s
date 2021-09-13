@@ -21,13 +21,13 @@
 %include "platform.s"
 
 %ifdef LINUX
-	%define sysRead  0
-	%define sysWrite 1
-	%define sysExit 60
+	%define SYSREAD  0
+	%define SYSWRITE 1
+	%define SYSEXIT 60
 %elif MACOS
-	%define sysRead  0x2000003
-	%define sysWrite 0x2000004
-	%define sysExit  0x2000001
+	%define SYSREAD  0x2000003
+	%define SYSWRITE 0x2000004
+	%define SYSEXIT  0x2000001
 %endif
 
 %define STDIN  0
@@ -225,7 +225,7 @@ DEFINE read, "read"
 	mov rdx, rax		; Size
 	mov rsi, [rbp]		; Address
 	mov rdi, STDIN
-	mov rax, sysRead
+	mov rax, SYSREAD
 	syscall
 	NEXT
 
@@ -233,14 +233,14 @@ DEFINE write, "write"
 	mov rdx, rax		; Size
 	mov rsi, [rbp]		; Address
 	mov rdi, STDOUT
-	mov rax, sysWrite
+	mov rax, SYSWRITE
 	syscall
 	DROP 2
 	NEXT
 
 DEFINE bye, "bye"
 	xor rdi, rdi
-	mov rax, sysExit
+	mov rax, SYSEXIT
 	syscall
 
 section .data
