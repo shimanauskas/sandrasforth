@@ -763,9 +763,8 @@ DEFINE token, "token"
 	dq enter, string.x
 	dq write.x
 
-	dq lit, overflow
-	dq enter, string.x
-	dq write.x
+	dq lit, '!'
+	dq enter, putChar.x
 	dq jump, newLine.x
 
 .then1:
@@ -821,9 +820,8 @@ DEFINE token, "token"
 	dq enter, string.x
 	dq write.x
 
-	dq lit, error
-	dq enter, string.x
-	dq write.x
+	dq lit, '?'
+	dq enter, putChar.x
 	dq jump, newLine.x
 
 DEFINE main, "main"
@@ -952,8 +950,6 @@ outputPtr:
 codePtr:
 	dq code
 
-STRING error, " ?"
-STRING overflow, " !"
 STRING prompt, "# "
 
 section .bss
