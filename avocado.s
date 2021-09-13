@@ -506,7 +506,7 @@ DEFINE strSkip, "strSkip"
 	dq exit
 
 DEFINE isLit, "isLit"
-	dq lit, bufToken+CELL
+	dq lit, token+CELL
 
 	dq dup.x
 	dq fetchByte.x
@@ -565,7 +565,7 @@ DEFINE isLitUnsign, "isLitUnsign"
 DEFINE literal, "literal"
 	dq lit, 1		; Sign
 
-	dq lit, bufToken+CELL
+	dq lit, token+CELL
 	dq dup.x
 	dq fetchByte.x
 	dq lit, '-'
@@ -659,7 +659,7 @@ DEFINE find, "find"
 .if:
 	dq jump0, .then
 
-	dq lit, bufToken
+	dq lit, token
 	dq enter, strCmp.x
 
 .then:
@@ -705,7 +705,7 @@ DEFINE interpret, "interpret"
 	dq jump, .begin0
 .do0:
 
-	dq lit, bufToken+CELL
+	dq lit, token+CELL
 	dq push.x
 
 .begin1:
@@ -732,13 +732,13 @@ DEFINE interpret, "interpret"
 	dq drop.x		; Drop last getChar's return value
 
 	dq pull.x
-	dq lit, bufToken+CELL
+	dq lit, token+CELL
 	dq sub.x
-	dq lit, bufToken
+	dq lit, token
 	dq store.x
 
 	dq lit, 0
-	dq lit, bufToken
+	dq lit, token
 	dq enter, strLoad.x
 	dq add.x
 	dq storeByte.x
@@ -757,7 +757,7 @@ DEFINE interpret, "interpret"
 
 	; Report an overflow error and start from the beginning
 
-	dq lit, bufToken
+	dq lit, token
 	dq enter, strLoad.x
 	dq write.x
 
@@ -814,7 +814,7 @@ DEFINE interpret, "interpret"
 .then2:
 	dq drop.x
 
-	dq lit, bufToken
+	dq lit, token
 	dq enter, strLoad.x
 	dq write.x
 
@@ -963,7 +963,7 @@ input:
 output:
 	resb PAGE
 
-bufToken:
+token:
 	resb PAGE
 
 code:
