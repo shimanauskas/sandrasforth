@@ -572,21 +572,18 @@ DEFINE isLit, "isLit"
 	dq xor.x
 	dq enter, isZero.x
 
-.if:
-	dq jump0, .then
+.if0:
+	dq jump0, .then0
 
 	dq lit, 1
 	dq add.x
 
-.then:
-	dq jump, isLitUnsign.x	; Fallthrough?
-
-DEFINE isLitUnsign, "isLitUnsign"
+.then0:
 	dq dup.x
 	dq fetchByte.x
 
-.if:
-	dq jump0, .then
+.if1:
+	dq jump0, .then1
 
 .begin:
 	dq dup.x
@@ -615,7 +612,7 @@ DEFINE isLitUnsign, "isLitUnsign"
 	dq fetchByte.x
 	dq jump, isZero.x
 
-.then:
+.then1:
 	dq drop.x
 	dq lit, 0
 	dq exit
