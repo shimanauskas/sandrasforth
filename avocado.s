@@ -30,6 +30,9 @@
 	%define sysExit  0x2000001
 %endif
 
+%define STDIN  0
+%define STDOUT 1
+
 %define CELL 8
 %define PAGE 1000h
 %define FLAG 8000000000000000h
@@ -221,7 +224,7 @@ DEFINE storeByte, "storeByte"
 DEFINE read, "read"
 	mov rdx, rax		; Size
 	mov rsi, [rbp]		; Address
-	mov rdi, 0		; stdin
+	mov rdi, STDIN
 	mov rax, sysRead
 	syscall
 	NEXT
@@ -229,7 +232,7 @@ DEFINE read, "read"
 DEFINE write, "write"
 	mov rdx, rax		; Size
 	mov rsi, [rbp]		; Address
-	mov rdi, 1		; stdout
+	mov rdi, STDOUT
 	mov rax, sysWrite
 	syscall
 	DROP 2
