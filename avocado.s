@@ -436,7 +436,7 @@ DEFINE putChar, "putChar"
 .then:
 	dq exit
 
-DEFINE string, "string"
+DEFINE strLoad, "strLoad"
 	dq dup.x
 	dq push.x
 	dq lit, CELL
@@ -445,7 +445,7 @@ DEFINE string, "string"
 	dq fetch.x
 	dq exit
 
-DEFINE stringCmp, "stringCmp"	; stringA, stringB -- comparisonValue
+DEFINE strCmp, "strCmp"		; stringA, stringB -- comparisonValue
 
 	; Compare string sizes
 
@@ -499,8 +499,8 @@ DEFINE stringCmp, "stringCmp"	; stringA, stringB -- comparisonValue
 	dq fetchByte.x
 	dq exit
 
-DEFINE stringSkip, "stringSkip"
-	dq enter, string.x
+DEFINE strSkip, "strSkip"
+	dq enter, strLoad.x
 	dq lit, ~(CELL-1)
 	dq and.x
 	dq lit, CELL
@@ -662,13 +662,13 @@ DEFINE find, "find"
 	dq jump0, .then
 
 	dq lit, bufToken
-	dq enter, stringCmp.x
+	dq enter, strCmp.x
 
 .then:
 .while:
 	dq jump0, .do
 
-	dq enter, stringSkip.x
+	dq enter, strSkip.x
 
 	dq jump, .begin
 .do:
@@ -741,7 +741,7 @@ DEFINE token, "token"
 
 	dq lit, 0
 	dq lit, bufToken
-	dq enter, string.x
+	dq enter, strLoad.x
 	dq add.x
 	dq storeByte.x
 
@@ -760,7 +760,7 @@ DEFINE token, "token"
 	; Report an overflow error and start from the beginning
 
 	dq lit, bufToken
-	dq enter, string.x
+	dq enter, strLoad.x
 	dq write.x
 
 	dq lit, '!'
@@ -783,7 +783,7 @@ DEFINE token, "token"
 .if2:
 	dq jump0, .then2
 
-	dq enter, stringSkip.x
+	dq enter, strSkip.x
 	dq dup.x
 	dq fetch.x
 	dq enter, negative.x	; Check for immediate flag
@@ -817,7 +817,7 @@ DEFINE token, "token"
 	dq drop.x
 
 	dq lit, bufToken
-	dq enter, string.x
+	dq enter, strLoad.x
 	dq write.x
 
 	dq lit, '?'
@@ -826,7 +826,7 @@ DEFINE token, "token"
 
 DEFINE main, "main"
 	dq lit, prompt
-	dq enter, string.x
+	dq enter, strLoad.x
 	dq write.x
 
 	dq enter, token.x
