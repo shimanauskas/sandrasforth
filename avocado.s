@@ -174,6 +174,10 @@ DEFINE xor, "xor"
 	NIP
 	NEXT
 
+DEFINE negate, "negate"
+	neg rax
+	NEXT
+
 DEFINE sub, "-"
 	neg rax
 	jmp add.x		; Fallthrough?
@@ -247,12 +251,6 @@ section .data
 
 DEFINE execute, "execute"
 	dq push.x
-	dq exit
-
-DEFINE negate, "negate"
-	dq not.x
-	dq lit, 1
-	dq add.x
 	dq exit
 
 DEFINE less, "less"
@@ -581,7 +579,7 @@ DEFINE literal, "literal"
 	dq add.x
 
 	dq push.x
-	dq enter, negate.x	; Negate sign
+	dq negate.x		; Negate sign
 	dq pull.x
 
 .then0:
@@ -923,7 +921,7 @@ DEFINE number, "."
 .if:
 	dq jump0, .then
 
-	dq enter, negate.x
+	dq negate.x
 
 	dq lit, '-'
 	dq enter, putChar.x
