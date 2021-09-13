@@ -505,6 +505,64 @@ DEFINE strSkip, "strSkip"
 	dq add.x, add.x
 	dq exit
 
+DEFINE getToken, "getToken"
+
+	; The following loop reads input and discards spaces
+	; It returns the first non-space character
+
+.begin0:
+	dq enter, getChar.x
+	dq dup.x
+	dq lit, '!'
+	dq enter, less.x
+
+.while0:
+	dq jump0, .do0
+
+	dq drop.x
+
+	dq jump, .begin0
+.do0:
+
+	dq lit, token+CELL
+	dq push.x
+
+.begin1:
+	dq dup.x
+	dq lit, '!'
+	dq enter, less.x
+	dq not.x
+
+.while1:
+	dq jump0, .do1
+
+	dq pull.x
+	dq dup.x
+	dq lit, 1
+	dq add.x
+	dq push.x
+	dq storeByte.x
+
+	dq enter, getChar.x
+
+	dq jump, .begin1
+.do1:
+
+	dq drop.x		; Drop last getChar's return value
+
+	dq pull.x
+	dq lit, token+CELL
+	dq sub.x
+	dq lit, token
+	dq store.x
+
+	dq lit, 0
+	dq lit, token
+	dq enter, strLoad.x
+	dq add.x
+	dq storeByte.x
+	dq exit
+
 DEFINE isLit, "isLit"
 	dq lit, token+CELL
 
@@ -687,62 +745,7 @@ DEFINE compile, "compile"
 	dq exit
 
 DEFINE interpret, "interpret"
-
-	; The following loop reads input and discards spaces
-	; It returns the first non-space character
-
-.begin0:
-	dq enter, getChar.x
-	dq dup.x
-	dq lit, '!'
-	dq enter, less.x
-
-.while0:
-	dq jump0, .do0
-
-	dq drop.x
-
-	dq jump, .begin0
-.do0:
-
-	dq lit, token+CELL
-	dq push.x
-
-.begin1:
-	dq dup.x
-	dq lit, '!'
-	dq enter, less.x
-	dq not.x
-
-.while1:
-	dq jump0, .do1
-
-	dq pull.x
-	dq dup.x
-	dq lit, 1
-	dq add.x
-	dq push.x
-	dq storeByte.x
-
-	dq enter, getChar.x
-
-	dq jump, .begin1
-.do1:
-
-	dq drop.x		; Drop last getChar's return value
-
-	dq pull.x
-	dq lit, token+CELL
-	dq sub.x
-	dq lit, token
-	dq store.x
-
-	dq lit, 0
-	dq lit, token
-	dq enter, strLoad.x
-	dq add.x
-	dq storeByte.x
-
+	dq enter, getToken.x
 	dq enter, isLit.x
 
 .if0:
