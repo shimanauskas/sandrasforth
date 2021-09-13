@@ -1,4 +1,4 @@
-; rax	syscall number, top of data stack
+; rax	top of data stack, syscall number
 ; rbx	temporary
 ; rcx	unused, syscall scratch
 ; rdx	syscall argument
