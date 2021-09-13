@@ -174,14 +174,14 @@ DEFINE xor, "xor"
 	NIP
 	NEXT
 
+DEFINE sub, "-"
+	neg rax
+	jmp add.x		; Fallthrough?
+
 DEFINE add, "+"
 	add rax, [rbp]
 	NIP
 	NEXT
-
-DEFINE sub, "-"
-	neg rax
-	jmp add.x
 
 DEFINE mul, "*"
 	mov rbx, rax
@@ -255,6 +255,29 @@ DEFINE negate, "negate"
 	dq add.x
 	dq exit
 
+DEFINE less, "less"
+	dq over.x, over.x
+	dq xor.x
+	dq enter, negative.x
+
+.if:
+	dq jump0, .else
+
+	dq drop.x
+
+	dq jump, .then
+.else:
+
+	dq sub.x
+
+.then:
+	dq jump, negative.x	; Fallthrough?
+
+DEFINE negative, "negative"
+	dq lit, FLAG
+	dq and.x
+	dq jump, bool.x		; Fallthrough?
+
 DEFINE bool, "bool"
 	dq dup.x
 
@@ -272,29 +295,6 @@ DEFINE isZero, "isZero"
 	dq enter, bool.x
 	dq not.x
 	dq exit
-
-DEFINE negative, "negative"
-	dq lit, FLAG
-	dq and.x
-	dq jump, bool.x
-
-DEFINE less, "less"
-	dq over.x, over.x
-	dq xor.x
-	dq enter, negative.x
-
-.if:
-	dq jump0, .else
-
-	dq drop.x
-
-	dq jump, .then
-.else:
-
-	dq sub.x
-
-.then:
-	dq jump, negative.x
 
 DEFINE more, "more"
 	dq lit, 1
@@ -390,6 +390,10 @@ DEFINE getChar, "getChar"
 	dq store.x
 	dq jump, getChar.x
 
+DEFINE newLine, "newLine"
+	dq lit, `\n`
+	dq jump, putChar.x	; Fallthrough?
+
 DEFINE putChar, "putChar"
 	dq dup.x
 	dq lit, outputPtr
@@ -431,10 +435,6 @@ DEFINE putChar, "putChar"
 
 .then:
 	dq exit
-
-DEFINE newLine, "newLine"
-	dq lit, `\n`
-	dq jump, putChar.x
 
 DEFINE string, "string"
 	dq dup.x
@@ -507,6 +507,24 @@ DEFINE stringSkip, "stringSkip"
 	dq add.x, add.x
 	dq exit
 
+DEFINE isLiteral, "isLiteral"
+	dq lit, bufToken+CELL
+
+	dq dup.x
+	dq fetchByte.x
+	dq lit, '-'
+	dq xor.x
+	dq enter, isZero.x
+
+.if:
+	dq jump0, .then
+
+	dq lit, 1
+	dq add.x
+
+.then:
+	dq jump, isLiteralUnsigned.x	; Fallthrough?
+
 DEFINE isLiteralUnsigned, "isLiteralUnsigned"
 	dq dup.x
 	dq fetchByte.x
@@ -545,24 +563,6 @@ DEFINE isLiteralUnsigned, "isLiteralUnsigned"
 	dq drop.x
 	dq lit, 0
 	dq exit
-
-DEFINE isLiteral, "isLiteral"
-	dq lit, bufToken+CELL
-
-	dq dup.x
-	dq fetchByte.x
-	dq lit, '-'
-	dq xor.x
-	dq enter, isZero.x
-
-.if:
-	dq jump0, .then
-
-	dq lit, 1
-	dq add.x
-
-.then:
-	dq jump, isLiteralUnsigned.x
 
 DEFINE literal, "literal"
 	dq lit, 1		; Sign
@@ -844,6 +844,9 @@ DEFINE main, "main"
 
 ; The following definitions should be moved out of core once we can compile them at runtime
 
+DEFINE while, "while", FLAG
+	dq jump, if.x		; Fallthrough?
+
 DEFINE if, "if", FLAG
 	dq lit, jump0
 	dq enter, compile.x
@@ -876,9 +879,6 @@ DEFINE begin, "begin", FLAG
 	dq lit, codePtr
 	dq fetch.x
 	dq exit
-
-DEFINE while, "while", FLAG
-	dq jump, if.x
 
 DEFINE do, "do", FLAG
 	dq push.x
