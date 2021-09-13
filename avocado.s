@@ -298,7 +298,7 @@ DEFINE more, "more"
 
 DEFINE equals, "equals"
 	dq xor.x
-	dq jump, isZero.x
+	dq jump, isZero.x	; Fallthrough?
 
 DEFINE isZero, "isZero"
 	dq enter, bool.x
