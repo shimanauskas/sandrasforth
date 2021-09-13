@@ -445,7 +445,7 @@ DEFINE string, "string"
 	dq fetch.x
 	dq exit
 
-DEFINE stringCompare, "stringCompare"	; stringA, stringB -- comparisonValue
+DEFINE stringCmp, "stringCmp"	; stringA, stringB -- comparisonValue
 
 	; Compare string sizes
 
@@ -507,7 +507,7 @@ DEFINE stringSkip, "stringSkip"
 	dq add.x, add.x
 	dq exit
 
-DEFINE isLiteral, "isLiteral"
+DEFINE isLit, "isLit"
 	dq lit, bufToken+CELL
 
 	dq dup.x
@@ -523,9 +523,9 @@ DEFINE isLiteral, "isLiteral"
 	dq add.x
 
 .then:
-	dq jump, isLiteralUnsigned.x	; Fallthrough?
+	dq jump, isLitUnsign.x	; Fallthrough?
 
-DEFINE isLiteralUnsigned, "isLiteralUnsigned"
+DEFINE isLitUnsign, "isLitUnsign"
 	dq dup.x
 	dq fetchByte.x
 
@@ -662,7 +662,7 @@ DEFINE find, "find"
 	dq jump0, .then
 
 	dq lit, bufToken
-	dq enter, stringCompare.x
+	dq enter, stringCmp.x
 
 .then:
 .while:
@@ -745,7 +745,7 @@ DEFINE token, "token"
 	dq add.x
 	dq storeByte.x
 
-	dq enter, isLiteral.x
+	dq enter, isLit.x
 
 .if0:
 	dq jump0, .then0
