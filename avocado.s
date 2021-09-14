@@ -322,42 +322,36 @@ DEFINE getChar, "getChar"
 	dq fetch.x
 	dq lit, inputTop
 	dq fetch.x
-	dq xor.x
+	dq enter, less.x
 
 .if0:
 	dq jump0, .then0
 
 	dq lit, inputPtr
 	dq fetch.x
-	dq fetchByte.x
-
-	dq lit, inputPtr
-	dq fetch.x
+	dq dup.x
 	dq lit, 1
 	dq add.x
 	dq lit, inputPtr
-	dq store.x	
+	dq store.x
+	dq fetchByte.x
 	dq exit
 
 .then0:
 	dq lit, input
 	dq lit, PAGE-2
 	dq read.x
-	dq nip.x
 	dq dup.x
-	dq enter, negative.x
-	dq over.x
-	dq enter, isZero.x
-	dq or.x
+	dq lit, 1
+	dq enter, less.x
 
 .if1:
 	dq jump0, .then1
 
-	dq drop.x
 	dq bye.x
 
 .then1:
-	dq lit, input
+	dq over.x
 	dq add.x
 
 	; Append a terminating token upon end of input
@@ -385,8 +379,6 @@ DEFINE getChar, "getChar"
 .then2:
 	dq lit, inputTop
 	dq store.x
-
-	dq lit, input
 	dq lit, inputPtr
 	dq store.x
 	dq jump, getChar.x
@@ -827,10 +819,8 @@ DEFINE main, "main"
 	dq enter, interpret.x
 
 	dq lit, input
-	dq lit, inputPtr
-	dq over.x
 	dq lit, inputTop
-	dq store.x, store.x
+	dq store.x
 
 	dq lit, code
 	dq lit, codePtr
