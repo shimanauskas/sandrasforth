@@ -312,8 +312,7 @@ DEFINE range, "range"
 	dq enter, less.x
 	dq not.x
 	dq pull.x, pull.x
-	dq enter, more.x
-	dq not.x
+	dq enter, less.x
 	dq and.x
 	dq exit
 
@@ -585,8 +584,6 @@ DEFINE isLiteral, "isLiteral"
 	dq lit, 0
 	dq lit, base
 	dq fetch.x
-	dq lit, 1
-	dq sub.x
 	dq enter, range.x
 	dq and.x
 
