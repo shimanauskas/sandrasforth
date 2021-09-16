@@ -1,6 +1,6 @@
 ; rax	top of data stack, syscall number
-; rbx	temporary
-; rcx	unused, syscall scratch
+; rbx	threaded code pointer
+; rcx	temporary, syscall scratch
 ; rdx	syscall argument
 
 ; rsi	syscall argument
@@ -13,7 +13,7 @@
 ; r10	unused, syscall argument
 ; r11	unused, syscall scratch
 
-; r12	threaded code pointer
+; r12	unused
 ; r13	unused
 ; r14	unused
 ; r15	unused
@@ -69,8 +69,8 @@ align CELL
 %endmacro
 
 %macro NEXT 0
-	add r12, CELL
-	jmp [r12]
+	add rbx, CELL
+	jmp [rbx]
 %endmacro
 
 section .text
@@ -81,35 +81,35 @@ start:
 	mov rbp, stack+PAGE	; Our stacks grow downward
 	mov rax, -1		; Top-of-stack magic value aids in debugging
 
-	mov r12, main.x
-	jmp [r12]
+	mov rbx, main.x
+	jmp [rbx]
 
 lit:
 	DUP
-	add r12, CELL
-	mov rax, [r12]
+	add rbx, CELL
+	mov rax, [rbx]
 	NEXT
 
 enter:
-	add r12, CELL
-	push r12
-	mov r12, [r12]
-	jmp [r12]
+	add rbx, CELL
+	push rbx
+	mov rbx, [rbx]
+	jmp [rbx]
 
 exit:
-	pop r12
+	pop rbx
 	NEXT
 
 jump:
-	add r12, CELL
-	mov r12, [r12]
-	jmp [r12]
+	add rbx, CELL
+	mov rbx, [rbx]
+	jmp [rbx]
 
 jump0:
 	test rax, rax
 	DROP 1
 	jz jump
-	add r12, CELL
+	add rbx, CELL
 	NEXT
 
 DEFINE dup, "dup"
@@ -188,19 +188,19 @@ DEFINE add, "+"
 	NEXT
 
 DEFINE mul, "*"
-	mov rbx, rax
+	mov rcx, rax
 	DROP 1
-	mul rbx
+	mul rcx
 	DUP
 	mov rax, rdx
 	NEXT
 
 DEFINE div, "/"
-	mov rbx, rax
+	mov rcx, rax
 	mov rdx, [rbp]
 	lea rbp, [rbp+CELL]
 	mov rax, [rbp]
-	div rbx
+	div rcx
 	mov [rbp], rdx
 	NEXT
 
@@ -209,8 +209,8 @@ DEFINE fetch, "fetch"
 	NEXT
 
 DEFINE store, "store"
-	mov rbx, [rbp]
-	mov [rax], rbx
+	mov rcx, [rbp]
+	mov [rax], rcx
 	DROP 2
 	NEXT
 
@@ -220,8 +220,8 @@ DEFINE fetchByte, "fetchByte"
 	NEXT
 
 DEFINE storeByte, "storeByte"
-	mov bl, [rbp]
-	mov [rax], bl
+	mov cl, [rbp]
+	mov [rax], cl
 	DROP 2
 	NEXT
 
