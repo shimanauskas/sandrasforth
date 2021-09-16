@@ -338,7 +338,7 @@ DEFINE getChar, "getChar"
 
 .then0:
 	dq lit, input
-	dq lit, PAGE-2
+	dq lit, PAGE
 	dq read.x
 	dq dup.x
 	dq lit, 1
