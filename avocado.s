@@ -352,30 +352,6 @@ DEFINE getChar, "getChar"
 .then1:
 	dq over.x
 	dq add.x
-
-	; Append a terminating token upon end of input
-
-	dq dup.x
-	dq lit, 1
-	dq sub.x
-	dq fetchByte.x
-	dq lit, `\n`
-	dq enter, equals.x
-
-.if2:
-	dq jump0, .then2
-
-	dq lit, ';'
-	dq over.x, storeByte.x
-	dq lit, 1
-	dq add.x
-
-	dq lit, ' '
-	dq over.x, storeByte.x
-	dq lit,	1
-	dq add.x
-
-.then2:
 	dq lit, inputTop
 	dq store.x
 	dq lit, inputPtr
