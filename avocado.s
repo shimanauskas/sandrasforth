@@ -557,10 +557,41 @@ DEFINE isLiteral, "isLiteral"
 	dq dup.x
 	dq lit, '0'
 	dq sub.x
+
+	dq lit, base
+	dq fetch.x
+	dq lit, 11
+	dq enter, less.x
+
+.if2:
+	dq jump0, .else2
+
 	dq lit, 0
 	dq lit, base
 	dq fetch.x
 	dq enter, range.x
+
+	dq jump, .then2
+.else2:
+
+	dq dup.x
+	dq lit, 0
+	dq lit, 10
+	dq enter, range.x
+
+	dq over.x
+	dq lit, 'A'-'0'
+	dq sub.x
+	dq lit, 0
+	dq lit, base
+	dq fetch.x
+	dq lit, 10
+	dq sub.x
+	dq enter, range.x
+	dq or.x
+	dq nip.x
+
+.then2:
 	dq and.x
 
 .while:
@@ -627,6 +658,18 @@ DEFINE literal, "literal"
 	dq over.x, fetchByte.x
 	dq lit, '0'
 	dq sub.x
+
+	dq dup.x
+	dq lit, 10
+	dq enter, more.x
+
+.if2:
+	dq jump0, .then2
+
+	dq lit, 'A'-'0'-10
+	dq sub.x
+
+.then2:
 	dq add.x
 
 	dq push.x
@@ -653,6 +696,12 @@ DEFINE binary, "binary", FLAG
 
 DEFINE decimal, "decimal", FLAG
 	dq lit, 10
+	dq lit, base
+	dq store.x
+	dq exit
+
+DEFINE hexadecimal, "hexadecimal", FLAG
+	dq lit, 16
 	dq lit, base
 	dq store.x
 	dq exit
@@ -870,7 +919,23 @@ DEFINE natural, "natural"
 	dq enter, natural.x
 
 .then1:
+	dq dup.x
+	dq lit, 10
+	dq enter, less.x
+
+.if2:
+	dq jump0, .else2
+
 	dq lit, '0'
+
+	dq jump, .then2
+
+.else2:
+	dq lit, 10
+	dq sub.x
+	dq lit, 'A'
+
+.then2:
 	dq add.x
 	dq jump, putChar.x
 
