@@ -305,6 +305,21 @@ DEFINE isZero, "isZero"
 	dq not.x
 	dq exit
 
+; Keywords abs and absolute are already use by NASM,
+; so we use this clumsy name.
+
+DEFINE unNegate, "unNegate"
+	dq dup.x
+	dq enter, negative.x
+
+.if:
+	dq jump0, .then
+
+	dq negate.x
+
+.then:
+	dq exit
+
 DEFINE range, "range"
 	dq push.x
 	dq over.x
