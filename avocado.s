@@ -915,7 +915,7 @@ DEFINE do, "do", FLAG
 	dq enter, compile.x
 	dq jump, compile.x
 
-DEFINE natural, "natural"
+DEFINE unsigned, "unsigned"
 	dq lit, 0
 	dq lit, base
 	dq fetch.x
@@ -931,7 +931,7 @@ DEFINE natural, "natural"
 .if1:
 	dq jump0, .then1
 
-	dq enter, natural.x
+	dq enter, unsigned.x
 
 .then1:
 	dq dup.x
@@ -967,7 +967,7 @@ DEFINE number, "."
 	dq enter, putChar.x
 
 .then:
-	dq enter, natural.x
+	dq enter, unsigned.x
 	dq jump, newLine.x
 
 base:
