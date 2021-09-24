@@ -915,6 +915,21 @@ DEFINE do, "do", FLAG
 	dq enter, compile.x
 	dq jump, compile.x
 
+DEFINE signed, "signed"
+	dq dup.x
+	dq enter, negative.x
+
+.if:
+	dq jump0, .then
+
+	dq negate.x
+
+	dq lit, '-'
+	dq enter, putChar.x
+
+.then:
+	dq jump, unsigned.x
+
 DEFINE unsigned, "unsigned"
 	dq lit, 0
 	dq lit, base
@@ -955,19 +970,7 @@ DEFINE unsigned, "unsigned"
 	dq jump, putChar.x
 
 DEFINE number, "."
-	dq dup.x
-	dq enter, negative.x
-
-.if:
-	dq jump0, .then
-
-	dq negate.x
-
-	dq lit, '-'
-	dq enter, putChar.x
-
-.then:
-	dq enter, unsigned.x
+	dq enter, signed.x
 	dq jump, newLine.x
 
 base:
