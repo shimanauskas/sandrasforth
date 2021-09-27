@@ -547,23 +547,31 @@ DEFINE getToken, "getToken"
 DEFINE isLiteral, "isLiteral"
 	dq lit, token+CELL
 
+	dq lit, base
+	dq fetch.x
+	dq enter, negative.x
+
+.if0:
+	dq jump0, .then0
+
 	dq dup.x
 	dq fetchByte.x
 	dq lit, '-'
 	dq enter, equals.x
 
-.if0:
-	dq jump0, .then0
+.if1:
+	dq jump0, .then1
 
 	dq lit, 1
 	dq add.x
 
+.then1:
 .then0:
 	dq dup.x
 	dq fetchByte.x
 
-.if1:
-	dq jump0, .then1
+.if2:
+	dq jump0, .then2
 
 .begin:
 	dq dup.x
@@ -575,19 +583,21 @@ DEFINE isLiteral, "isLiteral"
 
 	dq lit, base
 	dq fetch.x
+	dq enter, unNegate.x
 	dq lit, 11
 	dq enter, less.x
 
-.if2:
-	dq jump0, .else2
+.if3:
+	dq jump0, .else3
 
 	dq lit, 0
 	dq lit, base
 	dq fetch.x
+	dq enter, unNegate.x
 	dq enter, range.x
 
-	dq jump, .then2
-.else2:
+	dq jump, .then3
+.else3:
 
 	dq dup.x
 	dq lit, 0
@@ -600,13 +610,14 @@ DEFINE isLiteral, "isLiteral"
 	dq lit, 0
 	dq lit, base
 	dq fetch.x
+	dq enter, unNegate.x
 	dq lit, 10
 	dq sub.x
 	dq enter, range.x
 	dq or.x
 	dq nip.x
 
-.then2:
+.then3:
 	dq and.x
 
 .while:
@@ -621,7 +632,7 @@ DEFINE isLiteral, "isLiteral"
 	dq fetchByte.x
 	dq jump, isZero.x
 
-.then1:
+.then2:
 	dq drop.x
 	dq lit, 0
 	dq exit
@@ -659,6 +670,7 @@ DEFINE literal, "literal"
 	dq pull.x
 	dq lit, base
 	dq fetch.x
+	dq enter, unNegate.x
 	dq mul.x
 
 .if1:
@@ -710,7 +722,7 @@ DEFINE binary, "binary", FLAG
 	dq exit
 
 DEFINE decimal, "decimal", FLAG
-	dq lit, 10
+	dq lit, -10
 	dq lit, base
 	dq store.x
 	dq exit
@@ -934,6 +946,7 @@ DEFINE unsigned, "unsigned"
 	dq lit, 0
 	dq lit, base
 	dq fetch.x
+	dq enter, unNegate.x
 	dq div.x
 	dq dup.x
 
@@ -970,11 +983,22 @@ DEFINE unsigned, "unsigned"
 	dq jump, putChar.x
 
 DEFINE number, "."
+	dq lit, base
+	dq fetch.x
+	dq enter, negative.x
+
+.if:
+	dq jump0, .then
+
 	dq enter, signed.x
 	dq jump, newLine.x
 
+.then:
+	dq enter, unsigned.x
+	dq jump, newLine.x
+
 base:
-	dq 10
+	dq -10
 
 last:
 	dq LINK
