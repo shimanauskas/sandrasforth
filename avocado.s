@@ -373,6 +373,12 @@ DEFINE getChar, "getChar"
 	dq store.x
 	dq jump, getChar.x
 
+DEFINE flushInput, "flushInput"
+	dq lit, input
+	dq lit, inputTop
+	dq store.x
+	dq exit
+
 DEFINE newLine, "newLine"
 	dq lit, `\n`
 	dq jump, putChar.x	; Fallthrough?
@@ -795,6 +801,8 @@ DEFINE interpret, "interpret"
 
 	; Report an overflow error and start from the beginning
 
+	dq enter, flushInput.x
+
 	dq lit, token
 	dq enter, strLoad.x
 	dq write.x
@@ -852,6 +860,8 @@ DEFINE interpret, "interpret"
 .then2:
 	dq drop.x
 
+	dq enter, flushInput.x
+
 	dq lit, token
 	dq enter, strLoad.x
 	dq write.x
@@ -866,10 +876,6 @@ DEFINE main, "main"
 	dq write.x
 
 	dq enter, interpret.x
-
-	dq lit, input
-	dq lit, inputTop
-	dq store.x
 
 	dq lit, code
 	dq lit, codePtr
