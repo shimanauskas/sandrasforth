@@ -5,7 +5,9 @@ The goal for Avocado is to become self-hosting. For now it can be used as a post
 
 ## Requirements
 
-Requires make, nasm and ld.
+Requires make, nasm and ld to build.
+
+No more dependencies, other than a few system calls.
 
 ## Usage
 
