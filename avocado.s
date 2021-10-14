@@ -433,23 +433,19 @@ DEFINE strLoad, "strLoad"
 	dq exit
 
 DEFINE strCmp, "strCmp"		; stringA, stringB -- comparisonValue
+	dq dup.x
+	dq fetch.x
+	dq push.x
 
 	; Compare string sizes
 
 	dq over.x, fetch.x
 	dq over.x, fetch.x
-	dq xor.x
+	dq enter, equals.x
 
 .if:
 	dq jump0, .then
 
-	; Drop string addresses, return error
-
-	dq drop.x, drop.x
-	dq lit, -1
-	dq exit
-
-.then:
 	dq lit, CELL
 	dq add.x
 	dq push.x
@@ -458,12 +454,17 @@ DEFINE strCmp, "strCmp"		; stringA, stringB -- comparisonValue
 	dq add.x
 	dq pull.x
 
+	dq pull.x
+
 .begin:
+	dq dup.x
+	dq push.x, push.x
+
 	dq over.x, fetchByte.x
 	dq over.x, fetchByte.x
 	dq enter, equals.x
 
-	dq over.x, fetchByte.x
+	dq pull.x
 	dq and.x
 
 .while:
@@ -477,11 +478,16 @@ DEFINE strCmp, "strCmp"		; stringA, stringB -- comparisonValue
 	dq add.x
 	dq pull.x
 
+	dq pull.x
+	dq lit, 1
+	dq sub.x
+
 	dq jump, .begin
 .do:
 
-	dq drop.x
-	dq fetchByte.x
+.then:
+	dq pull.x
+	dq nip.x, nip.x		; Nip string pointers
 	dq exit
 
 DEFINE strSkip, "strSkip"
