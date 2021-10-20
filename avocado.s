@@ -557,7 +557,8 @@ DEFINE getToken, "getToken"
 	dq exit
 
 DEFINE isLiteral, "isLiteral"
-	dq lit, token+CELL
+	dq lit, token
+	dq enter, strLoad.x
 
 	dq lit, base
 	dq fetch.x
@@ -566,7 +567,7 @@ DEFINE isLiteral, "isLiteral"
 .if0:
 	dq jump0, .then0
 
-	dq dup.x
+	dq over.x
 	dq fetchByte.x
 	dq lit, '-'
 	dq enter, equals.x
@@ -575,21 +576,25 @@ DEFINE isLiteral, "isLiteral"
 	dq jump0, .then1
 
 	dq lit, 1
+	dq sub.x
+	dq push.x
+
+	dq lit, 1
 	dq add.x
+	dq pull.x
 
 .then1:
 .then0:
 	dq dup.x
-	dq fetchByte.x
 
 .if2:
 	dq jump0, .then2
 
+	dq push.x
+
 .begin:
 	dq dup.x
 	dq fetchByte.x
-
-	dq dup.x
 	dq lit, '0'
 	dq sub.x
 
@@ -630,6 +635,9 @@ DEFINE isLiteral, "isLiteral"
 	dq nip.x
 
 .then3:
+	dq pull.x
+	dq dup.x
+	dq push.x
 	dq and.x
 
 .while:
@@ -638,15 +646,20 @@ DEFINE isLiteral, "isLiteral"
 	dq lit, 1
 	dq add.x
 
+	dq pull.x
+	dq lit, 1
+	dq sub.x
+	dq push.x
+
 	dq jump, .begin
 .do:
 
-	dq fetchByte.x
+	dq drop.x
+	dq pull.x
 	dq jump, isZero.x
 
 .then2:
-	dq drop.x
-	dq lit, 0
+	dq nip.x
 	dq exit
 
 DEFINE literal, "literal"
