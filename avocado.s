@@ -665,8 +665,9 @@ DEFINE isLiteral, "isLiteral"
 DEFINE literal, "literal"
 	dq lit, 1		; Sign
 
-	dq lit, token+CELL
-	dq dup.x
+	dq lit, token
+	dq enter, strLoad.x
+	dq over.x
 	dq fetchByte.x
 	dq lit, '-'
 	dq enter, equals.x
@@ -675,24 +676,30 @@ DEFINE literal, "literal"
 	dq jump0, .then0
 
 	dq lit, 1
+	dq sub.x
+	dq push.x
+
+	dq lit, 1
 	dq add.x
 
 	dq push.x
 	dq negate.x		; Negate sign
 	dq pull.x
 
+	dq pull.x
+
 .then0:
-	dq lit, 0
 	dq push.x
+	dq lit, 0
 
 .begin:
+	dq pull.x
 	dq dup.x
-	dq fetchByte.x
+	dq push.x
 
 .while:
 	dq jump0, .do
 
-	dq pull.x
 	dq lit, base
 	dq fetch.x
 	dq enter, unNegate.x
@@ -702,6 +709,9 @@ DEFINE literal, "literal"
 	dq jump0, .then1
 
 	dq nip.x, nip.x		; Nip token buffer address and sign
+
+	dq pull.x
+	dq drop.x
 
 	dq lit, -1
 	dq exit
@@ -724,17 +734,25 @@ DEFINE literal, "literal"
 .then2:
 	dq add.x
 
+	dq pull.x
+	dq lit, 1
+	dq sub.x
+	dq push.x
+
 	dq push.x
 	dq lit, 1
 	dq add.x
+	dq pull.x
 
 	dq jump, .begin
 .do:
 
-	dq drop.x		; Drop token buffer address
-	dq pull.x		; Pull literal
+	dq nip.x		; Nip token buffer address
 
 	dq mul.x		; Multiply by sign
+	dq drop.x
+
+	dq pull.x
 	dq drop.x
 
 	dq lit, 0
