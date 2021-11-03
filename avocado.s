@@ -548,12 +548,6 @@ DEFINE getToken, "getToken"
 	dq sub.x
 	dq lit, token
 	dq store.x
-
-	dq lit, 0
-	dq lit, token
-	dq enter, strLoad.x
-	dq add.x
-	dq storeByte.x
 	dq exit
 
 DEFINE isLiteral, "isLiteral"
