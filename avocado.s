@@ -698,19 +698,8 @@ DEFINE literal, "literal"
 	dq fetch.x
 	dq enter, unNegate.x
 	dq mul.x
-
-.if1:
-	dq jump0, .then1
-
-	dq nip.x, nip.x		; Nip token buffer address and sign
-
-	dq pull.x
 	dq drop.x
 
-	dq lit, -1
-	dq exit
-
-.then1:
 	dq over.x, fetchByte.x
 	dq lit, '0'
 	dq sub.x
@@ -719,13 +708,13 @@ DEFINE literal, "literal"
 	dq lit, 10
 	dq enter, more.x
 
-.if2:
-	dq jump0, .then2
+.if1:
+	dq jump0, .then1
 
 	dq lit, 'A'-'0'-10
 	dq sub.x
 
-.then2:
+.then1:
 	dq add.x
 
 	dq pull.x
@@ -748,8 +737,6 @@ DEFINE literal, "literal"
 
 	dq pull.x
 	dq drop.x
-
-	dq lit, 0
 	dq exit
 
 DEFINE binary, "binary", FLAG
@@ -825,25 +812,6 @@ DEFINE interpret, "interpret"
 
 	dq enter, literal.x
 
-.if1:
-	dq jump0, .then1
-
-	dq drop.x		; Drop erroneous conversion
-
-	; Report an overflow error and start from the beginning
-
-	dq enter, flushInput.x
-
-	dq lit, token
-	dq enter, strLoad.x
-	dq write.x
-
-	dq lit, '!'
-	dq enter, putChar.x
-	dq jump, newLine.x
-
-.then1:
-
 	; Compile converted literal
 
 	dq lit, lit
@@ -855,40 +823,40 @@ DEFINE interpret, "interpret"
 	dq enter, find.x
 	dq dup.x
 
-.if2:
-	dq jump0, .then2
+.if1:
+	dq jump0, .then1
 
 	dq enter, strSkip.x
 	dq dup.x
 	dq fetch.x
 	dq enter, negative.x	; Check for immediate flag
 
-.if3:
-	dq jump0, .then3
+.if2:
+	dq jump0, .then2
 
 	dq enter, execute.x
 	dq jump, interpret.x
 
-.then3:
+.then2:
 	dq dup.x
 
 	dq lit, execute
 	dq enter, less.x
 	dq not.x
 
-.if4:
-	dq jump0, .then4
+.if3:
+	dq jump0, .then3
 
 	dq lit, enter
 	dq enter, compile.x
 
-.then4:
+.then3:
 	dq lit, CELL
 	dq add.x
 	dq enter, compile.x
 	dq jump, interpret.x
 
-.then2:
+.then1:
 	dq drop.x
 
 	dq enter, flushInput.x
