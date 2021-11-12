@@ -373,12 +373,6 @@ DEFINE getChar, "getChar"
 	dq store.x
 	dq jump, getChar.x
 
-DEFINE flushInput, "flushInput"
-	dq lit, input
-	dq lit, inputTop
-	dq store.x
-	dq exit
-
 DEFINE newLine, "newLine"
 	dq lit, `\n`
 	dq jump, putChar.x	; Fallthrough?
@@ -859,7 +853,11 @@ DEFINE interpret, "interpret"
 .then1:
 	dq drop.x
 
-	dq enter, flushInput.x
+	; Flush input
+
+	dq lit, input
+	dq lit, inputTop
+	dq store.x
 
 	dq lit, token
 	dq enter, strLoad.x
