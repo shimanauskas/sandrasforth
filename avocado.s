@@ -43,7 +43,7 @@ align CELL
 %1:
 	%strlen LENGTH %2
 	dq LENGTH
-	db %2, 0
+	db %2
 align CELL
 %endmacro
 
@@ -488,10 +488,11 @@ DEFINE strCmp, "strCmp"		; stringA, stringB -- comparisonValue
 
 DEFINE strSkip, "strSkip"
 	dq enter, strLoad.x
+	dq add.x
+	dq lit, CELL-1
+	dq add.x
 	dq lit, ~(CELL-1)
 	dq and.x
-	dq lit, CELL
-	dq add.x, add.x
 	dq exit
 
 DEFINE getToken, "getToken"
