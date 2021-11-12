@@ -305,6 +305,11 @@ DEFINE isZero, "isZero"
 	dq not.x
 	dq exit
 
+DEFINE fetchBaseAbs, "fetchBaseAbs"
+	dq lit, base
+	dq fetch.x
+	dq jump, unNegate.x	; Fallthrough?
+
 ; Keywords abs and absolute are already use by NASM,
 ; so we use this clumsy name.
 
@@ -586,9 +591,7 @@ DEFINE isLiteral, "isLiteral"
 	dq lit, '0'
 	dq sub.x
 
-	dq lit, base
-	dq fetch.x
-	dq enter, unNegate.x
+	dq enter, fetchBaseAbs.x
 	dq lit, 11
 	dq enter, less.x
 
@@ -596,9 +599,7 @@ DEFINE isLiteral, "isLiteral"
 	dq jump0, .else3
 
 	dq lit, 0
-	dq lit, base
-	dq fetch.x
-	dq enter, unNegate.x
+	dq enter, fetchBaseAbs.x
 	dq enter, range.x
 
 	dq jump, .then3
@@ -615,9 +616,7 @@ DEFINE isLiteral, "isLiteral"
 
 	dq lit, 0
 
-	dq lit, base
-	dq fetch.x
-	dq enter, unNegate.x
+	dq enter, fetchBaseAbs.x
 	dq lit, 10
 	dq sub.x
 
@@ -691,9 +690,7 @@ DEFINE literal, "literal"
 .while:
 	dq jump0, .do
 
-	dq lit, base
-	dq fetch.x
-	dq enter, unNegate.x
+	dq enter, fetchBaseAbs.x
 	dq mul.x
 	dq drop.x
 
@@ -950,9 +947,7 @@ DEFINE signed, "signed"
 
 DEFINE unsigned, "unsigned"
 	dq lit, 0
-	dq lit, base
-	dq fetch.x
-	dq enter, unNegate.x
+	dq enter, fetchBaseAbs.x
 	dq div.x
 	dq dup.x
 
