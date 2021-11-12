@@ -612,12 +612,15 @@ DEFINE isLiteral, "isLiteral"
 	dq over.x
 	dq lit, 'A'-'0'
 	dq sub.x
+
 	dq lit, 0
+
 	dq lit, base
 	dq fetch.x
 	dq enter, unNegate.x
 	dq lit, 10
 	dq sub.x
+
 	dq enter, range.x
 	dq or.x
 	dq nip.x
