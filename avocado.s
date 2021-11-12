@@ -34,8 +34,8 @@
 %define STDOUT 1
 
 %define CELL 8
-%define PAGE 1000h
-%define FLAG 8000000000000000h
+%define PAGE 0x1000
+%define FLAG 0x8000000000000000
 %define LINK 0
 
 %macro STRING 2
