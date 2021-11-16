@@ -587,7 +587,7 @@ DEFINE literal, "literal"	; -- result unconvertedChars
 .then:
 	dq jump, natural.x	; Fallthrough?
 
-DEFINE natural, "natural"	; tokenAddr tokenLength -- result uncovertedChars
+DEFINE natural, "natural"	; tokenAddr tokenLength -- result unconvertedChars
 	dq push.x
 	dq lit, 0
 
