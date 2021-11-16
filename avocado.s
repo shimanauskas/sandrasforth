@@ -547,7 +547,7 @@ DEFINE getToken, "getToken"
 	dq store.x
 	dq exit
 
-DEFINE literal, "literal"	; -- result uncovertedChars
+DEFINE literal, "literal"	; -- result unconvertedChars
 	dq lit, token
 	dq enter, strLoad.x
 
