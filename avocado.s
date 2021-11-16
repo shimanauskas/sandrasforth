@@ -547,24 +547,28 @@ DEFINE getToken, "getToken"
 	dq store.x
 	dq exit
 
-DEFINE isLiteral, "isLiteral"
+DEFINE literal, "literal"	; -- result uncovertedChars
 	dq lit, token
 	dq enter, strLoad.x
-
-	dq lit, base
-	dq fetch.x
-	dq enter, negative.x
-
-.if0:
-	dq jump0, .then0
 
 	dq over.x
 	dq fetchByte.x
 	dq lit, '-'
 	dq enter, equals.x
 
-.if1:
-	dq jump0, .then1
+	dq over.x
+	dq lit, 1
+	dq xor.x
+
+	dq lit, base
+	dq fetch.x
+	dq enter, negative.x
+
+	dq and.x
+	dq and.x
+
+.if:
+	dq jump0, .then
 
 	dq lit, 1
 	dq sub.x
@@ -574,17 +578,21 @@ DEFINE isLiteral, "isLiteral"
 	dq add.x
 	dq pull.x
 
-.then1:
-.then0:
-	dq dup.x
-
-.if2:
-	dq jump0, .then2
-
+	dq enter, natural.x
 	dq push.x
+	dq negate.x
+	dq pull.x
+	dq exit
+
+.then:
+	dq jump, natural.x	; Fallthrough?
+
+DEFINE natural, "natural"	; tokenAddr tokenLength -- result uncovertedChars
+	dq push.x
+	dq lit, 0
 
 .begin:
-	dq dup.x
+	dq over.x
 	dq fetchByte.x
 	dq lit, '0'
 	dq sub.x
@@ -593,15 +601,15 @@ DEFINE isLiteral, "isLiteral"
 	dq lit, 11
 	dq enter, less.x
 
-.if3:
-	dq jump0, .else3
+.if0:
+	dq jump0, .else0
 
 	dq lit, 0
 	dq enter, fetchBaseAbsol.x
 	dq enter, range.x
 
-	dq jump, .then3
-.else3:
+	dq jump, .then0
+.else0:
 
 	dq dup.x
 	dq lit, 0
@@ -611,18 +619,16 @@ DEFINE isLiteral, "isLiteral"
 	dq over.x
 	dq lit, 'A'-'0'
 	dq sub.x
-
 	dq lit, 0
-
 	dq enter, fetchBaseAbsol.x
 	dq lit, 10
 	dq sub.x
-
 	dq enter, range.x
+
 	dq or.x
 	dq nip.x
 
-.then3:
+.then0:
 	dq pull.x
 	dq dup.x
 	dq push.x
@@ -631,68 +637,12 @@ DEFINE isLiteral, "isLiteral"
 .while:
 	dq jump0, .do
 
-	dq lit, 1
-	dq add.x
-
-	dq pull.x
-	dq lit, 1
-	dq sub.x
-	dq push.x
-
-	dq jump, .begin
-.do:
-
-	dq drop.x
-	dq pull.x
-	dq jump, isZero.x
-
-.then2:
-	dq nip.x
-	dq exit
-
-DEFINE literal, "literal"
-	dq lit, 1		; Sign
-
-	dq lit, token
-	dq enter, strLoad.x
-	dq over.x
-	dq fetchByte.x
-	dq lit, '-'
-	dq enter, equals.x
-
-.if0:
-	dq jump0, .then0
-
-	dq lit, 1
-	dq sub.x
-	dq push.x
-
-	dq lit, 1
-	dq add.x
-
-	dq push.x
-	dq negate.x		; Negate sign
-	dq pull.x
-
-	dq pull.x
-
-.then0:
-	dq push.x
-	dq lit, 0
-
-.begin:
-	dq pull.x
-	dq dup.x
-	dq push.x
-
-.while:
-	dq jump0, .do
-
 	dq enter, fetchBaseAbsol.x
 	dq mul.x
 	dq drop.x
 
-	dq over.x, fetchByte.x
+	dq over.x
+	dq fetchByte.x
 	dq lit, '0'
 	dq sub.x
 
@@ -722,13 +672,8 @@ DEFINE literal, "literal"
 	dq jump, .begin
 .do:
 
-	dq nip.x		; Nip token buffer address
-
-	dq mul.x		; Multiply by sign
-	dq drop.x
-
+	dq nip.x
 	dq pull.x
-	dq drop.x
 	dq exit
 
 DEFINE binary, "binary", FLAG
@@ -797,12 +742,11 @@ DEFINE compile, "compile"
 
 DEFINE interpret, "interpret"
 	dq enter, getToken.x
-	dq enter, isLiteral.x
+	dq enter, literal.x
+	dq enter, isZero.x
 
 .if0:
 	dq jump0, .then0
-
-	dq enter, literal.x
 
 	; Compile converted literal
 
@@ -812,6 +756,8 @@ DEFINE interpret, "interpret"
 	dq jump, interpret.x
 
 .then0:
+	dq drop.x
+
 	dq enter, find.x
 	dq dup.x
 
