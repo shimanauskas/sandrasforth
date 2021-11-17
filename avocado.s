@@ -432,7 +432,7 @@ DEFINE strCmp, "strCmp"		; stringA stringB - comparisonValue
 	dq fetch.x
 	dq push.x
 
-	; Compare string sizes
+	; Compare string sizes.
 
 	dq over.x, fetch.x
 	dq over.x, fetch.x
