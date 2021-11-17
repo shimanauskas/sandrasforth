@@ -105,7 +105,7 @@ jump:
 	mov rbx, [rbx]
 	jmp [rbx]
 
-jump0:
+jump0:				; A -
 	test rax, rax
 	DROP 1
 	jz jump
@@ -139,47 +139,47 @@ DEFINE pull, "pull"		; - A
 	pop rax
 	NEXT
 
-DEFINE shiftLeft, "shiftLeft"
+DEFINE shiftLeft, "shiftLeft"	; A - B
 	shl rax, 1
 	NEXT
 
-DEFINE shiftRight, "shiftRight"
+DEFINE shiftRight, "shiftRight"	; A - B
 	shr rax, 1
 	NEXT
 
-DEFINE not, "!"
+DEFINE not, "!"			; A - B
 	not rax
 	NEXT
 
-DEFINE and, "and"
+DEFINE and, "and"		; A B - C
 	and rax, [rbp]
 	NIP
 	NEXT
 
-DEFINE or, "or"
+DEFINE or, "or"			; A B - C
 	or rax, [rbp]
 	NIP
 	NEXT
 
-DEFINE xor, "xor"
+DEFINE xor, "xor"		; A B - C
 	xor rax, [rbp]
 	NIP
 	NEXT
 
-DEFINE negate, "negate"
+DEFINE negate, "negate"		; A - B
 	neg rax
 	NEXT
 
-DEFINE sub, "-"
+DEFINE sub, "-"			; A B - C
 	neg rax
 	jmp add.x		; Fallthrough?
 
-DEFINE add, "+"
+DEFINE add, "+"			; A B - C
 	add rax, [rbp]
 	NIP
 	NEXT
 
-DEFINE mul, "*"
+DEFINE mul, "*"			
 	mov rcx, rax
 	DROP 1
 	mul rcx
