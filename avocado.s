@@ -215,8 +215,7 @@ DEFINE store, "store"
 	NEXT
 
 DEFINE fetchByte, "fetchByte"
-	mov al, [rax]
-	and rax, 0xFF
+	movzx rax, byte [rax]
 	NEXT
 
 DEFINE storeByte, "storeByte"
