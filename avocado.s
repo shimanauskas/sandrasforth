@@ -1,22 +1,22 @@
-; rax	top of data stack, syscall number
-; rbx	threaded code pointer
-; rcx	temporary, syscall scratch
-; rdx	syscall argument
+; rax top of data stack, syscall number
+; rbx threaded code pointer
+; rcx temporary, syscall scratch
+; rdx syscall argument
 
-; rsi	syscall argument
-; rdi	syscall argument
-; rbp	data stack pointer
-; rsp	code stack pointer
+; rsi syscall argument
+; rdi syscall argument
+; rbp data stack pointer
+; rsp code stack pointer
 
-; r8	unused, syscall argument
-; r9	unused, syscall argument
-; r10	unused, syscall argument
-; r11	unused, syscall scratch
+; r8  unused, syscall argument
+; r9  unused, syscall argument
+; r10 unused, syscall argument
+; r11 unused, syscall scratch
 
-; r12	unused
-; r13	unused
-; r14	unused
-; r15	unused
+; r12 unused
+; r13 unused
+; r14 unused
+; r15 unused
 
 %include "platform.s"
 
