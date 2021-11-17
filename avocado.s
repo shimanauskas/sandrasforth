@@ -147,14 +147,6 @@ DEFINE shiftRight, "shiftRight"
 	shr rax, 1
 	NEXT
 
-DEFINE rotateLeft, "rotateLeft"
-	rol rax, 1
-	NEXT
-
-DEFINE rotateRight, "rotateRight"
-	ror rax, 1
-	NEXT
-
 DEFINE not, "!"
 	not rax
 	NEXT
