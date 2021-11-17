@@ -13,5 +13,4 @@ No more dependencies, other than a few system calls.
 
 Terminate input with a semicolon to get it interpreted.
 
-Error reporting:
-* A word followed by a question mark means it is not found in the vocabulary and not a literal.
+A word followed by a question mark will be displayed if it is not found in the vocabulary and not a valid number.
