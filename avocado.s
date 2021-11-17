@@ -120,7 +120,7 @@ DEFINE drop, "drop"
 	DROP 1
 	NEXT
 
-DEFINE nip, "nip"		; A, B -- B
+DEFINE nip, "nip"		; A B - B
 	NIP
 	NEXT
 
@@ -427,7 +427,7 @@ DEFINE strLoad, "strLoad"
 	dq fetch.x
 	dq exit
 
-DEFINE strCmp, "strCmp"		; stringA, stringB -- comparisonValue
+DEFINE strCmp, "strCmp"		; stringA stringB - comparisonValue
 	dq dup.x
 	dq fetch.x
 	dq push.x
@@ -546,7 +546,7 @@ DEFINE getToken, "getToken"
 	dq store.x
 	dq exit
 
-DEFINE literal, "literal"	; -- result unconvertedChars
+DEFINE literal, "literal"	; - result unconvertedChars
 	dq lit, token
 	dq enter, strLoad.x
 
@@ -586,7 +586,7 @@ DEFINE literal, "literal"	; -- result unconvertedChars
 .then:
 	dq jump, natural.x	; Fallthrough?
 
-DEFINE natural, "natural"	; tokenAddr tokenLength -- result unconvertedChars
+DEFINE natural, "natural"	; tokenAddr tokenLength - result unconvertedChars
 	dq push.x
 	dq lit, 0
 
