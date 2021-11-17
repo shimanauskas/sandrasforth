@@ -1,22 +1,22 @@
-; rax top of data stack, syscall number
-; rbx threaded code pointer
-; rcx temporary, syscall scratch
-; rdx syscall argument
+; rax - top of data stack, syscall number.
+; rbx - threaded code pointer.
+; rcx - temporary, syscall scratch.
+; rdx - syscall argument.
 
-; rsi syscall argument
-; rdi syscall argument
-; rbp data stack pointer
-; rsp code stack pointer
+; rsi - syscall argument.
+; rdi - syscall argument.
+; rbp - data stack pointer.
+; rsp - code stack pointer.
 
-; r8  unused, syscall argument
-; r9  unused, syscall argument
-; r10 unused, syscall argument
-; r11 unused, syscall scratch
+; r8  - unused, syscall argument.
+; r9  - unused, syscall argument.
+; r10 - unused, syscall argument.
+; r11 - unused, syscall scratch.
 
-; r12 unused
-; r13 unused
-; r14 unused
-; r15 unused
+; r12 - unused.
+; r13 - unused.
+; r14 - unused.
+; r15 - unused.
 
 %include "platform.s"
 
@@ -78,8 +78,8 @@ section .text
 global start
 
 start:
-	mov rbp, stack+PAGE	; Our stacks grow downward
-	mov rax, -1		; Top-of-stack magic value aids in debugging
+	mov rbp, stack+PAGE	; Our stacks grow downward.
+	mov rax, -1		; Top-of-stack magic value aids in debugging.
 
 	mov rbx, main.x
 	jmp [rbx]
@@ -225,16 +225,16 @@ DEFINE storeByte, "storeByte"
 	NEXT
 
 DEFINE read, "read"
-	mov rdx, rax		; Size
-	mov rsi, [rbp]		; Address
+	mov rdx, rax		; Size.
+	mov rsi, [rbp]		; Address.
 	mov rdi, STDIN
 	mov rax, SYSREAD
 	syscall
 	NEXT
 
 DEFINE write, "write"
-	mov rdx, rax		; Size
-	mov rsi, [rbp]		; Address
+	mov rdx, rax		; Size.
+	mov rsi, [rbp]		; Address.
 	mov rdi, STDOUT
 	mov rax, SYSWRITE
 	syscall
@@ -482,7 +482,7 @@ DEFINE strCmp, "strCmp"		; stringA, stringB -- comparisonValue
 
 .then:
 	dq pull.x
-	dq nip.x, nip.x		; Nip string pointers
+	dq nip.x, nip.x		; Nip string pointers.
 	dq exit
 
 DEFINE strSkip, "strSkip"
@@ -496,8 +496,8 @@ DEFINE strSkip, "strSkip"
 
 DEFINE getToken, "getToken"
 
-	; The following loop reads input and discards spaces
-	; It returns the first non-space character
+	; The following loop reads input and discards spaces.
+	; It returns the first non-space character.
 
 .begin0:
 	dq enter, getChar.x
@@ -537,7 +537,7 @@ DEFINE getToken, "getToken"
 	dq jump, .begin1
 .do1:
 
-	dq drop.x		; Drop last getChar's return value
+	dq drop.x		; Drop last getChar's return value.
 
 	dq pull.x
 	dq lit, token+CELL
@@ -747,7 +747,7 @@ DEFINE interpret, "interpret"
 .if0:
 	dq jump0, .then0
 
-	; Compile converted literal
+	; Compile converted literal.
 
 	dq lit, lit
 	dq enter, compile.x
@@ -766,7 +766,7 @@ DEFINE interpret, "interpret"
 	dq enter, strSkip.x
 	dq dup.x
 	dq fetch.x
-	dq enter, negative.x	; Check for immediate flag
+	dq enter, negative.x	; Check for immediate flag.
 
 .if2:
 	dq jump0, .then2
@@ -796,7 +796,7 @@ DEFINE interpret, "interpret"
 .then1:
 	dq drop.x
 
-	; Flush input
+	; Flush input.
 
 	dq lit, input
 	dq lit, inputTop
@@ -822,7 +822,7 @@ DEFINE main, "main"
 	dq store.x
 	dq jump, main.x
 
-; The following definitions should be moved out of core once we can compile them at runtime
+; The following definitions should be moved out of core once we can compile them at runtime.
 
 DEFINE while, "while", FLAG
 	dq jump, if.x		; Fallthrough?
