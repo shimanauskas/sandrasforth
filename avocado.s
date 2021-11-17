@@ -112,11 +112,11 @@ jump0:
 	add rbx, CELL
 	NEXT
 
-DEFINE dup, "dup"
+DEFINE dup, "dup"		; A - A A
 	DUP
 	NEXT
 
-DEFINE drop, "drop"
+DEFINE drop, "drop"		; A -
 	DROP 1
 	NEXT
 
@@ -124,17 +124,17 @@ DEFINE nip, "nip"		; A B - B
 	NIP
 	NEXT
 
-DEFINE over, "over"
+DEFINE over, "over"		; A B - A B A
 	DUP
 	mov rax, [rbp+CELL]
 	NEXT
 
-DEFINE push, "push"
+DEFINE push, "push"		; A -
 	push rax
 	DROP 1
 	NEXT
 
-DEFINE pull, "pull"
+DEFINE pull, "pull"		; - A
 	DUP
 	pop rax
 	NEXT
