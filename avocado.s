@@ -250,16 +250,13 @@ DEFINE less, "less"
 	dq enter, negative.x
 
 .if:
-	dq jump0, .else
+	dq jump0, .then
 
 	dq drop.x
-
-	dq jump, .then
-.else:
-
-	dq sub.x
+	dq jump, negative.x
 
 .then:
+	dq sub.x
 	dq jump, negative.x	; Fallthrough?
 
 DEFINE negative, "negative"
