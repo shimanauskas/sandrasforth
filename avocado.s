@@ -664,19 +664,19 @@ DEFINE natural, "natural"	; tokenAddr tokenLength - result unconvertedChars
 	dq pull.x
 	dq exit
 
-DEFINE binary, "binary", FLAG
+DEFINE bin, "bin", FLAG
 	dq lit, 2
 	dq lit, base
 	dq store.x
 	dq exit
 
-DEFINE decimal, "decimal", FLAG
+DEFINE dec, "dec", FLAG
 	dq lit, -10
 	dq lit, base
 	dq store.x
 	dq exit
 
-DEFINE hexadecimal, "hexadecimal", FLAG
+DEFINE hexdec, "hexdec", FLAG
 	dq lit, 16
 	dq lit, base
 	dq store.x
