@@ -179,7 +179,7 @@ DEFINE pull, "pull"
 
 ; A - B
 
-DEFINE not, "!"
+DEFINE not, "not"
 	not rax
 	NEXT
 
