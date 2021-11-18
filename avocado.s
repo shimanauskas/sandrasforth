@@ -179,18 +179,6 @@ DEFINE pull, "pull"
 
 ; A - B
 
-DEFINE shiftLeft, "shiftLeft"
-	shl rax, 1
-	NEXT
-
-; A - B
-
-DEFINE shiftRight, "shiftRight"
-	shr rax, 1
-	NEXT
-
-; A - B
-
 DEFINE not, "!"
 	not rax
 	NEXT
