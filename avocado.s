@@ -64,6 +64,11 @@ align CELL
 	lea rbp, [rbp+CELL*%1]
 %endmacro
 
+%macro TWODROP 0
+	mov rax, [rbp+CELL]
+	add rbp, CELL*2
+%endmacro
+
 %macro NIP 0
 	add rbp, CELL
 %endmacro
@@ -235,7 +240,7 @@ DEFINE fetch, "fetch"
 DEFINE store, "store"
 	mov rcx, [rbp]
 	mov [rax], rcx
-	DROP 2
+	TWODROP
 	NEXT
 
 DEFINE fetchByte, "fetchByte"
@@ -245,7 +250,7 @@ DEFINE fetchByte, "fetchByte"
 DEFINE storeByte, "storeByte"
 	mov cl, [rbp]
 	mov [rax], cl
-	DROP 2
+	TWODROP
 	NEXT
 
 DEFINE read, "read"
@@ -262,7 +267,7 @@ DEFINE write, "write"
 	mov rdi, STDOUT
 	mov rax, SYSWRITE
 	syscall
-	DROP 2
+	TWODROP
 	NEXT
 
 DEFINE bye, "bye"
