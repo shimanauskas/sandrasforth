@@ -977,7 +977,7 @@ DEFINE unsigned, "unsigned"
 	dq add.x
 	dq jump, putChar.x
 
-DEFINE number, "."
+DEFINE dot, "."
 	dq lit, base
 	dq fetch.x
 	dq enter, negative.x
