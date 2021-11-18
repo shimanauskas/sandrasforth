@@ -54,24 +54,34 @@ align CELL
 .x:
 %endmacro
 
+; A - A A
+
 %macro DUP 0
 	sub rbp, CELL
 	mov [rbp], rax
 %endmacro
+
+; A -
 
 %macro DROP 0
 	mov rax, [rbp]
 	add rbp, CELL
 %endmacro
 
+; A B -
+
 %macro TWODROP 0
 	mov rax, [rbp+CELL]
 	add rbp, CELL*2
 %endmacro
 
+; A B - B
+
 %macro NIP 0
 	add rbp, CELL
 %endmacro
+
+; -
 
 %macro NEXT 0
 	add rbx, CELL
@@ -89,11 +99,15 @@ start:
 	mov rbx, main.x
 	jmp [rbx]
 
+; - A
+
 lit:
 	DUP
 	add rbx, CELL
 	mov rax, [rbx]
 	NEXT
+
+; -
 
 enter:
 	add rbx, CELL
@@ -101,9 +115,13 @@ enter:
 	mov rbx, [rbx]
 	jmp [rbx]
 
+; -
+
 exit:
 	pop rbx
 	NEXT
+
+; -
 
 jump:
 	add rbx, CELL
