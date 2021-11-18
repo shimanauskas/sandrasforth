@@ -59,9 +59,9 @@ align CELL
 	mov [rbp], rax
 %endmacro
 
-%macro DROP 1
-	mov rax, [rbp+CELL*(%1-1)]
-	lea rbp, [rbp+CELL*%1]
+%macro DROP 0
+	mov rax, [rbp]
+	lea rbp, [rbp+CELL]
 %endmacro
 
 %macro TWODROP 0
@@ -114,7 +114,7 @@ jump:
 
 jump0:
 	test rax, rax
-	DROP 1
+	DROP
 	jz jump
 	add rbx, CELL
 	NEXT
@@ -128,7 +128,7 @@ DEFINE dup, "dup"
 ; A -
 
 DEFINE drop, "drop"
-	DROP 1
+	DROP
 	NEXT
 
 ; A B - B
@@ -148,7 +148,7 @@ DEFINE over, "over"
 
 DEFINE push, "push"
 	push rax
-	DROP 1
+	DROP
 	NEXT
 
 ; - A
@@ -218,7 +218,7 @@ DEFINE add, "+"
 
 DEFINE mul, "*"			
 	mov rcx, rax
-	DROP 1
+	DROP
 	mul rcx
 	DUP
 	mov rax, rdx
