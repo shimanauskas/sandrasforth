@@ -61,7 +61,7 @@ align CELL
 
 %macro DROP 0
 	mov rax, [rbp]
-	lea rbp, [rbp+CELL]
+	add rbp, CELL
 %endmacro
 
 %macro TWODROP 0
@@ -114,7 +114,8 @@ jump:
 
 jump0:
 	test rax, rax
-	DROP
+	mov rax, [rbp]
+	lea rbp, [rbp+CELL]
 	jz jump
 	add rbx, CELL
 	NEXT
