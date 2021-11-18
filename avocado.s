@@ -519,8 +519,8 @@ DEFINE strSkip, "strSkip"
 
 DEFINE getToken, "getToken"
 
-	; The following loop reads input and discards spaces.
-	; It returns the first non-space character.
+; The following loop reads input and discards spaces.
+; It returns the first non-space character.
 
 .begin0:
 	dq enter, getChar.x
