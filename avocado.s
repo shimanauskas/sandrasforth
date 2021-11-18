@@ -23,7 +23,7 @@
 %ifdef LINUX
 	%define SYSREAD  0
 	%define SYSWRITE 1
-	%define SYSEXIT 60
+	%define SYSEXIT	 60
 %elif MACOS
 	%define SYSREAD  0x2000003
 	%define SYSWRITE 0x2000004
