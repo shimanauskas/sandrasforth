@@ -105,76 +105,108 @@ jump:
 	mov rbx, [rbx]
 	jmp [rbx]
 
-jump0:				; A -
+; A -
+
+jump0:
 	test rax, rax
 	DROP 1
 	jz jump
 	add rbx, CELL
 	NEXT
 
-DEFINE dup, "dup"		; A - A A
+; A - A A
+
+DEFINE dup, "dup"
 	DUP
 	NEXT
 
-DEFINE drop, "drop"		; A -
+; A -
+
+DEFINE drop, "drop"
 	DROP 1
 	NEXT
 
-DEFINE nip, "nip"		; A B - B
+; A B - B
+
+DEFINE nip, "nip"
 	NIP
 	NEXT
 
-DEFINE over, "over"		; A B - A B A
+; A B - A B A
+
+DEFINE over, "over"
 	DUP
 	mov rax, [rbp+CELL]
 	NEXT
 
-DEFINE push, "push"		; A -
+; A -
+
+DEFINE push, "push"
 	push rax
 	DROP 1
 	NEXT
 
-DEFINE pull, "pull"		; - A
+; - A
+
+DEFINE pull, "pull"
 	DUP
 	pop rax
 	NEXT
 
-DEFINE shiftLeft, "shiftLeft"	; A - B
+; A - B
+
+DEFINE shiftLeft, "shiftLeft"
 	shl rax, 1
 	NEXT
 
-DEFINE shiftRight, "shiftRight"	; A - B
+; A - B
+
+DEFINE shiftRight, "shiftRight"
 	shr rax, 1
 	NEXT
 
-DEFINE not, "!"			; A - B
+; A - B
+
+DEFINE not, "!"
 	not rax
 	NEXT
 
-DEFINE and, "and"		; A B - C
+; A B - C
+
+DEFINE and, "and"
 	and rax, [rbp]
 	NIP
 	NEXT
 
-DEFINE or, "or"			; A B - C
+; A B - C
+
+DEFINE or, "or"
 	or rax, [rbp]
 	NIP
 	NEXT
 
-DEFINE xor, "xor"		; A B - C
+; A B - C
+
+DEFINE xor, "xor"
 	xor rax, [rbp]
 	NIP
 	NEXT
 
-DEFINE negate, "negate"		; A - B
+; A - B
+
+DEFINE negate, "negate"
 	neg rax
 	NEXT
 
-DEFINE sub, "-"			; A B - C
+; A B - C
+
+DEFINE sub, "-"
 	neg rax
 	jmp add.x		; Fallthrough?
 
-DEFINE add, "+"			; A B - C
+; A B - C
+
+DEFINE add, "+"
 	add rax, [rbp]
 	NIP
 	NEXT
@@ -416,7 +448,9 @@ DEFINE strLoad, "strLoad"
 	dq fetch.x
 	dq exit
 
-DEFINE strCmp, "strCmp"		; stringA stringB - comparisonValue
+; stringA stringB - comparisonValue
+
+DEFINE strCmp, "strCmp"
 	dq dup.x
 	dq fetch.x
 	dq push.x
@@ -535,7 +569,9 @@ DEFINE getToken, "getToken"
 	dq store.x
 	dq exit
 
-DEFINE literal, "literal"	; - result unconvertedChars
+; - result unconvertedChars
+
+DEFINE literal, "literal"
 	dq lit, token
 	dq enter, strLoad.x
 
@@ -575,7 +611,9 @@ DEFINE literal, "literal"	; - result unconvertedChars
 .then:
 	dq jump, natural.x	; Fallthrough?
 
-DEFINE natural, "natural"	; tokenAddr tokenLength - result unconvertedChars
+; tokenAddr tokenLength - result unconvertedChars
+
+DEFINE natural, "natural"
 	dq push.x
 	dq lit, 0
 
