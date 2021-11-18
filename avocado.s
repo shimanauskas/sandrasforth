@@ -78,8 +78,8 @@ section .text
 global start
 
 start:
-	mov rbp, stack+PAGE	; Our stacks grow downward.
-	mov rax, -1		; Top-of-stack magic value aids in debugging.
+	mov rbp, stack+PAGE ; Our stacks grow downward.
+	mov rax, -1 ; Top-of-stack magic value aids in debugging.
 
 	mov rbx, main.x
 	jmp [rbx]
@@ -202,7 +202,7 @@ DEFINE negate, "negate"
 
 DEFINE sub, "-"
 	neg rax
-	jmp add.x		; Fallthrough?
+	jmp add.x ; Fallthrough?
 
 ; A B - C
 
@@ -249,16 +249,16 @@ DEFINE storeByte, "storeByte"
 	NEXT
 
 DEFINE read, "read"
-	mov rdx, rax		; Size.
-	mov rsi, [rbp]		; Address.
+	mov rdx, rax ; Size.
+	mov rsi, [rbp] ; Address.
 	mov rdi, STDIN
 	mov rax, SYSREAD
 	syscall
 	NEXT
 
 DEFINE write, "write"
-	mov rdx, rax		; Size.
-	mov rsi, [rbp]		; Address.
+	mov rdx, rax ; Size.
+	mov rsi, [rbp] ; Address.
 	mov rdi, STDOUT
 	mov rax, SYSWRITE
 	syscall
@@ -289,12 +289,12 @@ DEFINE less, "less"
 
 .then:
 	dq sub.x
-	dq jump, negative.x	; Fallthrough?
+	dq jump, negative.x ; Fallthrough?
 
 DEFINE negative, "negative"
 	dq lit, FLAG
 	dq and.x
-	dq jump, bool.x		; Fallthrough?
+	dq jump, bool.x ; Fallthrough?
 
 DEFINE bool, "bool"
 	dq dup.x
@@ -318,7 +318,7 @@ DEFINE more, "more"
 
 DEFINE equals, "equals"
 	dq xor.x
-	dq jump, isZero.x	; Fallthrough?
+	dq jump, isZero.x ; Fallthrough?
 
 DEFINE isZero, "isZero"
 	dq enter, bool.x
@@ -328,7 +328,7 @@ DEFINE isZero, "isZero"
 DEFINE fetchBaseAbsol, "fetchBaseAbsol"
 	dq lit, base
 	dq fetch.x
-	dq jump, absol.x	; Fallthrough?
+	dq jump, absol.x ; Fallthrough?
 
 DEFINE absol, "absol"
 	dq dup.x
@@ -397,7 +397,7 @@ DEFINE getChar, "getChar"
 
 DEFINE newLine, "newLine"
 	dq lit, `\n`
-	dq jump, putChar.x	; Fallthrough?
+	dq jump, putChar.x ; Fallthrough?
 
 DEFINE putChar, "putChar"
 	dq dup.x
@@ -505,7 +505,7 @@ DEFINE strCmp, "strCmp"
 
 .then:
 	dq pull.x
-	dq nip.x, nip.x		; Nip string pointers.
+	dq nip.x, nip.x ; Nip string pointers.
 	dq exit
 
 DEFINE strSkip, "strSkip"
@@ -560,7 +560,7 @@ DEFINE getToken, "getToken"
 	dq jump, .begin1
 .do1:
 
-	dq drop.x		; Drop last getChar's return value.
+	dq drop.x ; Drop last getChar's return value.
 
 	dq pull.x
 	dq lit, token+CELL
@@ -609,7 +609,7 @@ DEFINE literal, "literal"
 	dq exit
 
 .then:
-	dq jump, natural.x	; Fallthrough?
+	dq jump, natural.x ; Fallthrough?
 
 ; tokenAddr tokenLength - result unconvertedChars
 
@@ -793,7 +793,7 @@ DEFINE interpret, "interpret"
 	dq enter, strSkip.x
 	dq dup.x
 	dq fetch.x
-	dq enter, negative.x	; Check for immediate flag.
+	dq enter, negative.x ; Check for immediate flag.
 
 .if2:
 	dq jump0, .then2
@@ -852,7 +852,7 @@ DEFINE main, "main"
 ; The following definitions should be moved out of core once we can compile them at runtime.
 
 DEFINE while, "while", FLAG
-	dq jump, if.x		; Fallthrough?
+	dq jump, if.x ; Fallthrough?
 
 DEFINE if, "if", FLAG
 	dq lit, jump0
