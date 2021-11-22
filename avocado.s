@@ -780,59 +780,49 @@ DEFINE compile, "compile"
 
 DEFINE interpret, "interpret"
 	dq enter, getToken.x
-	dq enter, literal.x
-	dq enter, isZero.x
-
-.if0:
-	dq jump0, .then0
-
-	; Compile converted literal.
-
-	dq lit, lit
-	dq enter, compile.x
-	dq enter, compile.x
-	dq jump, interpret.x
-
-.then0:
-	dq drop.x
-
 	dq enter, find.x
 	dq dup.x
 
-.if1:
-	dq jump0, .then1
+.if0:
+	dq jump0, .then0
 
 	dq enter, strSkip.x
 	dq dup.x
 	dq fetch.x
 	dq enter, negative.x ; Check for immediate flag.
 
-.if2:
-	dq jump0, .then2
+.if1:
+	dq jump0, .then1
 
 	dq enter, execute.x
 	dq jump, interpret.x
 
-.then2:
+.then1:
 	dq dup.x
 
 	dq lit, execute
 	dq enter, less.x
 	dq not.x
 
-.if3:
-	dq jump0, .then3
+.if2:
+	dq jump0, .then2
 
 	dq lit, enter
 	dq enter, compile.x
 
-.then3:
+.then2:
 	dq lit, CELL
 	dq add.x
 	dq enter, compile.x
 	dq jump, interpret.x
 
-.then1:
+.then0:
+	dq drop.x
+	dq enter, literal.x
+
+.if3:
+	dq jump0, .then3
+
 	dq drop.x
 
 	; Flush input.
@@ -848,6 +838,15 @@ DEFINE interpret, "interpret"
 	dq lit, '?'
 	dq enter, putChar.x
 	dq jump, newLine.x
+
+.then3:
+
+	; Compile converted literal.
+
+	dq lit, lit
+	dq enter, compile.x
+	dq enter, compile.x
+	dq jump, interpret.x
 
 DEFINE main, "main"
 	dq lit, prompt
