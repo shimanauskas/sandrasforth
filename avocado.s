@@ -834,7 +834,6 @@ DEFINE interpret, "interpret"
 	dq lit, token
 	dq enter, strLoad.x
 	dq write.x
-
 	dq lit, '?'
 	dq enter, putChar.x
 	dq jump, newLine.x
