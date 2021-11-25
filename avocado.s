@@ -831,6 +831,8 @@ DEFINE interpret, "interpret"
 	dq lit, inputTop
 	dq store.x
 
+	; Print error and tail-call newLine to flush output.
+
 	dq lit, token
 	dq enter, strLoad.x
 	dq write.x
