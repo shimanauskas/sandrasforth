@@ -1,4 +1,4 @@
-; rax - top of data stack, syscall number.
+; rax - top-of-stack, syscall number.
 ; rbx - threaded code pointer.
 ; rcx - temporary, syscall scratch.
 ; rdx - syscall argument.
@@ -94,7 +94,7 @@ global start
 
 start:
 	mov rbp, stack+PAGE ; Our stacks grow downward.
-	mov rax, -1 ; Top of data stack magic value, aids in testing.
+	mov rax, -1 ; Top-of-stack magic value, aids in testing.
 
 	mov rbx, main.x
 	jmp [rbx]
@@ -288,7 +288,7 @@ DEFINE execute, "execute"
 	dq push.x
 	dq exit
 
-; Duplicate top of data stack if it is not zero.
+; If top-of-stack not zero, duplicate it.
 
 DEFINE dupq, "dup?"
 	dq dup.x
