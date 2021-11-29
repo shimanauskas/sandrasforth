@@ -94,7 +94,7 @@ global start
 
 start:
 	mov rbp, stack+PAGE ; Our stacks grow downward.
-	mov rax, -1 ; Top-of-stack magic value aids in debugging.
+	mov rax, -1 ; Top of data stack magic value, aids in testing.
 
 	mov rbx, main.x
 	jmp [rbx]
