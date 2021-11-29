@@ -288,6 +288,19 @@ DEFINE execute, "execute"
 	dq push.x
 	dq exit
 
+; Duplicate top of data stack if it is not zero.
+
+DEFINE dupq, "dup?"
+	dq dup.x
+
+.if:
+	dq jump0, .then
+
+	dq dup.x
+
+.then:
+	dq exit
+
 DEFINE less, "less"
 	dq over.x, over.x
 	dq xor.x
@@ -781,7 +794,7 @@ DEFINE compile, "compile"
 DEFINE interpret, "interpret"
 	dq enter, getToken.x
 	dq enter, find.x
-	dq dup.x
+	dq enter, dupq.x
 
 .if0:
 	dq jump0, .then0
@@ -817,7 +830,6 @@ DEFINE interpret, "interpret"
 	dq jump, interpret.x
 
 .then0:
-	dq drop.x
 	dq enter, literal.x
 
 .if3:
@@ -931,37 +943,31 @@ DEFINE unsigned, "unsigned"
 	dq lit, 0
 	dq enter, fetchBaseAbsol.x
 	dq div.x
-	dq dup.x
+	dq enter, dupq.x
 
 .if0:
 	dq jump0, .then0
 
-	dq dup.x
-
-.then0:
-.if1:
-	dq jump0, .then1
-
 	dq enter, unsigned.x
 
-.then1:
+.then0:
 	dq dup.x
 	dq lit, 10
 	dq enter, less.x
 
-.if2:
-	dq jump0, .else2
+.if1:
+	dq jump0, .else1
 
 	dq lit, '0'
 
-	dq jump, .then2
+	dq jump, .then1
 
-.else2:
+.else1:
 	dq lit, 10
 	dq sub.x
 	dq lit, 'A'
 
-.then2:
+.then1:
 	dq add.x
 	dq jump, putChar.x
 
