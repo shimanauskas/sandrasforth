@@ -1,5 +1,5 @@
 # Avocado
-A Forth-like system for Linux and macOS on x86-64.
+A Forth system for Linux and macOS on x86-64.
 
 The goal for Avocado is to become self-hosting. For now it can be used as a postfix calculator.
 
