@@ -240,21 +240,21 @@ DEFINE div, "/"
 	mov [rbp], rdx
 	NEXT
 
-DEFINE fetch, "fetch"
+DEFINE fetch, "@"
 	mov rax, [rax]
 	NEXT
 
-DEFINE store, "store"
+DEFINE store, "!"
 	mov rcx, [rbp]
 	mov [rax], rcx
 	TWODROP
 	NEXT
 
-DEFINE fetchByte, "fetchByte"
+DEFINE bfetch, "b@"
 	movzx rax, byte [rax]
 	NEXT
 
-DEFINE storeByte, "storeByte"
+DEFINE bstore, "b!"
 	mov cl, [rbp]
 	mov [rax], cl
 	TWODROP
@@ -301,7 +301,7 @@ DEFINE dupq, "dup?"
 .then:
 	dq exit
 
-DEFINE less, "less"
+DEFINE less, "<"
 	dq over.x, over.x
 	dq xor.x
 	dq enter, negative.x
@@ -334,23 +334,23 @@ DEFINE bool, "bool"
 .then:
 	dq exit
 
-DEFINE more, "more"
+DEFINE more, ">"
 	dq lit, 1
 	dq add.x
 	dq enter, less.x
 	dq not.x
 	dq exit
 
-DEFINE equals, "equals"
+DEFINE equals, "="
 	dq xor.x
-	dq jump, isZero.x ; Fallthrough?
+	dq jump, zequals.x ; Fallthrough?
 
-DEFINE isZero, "isZero"
+DEFINE zequals, "0="
 	dq enter, bool.x
 	dq not.x
 	dq exit
 
-DEFINE fetchBaseAbsol, "fetchBaseAbsol"
+DEFINE baseFetchAbsol, "base@Absol"
 	dq lit, base
 	dq fetch.x
 	dq jump, absol.x ; Fallthrough?
@@ -378,7 +378,7 @@ DEFINE range, "range"
 	dq and.x
 	dq exit
 
-DEFINE getChar, "getChar"
+DEFINE bget, "bget"
 	dq lit, inputPtr
 	dq fetch.x
 	dq lit, inputTop
@@ -395,7 +395,7 @@ DEFINE getChar, "getChar"
 	dq add.x
 	dq lit, inputPtr
 	dq store.x
-	dq fetchByte.x
+	dq bfetch.x
 	dq exit
 
 .then0:
@@ -418,17 +418,17 @@ DEFINE getChar, "getChar"
 	dq store.x
 	dq lit, inputPtr
 	dq store.x
-	dq jump, getChar.x
+	dq jump, bget.x
 
-DEFINE newLine, "newLine"
+DEFINE line, "line"
 	dq lit, `\n`
-	dq jump, putChar.x ; Fallthrough?
+	dq jump, bput.x ; Fallthrough?
 
-DEFINE putChar, "putChar"
+DEFINE bput, "bput"
 	dq dup.x
 	dq lit, outputPtr
 	dq fetch.x
-	dq storeByte.x
+	dq bstore.x
 
 	dq lit, outputPtr
 	dq fetch.x
@@ -503,8 +503,8 @@ DEFINE strCmp, "strCmp"
 	dq dup.x
 	dq push.x, push.x
 
-	dq over.x, fetchByte.x
-	dq over.x, fetchByte.x
+	dq over.x, bfetch.x
+	dq over.x, bfetch.x
 	dq enter, equals.x
 
 	dq pull.x
@@ -548,7 +548,7 @@ DEFINE getToken, "getToken"
 ; It returns the first non-space character.
 
 .begin0:
-	dq enter, getChar.x
+	dq enter, bget.x
 	dq dup.x
 	dq lit, '!'
 	dq enter, less.x
@@ -578,14 +578,14 @@ DEFINE getToken, "getToken"
 	dq lit, 1
 	dq add.x
 	dq push.x
-	dq storeByte.x
+	dq bstore.x
 
-	dq enter, getChar.x
+	dq enter, bget.x
 
 	dq jump, .begin1
 .do1:
 
-	dq drop.x ; Drop last getChar's return value.
+	dq drop.x ; Drop last bget's return value.
 
 	dq pull.x
 	dq lit, token+CELL
@@ -601,7 +601,7 @@ DEFINE literal, "literal"
 	dq enter, strLoad.x
 
 	dq over.x
-	dq fetchByte.x
+	dq bfetch.x
 	dq lit, '-'
 	dq enter, equals.x
 
@@ -644,11 +644,11 @@ DEFINE natural, "natural"
 
 .begin:
 	dq over.x
-	dq fetchByte.x
+	dq bfetch.x
 	dq lit, '0'
 	dq sub.x
 
-	dq enter, fetchBaseAbsol.x
+	dq enter, baseFetchAbsol.x
 	dq lit, 11
 	dq enter, less.x
 
@@ -656,7 +656,7 @@ DEFINE natural, "natural"
 	dq jump0, .else0
 
 	dq lit, 0
-	dq enter, fetchBaseAbsol.x
+	dq enter, baseFetchAbsol.x
 	dq enter, range.x
 
 	dq jump, .then0
@@ -671,7 +671,7 @@ DEFINE natural, "natural"
 	dq lit, 'A'-'0'
 	dq sub.x
 	dq lit, 0
-	dq enter, fetchBaseAbsol.x
+	dq enter, baseFetchAbsol.x
 	dq lit, 10
 	dq sub.x
 	dq enter, range.x
@@ -688,12 +688,12 @@ DEFINE natural, "natural"
 .while:
 	dq jump0, .do
 
-	dq enter, fetchBaseAbsol.x
+	dq enter, baseFetchAbsol.x
 	dq mul.x
 	dq drop.x
 
 	dq over.x
-	dq fetchByte.x
+	dq bfetch.x
 	dq lit, '0'
 	dq sub.x
 
@@ -843,14 +843,14 @@ DEFINE interpret, "interpret"
 	dq lit, inputTop
 	dq store.x
 
-	; Print error and tail-call newLine to flush output.
+	; Print error and tail-call line to flush output.
 
 	dq lit, token
 	dq enter, strLoad.x
 	dq write.x
 	dq lit, '?'
-	dq enter, putChar.x
-	dq jump, newLine.x
+	dq enter, bput.x
+	dq jump, line.x
 
 .then3:
 
@@ -934,14 +934,14 @@ DEFINE signed, "signed"
 	dq negate.x
 
 	dq lit, '-'
-	dq enter, putChar.x
+	dq enter, bput.x
 
 .then:
 	dq jump, unsigned.x
 
 DEFINE unsigned, "unsigned"
 	dq lit, 0
-	dq enter, fetchBaseAbsol.x
+	dq enter, baseFetchAbsol.x
 	dq div.x
 	dq enter, dupq.x
 
@@ -969,7 +969,7 @@ DEFINE unsigned, "unsigned"
 
 .then1:
 	dq add.x
-	dq jump, putChar.x
+	dq jump, bput.x
 
 DEFINE dot, "."
 	dq lit, base
@@ -980,11 +980,11 @@ DEFINE dot, "."
 	dq jump0, .then
 
 	dq enter, signed.x
-	dq jump, newLine.x
+	dq jump, line.x
 
 .then:
 	dq enter, unsigned.x
-	dq jump, newLine.x
+	dq jump, line.x
 
 base:
 	dq -10
