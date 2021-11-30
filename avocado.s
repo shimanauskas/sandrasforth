@@ -39,7 +39,6 @@
 %define LINK 0
 
 %macro STRING 2
-align CELL
 %1:
 	%strlen LENGTH %2
 	dq LENGTH
@@ -48,10 +47,11 @@ align CELL
 %endmacro
 
 %macro DEFINE 2-3 0
-	STRING %1, %2
-	dq LINK+%3
-	%define LINK %1
-.x:
+head%1:
+	dq LINK
+	%define LINK head%1
+	dq %1+%3
+	STRING .name, %2
 %endmacro
 
 ; A - A A
@@ -96,7 +96,7 @@ start:
 	mov rbp, stack+PAGE ; Our stacks grow downward.
 	mov rax, -1 ; Top-of-stack magic value, aids in testing.
 
-	mov rbx, main.x
+	mov rbx, main
 	jmp [rbx]
 
 ; - A
@@ -140,90 +140,89 @@ jump0:
 
 ; A - A A
 
-DEFINE dup, "dup"
+dup:
 	DUP
 	NEXT
 
 ; A -
 
-DEFINE drop, "drop"
+drop:
 	DROP
 	NEXT
 
 ; A B - B
 
-DEFINE nip, "nip"
+nip:
 	NIP
 	NEXT
 
 ; A B - A B A
 
-DEFINE over, "over"
+over:
 	DUP
 	mov rax, [rbp+CELL]
 	NEXT
 
 ; A -
 
-DEFINE push, "push"
+push:
 	push rax
 	DROP
 	NEXT
 
 ; - A
 
-DEFINE pull, "pull"
+pull:
 	DUP
 	pop rax
 	NEXT
 
 ; A - B
 
-DEFINE not, "not"
+not:
 	not rax
 	NEXT
 
 ; A B - C
 
-DEFINE and, "and"
+and:
 	and rax, [rbp]
 	NIP
 	NEXT
 
 ; A B - C
 
-DEFINE or, "or"
+or:
 	or rax, [rbp]
 	NIP
 	NEXT
 
 ; A B - C
 
-DEFINE xor, "xor"
+xor:
 	xor rax, [rbp]
 	NIP
 	NEXT
 
 ; A - B
 
-DEFINE negate, "negate"
+negate:
 	neg rax
 	NEXT
 
 ; A B - C
 
-DEFINE sub, "-"
+sub:
 	neg rax
-	jmp add.x ; Fallthrough?
 
 ; A B - C
 
-DEFINE add, "+"
+add:
 	add rax, [rbp]
 	NIP
 	NEXT
 
-DEFINE mul, "*"			
+mul:
 	mov rcx, rax
 	DROP
 	mul rcx
@@ -231,7 +230,7 @@ DEFINE mul, "*"
 	mov rax, rdx
 	NEXT
 
-DEFINE div, "/"
+div:
 	mov rcx, rax
 	mov rdx, [rbp]
 	lea rbp, [rbp+CELL]
@@ -240,27 +239,27 @@ DEFINE div, "/"
 	mov [rbp], rdx
 	NEXT
 
-DEFINE fetch, "@"
+fetch:
 	mov rax, [rax]
 	NEXT
 
-DEFINE store, "!"
+store:
 	mov rcx, [rbp]
 	mov [rax], rcx
 	TWODROP
 	NEXT
 
-DEFINE bfetch, "b@"
+bfetch:
 	movzx rax, byte [rax]
 	NEXT
 
-DEFINE bstore, "b!"
+bstore:
 	mov cl, [rbp]
 	mov [rax], cl
 	TWODROP
 	NEXT
 
-DEFINE read, "read"
+read:
 	mov rdx, rax ; Size.
 	mov rsi, [rbp] ; Address.
 	mov rdi, STDIN
@@ -268,7 +267,7 @@ DEFINE read, "read"
 	syscall
 	NEXT
 
-DEFINE write, "write"
+write:
 	mov rdx, rax ; Size.
 	mov rsi, [rbp] ; Address.
 	mov rdi, STDOUT
@@ -277,683 +276,667 @@ DEFINE write, "write"
 	TWODROP
 	NEXT
 
-DEFINE bye, "bye"
+bye:
 	xor rdi, rdi
 	mov rax, SYSEXIT
 	syscall
 
 section .data
 
-DEFINE execute, "execute"
-	dq push.x
+execute:
+	dq push
 	dq exit
 
 ; If top-of-stack not zero, duplicate it.
 
-DEFINE dupq, "dup?"
-	dq dup.x
+dupq:
+	dq dup
 
 .if:
 	dq jump0, .then
 
-	dq dup.x
+	dq dup
 
 .then:
 	dq exit
 
-DEFINE less, "<"
-	dq over.x, over.x
-	dq xor.x
-	dq enter, negative.x
+less:
+	dq over, over
+	dq xor
+	dq enter, negative
 
 .if:
 	dq jump0, .then
 
-	dq drop.x
-	dq jump, negative.x
+	dq drop
+	dq jump, negative
 
 .then:
-	dq sub.x
-	dq jump, negative.x ; Fallthrough?
+	dq sub
 
-DEFINE negative, "negative"
+negative:
 	dq lit, FLAG
-	dq and.x
-	dq jump, bool.x ; Fallthrough?
+	dq and
 
-DEFINE bool, "bool"
-	dq dup.x
+bool:
+	dq dup
 
 .if:
 	dq jump0, .then
 
-	dq dup.x
-	dq xor.x
-	dq not.x
+	dq dup
+	dq xor
+	dq not
 
 .then:
 	dq exit
 
-DEFINE more, ">"
+more:
 	dq lit, 1
-	dq add.x
-	dq enter, less.x
-	dq not.x
+	dq add
+	dq enter, less
+	dq not
 	dq exit
 
-DEFINE equals, "="
-	dq xor.x
-	dq jump, zequals.x ; Fallthrough?
+equals:
+	dq xor
 
-DEFINE zequals, "0="
-	dq enter, bool.x
-	dq not.x
+zequals:
+	dq enter, bool
+	dq not
 	dq exit
 
-DEFINE baseFetchAbsol, "base@Absol"
+baseFetchAbsol:
 	dq lit, base
-	dq fetch.x
-	dq jump, absol.x ; Fallthrough?
+	dq fetch
 
-DEFINE absol, "absol"
-	dq dup.x
-	dq enter, negative.x
+absol:
+	dq dup
+	dq enter, negative
 
 .if:
 	dq jump0, .then
 
-	dq negate.x
+	dq negate
 
 .then:
 	dq exit
 
-DEFINE range, "range"
-	dq push.x
-	dq over.x
-	dq push.x
-	dq enter, less.x
-	dq not.x
-	dq pull.x, pull.x
-	dq enter, less.x
-	dq and.x
+range:
+	dq push
+	dq over
+	dq push
+	dq enter, less
+	dq not
+	dq pull, pull
+	dq enter, less
+	dq and
 	dq exit
 
-DEFINE bget, "bget"
+bget:
 	dq lit, inputPtr
-	dq fetch.x
+	dq fetch
 	dq lit, inputTop
-	dq fetch.x
-	dq enter, less.x
+	dq fetch
+	dq enter, less
 
 .if0:
 	dq jump0, .then0
 
 	dq lit, inputPtr
-	dq fetch.x
-	dq dup.x
+	dq fetch
+	dq dup
 	dq lit, 1
-	dq add.x
+	dq add
 	dq lit, inputPtr
-	dq store.x
-	dq bfetch.x
+	dq store
+	dq bfetch
 	dq exit
 
 .then0:
 	dq lit, input
 	dq lit, PAGE
-	dq read.x
-	dq dup.x
+	dq read
+	dq dup
 	dq lit, 1
-	dq enter, less.x
+	dq enter, less
 
 .if1:
 	dq jump0, .then1
 
-	dq bye.x
+	dq bye
 
 .then1:
-	dq over.x
-	dq add.x
+	dq over
+	dq add
 	dq lit, inputTop
-	dq store.x
+	dq store
 	dq lit, inputPtr
-	dq store.x
-	dq jump, bget.x
+	dq store
+	dq jump, bget
 
-DEFINE line, "line"
+line:
 	dq lit, `\n`
-	dq jump, bput.x ; Fallthrough?
 
-DEFINE bput, "bput"
-	dq dup.x
+bput:
+	dq dup
 	dq lit, outputPtr
-	dq fetch.x
-	dq bstore.x
+	dq fetch
+	dq bstore
 
 	dq lit, outputPtr
-	dq fetch.x
+	dq fetch
 	dq lit, 1
-	dq add.x
+	dq add
 	dq lit, outputPtr
-	dq store.x
+	dq store
 
 	dq lit, `\n`
-	dq enter, equals.x
+	dq enter, equals
 
 	dq lit, outputPtr
-	dq fetch.x
+	dq fetch
 	dq lit, output+PAGE
-	dq enter, equals.x
+	dq enter, equals
 
-	dq or.x
+	dq or
 
 .if:
 	dq jump0, .then
 
 	dq lit, output
 	dq lit, outputPtr
-	dq fetch.x
+	dq fetch
 	dq lit, output
-	dq sub.x
-	dq write.x
+	dq sub
+	dq write
 
 	dq lit, output
 	dq lit, outputPtr
-	dq store.x
+	dq store
 
 .then:
 	dq exit
 
-DEFINE strLoad, "strLoad"
-	dq dup.x
-	dq push.x
+strLoad:
+	dq dup
+	dq push
 	dq lit, CELL
-	dq add.x
-	dq pull.x
-	dq fetch.x
+	dq add
+	dq pull
+	dq fetch
 	dq exit
 
 ; stringA stringB - comparisonValue
 
-DEFINE strCmp, "strCmp"
-	dq dup.x
-	dq fetch.x
-	dq push.x
+strCmp:
+	dq dup
+	dq fetch
+	dq push
 
 	; Compare string sizes.
 
-	dq over.x, fetch.x
-	dq over.x, fetch.x
-	dq enter, equals.x
+	dq over, fetch
+	dq over, fetch
+	dq enter, equals
 
 .if:
 	dq jump0, .then
 
 	dq lit, CELL
-	dq add.x
-	dq push.x
+	dq add
+	dq push
 
 	dq lit, CELL
-	dq add.x
-	dq pull.x
+	dq add
+	dq pull
 
-	dq pull.x
+	dq pull
 
 .begin:
-	dq dup.x
-	dq push.x, push.x
+	dq dup
+	dq push, push
 
-	dq over.x, bfetch.x
-	dq over.x, bfetch.x
-	dq enter, equals.x
+	dq over, bfetch
+	dq over, bfetch
+	dq enter, equals
 
-	dq pull.x
-	dq and.x
+	dq pull
+	dq and
 
 .while:
 	dq jump0, .do
 
 	dq lit, 1
-	dq add.x
-	dq push.x
+	dq add
+	dq push
 
 	dq lit, 1
-	dq add.x
-	dq pull.x
+	dq add
+	dq pull
 
-	dq pull.x
+	dq pull
 	dq lit, 1
-	dq sub.x
+	dq sub
 
 	dq jump, .begin
 .do:
 
 .then:
-	dq pull.x
-	dq nip.x, nip.x ; Nip string pointers.
+	dq pull
+	dq nip, nip ; Nip string pointers.
 	dq exit
 
-DEFINE strSkip, "strSkip"
-	dq enter, strLoad.x
-	dq add.x
-	dq lit, CELL-1
-	dq add.x
-	dq lit, ~(CELL-1)
-	dq and.x
-	dq exit
-
-DEFINE getToken, "getToken"
+getToken:
 
 ; The following loop reads input and discards spaces.
 ; It returns the first non-space character.
 
 .begin0:
-	dq enter, bget.x
-	dq dup.x
+	dq enter, bget
+	dq dup
 	dq lit, '!'
-	dq enter, less.x
+	dq enter, less
 
 .while0:
 	dq jump0, .do0
 
-	dq drop.x
+	dq drop
 
 	dq jump, .begin0
 .do0:
 
 	dq lit, token+CELL
-	dq push.x
+	dq push
 
 .begin1:
-	dq dup.x
+	dq dup
 	dq lit, '!'
-	dq enter, less.x
-	dq not.x
+	dq enter, less
+	dq not
 
 .while1:
 	dq jump0, .do1
 
-	dq pull.x
-	dq dup.x
+	dq pull
+	dq dup
 	dq lit, 1
-	dq add.x
-	dq push.x
-	dq bstore.x
+	dq add
+	dq push
+	dq bstore
 
-	dq enter, bget.x
+	dq enter, bget
 
 	dq jump, .begin1
 .do1:
 
-	dq drop.x ; Drop last bget's return value.
+	dq drop ; Drop last bget's return value.
 
-	dq pull.x
+	dq pull
 	dq lit, token+CELL
-	dq sub.x
+	dq sub
 	dq lit, token
-	dq store.x
+	dq store
 	dq exit
 
 ; - result unconvertedChars
 
-DEFINE literal, "literal"
+literal:
 	dq lit, token
-	dq enter, strLoad.x
+	dq enter, strLoad
 
-	dq over.x
-	dq bfetch.x
+	dq over
+	dq bfetch
 	dq lit, '-'
-	dq enter, equals.x
+	dq enter, equals
 
-	dq over.x
+	dq over
 	dq lit, 1
-	dq xor.x
+	dq xor
 
 	dq lit, base
-	dq fetch.x
-	dq enter, negative.x
+	dq fetch
+	dq enter, negative
 
-	dq and.x
-	dq and.x
+	dq and
+	dq and
 
 .if:
 	dq jump0, .then
 
 	dq lit, 1
-	dq sub.x
-	dq push.x
+	dq sub
+	dq push
 
 	dq lit, 1
-	dq add.x
-	dq pull.x
+	dq add
+	dq pull
 
-	dq enter, natural.x
-	dq push.x
-	dq negate.x
-	dq pull.x
+	dq enter, natural
+	dq push
+	dq negate
+	dq pull
 	dq exit
 
 .then:
-	dq jump, natural.x ; Fallthrough?
 
 ; tokenAddr tokenLength - result unconvertedChars
 
-DEFINE natural, "natural"
-	dq push.x
+natural:
+	dq push
 	dq lit, 0
 
 .begin:
-	dq over.x
-	dq bfetch.x
+	dq over
+	dq bfetch
 	dq lit, '0'
-	dq sub.x
+	dq sub
 
-	dq enter, baseFetchAbsol.x
+	dq enter, baseFetchAbsol
 	dq lit, 11
-	dq enter, less.x
+	dq enter, less
 
 .if0:
 	dq jump0, .else0
 
 	dq lit, 0
-	dq enter, baseFetchAbsol.x
-	dq enter, range.x
+	dq enter, baseFetchAbsol
+	dq enter, range
 
 	dq jump, .then0
 .else0:
 
-	dq dup.x
+	dq dup
 	dq lit, 0
 	dq lit, 10
-	dq enter, range.x
+	dq enter, range
 
-	dq over.x
+	dq over
 	dq lit, 'A'-'0'
-	dq sub.x
+	dq sub
 	dq lit, 0
-	dq enter, baseFetchAbsol.x
+	dq enter, baseFetchAbsol
 	dq lit, 10
-	dq sub.x
-	dq enter, range.x
+	dq sub
+	dq enter, range
 
-	dq or.x
-	dq nip.x
+	dq or
+	dq nip
 
 .then0:
-	dq pull.x
-	dq dup.x
-	dq push.x
-	dq and.x
+	dq pull
+	dq dup
+	dq push
+	dq and
 
 .while:
 	dq jump0, .do
 
-	dq enter, baseFetchAbsol.x
-	dq mul.x
-	dq drop.x
+	dq enter, baseFetchAbsol
+	dq mul
+	dq drop
 
-	dq over.x
-	dq bfetch.x
+	dq over
+	dq bfetch
 	dq lit, '0'
-	dq sub.x
+	dq sub
 
-	dq dup.x
+	dq dup
 	dq lit, 10
-	dq enter, more.x
+	dq enter, more
 
 .if1:
 	dq jump0, .then1
 
 	dq lit, 'A'-'0'-10
-	dq sub.x
+	dq sub
 
 .then1:
-	dq add.x
+	dq add
 
-	dq pull.x
+	dq pull
 	dq lit, 1
-	dq sub.x
-	dq push.x
+	dq sub
+	dq push
 
-	dq push.x
+	dq push
 	dq lit, 1
-	dq add.x
-	dq pull.x
+	dq add
+	dq pull
 
 	dq jump, .begin
 .do:
 
-	dq nip.x
-	dq pull.x
+	dq nip
+	dq pull
 	dq exit
 
-DEFINE bin, "bin", FLAG
+bin:
 	dq lit, 2
 	dq lit, base
-	dq store.x
+	dq store
 	dq exit
 
-DEFINE dec, "dec", FLAG
+dec:
 	dq lit, -10
 	dq lit, base
-	dq store.x
+	dq store
 	dq exit
 
-DEFINE hexdec, "hexdec", FLAG
+hexdec:
 	dq lit, 16
 	dq lit, base
-	dq store.x
+	dq store
 	dq exit
 
-DEFINE semiColon, ";", FLAG
+semiColon:
 	dq lit, exit
-	dq enter, compile.x
+	dq enter, compile
 	dq enter, code
-	dq pull.x, drop.x
+	dq pull, drop
 	dq exit
 
-DEFINE find, "find"
+find:
 	dq lit, last
 
 .begin:
-	dq fetch.x
-	dq lit, ~FLAG
-	dq and.x
-	dq dup.x, dup.x
+	dq fetch
+	dq dup, dup
 
 .if:
 	dq jump0, .then
 
+	dq lit, CELL*2
+	dq add
 	dq lit, token
-	dq enter, strCmp.x
+	dq enter, strCmp
 
 .then:
-.while:
-	dq jump0, .do
+	dq enter, zequals
 
-	dq enter, strSkip.x
-
-	dq jump, .begin
-.do:
+	dq jump0, .begin
+.repeat:
 
 	dq exit
 
-DEFINE compile, "compile"
+compile:
 	dq lit, codePtr
-	dq fetch.x
-	dq store.x
+	dq fetch
+	dq store
 
 	dq lit, codePtr
-	dq fetch.x
+	dq fetch
 	dq lit, CELL
-	dq add.x
+	dq add
 	dq lit, codePtr
-	dq store.x
+	dq store
 	dq exit
 
-DEFINE interpret, "interpret"
-	dq enter, getToken.x
-	dq enter, find.x
-	dq enter, dupq.x
+interpret:
+	dq enter, getToken
+	dq enter, find
+	dq enter, dupq
 
 .if0:
 	dq jump0, .then0
 
-	dq enter, strSkip.x
-	dq dup.x
-	dq fetch.x
-	dq enter, negative.x ; Check for immediate flag.
+	dq lit, CELL
+	dq add
+	dq fetch
+
+	dq dup
+	dq enter, negative
+	dq push
+
+	dq lit, ~FLAG
+	dq and
+	dq pull
 
 .if1:
 	dq jump0, .then1
 
-	dq enter, execute.x
-	dq jump, interpret.x
+	dq lit, CELL
+	dq sub
+	dq enter, execute
+	dq jump, interpret
 
 .then1:
-	dq dup.x
-
+	dq dup
 	dq lit, execute
-	dq enter, less.x
-	dq not.x
+	dq enter, less
+	dq not
 
 .if2:
 	dq jump0, .then2
 
 	dq lit, enter
-	dq enter, compile.x
+	dq enter, compile
 
 .then2:
-	dq lit, CELL
-	dq add.x
-	dq enter, compile.x
-	dq jump, interpret.x
+	dq enter, compile
+	dq jump, interpret
 
 .then0:
-	dq enter, literal.x
+	dq enter, literal
 
 .if3:
 	dq jump0, .then3
 
-	dq drop.x
+	dq drop
 
 	; Flush input.
 
 	dq lit, input
 	dq lit, inputTop
-	dq store.x
+	dq store
 
 	; Print error and tail-call line to flush output.
 
 	dq lit, token
-	dq enter, strLoad.x
-	dq write.x
+	dq enter, strLoad
+	dq write
 	dq lit, '?'
-	dq enter, bput.x
-	dq jump, line.x
+	dq enter, bput
+	dq jump, line
 
 .then3:
 
 	; Compile converted literal.
 
 	dq lit, lit
-	dq enter, compile.x
-	dq enter, compile.x
-	dq jump, interpret.x
+	dq enter, compile
+	dq enter, compile
+	dq jump, interpret
 
-DEFINE main, "main"
+main:
 	dq lit, prompt
-	dq enter, strLoad.x
-	dq write.x
+	dq enter, strLoad
+	dq write
 
-	dq enter, interpret.x
+	dq enter, interpret
 
 	dq lit, code
 	dq lit, codePtr
-	dq store.x
-	dq jump, main.x
+	dq store
+	dq jump, main
 
 ; The following definitions should be moved out of core once we can compile them at runtime.
 
-DEFINE while, "while", FLAG
-	dq jump, if.x ; Fallthrough?
-
-DEFINE if, "if", FLAG
+while:
+if:
 	dq lit, jump0
-	dq enter, compile.x
+	dq enter, compile
 	dq lit, codePtr
-	dq fetch.x
+	dq fetch
 	dq lit, 0
-	dq jump, compile.x
+	dq jump, compile
 
-DEFINE else, "else", FLAG
+else:
 	dq lit, jump
-	dq enter, compile.x
+	dq enter, compile
 	dq lit, codePtr
-	dq fetch.x
-	dq push.x
+	dq fetch
+	dq push
 	dq lit, 0
-	dq enter, compile.x
-	dq enter, then.x
-	dq pull.x
+	dq enter, compile
+	dq enter, then
+	dq pull
 	dq exit
 
-DEFINE then, "then", FLAG
-	dq push.x
+then:
+	dq push
 	dq lit, codePtr
-	dq fetch.x
-	dq pull.x
-	dq store.x
+	dq fetch
+	dq pull
+	dq store
 	dq exit
 
-DEFINE begin, "begin", FLAG
+begin:
 	dq lit, codePtr
-	dq fetch.x
+	dq fetch
 	dq exit
 
-DEFINE do, "do", FLAG
-	dq push.x
+do:
+	dq push
 	dq lit, codePtr
-	dq fetch.x
+	dq fetch
 	dq lit, CELL*2
-	dq add.x
-	dq pull.x
-	dq store.x
+	dq add
+	dq pull
+	dq store
 
 	dq lit, jump
-	dq enter, compile.x
-	dq jump, compile.x
+	dq enter, compile
+	dq jump, compile
 
-DEFINE signed, "signed"
-	dq dup.x
-	dq enter, negative.x
+signed:
+	dq dup
+	dq enter, negative
 
 .if:
 	dq jump0, .then
 
-	dq negate.x
+	dq negate
 
 	dq lit, '-'
-	dq enter, bput.x
+	dq enter, bput
 
 .then:
-	dq jump, unsigned.x
-
-DEFINE unsigned, "unsigned"
+unsigned:
 	dq lit, 0
-	dq enter, baseFetchAbsol.x
-	dq div.x
-	dq enter, dupq.x
+	dq enter, baseFetchAbsol
+	dq div
+	dq enter, dupq
 
 .if0:
 	dq jump0, .then0
 
-	dq enter, unsigned.x
+	dq enter, unsigned
 
 .then0:
-	dq dup.x
+	dq dup
 	dq lit, 10
-	dq enter, less.x
+	dq enter, less
 
 .if1:
 	dq jump0, .else1
@@ -964,27 +947,89 @@ DEFINE unsigned, "unsigned"
 
 .else1:
 	dq lit, 10
-	dq sub.x
+	dq sub
 	dq lit, 'A'
 
 .then1:
-	dq add.x
-	dq jump, bput.x
+	dq add
+	dq jump, bput
 
-DEFINE dot, "."
+dot:
 	dq lit, base
-	dq fetch.x
-	dq enter, negative.x
+	dq fetch
+	dq enter, negative
 
 .if:
 	dq jump0, .then
 
-	dq enter, signed.x
-	dq jump, line.x
+	dq enter, signed
+	dq jump, line
 
 .then:
-	dq enter, unsigned.x
-	dq jump, line.x
+	dq enter, unsigned
+	dq jump, line
+
+DEFINE dup, "dup"
+DEFINE drop, "drop"
+DEFINE nip, "nip"
+DEFINE over, "over"
+DEFINE push, "push"
+DEFINE pull, "pull"
+DEFINE not, "not"
+DEFINE and, "and"
+DEFINE or, "or"
+DEFINE xor, "xor"
+DEFINE negate, "negate"
+DEFINE sub, "-"
+DEFINE add, "+"
+DEFINE mul, "*"
+DEFINE div, "/"
+DEFINE fetch, "@"
+DEFINE store, "!"
+DEFINE bfetch, "b@"
+DEFINE bstore, "b!"
+DEFINE read, "read"
+DEFINE write, "write"
+DEFINE bye, "bye"
+
+DEFINE execute, "execute"
+DEFINE dupq, "dup?"
+DEFINE less, "<"
+DEFINE negative, "negative"
+DEFINE bool, "bool"
+DEFINE more, ">"
+DEFINE equals, "="
+DEFINE zequals, "0="
+DEFINE baseFetchAbsol, "base@Absol"
+DEFINE absol, "absol"
+DEFINE range, "range"
+DEFINE bget, "bget"
+DEFINE line, "line"
+DEFINE bput, "bput"
+DEFINE strLoad, "strLoad"
+DEFINE strCmp, "strCmp"
+DEFINE getToken, "getToken"
+DEFINE literal, "literal"
+DEFINE natural, "natural"
+DEFINE bin, "bin", FLAG
+DEFINE dec, "dec", FLAG
+DEFINE hexdec, "hexdec", FLAG
+DEFINE semiColon, ";", FLAG
+DEFINE find, "find"
+DEFINE compile, "compile"
+DEFINE interpret, "interpret"
+DEFINE main, "main"
+
+DEFINE while, "while", FLAG
+DEFINE if, "if", FLAG
+DEFINE else, "else", FLAG
+DEFINE then, "then", FLAG
+DEFINE begin, "begin", FLAG
+DEFINE do, "do", FLAG
+
+DEFINE signed, "signed"
+DEFINE unsigned, "unsigned"
+DEFINE dot, "."
 
 base:
 	dq -10
