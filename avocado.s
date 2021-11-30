@@ -1053,8 +1053,6 @@ STRING prompt, "# "
 
 section .bss
 
-align PAGE
-
 stack:
 	resb PAGE
 
