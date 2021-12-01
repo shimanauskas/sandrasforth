@@ -729,7 +729,7 @@ hexdec:
 	dq store
 	dq exit
 
-semiColon:
+semicolon:
 	dq lit, exit
 	dq enter, compile
 	dq enter, code
@@ -1014,7 +1014,7 @@ DEFINE natural, "natural"
 DEFINE bin, "bin", FLAG
 DEFINE dec, "dec", FLAG
 DEFINE hexdec, "hexdec", FLAG
-DEFINE semiColon, ";", FLAG
+DEFINE semicolon, ";", FLAG
 DEFINE find, "find"
 DEFINE compile, "compile"
 DEFINE interpret, "interpret"
