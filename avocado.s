@@ -289,7 +289,7 @@ execute:
 
 ; If top-of-stack not zero, duplicate it.
 
-dupq:
+qdup:
 	dq dup
 
 .if:
@@ -346,7 +346,7 @@ zequals:
 	dq not
 	dq exit
 
-baseFetchAbsol:
+baseabs:
 	dq lit, base
 	dq fetch
 
@@ -362,7 +362,7 @@ absol:
 .then:
 	dq exit
 
-range:
+within:
 	dq push
 	dq over
 	dq push
@@ -465,7 +465,7 @@ bput:
 .then:
 	dq exit
 
-strLoad:
+load:
 	dq dup
 	dq push
 	dq lit, CELL
@@ -476,7 +476,7 @@ strLoad:
 
 ; stringA stringB - comparisonValue
 
-strCmp:
+compare:
 	dq dup
 	dq fetch
 	dq push
@@ -540,7 +540,7 @@ emptytoken:
 	dq store
 	dq exit
 
-getToken:
+gettoken:
 
 ; The following loop reads input and discards spaces.
 ; It returns the first non-space character.
@@ -599,7 +599,7 @@ getToken:
 
 literal:
 	dq lit, token
-	dq enter, strLoad
+	dq enter, load
 
 	dq over
 	dq bfetch
@@ -648,7 +648,7 @@ natural:
 	dq lit, '0'
 	dq sub
 
-	dq enter, baseFetchAbsol
+	dq enter, baseabs
 	dq lit, 11
 	dq enter, less
 
@@ -656,8 +656,8 @@ natural:
 	dq jump0, .else0
 
 	dq lit, 0
-	dq enter, baseFetchAbsol
-	dq enter, range
+	dq enter, baseabs
+	dq enter, within
 
 	dq jump, .then0
 .else0:
@@ -665,16 +665,16 @@ natural:
 	dq dup
 	dq lit, 0
 	dq lit, 10
-	dq enter, range
+	dq enter, within
 
 	dq over
 	dq lit, 'A'-'0'
 	dq sub
 	dq lit, 0
-	dq enter, baseFetchAbsol
+	dq enter, baseabs
 	dq lit, 10
 	dq sub
-	dq enter, range
+	dq enter, within
 
 	dq or
 	dq nip
@@ -688,7 +688,7 @@ natural:
 .while:
 	dq jump0, .do
 
-	dq enter, baseFetchAbsol
+	dq enter, baseabs
 	dq mul
 	dq drop
 
@@ -758,7 +758,7 @@ find:
 	dq lit, CELL*2
 	dq add
 	dq lit, token
-	dq enter, strCmp
+	dq enter, compare
 
 .then:
 	dq enter, zequals
@@ -782,7 +782,7 @@ compile:
 	dq exit
 
 interpret:
-	dq enter, getToken
+	dq enter, gettoken
 	dq lit, token
 	dq fetch
 
@@ -790,7 +790,7 @@ interpret:
 	dq jump0, .then0
 
 	dq enter, find
-	dq enter, dupq
+	dq enter, qdup
 
 .if1:
 	dq jump0, .then1
@@ -848,7 +848,7 @@ interpret:
 	; Print error and tail-call line to flush output.
 
 	dq lit, token
-	dq enter, strLoad
+	dq enter, load
 	dq write
 	dq lit, '?'
 	dq enter, bput
@@ -870,7 +870,7 @@ interpret:
 
 main:
 	dq lit, prompt
-	dq enter, strLoad
+	dq enter, load
 	dq write
 
 	dq enter, accept
@@ -945,9 +945,9 @@ signed:
 .then:
 unsigned:
 	dq lit, 0
-	dq enter, baseFetchAbsol
+	dq enter, baseabs
 	dq div
-	dq enter, dupq
+	dq enter, qdup
 
 .if0:
 	dq jump0, .then0
@@ -1014,24 +1014,24 @@ DEFINE write, "write"
 DEFINE bye, "bye"
 
 DEFINE execute, "execute"
-DEFINE dupq, "dup?"
+DEFINE qdup, "?dup"
 DEFINE less, "<"
 DEFINE negative, "negative"
 DEFINE bool, "bool"
 DEFINE more, ">"
 DEFINE equals, "="
 DEFINE zequals, "0="
-DEFINE baseFetchAbsol, "base@Absol"
+DEFINE baseabs, "baseabs"
 DEFINE absol, "absol"
-DEFINE range, "range"
+DEFINE within, "within"
 DEFINE accept, "accept"
 DEFINE bget, "bget"
 DEFINE line, "line"
 DEFINE bput, "bput"
-DEFINE strLoad, "strLoad"
-DEFINE strCmp, "strCmp"
+DEFINE load, "load"
+DEFINE compare, "compare"
 DEFINE emptytoken, "emptytoken"
-DEFINE getToken, "getToken"
+DEFINE gettoken, "gettoken"
 DEFINE literal, "literal"
 DEFINE natural, "natural"
 DEFINE bin, "bin", FLAG
