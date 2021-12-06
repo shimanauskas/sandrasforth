@@ -81,8 +81,6 @@ head%1:
 	add rbp, CELL
 %endmacro
 
-; -
-
 %macro NEXT 0
 	add rbx, CELL
 	jmp [rbx]
@@ -107,21 +105,15 @@ lit:
 	mov rax, [rbx]
 	NEXT
 
-; -
-
 enter:
 	add rbx, CELL
 	push rbx
 	mov rbx, [rbx]
 	jmp [rbx]
 
-; -
-
 exit:
 	pop rbx
 	NEXT
-
-; -
 
 jump:
 	add rbx, CELL
