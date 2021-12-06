@@ -130,7 +130,7 @@ jump:
 
 ; A -
 
-jump0:
+zjump:
 	test rax, rax
 	mov rax, [rbp]
 	lea rbp, [rbp+CELL]
@@ -293,7 +293,7 @@ qdup:
 	dq dup
 
 .if:
-	dq jump0, .then
+	dq zjump, .then
 
 	dq dup
 
@@ -306,7 +306,7 @@ less:
 	dq enter, negative
 
 .if:
-	dq jump0, .then
+	dq zjump, .then
 
 	dq drop
 	dq jump, negative
@@ -322,7 +322,7 @@ bool:
 	dq dup
 
 .if:
-	dq jump0, .then
+	dq zjump, .then
 
 	dq dup
 	dq xor
@@ -355,7 +355,7 @@ absol:
 	dq enter, negative
 
 .if:
-	dq jump0, .then
+	dq zjump, .then
 
 	dq negate
 
@@ -382,7 +382,7 @@ accept:
 	dq enter, less
 
 .if:
-	dq jump0, .then
+	dq zjump, .then
 
 	dq bye
 
@@ -405,7 +405,7 @@ bget:
 	dq enter, less
 
 .if:
-	dq jump0, .then
+	dq zjump, .then
 
 	dq lit, inputPtr
 	dq fetch
@@ -449,7 +449,7 @@ bput:
 	dq or
 
 .if:
-	dq jump0, .then
+	dq zjump, .then
 
 	dq lit, output
 	dq lit, outputPtr
@@ -488,7 +488,7 @@ compare:
 	dq enter, equals
 
 .if:
-	dq jump0, .then
+	dq zjump, .then
 
 	dq lit, CELL
 	dq add
@@ -512,7 +512,7 @@ compare:
 	dq and
 
 .while:
-	dq jump0, .do
+	dq zjump, .do
 
 	dq lit, 1
 	dq add
@@ -547,14 +547,14 @@ gettoken:
 
 .begin0:
 	dq enter, bget
-	dq jump0, emptytoken ; Hack.
+	dq zjump, emptytoken ; Hack.
 
 	dq dup
 	dq lit, '!'
 	dq enter, less
 
 .while0:
-	dq jump0, .do0
+	dq zjump, .do0
 
 	dq drop
 
@@ -571,7 +571,7 @@ gettoken:
 	dq not
 
 .while1:
-	dq jump0, .do1
+	dq zjump, .do1
 
 	dq pull
 	dq dup
@@ -618,7 +618,7 @@ literal:
 	dq and
 
 .if:
-	dq jump0, .then
+	dq zjump, .then
 
 	dq lit, 1
 	dq sub
@@ -653,7 +653,7 @@ natural:
 	dq enter, less
 
 .if0:
-	dq jump0, .else0
+	dq zjump, .else0
 
 	dq lit, 0
 	dq enter, baseabs
@@ -686,7 +686,7 @@ natural:
 	dq and
 
 .while:
-	dq jump0, .do
+	dq zjump, .do
 
 	dq enter, baseabs
 	dq mul
@@ -702,7 +702,7 @@ natural:
 	dq enter, more
 
 .if1:
-	dq jump0, .then1
+	dq zjump, .then1
 
 	dq lit, 'A'-'0'-10
 	dq sub
@@ -753,7 +753,7 @@ find:
 	dq dup, dup
 
 .if:
-	dq jump0, .then
+	dq zjump, .then
 
 	dq lit, CELL*2
 	dq add
@@ -763,7 +763,7 @@ find:
 .then:
 	dq enter, zequals
 
-	dq jump0, .begin
+	dq zjump, .begin
 .repeat:
 
 	dq exit
@@ -787,13 +787,13 @@ interpret:
 	dq fetch
 
 .if0:
-	dq jump0, .then0
+	dq zjump, .then0
 
 	dq enter, find
 	dq enter, qdup
 
 .if1:
-	dq jump0, .then1
+	dq zjump, .then1
 
 	dq lit, CELL
 	dq add
@@ -808,7 +808,7 @@ interpret:
 	dq pull
 
 .if2:
-	dq jump0, .then2
+	dq zjump, .then2
 
 	dq lit, CELL
 	dq sub
@@ -822,7 +822,7 @@ interpret:
 	dq not
 
 .if3:
-	dq jump0, .then3
+	dq zjump, .then3
 
 	dq lit, enter
 	dq enter, compile
@@ -835,7 +835,7 @@ interpret:
 	dq enter, literal
 
 .if4:
-	dq jump0, .then4
+	dq zjump, .then4
 
 	dq drop
 
@@ -885,7 +885,7 @@ main:
 
 while:
 if:
-	dq lit, jump0
+	dq lit, zjump
 	dq enter, compile
 	dq lit, codePtr
 	dq fetch
@@ -935,7 +935,7 @@ signed:
 	dq enter, negative
 
 .if:
-	dq jump0, .then
+	dq zjump, .then
 
 	dq negate
 
@@ -950,7 +950,7 @@ unsigned:
 	dq enter, qdup
 
 .if0:
-	dq jump0, .then0
+	dq zjump, .then0
 
 	dq enter, unsigned
 
@@ -960,7 +960,7 @@ unsigned:
 	dq enter, less
 
 .if1:
-	dq jump0, .else1
+	dq zjump, .else1
 
 	dq lit, '0'
 
@@ -981,7 +981,7 @@ dot:
 	dq enter, negative
 
 .if:
-	dq jump0, .then
+	dq zjump, .then
 
 	dq enter, signed
 	dq jump, line
