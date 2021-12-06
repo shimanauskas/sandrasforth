@@ -727,24 +727,6 @@ natural:
 	dq pull
 	dq exit
 
-bin:
-	dq lit, 2
-	dq lit, base
-	dq store
-	dq exit
-
-dec:
-	dq lit, -10
-	dq lit, base
-	dq store
-	dq exit
-
-hexdec:
-	dq lit, 16
-	dq lit, base
-	dq store
-	dq exit
-
 find:
 	dq lit, last
 
@@ -930,6 +912,24 @@ do:
 	dq enter, compile
 	dq jump, compile
 
+bin:
+	dq lit, 2
+	dq lit, base
+	dq store
+	dq exit
+
+dec:
+	dq lit, -10
+	dq lit, base
+	dq store
+	dq exit
+
+hex:
+	dq lit, 16
+	dq lit, base
+	dq store
+	dq exit
+
 signed:
 	dq dup
 	dq enter, negative
@@ -1034,9 +1034,6 @@ DEFINE emptytoken, "emptytoken"
 DEFINE gettoken, "gettoken"
 DEFINE literal, "literal"
 DEFINE natural, "natural"
-DEFINE bin, "bin", FLAG
-DEFINE dec, "dec", FLAG
-DEFINE hexdec, "hexdec", FLAG
 DEFINE find, "find"
 DEFINE compile, "compile"
 DEFINE interpret, "interpret"
@@ -1049,6 +1046,9 @@ DEFINE then, "then", FLAG
 DEFINE begin, "begin", FLAG
 DEFINE do, "do", FLAG
 
+DEFINE bin, "bin", FLAG
+DEFINE dec, "dec", FLAG
+DEFINE hex, "hex", FLAG
 DEFINE signed, "signed"
 DEFINE unsigned, "unsigned"
 DEFINE dot, "."
