@@ -373,6 +373,30 @@ range:
 	dq and
 	dq exit
 
+accept:
+	dq lit, input
+	dq lit, PAGE
+	dq read
+	dq dup
+	dq lit, 1
+	dq enter, less
+
+.if:
+	dq jump0, .then
+
+	dq bye
+
+.then:
+	dq over
+	dq add
+	dq lit, inputTop
+	dq store
+	dq lit, inputPtr
+	dq store
+	dq exit
+
+; - char -1 | 0
+
 bget:
 	dq lit, inputPtr
 	dq fetch
@@ -380,8 +404,8 @@ bget:
 	dq fetch
 	dq enter, less
 
-.if0:
-	dq jump0, .then0
+.if:
+	dq jump0, .then
 
 	dq lit, inputPtr
 	dq fetch
@@ -391,29 +415,12 @@ bget:
 	dq lit, inputPtr
 	dq store
 	dq bfetch
+	dq lit, -1
 	dq exit
 
-.then0:
-	dq lit, input
-	dq lit, PAGE
-	dq read
-	dq dup
-	dq lit, 1
-	dq enter, less
-
-.if1:
-	dq jump0, .then1
-
-	dq bye
-
-.then1:
-	dq over
-	dq add
-	dq lit, inputTop
-	dq store
-	dq lit, inputPtr
-	dq store
-	dq jump, bget
+.then:
+	dq lit, 0
+	dq exit
 
 line:
 	dq lit, `\n`
@@ -527,6 +534,12 @@ strCmp:
 	dq nip, nip ; Nip string pointers.
 	dq exit
 
+emptytoken:
+	dq lit, 0
+	dq lit, token
+	dq store
+	dq exit
+
 getToken:
 
 ; The following loop reads input and discards spaces.
@@ -534,6 +547,8 @@ getToken:
 
 .begin0:
 	dq enter, bget
+	dq jump0, emptytoken ; Hack.
+
 	dq dup
 	dq lit, '!'
 	dq enter, less
@@ -566,6 +581,7 @@ getToken:
 	dq bstore
 
 	dq enter, bget
+	dq drop
 
 	dq jump, .begin1
 .do1:
@@ -729,13 +745,6 @@ hexdec:
 	dq store
 	dq exit
 
-semicolon:
-	dq lit, exit
-	dq enter, compile
-	dq enter, code
-	dq pull, drop
-	dq exit
-
 find:
 	dq lit, last
 
@@ -774,11 +783,17 @@ compile:
 
 interpret:
 	dq enter, getToken
-	dq enter, find
-	dq enter, dupq
+	dq lit, token
+	dq fetch
 
 .if0:
 	dq jump0, .then0
+
+	dq enter, find
+	dq enter, dupq
+
+.if1:
+	dq jump0, .then1
 
 	dq lit, CELL
 	dq add
@@ -792,35 +807,35 @@ interpret:
 	dq and
 	dq pull
 
-.if1:
-	dq jump0, .then1
+.if2:
+	dq jump0, .then2
 
 	dq lit, CELL
 	dq sub
 	dq enter, execute
 	dq jump, interpret
 
-.then1:
+.then2:
 	dq dup
 	dq lit, execute
 	dq enter, less
 	dq not
 
-.if2:
-	dq jump0, .then2
+.if3:
+	dq jump0, .then3
 
 	dq lit, enter
 	dq enter, compile
 
-.then2:
+.then3:
 	dq enter, compile
 	dq jump, interpret
 
-.then0:
+.then1:
 	dq enter, literal
 
-.if3:
-	dq jump0, .then3
+.if4:
+	dq jump0, .then4
 
 	dq drop
 
@@ -839,7 +854,7 @@ interpret:
 	dq enter, bput
 	dq jump, line
 
-.then3:
+.then4:
 
 	; Compile converted literal.
 
@@ -848,11 +863,17 @@ interpret:
 	dq enter, compile
 	dq jump, interpret
 
+.then0:
+	dq lit, exit
+	dq enter, compile
+	dq jump, code
+
 main:
 	dq lit, prompt
 	dq enter, strLoad
 	dq write
 
+	dq enter, accept
 	dq enter, interpret
 
 	dq lit, code
@@ -1003,18 +1024,19 @@ DEFINE zequals, "0="
 DEFINE baseFetchAbsol, "base@Absol"
 DEFINE absol, "absol"
 DEFINE range, "range"
+DEFINE accept, "accept"
 DEFINE bget, "bget"
 DEFINE line, "line"
 DEFINE bput, "bput"
 DEFINE strLoad, "strLoad"
 DEFINE strCmp, "strCmp"
+DEFINE emptytoken, "emptytoken"
 DEFINE getToken, "getToken"
 DEFINE literal, "literal"
 DEFINE natural, "natural"
 DEFINE bin, "bin", FLAG
 DEFINE dec, "dec", FLAG
 DEFINE hexdec, "hexdec", FLAG
-DEFINE semicolon, ";", FLAG
 DEFINE find, "find"
 DEFINE compile, "compile"
 DEFINE interpret, "interpret"

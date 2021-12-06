@@ -11,6 +11,4 @@ No more dependencies, other than a few system calls.
 
 ## Usage
 
-Terminate input with a semicolon to get it interpreted.
-
 A word followed by a question mark will be displayed if it is not found in the vocabulary and not a valid number.
