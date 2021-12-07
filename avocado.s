@@ -338,22 +338,6 @@ zequals:
 	dq not
 	dq exit
 
-baseabs:
-	dq lit, base
-	dq fetch
-
-absol:
-	dq dup
-	dq enter, negative
-
-.if:
-	dq zjump, .then
-
-	dq negate
-
-.then:
-	dq exit
-
 within:
 	dq push
 	dq over
@@ -602,11 +586,6 @@ literal:
 	dq lit, 1
 	dq xor
 
-	dq lit, base
-	dq fetch
-	dq enter, negative
-
-	dq and
 	dq and
 
 .if:
@@ -640,7 +619,8 @@ natural:
 	dq lit, '0'
 	dq sub
 
-	dq enter, baseabs
+	dq lit, base
+	dq fetch
 	dq lit, 11
 	dq enter, less
 
@@ -648,7 +628,8 @@ natural:
 	dq zjump, .else0
 
 	dq lit, 0
-	dq enter, baseabs
+	dq lit, base
+	dq fetch
 	dq enter, within
 
 	dq jump, .then0
@@ -663,7 +644,8 @@ natural:
 	dq lit, 'A'-'0'
 	dq sub
 	dq lit, 0
-	dq enter, baseabs
+	dq lit, base
+	dq fetch
 	dq lit, 10
 	dq sub
 	dq enter, within
@@ -680,7 +662,8 @@ natural:
 .while:
 	dq zjump, .do
 
-	dq enter, baseabs
+	dq lit, base
+	dq fetch
 	dq mul
 	dq drop
 
@@ -911,7 +894,7 @@ bin:
 	dq exit
 
 dec:
-	dq lit, -10
+	dq lit, 10
 	dq lit, base
 	dq store
 	dq exit
@@ -922,29 +905,17 @@ hex:
 	dq store
 	dq exit
 
-signed:
-	dq dup
-	dq enter, negative
-
-.if:
-	dq zjump, .then
-
-	dq negate
-
-	dq lit, '-'
-	dq enter, bput
-
-.then:
-unsigned:
+udot:
 	dq lit, 0
-	dq enter, baseabs
+	dq lit, base
+	dq fetch
 	dq div
 	dq enter, qdup
 
 .if0:
 	dq zjump, .then0
 
-	dq enter, unsigned
+	dq enter, udot
 
 .then0:
 	dq dup
@@ -968,18 +939,19 @@ unsigned:
 	dq jump, bput
 
 dot:
-	dq lit, base
-	dq fetch
+	dq dup
 	dq enter, negative
 
 .if:
 	dq zjump, .then
 
-	dq enter, signed
-	dq jump, line
+	dq negate
+
+	dq lit, '-'
+	dq enter, bput
 
 .then:
-	dq enter, unsigned
+	dq enter, udot
 	dq jump, line
 
 DEFINE dup, "dup"
@@ -1013,8 +985,6 @@ DEFINE bool, "bool"
 DEFINE more, ">"
 DEFINE equals, "="
 DEFINE zequals, "0="
-DEFINE baseabs, "baseabs"
-DEFINE absol, "absol"
 DEFINE within, "within"
 DEFINE accept, "accept"
 DEFINE bget, "bget"
@@ -1041,12 +1011,11 @@ DEFINE do, "do", FLAG
 DEFINE bin, "bin", FLAG
 DEFINE dec, "dec", FLAG
 DEFINE hex, "hex", FLAG
-DEFINE signed, "signed"
-DEFINE unsigned, "unsigned"
+DEFINE udot, "u."
 DEFINE dot, "."
 
 base:
-	dq -10
+	dq 10
 
 last:
 	dq LINK
