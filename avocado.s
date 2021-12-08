@@ -130,6 +130,12 @@ zjump:
 	add rbx, CELL
 	NEXT
 
+execute:
+	push rbx
+	mov rbx, rax
+	DROP
+	jmp [rbx]
+
 ; A - A A
 
 dup:
@@ -273,11 +279,9 @@ bye:
 	mov rax, SYSEXIT
 	syscall
 
-section .data
+codeend:
 
-execute:
-	dq push
-	dq exit
+section .data
 
 ; If top-of-stack not zero, duplicate it.
 
@@ -761,14 +765,12 @@ interpret:
 .if2:
 	dq zjump, .then2
 
-	dq lit, CELL
-	dq sub
-	dq enter, execute
+	dq execute
 	dq jump, interpret
 
 .then2:
 	dq dup
-	dq lit, execute
+	dq lit, codeend
 	dq enter, less
 	dq not
 
@@ -944,6 +946,7 @@ udot:
 	dq add
 	dq jump, bput
 
+DEFINE execute, "execute"
 DEFINE dup, "dup"
 DEFINE drop, "drop"
 DEFINE nip, "nip"
@@ -967,7 +970,6 @@ DEFINE read, "read"
 DEFINE write, "write"
 DEFINE bye, "bye"
 
-DEFINE execute, "execute"
 DEFINE qdup, "?dup"
 DEFINE less, "<"
 DEFINE negative, "negative"
