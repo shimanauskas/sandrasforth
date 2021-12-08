@@ -231,7 +231,7 @@ mul:
 div:
 	mov rcx, rax
 	mov rdx, [rbp]
-	lea rbp, [rbp+CELL]
+	NIP
 	mov rax, [rbp]
 	div rcx
 	mov [rbp], rdx
