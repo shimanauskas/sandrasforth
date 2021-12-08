@@ -398,45 +398,39 @@ bget:
 	dq lit, 0
 	dq exit
 
+flush:
+	dq lit, output
+	dq lit, outputPtr
+	dq over, over
+	dq fetch
+	dq lit, output
+	dq sub
+	dq write
+	dq store
+	dq exit
+
 line:
 	dq lit, `\n`
 
 bput:
+	dq lit, outputPtr
+	dq fetch
 	dq dup
-	dq lit, outputPtr
-	dq fetch
-	dq bstore
-
-	dq lit, outputPtr
-	dq fetch
 	dq lit, 1
 	dq add
 	dq lit, outputPtr
 	dq store
-
-	dq lit, `\n`
-	dq enter, equals
+	dq bstore
 
 	dq lit, outputPtr
 	dq fetch
 	dq lit, output+PAGE
 	dq enter, equals
 
-	dq or
-
 .if:
 	dq zjump, .then
 
-	dq lit, output
-	dq lit, outputPtr
-	dq fetch
-	dq lit, output
-	dq sub
-	dq write
-
-	dq lit, output
-	dq lit, outputPtr
-	dq store
+	dq jump, flush
 
 .then:
 	dq exit
@@ -808,8 +802,7 @@ interpret:
 	dq enter, load
 	dq write
 	dq lit, '?'
-	dq enter, bput
-	dq jump, line
+	dq jump, bput
 
 .then4:
 
@@ -832,6 +825,7 @@ main:
 
 	dq enter, accept
 	dq enter, interpret
+	dq enter, flush
 
 	dq lit, code
 	dq lit, codePtr
@@ -905,6 +899,18 @@ hex:
 	dq store
 	dq exit
 
+dot:
+	dq dup
+	dq enter, negative
+
+.if:
+	dq zjump, udot
+
+	dq negate
+
+	dq lit, '-'
+	dq enter, bput
+
 udot:
 	dq lit, 0
 	dq lit, base
@@ -937,22 +943,6 @@ udot:
 .then1:
 	dq add
 	dq jump, bput
-
-dot:
-	dq dup
-	dq enter, negative
-
-.if:
-	dq zjump, .then
-
-	dq negate
-
-	dq lit, '-'
-	dq enter, bput
-
-.then:
-	dq enter, udot
-	dq jump, line
 
 DEFINE dup, "dup"
 DEFINE drop, "drop"
@@ -988,6 +978,7 @@ DEFINE zequals, "0="
 DEFINE within, "within"
 DEFINE accept, "accept"
 DEFINE bget, "bget"
+DEFINE flush, "flush"
 DEFINE line, "line"
 DEFINE bput, "bput"
 DEFINE load, "load"
@@ -1011,8 +1002,8 @@ DEFINE do, "do", FLAG
 DEFINE bin, "bin", FLAG
 DEFINE dec, "dec", FLAG
 DEFINE hex, "hex", FLAG
-DEFINE udot, "u."
 DEFINE dot, "."
+DEFINE udot, "u."
 
 base:
 	dq 10
