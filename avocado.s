@@ -422,14 +422,10 @@ bput:
 	dq lit, outputPtr
 	dq fetch
 	dq lit, output+PAGE
-	dq enter, equals
+	dq xor
 
-.if:
-	dq zjump, .then
+	dq zjump, flush
 
-	dq jump, flush
-
-.then:
 	dq exit
 
 load:
@@ -514,7 +510,7 @@ gettoken:
 
 .begin0:
 	dq enter, bget
-	dq zjump, emptytoken ; Hack.
+	dq zjump, emptytoken
 
 	dq dup
 	dq lit, '!'
@@ -580,7 +576,7 @@ literal:
 	dq and
 
 .if:
-	dq zjump, .then
+	dq zjump, natural
 
 	dq lit, 1
 	dq sub
@@ -595,8 +591,6 @@ literal:
 	dq negate
 	dq pull
 	dq exit
-
-.then:
 
 ; tokenAddr tokenLength - result unconvertedChars
 
