@@ -327,13 +327,6 @@ bool:
 .then:
 	dq exit
 
-more:
-	dq lit, 1
-	dq add
-	dq enter, less
-	dq not
-	dq exit
-
 equals:
 	dq xor
 
@@ -671,8 +664,9 @@ natural:
 	dq sub
 
 	dq dup
-	dq lit, 10
-	dq enter, more
+	dq lit, 10-1
+	dq enter, less
+	dq not
 
 .if1:
 	dq zjump, .then1
@@ -974,7 +968,6 @@ DEFINE qdup, "?dup"
 DEFINE less, "<"
 DEFINE negative, "negative"
 DEFINE bool, "bool"
-DEFINE more, ">"
 DEFINE equals, "="
 DEFINE zequals, "0="
 DEFINE within, "within"
