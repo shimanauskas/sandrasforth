@@ -35,7 +35,7 @@
 
 %define CELL 8
 %define PAGE 0x1000
-%define FLAG 0x8000000000000000
+%define FLAG (1<<((CELL*8)-1))
 %define LINK 0
 
 %macro STRING 2
