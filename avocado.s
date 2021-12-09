@@ -569,12 +569,6 @@ literal:
 	dq lit, '-'
 	dq enter, equals
 
-	dq over
-	dq lit, 1
-	dq xor
-
-	dq and
-
 .if:
 	dq zjump, natural
 
