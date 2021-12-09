@@ -1,7 +1,7 @@
 ; rax - top-of-stack, syscall number.
 ; rbx - threaded code pointer.
 ; rcx - temporary, syscall scratch.
-; rdx - syscall argument.
+; rdx - temporary, syscall argument.
 
 ; rsi - syscall argument.
 ; rdi - syscall argument.
