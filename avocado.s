@@ -913,18 +913,14 @@ udot:
 	dq enter, less
 
 .if1:
-	dq zjump, .else1
+	dq zjump, .then1
 
 	dq lit, '0'
-
-	dq jump, .then1
-
-.else1:
-	dq lit, 10
-	dq sub
-	dq lit, 'A'
+	dq add
+	dq jump, bput
 
 .then1:
+	dq lit, 'A'-10
 	dq add
 	dq jump, bput
 
