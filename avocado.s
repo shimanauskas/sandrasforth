@@ -854,16 +854,16 @@ begin:
 
 do:
 	dq push
-	dq lit, codePtr
-	dq fetch
-	dq lit, CELL*2
-	dq add
-	dq pull
-	dq store
 
 	dq lit, jump
 	dq enter, compile
-	dq jump, compile
+	dq enter, compile
+
+	dq lit, codePtr
+	dq fetch
+	dq pull
+	dq store
+	dq exit
 
 bin:
 	dq lit, 2
