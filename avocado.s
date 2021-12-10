@@ -780,7 +780,7 @@ interpret:
 	dq lit, inputTop
 	dq store
 
-	; Print error and tail-call line to flush output.
+	; Print error and exit.
 
 	dq lit, token
 	dq enter, load
