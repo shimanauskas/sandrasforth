@@ -97,18 +97,18 @@ start:
 	mov rbx, main
 	jmp [rbx]
 
-; - A
-
-lit:
-	DUP
-	add rbx, CELL
-	mov rax, [rbx]
-	NEXT
-
 enter:
 	add rbx, CELL
 	push rbx
 	mov rbx, [rbx]
+	jmp [rbx]
+
+; A -
+
+execute:
+	push rbx
+	mov rbx, rax
+	DROP
 	jmp [rbx]
 
 exit:
@@ -125,15 +125,17 @@ jump:
 zjump:
 	test rax, rax
 	DROP
-	jz jump
-	add rbx, CELL
-	NEXT
-
-execute:
-	push rbx
-	mov rbx, rax
-	DROP
+	lea rbx, [rbx+CELL*2]
+	cmovz rbx, [rbx-CELL]
 	jmp [rbx]
+
+; - A
+
+lit:
+	DUP
+	add rbx, CELL
+	mov rax, [rbx]
+	NEXT
 
 ; A - A A
 
