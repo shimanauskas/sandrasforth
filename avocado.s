@@ -61,11 +61,17 @@ head%1:
 	mov [rbp], rax
 %endmacro
 
+; A B - B
+
+%macro NIP 0
+	lea rbp, [rbp+CELL]
+%endmacro
+
 ; A -
 
 %macro DROP 0
 	mov rax, [rbp]
-	add rbp, CELL
+	NIP
 %endmacro
 
 ; A B -
@@ -73,12 +79,6 @@ head%1:
 %macro TWODROP 0
 	mov rax, [rbp+CELL]
 	add rbp, CELL*2
-%endmacro
-
-; A B - B
-
-%macro NIP 0
-	add rbp, CELL
 %endmacro
 
 %macro NEXT 0
@@ -124,8 +124,7 @@ jump:
 
 zjump:
 	test rax, rax
-	mov rax, [rbp]
-	lea rbp, [rbp+CELL]
+	DROP
 	jz jump
 	add rbx, CELL
 	NEXT
