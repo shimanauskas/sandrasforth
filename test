@@ -1,1 +1,0 @@
-hex 10 begin ?dup while 1 - dup . do
