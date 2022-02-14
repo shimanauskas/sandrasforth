@@ -1,6 +1,6 @@
 # Avocado
 
-Forth system for Linux and macOS on x86-64.
+Forth interpreter for Linux and macOS on x86-64.
 
 Work in progress.
 
