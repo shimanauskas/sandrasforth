@@ -95,8 +95,8 @@ head\name:
 .global main
 
 main:
-	leaq stack+page(%rip), %rbp // Our stacks grow downward.
-	movq $-1, %rax // Top-of-stack magic value, aids in testing.
+	leaq stack+page(%rip), %rbp     // Our stacks grow downward.
+	movq $-1, %rax                  // Top-of-stack magic value, aids in testing.
 
 	leaq start(%rip), %rbx
 	jmpq *(%rbx)
@@ -263,16 +263,16 @@ bstore:
 	next
 
 read:
-	movq %rax, %rdx // Size.
-	movq (%rbp), %rsi // Address.
+	movq %rax, %rdx                 // Size.
+	movq (%rbp), %rsi               // Address.
 	movq $stdin, %rdi
 	movq $sysread, %rax
 	syscall
 	next
 
 write:
-	movq %rax, %rdx // Size.
-	movq (%rbp), %rsi // Address.
+	movq %rax, %rdx                 // Size.
+	movq (%rbp), %rsi               // Address.
 	movq $stdout, %rdi
 	movq $syswrite, %rax
 	syscall
@@ -491,7 +491,7 @@ compare:
 0:
 1:
 	.quad pull
-	.quad nip, nip // Nip string pointers.
+	.quad nip, nip                  // Nip string pointers.
 	.quad exit
 
 emptytoken:
@@ -544,7 +544,7 @@ gettoken:
 	.quad jump, 1b
 1:
 
-	.quad drop // Drop last bget's return value.
+	.quad drop                      // Drop last bget's return value.
 
 	.quad pull
 	.quad lit, token+cell
