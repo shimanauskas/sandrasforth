@@ -96,7 +96,8 @@ head\name:
 
 main:
 	leaq stack+page(%rip), %rbp     // Our stacks grow downward.
-	movq $-1, %rax                  // Top-of-stack magic value, aids in testing.
+	movq $-1, %rax                  // Top-of-stack magic value,
+					// aids in testing.
 
 	leaq start(%rip), %rbx
 	jmpq *(%rbx)
@@ -800,7 +801,8 @@ start:
 	.quad store
 	.quad jump, start
 
-// The following definitions should be moved out of core once we can compile them at runtime.
+// The following definitions should be moved out of core
+// once we can compile them at runtime.
 
 while:
 if:
