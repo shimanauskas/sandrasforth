@@ -289,6 +289,30 @@ codeend:
 
 .data
 
+define 0, execute, "execute"
+define headexecute, dup, "dup"
+define headdup, drop, "drop"
+define headdrop, nip, "nip"
+define headnip, over, "over"
+define headover, push, "push"
+define headpush, pull, "pull"
+define headpull, not, "not"
+define headnot, and, "and"
+define headand, or, "or"
+define heador, xor, "xor"
+define headxor, negate, "negate"
+define headnegate, sub, "-"
+define headsub, add, "+"
+define headadd, mul, "*"
+define headmul, div, "/"
+define headdiv, fetch, "@"
+define headfetch, store, "!"
+define headstore, bfetch, "b@"
+define headbfetch, bstore, "b!"
+define headbstore, read, "read"
+define headread, write, "write"
+define headwrite, bye, "bye"
+
 // If top-of-stack not zero, duplicate it.
 
 qdup:
@@ -801,6 +825,29 @@ start:
 	.quad store
 	.quad jump, start
 
+define headbye, qdup, "?dup"
+define headqdup, less, "<"
+define headless, negative, "negative"
+define headnegative, bool, "bool"
+define headbool, equals, "="
+define headequals, zequals, "0="
+define headzequals, within, "within"
+define headwithin, accept, "accept"
+define headaccept, bget, "bget"
+define headbget, flush, "flush"
+define headflush, line, "line"
+define headline, bput, "bput"
+define headbput, load, "load"
+define headload, compare, "compare"
+define headcompare, emptytoken, "emptytoken"
+define heademptytoken, gettoken, "gettoken"
+define headgettoken, literal, "literal"
+define headliteral, natural, "natural"
+define headnatural, find, "find"
+define headfind, compile, "compile"
+define headcompile, interpret, "interpret"
+define headinterpret, start, "start"
+
 // The following definitions should be moved out of core
 // once we can compile them at runtime.
 
@@ -907,60 +954,12 @@ udot:
 	.quad add
 	.quad jump, bput
 
-define 0, execute, "execute"
-define headexecute, dup, "dup"
-define headdup, drop, "drop"
-define headdrop, nip, "nip"
-define headnip, over, "over"
-define headover, push, "push"
-define headpush, pull, "pull"
-define headpull, not, "not"
-define headnot, and, "and"
-define headand, or, "or"
-define heador, xor, "xor"
-define headxor, negate, "negate"
-define headnegate, sub, "-"
-define headsub, add, "+"
-define headadd, mul, "*"
-define headmul, div, "/"
-define headdiv, fetch, "@"
-define headfetch, store, "!"
-define headstore, bfetch, "b@"
-define headbfetch, bstore, "b!"
-define headbstore, read, "read"
-define headread, write, "write"
-define headwrite, bye, "bye"
-
-define headbye, qdup, "?dup"
-define headqdup, less, "<"
-define headless, negative, "negative"
-define headnegative, bool, "bool"
-define headbool, equals, "="
-define headequals, zequals, "0="
-define headzequals, within, "within"
-define headwithin, accept, "accept"
-define headaccept, bget, "bget"
-define headbget, flush, "flush"
-define headflush, line, "line"
-define headline, bput, "bput"
-define headbput, load, "load"
-define headload, compare, "compare"
-define headcompare, emptytoken, "emptytoken"
-define heademptytoken, gettoken, "gettoken"
-define headgettoken, literal, "literal"
-define headliteral, natural, "natural"
-define headnatural, find, "find"
-define headfind, compile, "compile"
-define headcompile, interpret, "interpret"
-define headinterpret, start, "start"
-
 define headstart, while, "while", flag
 define headwhile, if, "if", flag
 define headif, else, "else", flag
 define headelse, then, "then", flag
 define headthen, begin, "begin", flag
 define headbegin, do, "do", flag
-
 define headdo, bin, "bin", flag
 define headbin, dec, "dec", flag
 define headdec, hex, "hex", flag
