@@ -97,7 +97,7 @@ head\name:
 main:
 	leaq stack+page(%rip), %rbp     // Our stacks grow downward.
 	movq $-1, %rax                  // Top-of-stack magic value,
-					// aids in testing.
+	                                // aids in testing.
 
 	leaq start(%rip), %rbx
 	jmpq *(%rbx)
