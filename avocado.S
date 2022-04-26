@@ -462,32 +462,9 @@ load:
 	.quad fetch
 	.quad exit
 
-// stringA stringB - comparisonValue
+// addrA addrB size - comparisonValue
 
-compare:
-	.quad dup
-	.quad fetch
-	.quad push
-
-	// Compare string sizes.
-
-	.quad over, fetch
-	.quad over, fetch
-	.quad enter, equals
-
-	.quad zjump, 1f
-
-	.quad lit, cell
-	.quad add
-	.quad push
-
-	.quad lit, cell
-	.quad add
-	.quad pull
-
-	.quad pull
-
-0:
+sameq:
 	.quad dup
 	.quad push, push
 
@@ -512,11 +489,11 @@ compare:
 	.quad lit, 1
 	.quad sub
 
-	.quad jump, 0b
+	.quad jump, sameq
 0:
-1:
+
 	.quad pull
-	.quad nip, nip                  // Nip string pointers.
+	.quad nip, nip                  // Nip pointers.
 	.quad exit
 
 emptytoken:
@@ -707,10 +684,21 @@ find:
 
 	.quad zjump, 1f
 
+	.quad dup
 	.quad lit, cell*2
 	.quad add
+	.quad fetch
 	.quad lit, token
-	.quad enter, compare
+	.quad fetch
+	.quad enter, equals
+
+	.quad zjump, 1f
+
+	.quad lit, cell*3
+	.quad add
+	.quad lit, token
+	.quad enter, load
+	.quad enter, sameq
 
 1:
 	.quad enter, zequals
@@ -838,8 +826,8 @@ define headbget, flush, "flush"
 define headflush, line, "line"
 define headline, bput, "bput"
 define headbput, load, "load"
-define headload, compare, "compare"
-define headcompare, emptytoken, "emptytoken"
+define headload, sameq, "same?"
+define headsameq, emptytoken, "emptytoken"
 define heademptytoken, gettoken, "gettoken"
 define headgettoken, literal, "literal"
 define headliteral, natural, "natural"
