@@ -646,7 +646,7 @@ natural:
 	.quad sub
 
 	.quad dup
-	.quad lit, 10-1
+	.quad lit, 10
 	.quad enter, less
 	.quad not
 
