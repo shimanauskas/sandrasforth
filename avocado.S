@@ -582,15 +582,9 @@ literal:
 	.quad pull
 	.quad exit
 
-// tokenAddr tokenLength - result unconvertedChars
+// byte - bool
 
-natural:
-	.quad push
-	.quad lit, 0
-
-0:
-	.quad over
-	.quad bfetch
+digitq:
 	.quad lit, '0'
 	.quad sub
 
@@ -599,16 +593,15 @@ natural:
 	.quad lit, 11
 	.quad enter, less
 
-	.quad zjump, 1f
+	.quad zjump, 0f
 
 	.quad lit, 0
 	.quad lit, base
 	.quad fetch
 	.quad enter, within
+	.quad exit
 
-	.quad jump, 2f
-1:
-
+0:
 	.quad dup
 	.quad lit, 0
 	.quad lit, 10
@@ -626,14 +619,26 @@ natural:
 
 	.quad or
 	.quad nip
+	.quad exit
 
-2:
+
+// tokenAddr tokenLength - result unconvertedChars
+
+natural:
+	.quad push
+	.quad lit, 0
+
+0:
+	.quad over
+	.quad bfetch
+	.quad enter, digitq
+
 	.quad pull
 	.quad dup
 	.quad push
 	.quad and
 
-	.quad zjump, 4f
+	.quad zjump, 2f
 
 	.quad lit, base
 	.quad fetch
@@ -650,12 +655,12 @@ natural:
 	.quad enter, less
 	.quad not
 
-	.quad zjump, 3f
+	.quad zjump, 1f
 
 	.quad lit, 'A'-'0'-10
 	.quad sub
 
-3:
+1:
 	.quad add
 
 	.quad pull
@@ -669,7 +674,7 @@ natural:
 	.quad pull
 
 	.quad jump, 0b
-4:
+2:
 
 	.quad nip
 	.quad pull
@@ -830,7 +835,8 @@ define headload, sameq, "same?"
 define headsameq, emptytoken, "emptytoken"
 define heademptytoken, gettoken, "gettoken"
 define headgettoken, literal, "literal"
-define headliteral, natural, "natural"
+define headliteral, digitq, "digit?"
+define headdigitq, natural, "natural"
 define headnatural, find, "find"
 define headfind, compile, "compile"
 define headcompile, interpret, "interpret"
