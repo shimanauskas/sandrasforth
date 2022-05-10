@@ -621,7 +621,6 @@ digitq:
 	.quad nip
 	.quad exit
 
-
 // tokenAddr tokenLength - result unconvertedChars
 
 natural:
