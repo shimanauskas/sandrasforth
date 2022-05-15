@@ -290,7 +290,8 @@ codeend:
 .data
 
 define 0, execute, "execute"
-define headexecute, dup, "dup"
+define headexecute, exit, "exit"
+define headexit, dup, "dup"
 define headdup, drop, "drop"
 define headdrop, nip, "nip"
 define headnip, over, "over"
