@@ -395,17 +395,19 @@ accept:
 	.quad store
 	.quad exit
 
-// - char -1 | 0
+// - bool
 
-bget:
+keyq:
 	.quad lit, inputPtr
 	.quad fetch
 	.quad lit, inputTop
 	.quad fetch
 	.quad enter, less
+	.quad exit
 
-	.quad zjump, 0f
+// - byte
 
+key:
 	.quad lit, inputPtr
 	.quad fetch
 	.quad dup
@@ -414,11 +416,6 @@ bget:
 	.quad lit, inputPtr
 	.quad store
 	.quad bfetch
-	.quad lit, -1
-	.quad exit
-
-0:
-	.quad lit, 0
 	.quad exit
 
 flush:
@@ -435,7 +432,7 @@ flush:
 line:
 	.quad lit, '\n'
 
-bput:
+emit:
 	.quad lit, outputPtr
 	.quad fetch
 	.quad dup
@@ -509,9 +506,10 @@ gettoken:
 // It returns the first non-space character.
 
 0:
-	.quad enter, bget
+	.quad enter, keyq
 	.quad zjump, emptytoken
 
+	.quad enter, key
 	.quad dup
 	.quad lit, '!'
 	.quad enter, less
@@ -541,13 +539,12 @@ gettoken:
 	.quad push
 	.quad bstore
 
-	.quad enter, bget
-	.quad drop
+	.quad enter, key
 
 	.quad jump, 1b
 1:
 
-	.quad drop                      // Drop last bget's return value.
+	.quad drop                      // Drop last key's return value.
 
 	.quad pull
 	.quad lit, token+cell
@@ -788,7 +785,7 @@ interpret:
 	.quad enter, load
 	.quad write
 	.quad lit, '?'
-	.quad jump, bput
+	.quad jump, emit
 
 0:
 
@@ -826,11 +823,12 @@ define headbool, equals, "="
 define headequals, zequals, "0="
 define headzequals, within, "within"
 define headwithin, accept, "accept"
-define headaccept, bget, "bget"
-define headbget, flush, "flush"
+define headaccept, keyq, "key?"
+define headkeyq, key, "key"
+define headkey, flush, "flush"
 define headflush, line, "line"
-define headline, bput, "bput"
-define headbput, load, "load"
+define headline, emit, "emit"
+define heademit, load, "load"
 define headload, sameq, "same?"
 define headsameq, emptytoken, "emptytoken"
 define heademptytoken, gettoken, "gettoken"
@@ -919,7 +917,7 @@ dot:
 	.quad negate
 
 	.quad lit, '-'
-	.quad enter, bput
+	.quad enter, emit
 
 udot:
 	.quad lit, 0
@@ -941,12 +939,12 @@ udot:
 
 	.quad lit, '0'
 	.quad add
-	.quad jump, bput
+	.quad jump, emit
 
 0:
 	.quad lit, 'A'-10
 	.quad add
-	.quad jump, bput
+	.quad jump, emit
 
 define headstart, while, "while", flag
 define headwhile, if, "if", flag
