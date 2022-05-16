@@ -857,18 +857,6 @@ if:
 	.quad lit, 0
 	.quad jump, compile
 
-else:
-	.quad lit, jump
-	.quad enter, compile
-	.quad lit, codePtr
-	.quad fetch
-	.quad push
-	.quad lit, 0
-	.quad enter, compile
-	.quad enter, then
-	.quad pull
-	.quad exit
-
 then:
 	.quad push
 	.quad lit, codePtr
@@ -953,8 +941,7 @@ udot:
 
 define headstart, while, "while", flag
 define headwhile, if, "if", flag
-define headif, else, "else", flag
-define headelse, then, "then", flag
+define headif, then, "then", flag
 define headthen, begin, "begin", flag
 define headbegin, do, "do", flag
 define headdo, bin, "bin", flag
