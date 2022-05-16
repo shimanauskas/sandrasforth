@@ -500,20 +500,20 @@ sameq:
 	.quad nip, nip                  // Nip pointers.
 	.quad exit
 
-emptytoken:
+emptyword:
 	.quad lit, 0
-	.quad lit, token
+	.quad lit, word
 	.quad store
 	.quad exit
 
-gettoken:
+getword:
 
 // The following loop reads input and discards spaces.
 // It returns the first non-space character.
 
 0:
 	.quad enter, keyq
-	.quad zjump, emptytoken
+	.quad zjump, emptyword
 
 	.quad enter, key
 	.quad dup
@@ -527,7 +527,7 @@ gettoken:
 	.quad jump, 0b
 0:
 
-	.quad lit, token+cell
+	.quad lit, word+cell
 	.quad push
 
 1:
@@ -553,16 +553,16 @@ gettoken:
 	.quad drop                      // Drop last key's return value.
 
 	.quad pull
-	.quad lit, token+cell
+	.quad lit, word+cell
 	.quad sub
-	.quad lit, token
+	.quad lit, word
 	.quad store
 	.quad exit
 
 // - result unconvertedChars
 
 literal:
-	.quad lit, token
+	.quad lit, word
 	.quad enter, load
 
 	.quad over
@@ -625,7 +625,7 @@ digitq:
 	.quad nip
 	.quad exit
 
-// tokenAddr tokenLength - result unconvertedChars
+// wordAddr wordLength - result unconvertedChars
 
 natural:
 	.quad push
@@ -696,7 +696,7 @@ find:
 	.quad lit, cell*2
 	.quad add
 	.quad fetch
-	.quad lit, token
+	.quad lit, word
 	.quad fetch
 	.quad enter, equals
 
@@ -704,7 +704,7 @@ find:
 
 	.quad lit, cell*3
 	.quad add
-	.quad lit, token
+	.quad lit, word
 	.quad enter, load
 	.quad enter, sameq
 
@@ -729,8 +729,8 @@ compile:
 	.quad exit
 
 interpret:
-	.quad enter, gettoken
-	.quad lit, token
+	.quad enter, getword
+	.quad lit, word
 	.quad fetch
 
 	.quad zjump, 2f
@@ -787,7 +787,7 @@ interpret:
 
 	// Print error and exit.
 
-	.quad lit, token
+	.quad lit, word
 	.quad enter, load
 	.quad write
 	.quad lit, '?'
@@ -836,9 +836,9 @@ define headflush, line, "line"
 define headline, emit, "emit"
 define heademit, load, "load"
 define headload, sameq, "same?"
-define headsameq, emptytoken, "emptytoken"
-define heademptytoken, gettoken, "gettoken"
-define headgettoken, literal, "literal"
+define headsameq, emptyword, "emptyword"
+define heademptyword, getword, "getword"
+define headgetword, literal, "literal"
 define headliteral, digitq, "digit?"
 define headdigitq, natural, "natural"
 define headnatural, find, "find"
@@ -995,7 +995,7 @@ input:
 output:
 	.skip page
 
-token:
+word:
 	.skip page
 
 code:
