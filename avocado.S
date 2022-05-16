@@ -500,21 +500,22 @@ sameq:
 	.quad nip, nip                  // Nip pointers.
 	.quad exit
 
-emptyword:
+// Read input, skip spaces.
+// Then deposit non-space characters to word buffer.
+// If end of input is reached, return with word buffer empty.
+
+getword:
+	.quad enter, keyq
+	.quad not
+
+	.quad zjump, 0f
+
 	.quad lit, 0
 	.quad lit, word
 	.quad store
 	.quad exit
 
-getword:
-
-// The following loop reads input and discards spaces.
-// It returns the first non-space character.
-
 0:
-	.quad enter, keyq
-	.quad zjump, emptyword
-
 	.quad enter, key
 	.quad dup
 	.quad lit, '!'
@@ -524,19 +525,19 @@ getword:
 
 	.quad drop
 
-	.quad jump, 0b
+	.quad jump, getword
 0:
 
 	.quad lit, word+cell
 	.quad push
 
-1:
+0:
 	.quad dup
 	.quad lit, '!'
 	.quad enter, less
 	.quad not
 
-	.quad zjump, 1f
+	.quad zjump, 0f
 
 	.quad pull
 	.quad dup
@@ -547,11 +548,10 @@ getword:
 
 	.quad enter, key
 
-	.quad jump, 1b
-1:
+	.quad jump, 0b
+0:
 
-	.quad drop                      // Drop last key's return value.
-
+	.quad drop
 	.quad pull
 	.quad lit, word+cell
 	.quad sub
@@ -836,8 +836,7 @@ define headflush, line, "line"
 define headline, emit, "emit"
 define heademit, load, "load"
 define headload, sameq, "same?"
-define headsameq, emptyword, "emptyword"
-define heademptyword, getword, "getword"
+define headsameq, getword, "getword"
 define headgetword, literal, "literal"
 define headliteral, digitq, "digit?"
 define headdigitq, natural, "natural"
