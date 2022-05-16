@@ -71,6 +71,12 @@ head\name:
 	leaq cell(%rbp), %rbp
 .endm
 
+// A B C - C
+
+.macro twonip
+	leaq cell*2(%rbp), %rbp
+.endm
+
 // A -
 
 .macro drop
@@ -82,7 +88,7 @@ head\name:
 
 .macro twodrop
 	movq cell(%rbp), %rax
-	addq $(cell*2), %rbp
+	twonip
 .endm
 
 .macro next
@@ -148,16 +154,16 @@ dup:
 	dup
 	next
 
-// A -
-
-drop:
-	drop
-	next
-
 // A B - B
 
 nip:
 	nip
+	next
+
+// A -
+
+drop:
+	drop
 	next
 
 // A B - A B A
@@ -292,9 +298,9 @@ codeend:
 define 0, execute, "execute"
 define headexecute, exit, "exit"
 define headexit, dup, "dup"
-define headdup, drop, "drop"
-define headdrop, nip, "nip"
-define headnip, over, "over"
+define headdup, nip, "nip"
+define headnip, drop, "drop"
+define headdrop, over, "over"
 define headover, push, "push"
 define headpush, pull, "pull"
 define headpull, not, "not"
