@@ -358,6 +358,20 @@ less:
 
 0:
 	.quad sub
+	.quad jump, negative
+
+uless:
+	.quad over, over
+	.quad xor
+	.quad enter, negative
+
+	.quad zjump, 0f
+
+	.quad nip
+	.quad jump, negative
+
+0:
+	.quad sub
 
 negative:
 	.quad lit, flag
@@ -387,10 +401,10 @@ within:
 	.quad push
 	.quad over
 	.quad push
-	.quad enter, less
+	.quad enter, uless
 	.quad not
 	.quad pull, pull
-	.quad enter, less
+	.quad enter, uless
 	.quad and
 	.quad exit
 
@@ -450,7 +464,7 @@ keyq:
 	.quad lit, input
 	.quad enter, load
 	.quad add
-	.quad enter, less
+	.quad enter, uless
 	.quad exit
 
 // - byte
@@ -553,7 +567,7 @@ getword:
 	.quad enter, key
 	.quad dup
 	.quad lit, '!'
-	.quad enter, less
+	.quad enter, uless
 
 	.quad zjump, 0f
 
@@ -568,7 +582,7 @@ getword:
 0:
 	.quad dup
 	.quad lit, '!'
-	.quad enter, less
+	.quad enter, uless
 	.quad not
 
 	.quad zjump, 0f
@@ -619,44 +633,29 @@ literal:
 	.quad pull
 	.quad exit
 
-// byte - bool
+// byte base - n bool
 
 digitq:
+	.quad push
 	.quad lit, '0'
 	.quad sub
-
-	.quad enter, base
-	.quad fetch
-	.quad lit, 11
+	.quad lit, 9
+	.quad over
 	.quad enter, less
 
 	.quad zjump, 0f
 
-	.quad lit, 0
-	.quad enter, base
-	.quad fetch
-	.quad enter, within
-	.quad exit
+	.quad lit, 'A'-'0'-10
+	.quad sub
+	.quad dup
+	.quad lit, 10
+	.quad enter, less
+	.quad or
 
 0:
 	.quad dup
-	.quad lit, 0
-	.quad lit, 10
-	.quad enter, within
-
-	.quad over
-	.quad lit, 'A'-'0'
-	.quad sub
-	.quad lit, 0
-	.quad enter, base
-	.quad fetch
-	.quad lit, 10
-	.quad sub
-	.quad enter, within
-
-	.quad or
-	.quad nip
-	.quad exit
+	.quad pull
+	.quad jump, uless
 
 // wordAddr wordLength - result unconvertedChars
 
@@ -667,6 +666,8 @@ natural:
 0:
 	.quad over
 	.quad bfetch
+	.quad enter, base
+	.quad fetch
 	.quad enter, digitq
 
 	.quad pull
@@ -674,29 +675,14 @@ natural:
 	.quad push
 	.quad and
 
-	.quad zjump, 2f
+	.quad zjump, 0f
 
+	.quad push
 	.quad enter, base
 	.quad fetch
 	.quad mul
 	.quad drop
-
-	.quad over
-	.quad bfetch
-	.quad lit, '0'
-	.quad sub
-
-	.quad dup
-	.quad lit, 10
-	.quad enter, less
-	.quad not
-
-	.quad zjump, 1f
-
-	.quad lit, 'A'-'0'-10
-	.quad sub
-
-1:
+	.quad pull
 	.quad add
 
 	.quad pull
@@ -710,8 +696,9 @@ natural:
 	.quad pull
 
 	.quad jump, 0b
-2:
+0:
 
+	.quad drop
 	.quad nip
 	.quad pull
 	.quad exit
@@ -793,7 +780,7 @@ interpret:
 0:
 	.quad dup
 	.quad lit, codeend
-	.quad enter, less
+	.quad enter, uless
 	.quad not
 
 	.quad zjump, 0f
@@ -850,7 +837,8 @@ define headcodeptr, last, "last"
 define headlast, base, "base"
 define headbase, qdup, "?dup"
 define headqdup, less, "<"
-define headless, negative, "negative"
+define headless, uless, "u<"
+define headuless, negative, "negative"
 define headnegative, bool, "bool"
 define headbool, equals, "="
 define headequals, zequals, "0="
@@ -946,7 +934,7 @@ udot:
 0:
 	.quad dup
 	.quad lit, 10
-	.quad enter, less
+	.quad enter, uless
 
 	.quad zjump, 0f
 
