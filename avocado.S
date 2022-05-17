@@ -936,12 +936,6 @@ again:
 	.quad store
 	.quad exit
 
-bin:
-	.quad lit, 2
-	.quad enter, base
-	.quad store
-	.quad exit
-
 dec:
 	.quad lit, 10
 	.quad enter, base
@@ -995,8 +989,7 @@ define headstart, begin, "begin", flag
 define headbegin, if, "if", flag
 define headif, then, "then", flag
 define headthen, again, "again", flag
-define headagain, bin, "bin", flag
-define headbin, dec, "dec", flag
+define headagain, dec, "dec", flag
 define headdec, hex, "hex", flag
 define headhex, dot, "."
 define headdot, udot, "u."
