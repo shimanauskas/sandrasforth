@@ -492,7 +492,7 @@ sameq: /* addr1 addr2 u1 -- u2 */
    Then deposit non-space characters to buffer.
    If end of input is reached, return with buffer empty. */
 
-getword:
+word:
 	.quad enter, keyq
 	.quad not
 
@@ -513,7 +513,7 @@ getword:
 
 	.quad drop
 
-	.quad jump, getword
+	.quad jump, word
 0:
 
 	.quad lit, output+cell
@@ -683,7 +683,7 @@ compile:
 	.quad exit
 
 interpret:
-	.quad enter, getword
+	.quad enter, word
 	.quad lit, output
 	.quad fetch
 
@@ -786,8 +786,8 @@ define headkey, flush, "flush"
 define headflush, line, "line"
 define headline, emit, "emit"
 define heademit, sameq, "same?"
-define headsameq, getword, "getword"
-define headgetword, literal, "literal"
+define headsameq, word, "word"
+define headword, literal, "literal"
 define headliteral, digitq, "digit?"
 define headdigitq, natural, "natural"
 define headnatural, find, "find"
