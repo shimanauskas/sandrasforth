@@ -77,6 +77,12 @@ head\name:
 	leaq cell*2(%rbp), %rbp
 .endm
 
+// A B C D - D
+
+.macro threenip
+	leaq cell*3(%rbp), %rbp
+.endm
+
 // A -
 
 .macro drop
@@ -277,27 +283,15 @@ bstore:
 	twodrop
 	next
 
-read:
-	movq %rax, %rdx                 // Size.
-	movq (%rbp), %rsi               // Address.
-	movq $stdin, %rdi
-	movq $sysread, %rax
+// arg1 arg2 arg3 syscall# - result
+
+syscall:
+	movq (%rbp), %rdx
+	movq cell(%rbp), %rsi
+	movq cell*2(%rbp), %rdi
+	threenip
 	syscall
 	next
-
-write:
-	movq %rax, %rdx                 // Size.
-	movq (%rbp), %rsi               // Address.
-	movq $stdout, %rdi
-	movq $syswrite, %rax
-	syscall
-	twodrop
-	next
-
-bye:
-	xorq %rdi, %rdi
-	movq $sysexit, %rax
-	syscall
 
 codeend:
 
@@ -324,9 +318,19 @@ define headdiv, fetch, "@"
 define headfetch, store, "!"
 define headstore, bfetch, "b@"
 define headbfetch, bstore, "b!"
-define headbstore, read, "read"
-define headread, write, "write"
-define headwrite, bye, "bye"
+define headbstore, syscall, "syscall"
+
+write:
+	.quad lit, syswrite
+	.quad syscall
+	.quad drop
+	.quad exit
+
+bye:
+	.quad lit, 0
+	.quad dup, dup
+	.quad lit, sysexit
+	.quad syscall
 
 inputPtr:
 	.quad var, input
@@ -413,22 +417,26 @@ within:
 	.quad exit
 
 accept:
+	.quad lit, stdin
 	.quad lit, input
 	.quad lit, page
-	.quad read
+	.quad lit, sysread
+	.quad syscall
 	.quad dup
 	.quad lit, 1
 	.quad enter, less
 
 	.quad zjump, 0f
 
-	.quad bye
+	.quad drop
+	.quad jump, bye
 
 0:
-	.quad over
+	.quad lit, input
 	.quad add
 	.quad enter, inputTop
 	.quad store
+	.quad lit, input
 	.quad enter, inputPtr
 	.quad store
 	.quad exit
@@ -457,13 +465,16 @@ key:
 	.quad exit
 
 flush:
+	.quad lit, stdout
 	.quad lit, output
 	.quad enter, outputPtr
-	.quad over, over
 	.quad fetch
-	.quad lit, output
+	.quad over
 	.quad sub
-	.quad write
+	.quad enter, write
+
+	.quad lit, output
+	.quad enter, outputPtr
 	.quad store
 	.quad exit
 
@@ -819,9 +830,10 @@ interpret:
 
 	// Print error and exit.
 
+	.quad lit, stdout
 	.quad lit, word
 	.quad enter, load
-	.quad write
+	.quad enter, write
 	.quad lit, '?'
 	.quad jump, emit
 
@@ -846,14 +858,17 @@ start:
 
 	.quad enter, flush	
 
+	.quad lit, stdout
 	.quad lit, prompt
 	.quad enter, load
-	.quad write
+	.quad enter, write
 
 	.quad enter, accept
 	.quad enter, interpret
 	.quad jump, start
 
+define headsyscall, write, "write"
+define headwrite, bye, "bye"
 define headbye, inputPtr, "inputPtr"
 define headinputPtr, inputTop, "inputTop"
 define headinputTop, outputPtr, "outputPtr"
@@ -993,9 +1008,6 @@ string prompt, "# "
 
 .bss
 
-stack:
-	.skip page
-
 input:
 	.skip page
 
@@ -1006,4 +1018,7 @@ word:
 	.skip page
 
 code:
+	.skip page
+
+stack:
 	.skip page
