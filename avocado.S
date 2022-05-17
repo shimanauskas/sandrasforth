@@ -42,12 +42,10 @@
 
 .macro string name, string
 \name:
-	.quad 1f-0f
-
-0:
+	.quad 0f-(.+cell)
 	.ascii "\string"
+0:
 
-1:
 .balign cell
 .endm
 
