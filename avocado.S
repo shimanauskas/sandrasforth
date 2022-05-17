@@ -538,7 +538,7 @@ sameq:
 0:
 
 	.quad pull
-	.quad nip, nip                  // Nip pointers.
+	.quad nip, nip
 	.quad exit
 
 // Read input, skip spaces.
@@ -819,13 +819,9 @@ interpret:
 
 	.quad drop
 
-	// Flush input.
-
 	.quad lit, input
 	.quad enter, inputTop
 	.quad store
-
-	// Print error and exit.
 
 	.quad lit, stdout
 	.quad lit, word
@@ -835,9 +831,6 @@ interpret:
 	.quad jump, emit
 
 0:
-
-	// Compile converted literal.
-
 	.quad lit, lit
 	.quad enter, compile
 	.quad enter, compile
