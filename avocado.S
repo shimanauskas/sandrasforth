@@ -902,7 +902,11 @@ define headinterpret, start, "start"
 // The following definitions should be moved out of core
 // once we can compile them at runtime.
 
-while:
+begin:
+	.quad enter, codePtr
+	.quad fetch
+	.quad exit
+
 if:
 	.quad lit, zjump
 	.quad enter, compile
@@ -919,12 +923,7 @@ then:
 	.quad store
 	.quad exit
 
-begin:
-	.quad enter, codePtr
-	.quad fetch
-	.quad exit
-
-do:
+again:
 	.quad push
 
 	.quad lit, jump
@@ -992,12 +991,11 @@ udot:
 	.quad add
 	.quad jump, emit
 
-define headstart, while, "while", flag
-define headwhile, if, "if", flag
+define headstart, begin, "begin", flag
+define headbegin, if, "if", flag
 define headif, then, "then", flag
-define headthen, begin, "begin", flag
-define headbegin, do, "do", flag
-define headdo, bin, "bin", flag
+define headthen, again, "again", flag
+define headagain, bin, "bin", flag
 define headbin, dec, "dec", flag
 define headdec, hex, "hex", flag
 define headhex, dot, "."
