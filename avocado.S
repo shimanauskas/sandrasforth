@@ -322,10 +322,6 @@ inputPtr:
 	.quad var, input
 	.quad exit
 
-inputTop:
-	.quad var, input
-	.quad exit
-
 codePtr:
 	.quad var, code
 	.quad exit
@@ -422,8 +418,8 @@ write:
 
 accept:
 	.quad lit, stdin
-	.quad lit, input
-	.quad lit, page
+	.quad lit, input+cell
+	.quad lit, page-cell
 	.quad lit, sysread
 	.quad syscall
 	.quad dup
@@ -440,10 +436,8 @@ accept:
 
 0:
 	.quad lit, input
-	.quad add
-	.quad enter, inputTop
 	.quad store
-	.quad lit, input
+	.quad lit, input+cell
 	.quad enter, inputPtr
 	.quad store
 	.quad exit
@@ -453,8 +447,9 @@ accept:
 keyq:
 	.quad enter, inputPtr
 	.quad fetch
-	.quad enter, inputTop
-	.quad fetch
+	.quad lit, input
+	.quad enter, load
+	.quad add
 	.quad enter, less
 	.quad exit
 
@@ -817,8 +812,8 @@ interpret:
 
 	.quad drop
 
+	.quad lit, 0
 	.quad lit, input
-	.quad enter, inputTop
 	.quad store
 
 	.quad lit, word
@@ -852,8 +847,7 @@ start:
 	.quad jump, start
 
 define headsyscall, inputPtr, "inputPtr"
-define headinputPtr, inputTop, "inputTop"
-define headinputTop, codePtr, "codePtr"
+define headinputPtr, codePtr, "codePtr"
 define headcodePtr, last, "last"
 define headlast, base, "base"
 define headbase, qdup, "?dup"
