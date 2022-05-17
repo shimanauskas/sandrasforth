@@ -318,28 +318,12 @@ define headstore, bfetch, "b@"
 define headbfetch, bstore, "b!"
 define headbstore, syscall, "syscall"
 
-write:
-	.quad lit, syswrite
-	.quad syscall
-	.quad drop
-	.quad exit
-
-bye:
-	.quad lit, 0
-	.quad dup, dup
-	.quad lit, sysexit
-	.quad syscall
-
 inputPtr:
 	.quad var, input
 	.quad exit
 
 inputTop:
 	.quad var, input
-	.quad exit
-
-outputPtr:
-	.quad var, output
 	.quad exit
 
 codePtr:
@@ -414,6 +398,28 @@ within:
 	.quad and
 	.quad exit
 
+// addr1 - addr2 size
+
+load:
+	.quad dup
+	.quad push
+	.quad lit, cell
+	.quad add
+	.quad pull
+	.quad fetch
+	.quad exit
+
+// addr -
+
+write:
+	.quad lit, stdout
+	.quad over
+	.quad enter, load
+	.quad lit, syswrite
+	.quad syscall
+	.quad drop, drop
+	.quad exit
+
 accept:
 	.quad lit, stdin
 	.quad lit, input
@@ -427,7 +433,10 @@ accept:
 	.quad zjump, 0f
 
 	.quad drop
-	.quad jump, bye
+	.quad lit, 0
+	.quad dup, dup
+	.quad lit, sysexit
+	.quad syscall
 
 0:
 	.quad lit, input
@@ -463,16 +472,11 @@ key:
 	.quad exit
 
 flush:
-	.quad lit, stdout
 	.quad lit, output
-	.quad enter, outputPtr
-	.quad fetch
-	.quad over
-	.quad sub
 	.quad enter, write
 
+	.quad lit, 0
 	.quad lit, output
-	.quad enter, outputPtr
 	.quad store
 	.quad exit
 
@@ -480,31 +484,25 @@ line:
 	.quad lit, '\n'
 
 emit:
-	.quad enter, outputPtr
+	.quad lit, output
+	.quad enter, load
+	.quad add
+	.quad store
+
+	.quad lit, output
 	.quad fetch
-	.quad dup
 	.quad lit, 1
 	.quad add
-	.quad enter, outputPtr
+	.quad lit, output
 	.quad store
-	.quad bstore
 
-	.quad enter, outputPtr
+	.quad lit, output
 	.quad fetch
-	.quad lit, output+page
+	.quad lit, page-cell
 	.quad xor
 
 	.quad zjump, flush
 
-	.quad exit
-
-load:
-	.quad dup
-	.quad push
-	.quad lit, cell
-	.quad add
-	.quad pull
-	.quad fetch
 	.quad exit
 
 // addrA addrB size - comparisonValue
@@ -823,9 +821,7 @@ interpret:
 	.quad enter, inputTop
 	.quad store
 
-	.quad lit, stdout
 	.quad lit, word
-	.quad enter, load
 	.quad enter, write
 	.quad lit, '?'
 	.quad jump, emit
@@ -848,21 +844,16 @@ start:
 
 	.quad enter, flush	
 
-	.quad lit, stdout
 	.quad lit, prompt
-	.quad enter, load
 	.quad enter, write
 
 	.quad enter, accept
 	.quad enter, interpret
 	.quad jump, start
 
-define headsyscall, write, "write"
-define headwrite, bye, "bye"
-define headbye, inputPtr, "inputPtr"
+define headsyscall, inputPtr, "inputPtr"
 define headinputPtr, inputTop, "inputTop"
-define headinputTop, outputPtr, "outputPtr"
-define headoutputPtr, codePtr, "codePtr"
+define headinputTop, codePtr, "codePtr"
 define headcodePtr, last, "last"
 define headlast, base, "base"
 define headbase, qdup, "?dup"
@@ -872,14 +863,15 @@ define headnegative, bool, "bool"
 define headbool, equals, "="
 define headequals, zequals, "0="
 define headzequals, within, "within"
-define headwithin, accept, "accept"
+define headwithin, load, "load"
+define headload, write, "write"
+define headwrite, accept, "accept"
 define headaccept, keyq, "key?"
 define headkeyq, key, "key"
 define headkey, flush, "flush"
 define headflush, line, "line"
 define headline, emit, "emit"
-define heademit, load, "load"
-define headload, sameq, "same?"
+define heademit, sameq, "same?"
 define headsameq, getword, "getword"
 define headgetword, literal, "literal"
 define headliteral, digitq, "digit?"
