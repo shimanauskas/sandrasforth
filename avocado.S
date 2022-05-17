@@ -455,38 +455,6 @@ emit:
 
 	.quad exit
 
-sameq: /* addr1 addr2 u1 -- u2 */
-	.quad dup
-	.quad push, push
-
-	.quad over, bfetch
-	.quad over, bfetch
-	.quad enter, equals
-
-	.quad pull
-	.quad and
-
-	.quad zjump, 0f
-
-	.quad lit, 1
-	.quad add
-	.quad push
-
-	.quad lit, 1
-	.quad add
-	.quad pull
-
-	.quad pull
-	.quad lit, 1
-	.quad sub
-
-	.quad jump, sameq
-0:
-
-	.quad pull
-	.quad nip, nip
-	.quad exit
-
 /* Read input, skip spaces.
    Then deposit non-space characters to buffer.
    If end of input is reached, return with buffer empty. */
@@ -543,31 +511,6 @@ word:
 	.quad sub
 	.quad lit, output
 	.quad store
-	.quad exit
-
-literal: /* -- n u */
-	.quad lit, output
-	.quad enter, load
-
-	.quad over
-	.quad bfetch
-	.quad lit, '-'
-	.quad enter, equals
-
-	.quad zjump, natural
-
-	.quad lit, 1
-	.quad sub
-	.quad push
-
-	.quad lit, 1
-	.quad add
-	.quad pull
-
-	.quad enter, natural
-	.quad push
-	.quad neg
-	.quad pull
 	.quad exit
 
 digitq: /* byte base -- u bool */
@@ -634,6 +577,63 @@ natural: /* addr u1 -- n u2 */
 	.quad drop
 	.quad nip
 	.quad pull
+	.quad exit
+
+literal: /* -- n u */
+	.quad lit, output
+	.quad enter, load
+
+	.quad over
+	.quad bfetch
+	.quad lit, '-'
+	.quad enter, equals
+
+	.quad zjump, natural
+
+	.quad lit, 1
+	.quad sub
+	.quad push
+
+	.quad lit, 1
+	.quad add
+	.quad pull
+
+	.quad enter, natural
+	.quad push
+	.quad neg
+	.quad pull
+	.quad exit
+
+sameq: /* addr1 addr2 u1 -- u2 */
+	.quad dup
+	.quad push, push
+
+	.quad over, bfetch
+	.quad over, bfetch
+	.quad enter, equals
+
+	.quad pull
+	.quad and
+
+	.quad zjump, 0f
+
+	.quad lit, 1
+	.quad add
+	.quad push
+
+	.quad lit, 1
+	.quad add
+	.quad pull
+
+	.quad pull
+	.quad lit, 1
+	.quad sub
+
+	.quad jump, sameq
+0:
+
+	.quad pull
+	.quad nip, nip
 	.quad exit
 
 find:
@@ -783,12 +783,12 @@ define headaccept, keyq, "key?"
 define headkeyq, key, "key"
 define headkey, flush, "flush"
 define headflush, emit, "emit"
-define heademit, sameq, "same?"
-define headsameq, word, "word"
-define headword, literal, "literal"
-define headliteral, digitq, "digit?"
+define heademit, word, "word"
+define headword, digitq, "digit?"
 define headdigitq, natural, "natural"
-define headnatural, find, "find"
+define headnatural, literal, "literal"
+define headliteral, sameq, "same?"
+define headsameq, find, "find"
 define headfind, compile, "compile"
 define headcompile, interpret, "interpret"
 define headinterpret, start, "start"
