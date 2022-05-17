@@ -1,22 +1,22 @@
-// rax - top-of-stack, syscall number.
-// rbx - threaded code pointer.
-// rcx - temporary, syscall scratch.
-// rdx - temporary, syscall argument.
+/* rax - top-of-stack, syscall number.
+   rbx - threaded code pointer.
+   rcx - temporary, syscall scratch.
+   rdx - temporary, syscall argument.
 
-// rsi - syscall argument.
-// rdi - syscall argument.
-// rbp - data stack pointer.
-// rsp - code stack pointer.
+   rsi - syscall argument.
+   rdi - syscall argument.
+   rbp - data stack pointer.
+   rsp - code stack pointer.
 
-// r8  - unused, syscall argument.
-// r9  - unused, syscall argument.
-// r10 - unused, syscall argument.
-// r11 - unused, syscall scratch.
+   r8  - unused, syscall argument.
+   r9  - unused, syscall argument.
+   r10 - unused, syscall argument.
+   r11 - unused, syscall scratch.
 
-// r12 - unused.
-// r13 - unused.
-// r14 - unused.
-// r15 - unused.
+   r12 - unused.
+   r13 - unused.
+   r14 - unused.
+   r15 - unused. */
 
 #ifdef __linux__
 	#define sysread  0
@@ -56,41 +56,29 @@ head\name:
 	string string\name, "\string"
 .endm
 
-// A - A A
-
-.macro dup
+.macro dup /* x -- x x */
 	subq $(cell), %rbp
 	movq %rax, (%rbp)
 .endm
 
-// A B - B
-
-.macro nip
+.macro nip /* x1 x2 -- x2 */
 	leaq cell(%rbp), %rbp
 .endm
 
-// A B C - C
-
-.macro twonip
+.macro twonip /* x1 x2 x3 -- x3 */
 	leaq cell*2(%rbp), %rbp
 .endm
 
-// A B C D - D
-
-.macro threenip
+.macro threenip /* x1 x2 x3 x4 -- x4 */
 	leaq cell*3(%rbp), %rbp
 .endm
 
-// A -
-
-.macro drop
+.macro drop /* x -- */
 	movq (%rbp), %rax
 	nip
 .endm
 
-// A B -
-
-.macro twodrop
+.macro twodrop /* x1 x2 -- */
 	movq cell(%rbp), %rax
 	twonip
 .endm
@@ -118,8 +106,6 @@ enter:
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
 
-// A -
-
 execute:
 	pushq %rbx
 	movq %rax, %rbx
@@ -135,116 +121,84 @@ jump:
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
 
-// A -
-
-zjump:
+zjump: /* x -- */
 	testq %rax, %rax
 	drop
 	leaq cell*2(%rbx), %rbx
 	cmovzq -cell(%rbx), %rbx
 	jmpq *(%rbx)
 
-// - A
-
-lit:
+lit: /* -- x */
 	dup
 	addq $(cell), %rbx
 	movq (%rbx), %rax
 	next
 
-// - A
-
-var:
+var: /* -- addr */
 	dup
 	addq $(cell), %rbx
 	movq %rbx, %rax
 	next
 
-// A - A A
-
-dup:
+dup: /* x -- x x */
 	dup
 	next
 
-// A B - B
-
-nip:
+nip: /* x1 x2 -- x2 */
 	nip
 	next
 
-// A -
-
-drop:
+drop: /* x -- */
 	drop
 	next
 
-// A B - A B A
-
-over:
+over: /* x1 x2 -- x1 x2 x1 */
 	dup
 	movq cell(%rbp), %rax
 	next
 
-// A -
-
-push:
+push: /* x -- */ /* r: -- x */
 	pushq %rax
 	drop
 	next
 
-// - A
-
-pull:
+pull: /* -- x */ /* r: x -- */
 	dup
 	popq %rax
 	next
 
-// A - B
-
-not:
+not: /* x1 -- x2 */
 	notq %rax
 	next
 
-// A B - C
-
-and:
+and: /* x1 x2 -- x3 */
 	andq (%rbp), %rax
 	nip
 	next
 
-// A B - C
-
-or:
+or: /* x1 x2 -- x3 */
 	orq (%rbp), %rax
 	nip
 	next
 
-// A B - C
-
-xor:
+xor: /* x1 x2 -- x3 */
 	xorq (%rbp), %rax
 	nip
 	next
 
-// A - B
-
-negate:
+negate: /* n1 -- n2 */
 	negq %rax
 	next
 
-// A B - C
-
-sub:
+sub: /* n1|u1 n2|u2 -- n3|u3 */
 	negq %rax
 
-// A B - C
-
-add:
+add: /* n1|u1 n2|u2 -- n3|u3 */
 	addq (%rbp), %rax
 	nip
 	next
 
-mul:
+mul: /* n1 n2 -- d */
 	movq %rax, %rcx
 	drop
 	mulq %rcx
@@ -252,7 +206,7 @@ mul:
 	movq %rdx, %rax
 	next
 
-div:
+div: /* n1 n2 -- n3 n4 */
 	movq %rax, %rcx
 	movq (%rbp), %rdx
 	nip
@@ -261,29 +215,27 @@ div:
 	movq %rdx, (%rbp)
 	next
 
-fetch:
+fetch: /* addr -- x */
 	movq (%rax), %rax
 	next
 
-store:
+store: /* x addr -- */
 	movq (%rbp), %rcx
 	movq %rcx, (%rax)
 	twodrop
 	next
 
-bfetch:
+bfetch: /* addr -- byte */
 	movzbq (%rax), %rax
 	next
 
-bstore:
+bstore: /* byte addr -- */
 	movb (%rbp), %cl
 	movb %cl, (%rax)
 	twodrop
 	next
 
-// arg1 arg2 arg3 syscall# - result
-
-syscall:
+syscall: /* x1 x2 x3 x4 -- x5 */
 	movq (%rbp), %rdx
 	movq cell(%rbp), %rsi
 	movq cell*2(%rbp), %rdi
@@ -334,7 +286,7 @@ base:
 	.quad var, 10
 	.quad exit
 
-// If top-of-stack not zero, duplicate it.
+/* If top-of-stack not zero, duplicate it. */
 
 qdup:
 	.quad dup
@@ -408,9 +360,7 @@ within:
 	.quad and
 	.quad exit
 
-// addr1 - addr2 size
-
-load:
+load: /* addr1 -- addr2 u */
 	.quad dup
 	.quad push
 	.quad lit, cell
@@ -419,9 +369,7 @@ load:
 	.quad fetch
 	.quad exit
 
-// addr -
-
-write:
+write: /* addr -- */
 	.quad lit, stdout
 	.quad over
 	.quad enter, load
@@ -456,9 +404,7 @@ accept:
 	.quad store
 	.quad exit
 
-// - bool
-
-keyq:
+keyq: /* -- bool */
 	.quad enter, inputptr
 	.quad fetch
 	.quad lit, input
@@ -467,9 +413,7 @@ keyq:
 	.quad enter, uless
 	.quad exit
 
-// - byte
-
-key:
+key: /* -- byte */
 	.quad enter, inputptr
 	.quad fetch
 	.quad dup
@@ -514,9 +458,7 @@ emit:
 
 	.quad exit
 
-// addrA addrB size - comparisonValue
-
-sameq:
+sameq: /* addr1 addr2 u1 -- u2 */
 	.quad dup
 	.quad push, push
 
@@ -548,9 +490,9 @@ sameq:
 	.quad nip, nip
 	.quad exit
 
-// Read input, skip spaces.
-// Then deposit non-space characters to word buffer.
-// If end of input is reached, return with word buffer empty.
+/* Read input, skip spaces.
+   Then deposit non-space characters to buffer.
+   If end of input is reached, return with buffer empty. */
 
 getword:
 	.quad enter, keyq
@@ -606,9 +548,7 @@ getword:
 	.quad store
 	.quad exit
 
-// - result unconvertedChars
-
-literal:
+literal: /* -- n u */
 	.quad lit, output
 	.quad enter, load
 
@@ -633,9 +573,7 @@ literal:
 	.quad pull
 	.quad exit
 
-// byte base - n bool
-
-digitq:
+digitq: /* byte base -- u bool */
 	.quad push
 	.quad lit, '0'
 	.quad sub
@@ -657,9 +595,7 @@ digitq:
 	.quad pull
 	.quad jump, uless
 
-// wordAddr wordLength - result unconvertedChars
-
-natural:
+natural: /* addr u1 -- n u2 */
 	.quad push
 	.quad lit, 0
 
@@ -861,8 +797,8 @@ define headfind, compile, "compile"
 define headcompile, interpret, "interpret"
 define headinterpret, start, "start"
 
-// The following definitions should be moved out of core
-// once we can compile them at runtime.
+/* The following definitions should be moved out of core
+   once we can compile them at runtime. */
 
 begin:
 	.quad enter, codeptr
