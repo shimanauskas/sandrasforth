@@ -105,9 +105,9 @@ head\name:
 .global main
 
 main:
-	leaq stack+page(%rip), %rbp     // Our stacks grow downward.
-	movq $-1, %rax                  // Top-of-stack magic value,
-	                                // aids in testing.
+	leaq stack(%rip), %rbp  // Our stacks grow downward.
+	movq $-1, %rax          // Top-of-stack magic value,
+	                        // aids in testing.
 
 	leaq start(%rip), %rbx
 	jmpq *(%rbx)
@@ -1000,5 +1000,5 @@ word:
 code:
 	.skip page
 
-stack:
 	.skip page
+stack:
