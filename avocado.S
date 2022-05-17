@@ -145,7 +145,15 @@ zjump:
 lit:
 	dup
 	addq $(cell), %rbx
-	mov (%rbx), %rax
+	movq (%rbx), %rax
+	next
+
+// - A
+
+var:
+	dup
+	addq $(cell), %rbx
+	movq %rbx, %rax
 	next
 
 // A - A A
@@ -320,6 +328,30 @@ define headbstore, read, "read"
 define headread, write, "write"
 define headwrite, bye, "bye"
 
+inputPtr:
+	.quad var, input
+	.quad exit
+
+inputTop:
+	.quad var, input
+	.quad exit
+
+outputPtr:
+	.quad var, output
+	.quad exit
+
+codePtr:
+	.quad var, code
+	.quad exit
+
+last:
+	.quad var, headudot
+	.quad exit
+
+base:
+	.quad var, 10
+	.quad exit
+
 // If top-of-stack not zero, duplicate it.
 
 qdup:
@@ -395,18 +427,18 @@ accept:
 0:
 	.quad over
 	.quad add
-	.quad lit, inputTop
+	.quad enter, inputTop
 	.quad store
-	.quad lit, inputPtr
+	.quad enter, inputPtr
 	.quad store
 	.quad exit
 
 // - bool
 
 keyq:
-	.quad lit, inputPtr
+	.quad enter, inputPtr
 	.quad fetch
-	.quad lit, inputTop
+	.quad enter, inputTop
 	.quad fetch
 	.quad enter, less
 	.quad exit
@@ -414,19 +446,19 @@ keyq:
 // - byte
 
 key:
-	.quad lit, inputPtr
+	.quad enter, inputPtr
 	.quad fetch
 	.quad dup
 	.quad lit, 1
 	.quad add
-	.quad lit, inputPtr
+	.quad enter, inputPtr
 	.quad store
 	.quad bfetch
 	.quad exit
 
 flush:
 	.quad lit, output
-	.quad lit, outputPtr
+	.quad enter, outputPtr
 	.quad over, over
 	.quad fetch
 	.quad lit, output
@@ -439,16 +471,16 @@ line:
 	.quad lit, '\n'
 
 emit:
-	.quad lit, outputPtr
+	.quad enter, outputPtr
 	.quad fetch
 	.quad dup
 	.quad lit, 1
 	.quad add
-	.quad lit, outputPtr
+	.quad enter, outputPtr
 	.quad store
 	.quad bstore
 
-	.quad lit, outputPtr
+	.quad enter, outputPtr
 	.quad fetch
 	.quad lit, output+page
 	.quad xor
@@ -592,7 +624,7 @@ digitq:
 	.quad lit, '0'
 	.quad sub
 
-	.quad lit, base
+	.quad enter, base
 	.quad fetch
 	.quad lit, 11
 	.quad enter, less
@@ -600,7 +632,7 @@ digitq:
 	.quad zjump, 0f
 
 	.quad lit, 0
-	.quad lit, base
+	.quad enter, base
 	.quad fetch
 	.quad enter, within
 	.quad exit
@@ -615,7 +647,7 @@ digitq:
 	.quad lit, 'A'-'0'
 	.quad sub
 	.quad lit, 0
-	.quad lit, base
+	.quad enter, base
 	.quad fetch
 	.quad lit, 10
 	.quad sub
@@ -643,7 +675,7 @@ natural:
 
 	.quad zjump, 2f
 
-	.quad lit, base
+	.quad enter, base
 	.quad fetch
 	.quad mul
 	.quad drop
@@ -684,7 +716,7 @@ natural:
 	.quad exit
 
 find:
-	.quad lit, last
+	.quad enter, last
 
 0:
 	.quad fetch
@@ -716,15 +748,15 @@ find:
 	.quad exit
 
 compile:
-	.quad lit, codePtr
+	.quad enter, codePtr
 	.quad fetch
 	.quad store
 
-	.quad lit, codePtr
+	.quad enter, codePtr
 	.quad fetch
 	.quad lit, cell
 	.quad add
-	.quad lit, codePtr
+	.quad enter, codePtr
 	.quad store
 	.quad exit
 
@@ -782,7 +814,7 @@ interpret:
 	// Flush input.
 
 	.quad lit, input
-	.quad lit, inputTop
+	.quad enter, inputTop
 	.quad store
 
 	// Print error and exit.
@@ -809,7 +841,7 @@ interpret:
 
 start:
 	.quad lit, code
-	.quad lit, codePtr
+	.quad enter, codePtr
 	.quad store
 
 	.quad enter, flush	
@@ -822,7 +854,13 @@ start:
 	.quad enter, interpret
 	.quad jump, start
 
-define headbye, qdup, "?dup"
+define headbye, inputPtr, "inputPtr"
+define headinputPtr, inputTop, "inputTop"
+define headinputTop, outputPtr, "outputPtr"
+define headoutputPtr, codePtr, "codePtr"
+define headcodePtr, last, "last"
+define headlast, base, "base"
+define headbase, qdup, "?dup"
 define headqdup, less, "<"
 define headless, negative, "negative"
 define headnegative, bool, "bool"
@@ -853,21 +891,21 @@ while:
 if:
 	.quad lit, zjump
 	.quad enter, compile
-	.quad lit, codePtr
+	.quad enter, codePtr
 	.quad fetch
 	.quad lit, 0
 	.quad jump, compile
 
 then:
 	.quad push
-	.quad lit, codePtr
+	.quad enter, codePtr
 	.quad fetch
 	.quad pull
 	.quad store
 	.quad exit
 
 begin:
-	.quad lit, codePtr
+	.quad enter, codePtr
 	.quad fetch
 	.quad exit
 
@@ -878,7 +916,7 @@ do:
 	.quad enter, compile
 	.quad enter, compile
 
-	.quad lit, codePtr
+	.quad enter, codePtr
 	.quad fetch
 	.quad pull
 	.quad store
@@ -886,19 +924,19 @@ do:
 
 bin:
 	.quad lit, 2
-	.quad lit, base
+	.quad enter, base
 	.quad store
 	.quad exit
 
 dec:
 	.quad lit, 10
-	.quad lit, base
+	.quad enter, base
 	.quad store
 	.quad exit
 
 hex:
 	.quad lit, 16
-	.quad lit, base
+	.quad enter, base
 	.quad store
 	.quad exit
 
@@ -915,7 +953,7 @@ dot:
 
 udot:
 	.quad lit, 0
-	.quad lit, base
+	.quad enter, base
 	.quad fetch
 	.quad div
 	.quad enter, qdup
@@ -950,24 +988,6 @@ define headbin, dec, "dec", flag
 define headdec, hex, "hex", flag
 define headhex, dot, "."
 define headdot, udot, "u."
-
-base:
-	.quad 10
-
-last:
-	.quad headudot
-
-inputPtr:
-	.quad input
-
-inputTop:
-	.quad input
-
-outputPtr:
-	.quad output
-
-codePtr:
-	.quad 0
 
 string prompt, "# "
 
