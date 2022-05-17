@@ -93,10 +93,8 @@ head\name:
 .global main
 
 main:
-	leaq stack(%rip), %rbp  // Our stacks grow downward.
-	movq $-1, %rax          // Top-of-stack magic value,
-	                        // aids in testing.
-
+	leaq stack(%rip), %rbp
+	movq $-1, %rax
 	leaq start(%rip), %rbx
 	jmpq *(%rbx)
 
