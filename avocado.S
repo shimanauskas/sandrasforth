@@ -586,7 +586,6 @@ getword:
 	.quad add
 	.quad push
 	.quad bstore
-
 	.quad enter, key
 
 	.quad jump, 0b
