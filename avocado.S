@@ -184,7 +184,7 @@ xor: /* x1 x2 -- x3 */
 	nip
 	next
 
-negate: /* n1 -- n2 */
+neg: /* n1 -- n2 */
 	negq %rax
 	next
 
@@ -257,8 +257,8 @@ define headpull, not, "not"
 define headnot, and, "and"
 define headand, or, "or"
 define heador, xor, "xor"
-define headxor, negate, "negate"
-define headnegate, sub, "-"
+define headxor, neg, "neg"
+define headneg, sub, "-"
 define headsub, add, "+"
 define headadd, mul, "*"
 define headmul, div, "/"
@@ -567,7 +567,7 @@ literal: /* -- n u */
 
 	.quad enter, natural
 	.quad push
-	.quad negate
+	.quad neg
 	.quad pull
 	.quad exit
 
@@ -850,7 +850,7 @@ dot:
 
 	.quad zjump, udot
 
-	.quad negate
+	.quad neg
 	.quad lit, '-'
 	.quad enter, emit
 
