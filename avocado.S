@@ -962,7 +962,6 @@ dot:
 	.quad zjump, udot
 
 	.quad negate
-
 	.quad lit, '-'
 	.quad enter, emit
 
