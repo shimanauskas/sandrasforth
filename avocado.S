@@ -268,11 +268,11 @@ define headstore, bfetch, "b@"
 define headbfetch, bstore, "b!"
 define headbstore, syscall, "syscall"
 
-inputptr:
+currkey:
 	.quad var, input
 	.quad exit
 
-codeptr:
+here:
 	.quad var, code
 	.quad exit
 
@@ -398,12 +398,12 @@ accept:
 	.quad lit, input
 	.quad store
 	.quad lit, input+cell
-	.quad enter, inputptr
+	.quad enter, currkey
 	.quad store
 	.quad exit
 
 keyq: /* -- bool */
-	.quad enter, inputptr
+	.quad enter, currkey
 	.quad fetch
 	.quad lit, input
 	.quad enter, load
@@ -412,12 +412,12 @@ keyq: /* -- bool */
 	.quad exit
 
 key: /* -- byte */
-	.quad enter, inputptr
+	.quad enter, currkey
 	.quad fetch
 	.quad dup
 	.quad lit, 1
 	.quad add
-	.quad enter, inputptr
+	.quad enter, currkey
 	.quad store
 	.quad bfetch
 	.quad exit
@@ -670,15 +670,15 @@ find:
 	.quad exit
 
 compile:
-	.quad enter, codeptr
+	.quad enter, here
 	.quad fetch
 	.quad store
 
-	.quad enter, codeptr
+	.quad enter, here
 	.quad fetch
 	.quad lit, cell
 	.quad add
-	.quad enter, codeptr
+	.quad enter, here
 	.quad store
 	.quad exit
 
@@ -753,7 +753,7 @@ interpret:
 
 start:
 	.quad lit, code
-	.quad enter, codeptr
+	.quad enter, here
 	.quad store
 
 	.quad enter, flush	
@@ -765,9 +765,9 @@ start:
 	.quad enter, interpret
 	.quad jump, start
 
-define headsyscall, inputptr, "inputptr"
-define headinputptr, codeptr, "codeptr"
-define headcodeptr, last, "last"
+define headsyscall, currkey, "currkey"
+define headcurrkey, here, "here"
+define headhere, last, "last"
 define headlast, base, "base"
 define headbase, qdup, "?dup"
 define headqdup, less, "<"
@@ -799,21 +799,21 @@ define headinterpret, start, "start"
    once we can compile them at runtime. */
 
 begin:
-	.quad enter, codeptr
+	.quad enter, here
 	.quad fetch
 	.quad exit
 
 if:
 	.quad lit, zjump
 	.quad enter, compile
-	.quad enter, codeptr
+	.quad enter, here
 	.quad fetch
 	.quad lit, 0
 	.quad jump, compile
 
 then:
 	.quad push
-	.quad enter, codeptr
+	.quad enter, here
 	.quad fetch
 	.quad pull
 	.quad store
@@ -826,7 +826,7 @@ again:
 	.quad enter, compile
 	.quad enter, compile
 
-	.quad enter, codeptr
+	.quad enter, here
 	.quad fetch
 	.quad pull
 	.quad store
