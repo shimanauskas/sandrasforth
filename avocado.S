@@ -545,7 +545,7 @@ getword:
 	.quad zjump, 0f
 
 	.quad lit, 0
-	.quad lit, word
+	.quad lit, output
 	.quad store
 	.quad exit
 
@@ -562,7 +562,7 @@ getword:
 	.quad jump, getword
 0:
 
-	.quad lit, word+cell
+	.quad lit, output+cell
 	.quad push
 
 0:
@@ -586,16 +586,16 @@ getword:
 
 	.quad drop
 	.quad pull
-	.quad lit, word+cell
+	.quad lit, output+cell
 	.quad sub
-	.quad lit, word
+	.quad lit, output
 	.quad store
 	.quad exit
 
 // - result unconvertedChars
 
 literal:
-	.quad lit, word
+	.quad lit, output
 	.quad enter, load
 
 	.quad over
@@ -729,7 +729,7 @@ find:
 	.quad lit, cell*2
 	.quad add
 	.quad fetch
-	.quad lit, word
+	.quad lit, output
 	.quad fetch
 	.quad enter, equals
 
@@ -737,7 +737,7 @@ find:
 
 	.quad lit, cell*3
 	.quad add
-	.quad lit, word
+	.quad lit, output
 	.quad enter, load
 	.quad enter, sameq
 
@@ -763,7 +763,7 @@ compile:
 
 interpret:
 	.quad enter, getword
-	.quad lit, word
+	.quad lit, output
 	.quad fetch
 
 	.quad zjump, 2f
@@ -816,8 +816,6 @@ interpret:
 	.quad lit, input
 	.quad store
 
-	.quad lit, word
-	.quad enter, write
 	.quad lit, '?'
 	.quad jump, emit
 
@@ -978,9 +976,6 @@ input:
 	.skip page
 
 output:
-	.skip page
-
-word:
 	.skip page
 
 code:
