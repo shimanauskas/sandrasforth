@@ -903,5 +903,4 @@ output:
 code:
 	.skip page
 
-	.skip page
 stack:
