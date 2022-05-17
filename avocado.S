@@ -268,6 +268,8 @@ define headstore, bfetch, "b@"
 define headbfetch, bstore, "b!"
 define headbstore, syscall, "syscall"
 
+string prompt, "# "
+
 currkey:
 	.quad var, input
 	.quad exit
@@ -889,8 +891,6 @@ define headagain, dec, "dec", flag
 define headdec, hex, "hex", flag
 define headhex, dot, "."
 define headdot, udot, "u."
-
-string prompt, "# "
 
 .bss
 
