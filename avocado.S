@@ -433,9 +433,6 @@ flush:
 	.quad store
 	.quad exit
 
-line:
-	.quad lit, '\n'
-
 emit:
 	.quad lit, output
 	.quad enter, load
@@ -785,8 +782,7 @@ define headwrite, accept, "accept"
 define headaccept, keyq, "key?"
 define headkeyq, key, "key"
 define headkey, flush, "flush"
-define headflush, line, "line"
-define headline, emit, "emit"
+define headflush, emit, "emit"
 define heademit, sameq, "same?"
 define headsameq, word, "word"
 define headword, literal, "literal"
