@@ -808,17 +808,18 @@ interpret:
 	.quad jump, code
 
 start:
+	.quad lit, code
+	.quad lit, codePtr
+	.quad store
+
+	.quad enter, flush	
+
 	.quad lit, prompt
 	.quad enter, load
 	.quad write
 
 	.quad enter, accept
 	.quad enter, interpret
-	.quad enter, flush
-
-	.quad lit, code
-	.quad lit, codePtr
-	.quad store
 	.quad jump, start
 
 define headbye, qdup, "?dup"
@@ -966,7 +967,7 @@ outputPtr:
 	.quad output
 
 codePtr:
-	.quad code
+	.quad 0
 
 string prompt, "# "
 
