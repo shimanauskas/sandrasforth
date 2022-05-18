@@ -36,7 +36,7 @@
 #define stdin  0
 #define stdout 1
 
-#define cell 8
+#define cell (8)
 #define flag (1<<cell*8-1)
 
 .macro dup /* x -- x x */
@@ -67,7 +67,7 @@
 .endm
 
 .macro next /* -- */
-	addq $(cell), %rbx
+	addq $cell, %rbx
 	jmp *(%rbx)
 .endm
 
@@ -98,7 +98,7 @@ main:
 	jmpq *(%rbx)
 
 enter: /* -- */
-	addq $(cell), %rbx
+	addq $cell, %rbx
 	pushq %rbx
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
@@ -114,7 +114,7 @@ exit: /* -- */
 	next
 
 jump: /* -- */
-	addq $(cell), %rbx
+	addq $cell, %rbx
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
 
@@ -127,13 +127,13 @@ zjump: /* x -- */
 
 lit: /* -- x */
 	dup
-	addq $(cell), %rbx
+	addq $cell, %rbx
 	movq (%rbx), %rax
 	next
 
 var: /* -- addr */
 	dup
-	addq $(cell), %rbx
+	addq $cell, %rbx
 	movq %rbx, %rax
 	next
 
