@@ -63,26 +63,13 @@ head\name:
 	movq %rax, (%rbp)
 .endm
 
-.macro nip /* x1 x2 -- x2 */
-	leaq cell(%rbp), %rbp
+.macro nip n /* x1 ... xn -- xn */
+	leaq cell*\n(%rbp), %rbp
 .endm
 
-.macro twonip /* x1 x2 x3 -- x3 */
-	leaq cell*2(%rbp), %rbp
-.endm
-
-.macro threenip /* x1 x2 x3 x4 -- x4 */
-	leaq cell*3(%rbp), %rbp
-.endm
-
-.macro drop /* x -- */
-	movq (%rbp), %rax
-	nip
-.endm
-
-.macro twodrop /* x1 x2 -- */
-	movq cell(%rbp), %rax
-	twonip
+.macro drop n /* x1 ... xn -- */
+	movq cell*(\n-1)(%rbp), %rax
+	nip \n
 .endm
 
 .macro next /* -- */
@@ -109,7 +96,7 @@ enter: /* -- */
 execute: /* token -- */
 	pushq %rbx
 	movq %rax, %rbx
-	drop
+	drop 1
 	jmpq *(%rbx)
 
 exit: /* -- */
@@ -123,7 +110,7 @@ jump: /* -- */
 
 zjump: /* x -- */
 	testq %rax, %rax
-	drop
+	drop 1
 	leaq cell*2(%rbx), %rbx
 	cmovzq -cell(%rbx), %rbx
 	jmpq *(%rbx)
@@ -145,11 +132,11 @@ dup: /* x -- x x */
 	next
 
 nip: /* x1 x2 -- x2 */
-	nip
+	nip 1
 	next
 
 drop: /* x -- */
-	drop
+	drop 1
 	next
 
 over: /* x1 x2 -- x1 x2 x1 */
@@ -159,7 +146,7 @@ over: /* x1 x2 -- x1 x2 x1 */
 
 push: /* x -- */ /* r: -- x */
 	pushq %rax
-	drop
+	drop 1
 	next
 
 pull: /* -- x */ /* r: x -- */
@@ -173,17 +160,17 @@ not: /* x1 -- x2 */
 
 and: /* x1 x2 -- x3 */
 	andq (%rbp), %rax
-	nip
+	nip 1
 	next
 
 or: /* x1 x2 -- x3 */
 	orq (%rbp), %rax
-	nip
+	nip 1
 	next
 
 xor: /* x1 x2 -- x3 */
 	xorq (%rbp), %rax
-	nip
+	nip 1
 	next
 
 neg: /* n1 -- n2 */
@@ -195,12 +182,12 @@ sub: /* n1|u1 n2|u2 -- n3|u3 */
 
 add: /* n1|u1 n2|u2 -- n3|u3 */
 	addq (%rbp), %rax
-	nip
+	nip 1
 	next
 
 mul: /* n1 n2 -- d */
 	movq %rax, %rcx
-	drop
+	drop 1
 	mulq %rcx
 	dup
 	movq %rdx, %rax
@@ -209,7 +196,7 @@ mul: /* n1 n2 -- d */
 div: /* n1 n2 -- n3 n4 */
 	movq %rax, %rcx
 	movq (%rbp), %rdx
-	nip
+	nip 1
 	movq (%rbp), %rax
 	divq %rcx
 	movq %rdx, (%rbp)
@@ -222,7 +209,7 @@ fetch: /* addr -- x */
 store: /* x addr -- */
 	movq (%rbp), %rdx
 	movq %rdx, (%rax)
-	twodrop
+	drop 2
 	next
 
 bfetch: /* addr -- byte */
@@ -232,14 +219,14 @@ bfetch: /* addr -- byte */
 bstore: /* byte addr -- */
 	movb (%rbp), %dl
 	movb %dl, (%rax)
-	twodrop
+	drop 2
 	next
 
 syscall: /* x1 x2 x3 x4 -- x5 */
 	movq (%rbp), %rdx
 	movq cell(%rbp), %rsi
 	movq cell*2(%rbp), %rdi
-	threenip
+	nip 3
 	syscall
 	next
 
