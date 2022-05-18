@@ -586,13 +586,10 @@ number: /* 0 addr1 u -- n addr2 u2 */
 	.quad lit, 1
 	.quad sub
 	.quad push
-
 	.quad lit, 1
 	.quad add
 	.quad pull
-
 	.quad enter, natural
-
 	.quad push, push
 	.quad neg
 	.quad pull, pull
