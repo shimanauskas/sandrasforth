@@ -106,7 +106,7 @@ enter:
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
 
-execute:
+execute: /* token -- */
 	pushq %rbx
 	movq %rax, %rbx
 	drop
@@ -272,19 +272,19 @@ define headbstore, syscall, "syscall"
 
 string prompt, "# "
 
-currkey:
+currkey: /* -- addr */
 	token var, input
 	token exit
 
-here:
+here: /* -- addr */
 	token var, code
 	token exit
 
-last:
+last: /* -- addr */
 	token var, headudot
 	token exit
 
-base:
+base: /* -- addr */
 	token var, 10
 	token exit
 
@@ -300,7 +300,7 @@ qdup:
 0:
 	token exit
 
-less:
+less: /* n1 n2 -- bool */
 	token over, over
 	token xor
 	token enter, zless
@@ -314,7 +314,7 @@ less:
 	token sub
 	token jump, zless
 
-uless:
+uless: /* u1 u2 -- bool */
 	token over, over
 	token xor
 	token enter, zless
@@ -327,11 +327,11 @@ uless:
 0:
 	token sub
 
-zless:
+zless: /* n - bool */
 	token lit, flag
 	token and
 
-bool:
+bool: /* x -- bool */
 	token dup
 
 	token zjump, 0f
@@ -343,15 +343,15 @@ bool:
 0:
 	token exit
 
-equals:
+equals: /* x1 x2 -- bool */
 	token xor
 
-zequals:
+zequals: /* x -- bool */
 	token enter, bool
 	token not
 	token exit
 
-within:
+within: /* u1 u2 u3 -- bool */
 	token push
 	token over
 	token push
@@ -415,7 +415,7 @@ keyq: /* -- bool */
 	token enter, uless
 	token exit
 
-key: /* -- byte */
+key: /* -- char */
 	token enter, currkey
 	token fetch
 	token dup
@@ -434,7 +434,7 @@ flush:
 	token bstore
 	token exit
 
-emit:
+emit: /* char -- */
 	token lit, output
 	token enter, load
 	token add
@@ -512,7 +512,7 @@ word:
 	token bstore
 	token exit
 
-digitq: /* byte base -- u bool */
+digitq: /* char base -- u bool */
 	token push
 	token lit, '0'
 	token sub
@@ -654,7 +654,7 @@ find:
 
 	token exit
 
-compile:
+compile: /* x -- */
 	token enter, here
 	token fetch
 	token store
@@ -819,7 +819,7 @@ hex:
 	token store
 	token exit
 
-dot:
+dot: /* n -- */
 	token dup
 	token enter, zless
 
@@ -829,7 +829,7 @@ dot:
 	token lit, '-'
 	token enter, emit
 
-udot:
+udot: /* u -- */
 	token lit, 0
 	token enter, base
 	token fetch
