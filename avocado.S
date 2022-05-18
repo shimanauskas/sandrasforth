@@ -137,16 +137,16 @@ var: /* -- addr */
 	movq %rbx, %rax
 	next
 
+dup: /* x -- x x */
+	dup
+	next
+
 nip: /* x1 x2 -- x2 */
 	nip
 	next
 
 drop: /* x -- */
 	drop
-	next
-
-dup: /* x -- x x */
-	dup
 	next
 
 over: /* x1 x2 -- x1 x2 x1 */
@@ -246,10 +246,10 @@ codeend:
 
 define 0, execute, "execute"
 define headexecute, exit, "exit"
-define headexit, nip, "nip"
+define headexit, dup, "dup"
+define headdup, nip, "nip"
 define headnip, drop, "drop"
-define headdrop, dup, "dup"
-define headdup, over, "over"
+define headdrop, over, "over"
 define headover, push, "push"
 define headpush, pull, "pull"
 define headpull, not, "not"
