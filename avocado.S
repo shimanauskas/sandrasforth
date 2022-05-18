@@ -427,7 +427,6 @@ key: /* -- byte */
 flush:
 	.quad lit, output
 	.quad enter, write
-
 	.quad lit, 0
 	.quad lit, output
 	.quad store
@@ -438,14 +437,12 @@ emit:
 	.quad enter, load
 	.quad add
 	.quad store
-
 	.quad lit, output
 	.quad fetch
 	.quad lit, 1
 	.quad add
 	.quad lit, output
 	.quad store
-
 	.quad lit, output
 	.quad fetch
 	.quad lit, page-cell
@@ -659,7 +656,6 @@ compile:
 	.quad enter, here
 	.quad fetch
 	.quad store
-
 	.quad enter, here
 	.quad fetch
 	.quad lit, cell
@@ -800,11 +796,9 @@ then:
 
 again:
 	.quad push
-
 	.quad lit, jump
 	.quad enter, compile
 	.quad enter, compile
-
 	.quad enter, here
 	.quad fetch
 	.quad pull
