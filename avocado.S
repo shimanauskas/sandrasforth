@@ -42,7 +42,7 @@
 
 .macro string name, string
 \name:
-	.quad 0f-(.+cell)
+	.byte 0f-(.+1)
 	.ascii "\string"
 0:
 
@@ -363,10 +363,10 @@ within:
 load: /* addr1 -- addr2 u */
 	.quad dup
 	.quad push
-	.quad lit, cell
+	.quad lit, 1
 	.quad add
 	.quad pull
-	.quad fetch
+	.quad bfetch
 	.quad exit
 
 write: /* addr -- */
@@ -380,8 +380,8 @@ write: /* addr -- */
 
 accept:
 	.quad lit, stdin
-	.quad lit, input+cell
-	.quad lit, page-cell
+	.quad lit, input+1
+	.quad lit, 0xFF-1
 	.quad lit, sysread
 	.quad syscall
 	.quad dup
@@ -398,8 +398,8 @@ accept:
 
 0:
 	.quad lit, input
-	.quad store
-	.quad lit, input+cell
+	.quad bstore
+	.quad lit, input+1
 	.quad enter, currkey
 	.quad store
 	.quad exit
@@ -429,23 +429,23 @@ flush:
 	.quad enter, write
 	.quad lit, 0
 	.quad lit, output
-	.quad store
+	.quad bstore
 	.quad exit
 
 emit:
 	.quad lit, output
 	.quad enter, load
 	.quad add
-	.quad store
+	.quad bstore
 	.quad lit, output
-	.quad fetch
+	.quad bfetch
 	.quad lit, 1
 	.quad add
 	.quad lit, output
-	.quad store
+	.quad bstore
 	.quad lit, output
-	.quad fetch
-	.quad lit, page-cell
+	.quad bfetch
+	.quad lit, 0xFF
 	.quad xor
 
 	.quad zjump, flush
@@ -464,7 +464,7 @@ word:
 
 	.quad lit, 0
 	.quad lit, output
-	.quad store
+	.quad bstore
 	.quad exit
 
 0:
@@ -480,7 +480,7 @@ word:
 	.quad jump, word
 0:
 
-	.quad lit, output+cell
+	.quad lit, output+1
 	.quad push
 
 0:
@@ -504,10 +504,10 @@ word:
 
 	.quad drop
 	.quad pull
-	.quad lit, output+cell
+	.quad lit, output+1
 	.quad sub
 	.quad lit, output
-	.quad store
+	.quad bstore
 	.quad exit
 
 digitq: /* byte base -- u bool */
@@ -632,14 +632,14 @@ find:
 	.quad dup
 	.quad lit, cell*2
 	.quad add
-	.quad fetch
+	.quad bfetch
 	.quad lit, output
-	.quad fetch
+	.quad bfetch
 	.quad enter, equals
 
 	.quad zjump, 1f
 
-	.quad lit, cell*3
+	.quad lit, cell*2+1
 	.quad add
 	.quad lit, output
 	.quad enter, load
@@ -667,7 +667,7 @@ compile:
 interpret:
 	.quad enter, word
 	.quad lit, output
-	.quad fetch
+	.quad bfetch
 
 	.quad zjump, 2f
 
@@ -866,10 +866,10 @@ define headdot, udot, "u."
 .bss
 
 input:
-	.skip page
+	.skip 0x100
 
 output:
-	.skip page
+	.skip 0x100
 
 code:
 	.skip page
