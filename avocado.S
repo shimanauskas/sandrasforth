@@ -720,9 +720,6 @@ interpret:
 	.quad zjump, 0f
 
 	.quad drop
-	.quad lit, 0
-	.quad lit, input
-	.quad store
 	.quad lit, '?'
 	.quad jump, emit
 
