@@ -39,24 +39,7 @@
 #define token .quad
 #define cell 8
 
-#define page 0x1000
 #define flag (1<<((cell*8)-1))
-
-.macro string name, string
-\name:
-	.byte 0f-(.+1)
-	.ascii "\string"
-0:
-
-.balign cell
-.endm
-
-.macro define link, name, string, imm=0
-head\name:
-	token \link
-	token \name+\imm
-	string string\name, "\string"
-.endm
 
 .macro nip n /* x1 ... xn -- xn */
 	leaq cell*\n(%rbp), %rbp
@@ -75,6 +58,22 @@ head\name:
 .macro next /* -- */
 	addq $(cell), %rbx
 	jmp *(%rbx)
+.endm
+
+.macro string name, string
+\name:
+	.byte 0f-(.+1)
+	.ascii "\string"
+0:
+
+.balign cell
+.endm
+
+.macro define link, name, string, imm=0
+head\name:
+	token \link
+	token \name+\imm
+	string string\name, "\string"
 .endm
 
 .text
@@ -857,6 +856,6 @@ output:
 	.skip 0x100
 
 code:
-	.skip page
+	.skip 0x1000
 
 stack:
