@@ -90,7 +90,7 @@ enter: /* -- */
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
 
-execute: /* .quad -- */
+execute: /* addr -- */
 	pushq %rbx
 	movq %rax, %rbx
 	drop 1
