@@ -59,7 +59,7 @@ head\name:
 .endm
 
 .macro dup /* x -- x x */
-	subq $(cell), %rbp
+	leaq -cell(%rbp), %rbp
 	movq %rax, (%rbp)
 .endm
 
@@ -220,8 +220,8 @@ fetch: /* addr -- x */
 	next
 
 store: /* x addr -- */
-	movq (%rbp), %rcx
-	movq %rcx, (%rax)
+	movq (%rbp), %rdx
+	movq %rdx, (%rax)
 	twodrop
 	next
 
@@ -230,8 +230,8 @@ bfetch: /* addr -- byte */
 	next
 
 bstore: /* byte addr -- */
-	movb (%rbp), %cl
-	movb %cl, (%rax)
+	movb (%rbp), %dl
+	movb %dl, (%rax)
 	twodrop
 	next
 
