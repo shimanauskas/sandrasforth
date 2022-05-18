@@ -85,7 +85,7 @@ head\name:
 	twonip
 .endm
 
-.macro next
+.macro next /* -- */
 	addq $(cell), %rbx
 	jmp *(%rbx)
 .endm
@@ -100,7 +100,7 @@ main:
 	leaq start(%rip), %rbx
 	jmpq *(%rbx)
 
-enter:
+enter: /* -- */
 	addq $(cell), %rbx
 	pushq %rbx
 	movq (%rbx), %rbx
@@ -112,11 +112,11 @@ execute: /* token -- */
 	drop
 	jmpq *(%rbx)
 
-exit:
+exit: /* -- */
 	popq %rbx
 	next
 
-jump:
+jump: /* -- */
 	addq $(cell), %rbx
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
@@ -288,9 +288,7 @@ base: /* -- addr */
 	token var, 10
 	token exit
 
-/* If top-of-stack not zero, duplicate it. */
-
-qdup:
+qdup: /* x -- 0 | x x */
 	token dup
 
 	token zjump, 0f
@@ -380,7 +378,7 @@ write: /* addr -- */
 	token drop, drop
 	token exit
 
-accept:
+accept: /* -- */
 	token lit, stdin
 	token lit, input+1
 	token lit, 0xFF-1
@@ -426,7 +424,7 @@ key: /* -- char */
 	token bfetch
 	token exit
 
-flush:
+flush: /* -- */
 	token lit, output
 	token enter, write
 	token lit, 0
@@ -458,7 +456,7 @@ emit: /* char -- */
    Then deposit non-space characters to buffer.
    If end of input is reached, return with buffer empty. */
 
-word:
+word: /* -- */
 	token enter, keyq
 	token not
 
@@ -622,7 +620,7 @@ sameq: /* addr1 addr2 u1 -- u2 */
 	token nip, nip
 	token exit
 
-find:
+find: /* -- */
 	token enter, last
 
 0:
@@ -666,7 +664,7 @@ compile: /* x -- */
 	token store
 	token exit
 
-interpret:
+interpret: /* -- */
 	token enter, word
 	token lit, output
 	token bfetch
@@ -732,7 +730,7 @@ interpret:
 	token enter, compile
 	token jump, code
 
-start:
+start: /* -- */
 	token lit, code
 	token enter, here
 	token store
@@ -775,12 +773,12 @@ define headinterpret, start, "start"
 /* The following definitions should be moved out of core
    once we can compile them at runtime. */
 
-begin:
+begin: /* -- addr */
 	token enter, here
 	token fetch
 	token exit
 
-if:
+if: /* -- addr */
 	token lit, zjump
 	token enter, compile
 	token enter, here
@@ -788,7 +786,7 @@ if:
 	token lit, 0
 	token jump, compile
 
-then:
+then: /* addr -- */
 	token push
 	token enter, here
 	token fetch
@@ -796,7 +794,7 @@ then:
 	token store
 	token exit
 
-again:
+again: /* addr1 addr2 -- */
 	token push
 	token lit, jump
 	token enter, compile
@@ -807,13 +805,13 @@ again:
 	token store
 	token exit
 
-dec:
+dec: /* -- */
 	token lit, 10
 	token enter, base
 	token store
 	token exit
 
-hex:
+hex: /* -- */
 	token lit, 16
 	token enter, base
 	token store
