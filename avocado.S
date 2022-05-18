@@ -19,15 +19,15 @@
    r15 - unused. */
 
 #ifdef __linux__
-	#define sysread  0
-	#define syswrite 1
-	#define sysexit  60
+	#define sys_read  0
+	#define sys_write 1
+	#define sys_exit  60
 #elif __APPLE__
 	#include "TargetConditionals.h"
 	#ifdef TARGET_OS_MAC
-		#define sysread  0x2000003
-		#define syswrite 0x2000004
-		#define sysexit  0x2000001
+		#define sys_read  0x2000003
+		#define sys_write 0x2000004
+		#define sys_exit  0x2000001
 	#endif
 #elif
 	#error "Unsupported platform."
@@ -37,7 +37,7 @@
 #define stdout 1
 
 #define cell 8
-#define flag (1<<((cell*8)-1))
+#define flag (1<<(cell*8-1))
 
 .macro nip n /* x1 ... xn -- xn */
 	leaq cell*\n(%rbp), %rbp
@@ -355,7 +355,7 @@ write: /* addr -- */
 	.quad lit, stdout
 	.quad over
 	.quad enter, load
-	.quad lit, syswrite
+	.quad lit, sys_write
 	.quad syscall
 	.quad drop, drop
 	.quad exit
@@ -364,7 +364,7 @@ accept: /* -- */
 	.quad lit, stdin
 	.quad lit, input+1
 	.quad lit, 0xFF-1
-	.quad lit, sysread
+	.quad lit, sys_read
 	.quad syscall
 	.quad dup
 	.quad lit, 1
@@ -375,7 +375,7 @@ accept: /* -- */
 	.quad drop
 	.quad lit, 0
 	.quad dup, dup
-	.quad lit, sysexit
+	.quad lit, sys_exit
 	.quad syscall
 
 0:
