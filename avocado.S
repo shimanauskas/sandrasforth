@@ -535,17 +535,16 @@ digitq: /* byte base -- u bool */
 	.quad pull
 	.quad jump, uless
 
-natural: /* addr u1 -- n u2 */
+natural: /* 0 addr1 u1 -- u2 addr2 u3 */
 	.quad push
-	.quad lit, 0
-
-0:
-	.quad over
+	.quad dup
+	.quad push
 	.quad bfetch
 	.quad enter, base
 	.quad fetch
 	.quad enter, digitq
-
+	.quad pull
+	.quad over
 	.quad pull
 	.quad dup
 	.quad push
@@ -554,35 +553,29 @@ natural: /* addr u1 -- n u2 */
 	.quad zjump, 0f
 
 	.quad push
+	.quad drop
+	.quad push
 	.quad enter, base
 	.quad fetch
 	.quad mul
 	.quad drop
 	.quad pull
 	.quad add
-
 	.quad pull
-	.quad lit, 1
-	.quad sub
-	.quad push
-
-	.quad push
 	.quad lit, 1
 	.quad add
 	.quad pull
+	.quad lit, 1
+	.quad sub
 
-	.quad jump, 0b
+	.quad jump, natural
 0:
 
-	.quad drop
-	.quad nip
+	.quad nip, nip
 	.quad pull
 	.quad exit
 
-literal: /* -- n u */
-	.quad lit, output
-	.quad enter, load
-
+number: /* 0 addr1 u -- n addr2 u2 */
 	.quad over
 	.quad bfetch
 	.quad lit, '-'
@@ -599,9 +592,10 @@ literal: /* -- n u */
 	.quad pull
 
 	.quad enter, natural
-	.quad push
+
+	.quad push, push
 	.quad neg
-	.quad pull
+	.quad pull, pull
 	.quad exit
 
 sameq: /* addr1 addr2 u1 -- u2 */
@@ -726,7 +720,11 @@ interpret:
 	.quad jump, interpret
 
 1:
-	.quad enter, literal
+	.quad lit, 0
+	.quad lit, output
+	.quad enter, load
+	.quad enter, number
+	.quad nip
 
 	.quad zjump, 0f
 
@@ -786,8 +784,8 @@ define headflush, emit, "emit"
 define heademit, word, "word"
 define headword, digitq, "digit?"
 define headdigitq, natural, "natural"
-define headnatural, literal, "literal"
-define headliteral, sameq, "same?"
+define headnatural, number, "number"
+define headnumber, sameq, "same?"
 define headsameq, find, "find"
 define headfind, compile, "compile"
 define headcompile, interpret, "interpret"
