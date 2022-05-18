@@ -80,10 +80,10 @@
 .balign cell
 .endm
 
-.macro define link, name, string, imm=0
+.macro define link, name, string, mask=0
 head\name:
 	.quad \link
-	.quad \name+\imm
+	.quad \name+\mask
 	string string\name, "\string"
 .endm
 
