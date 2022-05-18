@@ -575,7 +575,7 @@ natural: /* 0 addr1 u1 -- u2 addr2 u3 */
 	.quad pull
 	.quad exit
 
-number: /* 0 addr1 u -- n addr2 u2 */
+number: /* 0 addr1 u1 -- n addr2 u2 */
 	.quad over
 	.quad bfetch
 	.quad lit, '-'
