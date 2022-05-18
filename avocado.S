@@ -745,12 +745,9 @@ start:
 	.quad lit, code
 	.quad enter, here
 	.quad store
-
 	.quad enter, flush	
-
 	.quad lit, prompt
 	.quad enter, write
-
 	.quad enter, accept
 	.quad enter, interpret
 	.quad jump, start
