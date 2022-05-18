@@ -37,8 +37,8 @@
 #define stdout 1
 
 #define token .quad
-
 #define cell 8
+
 #define page 0x1000
 #define flag (1<<((cell*8)-1))
 
