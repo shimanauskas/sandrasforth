@@ -598,24 +598,20 @@ number: /* 0 addr1 u1 -- n addr2 u2 */
 sameq: /* addr1 addr2 u1 -- u2 */
 	.quad dup
 	.quad push, push
-
 	.quad over, bfetch
 	.quad over, bfetch
 	.quad enter, equals
-
 	.quad pull
 	.quad and
 
 	.quad zjump, 0f
 
-	.quad lit, 1
-	.quad add
 	.quad push
-
 	.quad lit, 1
 	.quad add
 	.quad pull
-
+	.quad lit, 1
+	.quad add
 	.quad pull
 	.quad lit, 1
 	.quad sub
