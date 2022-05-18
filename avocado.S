@@ -58,11 +58,6 @@ head\name:
 	string string\name, "\string"
 .endm
 
-.macro dup /* x -- x x */
-	leaq -cell(%rbp), %rbp
-	movq %rax, (%rbp)
-.endm
-
 .macro nip n /* x1 ... xn -- xn */
 	leaq cell*\n(%rbp), %rbp
 .endm
@@ -70,6 +65,11 @@ head\name:
 .macro drop n /* x1 ... xn -- */
 	movq cell*(\n-1)(%rbp), %rax
 	nip \n
+.endm
+
+.macro dup /* x -- x x */
+	nip -1
+	movq %rax, (%rbp)
 .endm
 
 .macro next /* -- */
@@ -127,16 +127,16 @@ var: /* -- addr */
 	movq %rbx, %rax
 	next
 
-dup: /* x -- x x */
-	dup
-	next
-
 nip: /* x1 x2 -- x2 */
 	nip 1
 	next
 
 drop: /* x -- */
 	drop 1
+	next
+
+dup: /* x -- x x */
+	dup
 	next
 
 over: /* x1 x2 -- x1 x2 x1 */
@@ -236,10 +236,10 @@ codeend:
 
 define 0, execute, "execute"
 define headexecute, exit, "exit"
-define headexit, dup, "dup"
-define headdup, nip, "nip"
+define headexit, nip, "nip"
 define headnip, drop, "drop"
-define headdrop, over, "over"
+define headdrop, dup, "dup"
+define headdup, over, "over"
 define headover, push, "push"
 define headpush, pull, "pull"
 define headpull, not, "not"
