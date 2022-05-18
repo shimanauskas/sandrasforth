@@ -303,31 +303,31 @@ qdup:
 less:
 	token over, over
 	token xor
-	token enter, negative
+	token enter, zless
 
 	token zjump, 0f
 
 	token drop
-	token jump, negative
+	token jump, zless
 
 0:
 	token sub
-	token jump, negative
+	token jump, zless
 
 uless:
 	token over, over
 	token xor
-	token enter, negative
+	token enter, zless
 
 	token zjump, 0f
 
 	token nip
-	token jump, negative
+	token jump, zless
 
 0:
 	token sub
 
-negative:
+zless:
 	token lit, flag
 	token and
 
@@ -682,7 +682,7 @@ interpret:
 	token add
 	token fetch
 	token dup
-	token enter, negative
+	token enter, zless
 	token push
 	token lit, ~flag
 	token and
@@ -750,8 +750,8 @@ define headlast, base, "base"
 define headbase, qdup, "?dup"
 define headqdup, less, "<"
 define headless, uless, "u<"
-define headuless, negative, "0<"
-define headnegative, bool, "bool"
+define headuless, zless, "0<"
+define headzless, bool, "bool"
 define headbool, equals, "="
 define headequals, zequals, "0="
 define headzequals, within, "within"
@@ -821,7 +821,7 @@ hex:
 
 dot:
 	token dup
-	token enter, negative
+	token enter, zless
 
 	token zjump, udot
 
