@@ -37,7 +37,7 @@
 #define stdout 1
 
 #define cell 8
-#define flag (1<<(cell*8-1))
+#define flag (1<<cell*8-1)
 
 .macro dup /* x -- x x */
 	leaq -cell(%rbp), %rbp
@@ -73,7 +73,7 @@
 
 .macro string name, string
 \name:
-	.byte 0f-(.+1)
+	.byte 0f-.-1
 	.ascii "\string"
 0:
 
