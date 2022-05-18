@@ -36,9 +36,7 @@
 #define stdin  0
 #define stdout 1
 
-#define token .quad
 #define cell 8
-
 #define flag (1<<((cell*8)-1))
 
 .macro nip n /* x1 ... xn -- xn */
@@ -71,8 +69,8 @@
 
 .macro define link, name, string, imm=0
 head\name:
-	token \link
-	token \name+\imm
+	.quad \link
+	.quad \name+\imm
 	string string\name, "\string"
 .endm
 
@@ -92,7 +90,7 @@ enter: /* -- */
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
 
-execute: /* token -- */
+execute: /* .quad -- */
 	pushq %rbx
 	movq %rax, %rbx
 	drop 1
@@ -259,471 +257,471 @@ define headbstore, syscall, "syscall"
 string prompt, "# "
 
 currkey: /* -- addr */
-	token var, input
-	token exit
+	.quad var, input
+	.quad exit
 
 here: /* -- addr */
-	token var, code
-	token exit
+	.quad var, code
+	.quad exit
 
 last: /* -- addr */
-	token var, headudot
-	token exit
+	.quad var, headudot
+	.quad exit
 
 base: /* -- addr */
-	token var, 10
-	token exit
+	.quad var, 10
+	.quad exit
 
 qdup: /* x -- 0 | x x */
-	token dup
+	.quad dup
 
-	token zjump, 0f
+	.quad zjump, 0f
 
-	token dup
+	.quad dup
 
 0:
-	token exit
+	.quad exit
 
 less: /* n1 n2 -- bool */
-	token over, over
-	token xor
-	token enter, zless
+	.quad over, over
+	.quad xor
+	.quad enter, zless
 
-	token zjump, 0f
+	.quad zjump, 0f
 
-	token drop
-	token jump, zless
+	.quad drop
+	.quad jump, zless
 
 0:
-	token sub
-	token jump, zless
+	.quad sub
+	.quad jump, zless
 
 uless: /* u1 u2 -- bool */
-	token over, over
-	token xor
-	token enter, zless
+	.quad over, over
+	.quad xor
+	.quad enter, zless
 
-	token zjump, 0f
+	.quad zjump, 0f
 
-	token nip
-	token jump, zless
+	.quad nip
+	.quad jump, zless
 
 0:
-	token sub
+	.quad sub
 
 zless: /* n - bool */
-	token lit, flag
-	token and
+	.quad lit, flag
+	.quad and
 
 bool: /* x -- bool */
-	token zjump, 0f
+	.quad zjump, 0f
 
-	token lit, -1
-	token exit
+	.quad lit, -1
+	.quad exit
 
 0:
-	token lit, 0
-	token exit
+	.quad lit, 0
+	.quad exit
 
 equals: /* x1 x2 -- bool */
-	token xor
+	.quad xor
 
 zequals: /* x -- bool */
-	token enter, bool
-	token not
-	token exit
+	.quad enter, bool
+	.quad not
+	.quad exit
 
 within: /* u1 u2 u3 -- bool */
-	token push
-	token over
-	token push
-	token enter, uless
-	token not
-	token pull, pull
-	token enter, uless
-	token and
-	token exit
+	.quad push
+	.quad over
+	.quad push
+	.quad enter, uless
+	.quad not
+	.quad pull, pull
+	.quad enter, uless
+	.quad and
+	.quad exit
 
 load: /* addr1 -- addr2 u */
-	token dup
-	token push
-	token lit, 1
-	token add
-	token pull
-	token bfetch
-	token exit
+	.quad dup
+	.quad push
+	.quad lit, 1
+	.quad add
+	.quad pull
+	.quad bfetch
+	.quad exit
 
 write: /* addr -- */
-	token lit, stdout
-	token over
-	token enter, load
-	token lit, syswrite
-	token syscall
-	token drop, drop
-	token exit
+	.quad lit, stdout
+	.quad over
+	.quad enter, load
+	.quad lit, syswrite
+	.quad syscall
+	.quad drop, drop
+	.quad exit
 
 accept: /* -- */
-	token lit, stdin
-	token lit, input+1
-	token lit, 0xFF-1
-	token lit, sysread
-	token syscall
-	token dup
-	token lit, 1
-	token enter, less
+	.quad lit, stdin
+	.quad lit, input+1
+	.quad lit, 0xFF-1
+	.quad lit, sysread
+	.quad syscall
+	.quad dup
+	.quad lit, 1
+	.quad enter, less
 
-	token zjump, 0f
+	.quad zjump, 0f
 
-	token drop
-	token lit, 0
-	token dup, dup
-	token lit, sysexit
-	token syscall
+	.quad drop
+	.quad lit, 0
+	.quad dup, dup
+	.quad lit, sysexit
+	.quad syscall
 
 0:
-	token lit, input
-	token bstore
-	token lit, input+1
-	token enter, currkey
-	token store
-	token exit
+	.quad lit, input
+	.quad bstore
+	.quad lit, input+1
+	.quad enter, currkey
+	.quad store
+	.quad exit
 
 keyq: /* -- bool */
-	token enter, currkey
-	token fetch
-	token lit, input
-	token enter, load
-	token add
-	token enter, uless
-	token exit
+	.quad enter, currkey
+	.quad fetch
+	.quad lit, input
+	.quad enter, load
+	.quad add
+	.quad enter, uless
+	.quad exit
 
 key: /* -- char */
-	token enter, currkey
-	token fetch
-	token dup
-	token lit, 1
-	token add
-	token enter, currkey
-	token store
-	token bfetch
-	token exit
+	.quad enter, currkey
+	.quad fetch
+	.quad dup
+	.quad lit, 1
+	.quad add
+	.quad enter, currkey
+	.quad store
+	.quad bfetch
+	.quad exit
 
 flush: /* -- */
-	token lit, output
-	token enter, write
-	token lit, 0
-	token lit, output
-	token bstore
-	token exit
+	.quad lit, output
+	.quad enter, write
+	.quad lit, 0
+	.quad lit, output
+	.quad bstore
+	.quad exit
 
 emit: /* char -- */
-	token lit, output
-	token enter, load
-	token add
-	token bstore
-	token lit, output
-	token bfetch
-	token lit, 1
-	token add
-	token lit, output
-	token bstore
-	token lit, output
-	token bfetch
-	token lit, 0xFF
-	token xor
+	.quad lit, output
+	.quad enter, load
+	.quad add
+	.quad bstore
+	.quad lit, output
+	.quad bfetch
+	.quad lit, 1
+	.quad add
+	.quad lit, output
+	.quad bstore
+	.quad lit, output
+	.quad bfetch
+	.quad lit, 0xFF
+	.quad xor
 
-	token zjump, flush
+	.quad zjump, flush
 
-	token exit
+	.quad exit
 
 /* Read input, skip spaces.
    Then deposit non-space characters to buffer.
    If end of input is reached, return with buffer empty. */
 
 word: /* -- */
-	token enter, keyq
-	token not
+	.quad enter, keyq
+	.quad not
 
-	token zjump, 0f
+	.quad zjump, 0f
 
-	token lit, 0
-	token lit, output
-	token bstore
-	token exit
-
-0:
-	token enter, key
-	token dup
-	token lit, '!'
-	token enter, uless
-
-	token zjump, 0f
-
-	token drop
-
-	token jump, word
-0:
-
-	token lit, output+1
-	token push
+	.quad lit, 0
+	.quad lit, output
+	.quad bstore
+	.quad exit
 
 0:
-	token dup
-	token lit, '!'
-	token enter, uless
-	token not
+	.quad enter, key
+	.quad dup
+	.quad lit, '!'
+	.quad enter, uless
 
-	token zjump, 0f
+	.quad zjump, 0f
 
-	token pull
-	token dup
-	token lit, 1
-	token add
-	token push
-	token bstore
-	token enter, key
+	.quad drop
 
-	token jump, 0b
+	.quad jump, word
 0:
 
-	token drop
-	token pull
-	token lit, output+1
-	token sub
-	token lit, output
-	token bstore
-	token exit
+	.quad lit, output+1
+	.quad push
+
+0:
+	.quad dup
+	.quad lit, '!'
+	.quad enter, uless
+	.quad not
+
+	.quad zjump, 0f
+
+	.quad pull
+	.quad dup
+	.quad lit, 1
+	.quad add
+	.quad push
+	.quad bstore
+	.quad enter, key
+
+	.quad jump, 0b
+0:
+
+	.quad drop
+	.quad pull
+	.quad lit, output+1
+	.quad sub
+	.quad lit, output
+	.quad bstore
+	.quad exit
 
 digitq: /* char base -- u bool */
-	token push
-	token lit, '0'
-	token sub
-	token lit, 9
-	token over
-	token enter, less
+	.quad push
+	.quad lit, '0'
+	.quad sub
+	.quad lit, 9
+	.quad over
+	.quad enter, less
 
-	token zjump, 0f
+	.quad zjump, 0f
 
-	token lit, 'A'-'0'-10
-	token sub
-	token dup
-	token lit, 10
-	token enter, less
-	token or
+	.quad lit, 'A'-'0'-10
+	.quad sub
+	.quad dup
+	.quad lit, 10
+	.quad enter, less
+	.quad or
 
 0:
-	token dup
-	token pull
-	token jump, uless
+	.quad dup
+	.quad pull
+	.quad jump, uless
 
 natural: /* 0 addr1 u1 -- u2 addr2 u3 */
-	token push
-	token dup
-	token push
-	token bfetch
-	token enter, base
-	token fetch
-	token enter, digitq
-	token pull
-	token over
-	token pull
-	token dup
-	token push
-	token and
+	.quad push
+	.quad dup
+	.quad push
+	.quad bfetch
+	.quad enter, base
+	.quad fetch
+	.quad enter, digitq
+	.quad pull
+	.quad over
+	.quad pull
+	.quad dup
+	.quad push
+	.quad and
 
-	token zjump, 0f
+	.quad zjump, 0f
 
-	token push
-	token drop
-	token push
-	token enter, base
-	token fetch
-	token mul
-	token drop
-	token pull
-	token add
-	token pull
-	token lit, 1
-	token add
-	token pull
-	token lit, 1
-	token sub
+	.quad push
+	.quad drop
+	.quad push
+	.quad enter, base
+	.quad fetch
+	.quad mul
+	.quad drop
+	.quad pull
+	.quad add
+	.quad pull
+	.quad lit, 1
+	.quad add
+	.quad pull
+	.quad lit, 1
+	.quad sub
 
-	token jump, natural
+	.quad jump, natural
 0:
 
-	token nip, nip
-	token pull
-	token exit
+	.quad nip, nip
+	.quad pull
+	.quad exit
 
 number: /* 0 addr1 u1 -- n addr2 u2 */
-	token over
-	token bfetch
-	token lit, '-'
-	token enter, equals
+	.quad over
+	.quad bfetch
+	.quad lit, '-'
+	.quad enter, equals
 
-	token zjump, natural
+	.quad zjump, natural
 
-	token lit, 1
-	token sub
-	token push
-	token lit, 1
-	token add
-	token pull
-	token enter, natural
-	token push, push
-	token neg
-	token pull, pull
-	token exit
+	.quad lit, 1
+	.quad sub
+	.quad push
+	.quad lit, 1
+	.quad add
+	.quad pull
+	.quad enter, natural
+	.quad push, push
+	.quad neg
+	.quad pull, pull
+	.quad exit
 
 sameq: /* addr1 addr2 u1 -- u2 */
-	token dup
-	token push, push
-	token over, bfetch
-	token over, bfetch
-	token enter, equals
-	token pull
-	token and
+	.quad dup
+	.quad push, push
+	.quad over, bfetch
+	.quad over, bfetch
+	.quad enter, equals
+	.quad pull
+	.quad and
 
-	token zjump, 0f
+	.quad zjump, 0f
 
-	token push
-	token lit, 1
-	token add
-	token pull
-	token lit, 1
-	token add
-	token pull
-	token lit, 1
-	token sub
+	.quad push
+	.quad lit, 1
+	.quad add
+	.quad pull
+	.quad lit, 1
+	.quad add
+	.quad pull
+	.quad lit, 1
+	.quad sub
 
-	token jump, sameq
+	.quad jump, sameq
 0:
 
-	token pull
-	token nip, nip
-	token exit
+	.quad pull
+	.quad nip, nip
+	.quad exit
 
 find: /* -- */
-	token enter, last
+	.quad enter, last
 
 0:
-	token fetch
-	token dup, dup
+	.quad fetch
+	.quad dup, dup
 
-	token zjump, 1f
+	.quad zjump, 1f
 
-	token dup
-	token lit, cell*2
-	token add
-	token bfetch
-	token lit, output
-	token bfetch
-	token enter, equals
+	.quad dup
+	.quad lit, cell*2
+	.quad add
+	.quad bfetch
+	.quad lit, output
+	.quad bfetch
+	.quad enter, equals
 
-	token zjump, 1f
+	.quad zjump, 1f
 
-	token lit, cell*2+1
-	token add
-	token lit, output
-	token enter, load
-	token enter, sameq
+	.quad lit, cell*2+1
+	.quad add
+	.quad lit, output
+	.quad enter, load
+	.quad enter, sameq
 
 1:
-	token enter, zequals
+	.quad enter, zequals
 
-	token zjump, 0b
+	.quad zjump, 0b
 
-	token exit
+	.quad exit
 
 compile: /* x -- */
-	token enter, here
-	token fetch
-	token store
-	token enter, here
-	token fetch
-	token lit, cell
-	token add
-	token enter, here
-	token store
-	token exit
+	.quad enter, here
+	.quad fetch
+	.quad store
+	.quad enter, here
+	.quad fetch
+	.quad lit, cell
+	.quad add
+	.quad enter, here
+	.quad store
+	.quad exit
 
 interpret: /* -- */
-	token enter, word
-	token lit, output
-	token bfetch
+	.quad enter, word
+	.quad lit, output
+	.quad bfetch
 
-	token zjump, 2f
+	.quad zjump, 2f
 
-	token enter, find
-	token enter, qdup
+	.quad enter, find
+	.quad enter, qdup
 
-	token zjump, 1f
+	.quad zjump, 1f
 
-	token lit, cell
-	token add
-	token fetch
-	token dup
-	token enter, zless
-	token push
-	token lit, ~flag
-	token and
-	token pull
+	.quad lit, cell
+	.quad add
+	.quad fetch
+	.quad dup
+	.quad enter, zless
+	.quad push
+	.quad lit, ~flag
+	.quad and
+	.quad pull
 
-	token zjump, 0f
+	.quad zjump, 0f
 
-	token execute
-	token jump, interpret
-
-0:
-	token dup
-	token lit, codeend
-	token enter, uless
-	token not
-
-	token zjump, 0f
-
-	token lit, enter
-	token enter, compile
+	.quad execute
+	.quad jump, interpret
 
 0:
-	token enter, compile
-	token jump, interpret
+	.quad dup
+	.quad lit, codeend
+	.quad enter, uless
+	.quad not
+
+	.quad zjump, 0f
+
+	.quad lit, enter
+	.quad enter, compile
+
+0:
+	.quad enter, compile
+	.quad jump, interpret
 
 1:
-	token lit, 0
-	token lit, output
-	token enter, load
-	token enter, number
-	token nip
+	.quad lit, 0
+	.quad lit, output
+	.quad enter, load
+	.quad enter, number
+	.quad nip
 
-	token zjump, 0f
+	.quad zjump, 0f
 
-	token drop
-	token lit, '?'
-	token jump, emit
+	.quad drop
+	.quad lit, '?'
+	.quad jump, emit
 
 0:
-	token lit, lit
-	token enter, compile
-	token enter, compile
-	token jump, interpret
+	.quad lit, lit
+	.quad enter, compile
+	.quad enter, compile
+	.quad jump, interpret
 
 2:
-	token lit, exit
-	token enter, compile
-	token jump, code
+	.quad lit, exit
+	.quad enter, compile
+	.quad jump, code
 
 start: /* -- */
-	token lit, code
-	token enter, here
-	token store
-	token enter, flush	
-	token lit, prompt
-	token enter, write
-	token enter, accept
-	token enter, interpret
-	token jump, start
+	.quad lit, code
+	.quad enter, here
+	.quad store
+	.quad enter, flush	
+	.quad lit, prompt
+	.quad enter, write
+	.quad enter, accept
+	.quad enter, interpret
+	.quad jump, start
 
 define headsyscall, currkey, "currkey"
 define headcurrkey, here, "here"
@@ -758,85 +756,85 @@ define headinterpret, start, "start"
    once we can compile them at runtime. */
 
 begin: /* -- addr */
-	token enter, here
-	token fetch
-	token exit
+	.quad enter, here
+	.quad fetch
+	.quad exit
 
 if: /* -- addr */
-	token lit, zjump
-	token enter, compile
-	token enter, here
-	token fetch
-	token lit, 0
-	token jump, compile
+	.quad lit, zjump
+	.quad enter, compile
+	.quad enter, here
+	.quad fetch
+	.quad lit, 0
+	.quad jump, compile
 
 then: /* addr -- */
-	token push
-	token enter, here
-	token fetch
-	token pull
-	token store
-	token exit
+	.quad push
+	.quad enter, here
+	.quad fetch
+	.quad pull
+	.quad store
+	.quad exit
 
 again: /* addr1 addr2 -- */
-	token push
-	token lit, jump
-	token enter, compile
-	token enter, compile
-	token enter, here
-	token fetch
-	token pull
-	token store
-	token exit
+	.quad push
+	.quad lit, jump
+	.quad enter, compile
+	.quad enter, compile
+	.quad enter, here
+	.quad fetch
+	.quad pull
+	.quad store
+	.quad exit
 
 dec: /* -- */
-	token lit, 10
-	token enter, base
-	token store
-	token exit
+	.quad lit, 10
+	.quad enter, base
+	.quad store
+	.quad exit
 
 hex: /* -- */
-	token lit, 16
-	token enter, base
-	token store
-	token exit
+	.quad lit, 16
+	.quad enter, base
+	.quad store
+	.quad exit
 
 dot: /* n -- */
-	token dup
-	token enter, zless
+	.quad dup
+	.quad enter, zless
 
-	token zjump, udot
+	.quad zjump, udot
 
-	token neg
-	token lit, '-'
-	token enter, emit
+	.quad neg
+	.quad lit, '-'
+	.quad enter, emit
 
 udot: /* u -- */
-	token lit, 0
-	token enter, base
-	token fetch
-	token div
-	token enter, qdup
+	.quad lit, 0
+	.quad enter, base
+	.quad fetch
+	.quad div
+	.quad enter, qdup
 
-	token zjump, 0f
+	.quad zjump, 0f
 
-	token enter, udot
-
-0:
-	token dup
-	token lit, 10
-	token enter, uless
-
-	token zjump, 0f
-
-	token lit, '0'
-	token add
-	token jump, emit
+	.quad enter, udot
 
 0:
-	token lit, 'A'-10
-	token add
-	token jump, emit
+	.quad dup
+	.quad lit, 10
+	.quad enter, uless
+
+	.quad zjump, 0f
+
+	.quad lit, '0'
+	.quad add
+	.quad jump, emit
+
+0:
+	.quad lit, 'A'-10
+	.quad add
+	.quad jump, emit
 
 define headstart, begin, "begin", flag
 define headbegin, if, "if", flag
