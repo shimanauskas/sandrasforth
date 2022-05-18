@@ -683,11 +683,9 @@ interpret:
 	.quad lit, cell
 	.quad add
 	.quad fetch
-
 	.quad dup
 	.quad enter, negative
 	.quad push
-
 	.quad lit, ~flag
 	.quad and
 	.quad pull
@@ -722,11 +720,9 @@ interpret:
 	.quad zjump, 0f
 
 	.quad drop
-
 	.quad lit, 0
 	.quad lit, input
 	.quad store
-
 	.quad lit, '?'
 	.quad jump, emit
 
