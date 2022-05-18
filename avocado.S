@@ -330,15 +330,13 @@ zless: /* n - bool */
 	token and
 
 bool: /* x -- bool */
-	token dup
-
 	token zjump, 0f
 
-	token dup
-	token xor
-	token not
+	token lit, -1
+	token exit
 
 0:
+	token lit, 0
 	token exit
 
 equals: /* x1 x2 -- bool */
