@@ -97,21 +97,11 @@ main:
 	leaq start(%rip), %rbx
 	jmpq *(%rbx)
 
-enter: /* -- */
+call: /* -- */ /* r: -- addr */
 	addq $cell, %rbx
 	pushq %rbx
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
-
-execute: /* addr -- */
-	pushq %rbx
-	movq %rax, %rbx
-	drop
-	jmpq *(%rbx)
-
-exit: /* -- */
-	popq %rbx
-	next
 
 jump: /* -- */
 	addq $cell, %rbx
@@ -120,10 +110,20 @@ jump: /* -- */
 
 zjump: /* x -- */
 	testq %rax, %rax
-	drop 1
+	drop
 	leaq cell*2(%rbx), %rbx
 	cmovzq -cell(%rbx), %rbx
 	jmpq *(%rbx)
+
+exec: /* addr1 -- */ /* r: -- addr2 */
+	pushq %rbx
+	movq %rax, %rbx
+	drop
+	jmpq *(%rbx)
+
+ret: /* -- */ /* r: addr -- */
+	popq %rbx
+	next
 
 lit: /* -- x */
 	dup
@@ -254,9 +254,9 @@ codeend:
 
 .data
 
-define 0, execute, "execute"
-define head_execute, exit, "exit"
-define head_exit, dup, "dup"
+define 0, exec, "exec"
+define head_exec, ret, "ret"
+define head_ret, dup, "dup"
 define head_dup, nip, "nip"
 define head_nip, drop, "drop"
 define head_drop, over, "over"
@@ -283,19 +283,19 @@ string prompt, "# "
 
 currkey: /* -- addr */
 	.quad var, input
-	.quad exit
+	.quad ret
 
 here: /* -- addr */
 	.quad var, code
-	.quad exit
+	.quad ret
 
 last: /* -- addr */
 	.quad var, head_udot
-	.quad exit
+	.quad ret
 
 base: /* -- addr */
 	.quad var, 10
-	.quad exit
+	.quad ret
 
 qdup: /* x -- 0 | x x */
 	.quad dup
@@ -305,12 +305,12 @@ qdup: /* x -- 0 | x x */
 	.quad dup
 
 0:
-	.quad exit
+	.quad ret
 
 less: /* n1 n2 -- bool */
 	.quad over, over
 	.quad xor
-	.quad enter, zless
+	.quad call, zless
 
 	.quad zjump, 0f
 
@@ -324,7 +324,7 @@ less: /* n1 n2 -- bool */
 uless: /* u1 u2 -- bool */
 	.quad over, over
 	.quad xor
-	.quad enter, zless
+	.quad call, zless
 
 	.quad zjump, 0f
 
@@ -346,11 +346,11 @@ bool: /* x -- bool */
 	.quad zjump, 0f
 
 	.quad lit, -1
-	.quad exit
+	.quad ret
 
 0:
 	.quad lit, 0
-	.quad exit
+	.quad ret
 
 equals: /* x1 x2 -- bool */
 	.quad xor
@@ -358,20 +358,20 @@ equals: /* x1 x2 -- bool */
 	/* Fallthrough! */
 
 zequals: /* x -- bool */
-	.quad enter, bool
+	.quad call, bool
 	.quad not
-	.quad exit
+	.quad ret
 
 within: /* u1 u2 u3 -- bool */
 	.quad push
 	.quad over
 	.quad push
-	.quad enter, uless
+	.quad call, uless
 	.quad not
 	.quad pull, pull
-	.quad enter, uless
+	.quad call, uless
 	.quad and
-	.quad exit
+	.quad ret
 
 load: /* addr1 -- addr2 u */
 	.quad dup
@@ -379,16 +379,16 @@ load: /* addr1 -- addr2 u */
 	.quad incr
 	.quad pull
 	.quad bfetch
-	.quad exit
+	.quad ret
 
 write: /* addr -- */
 	.quad lit, stdout
 	.quad over
-	.quad enter, load
+	.quad call, load
 	.quad lit, sys_write
 	.quad syscall
 	.quad drop, drop
-	.quad exit
+	.quad ret
 
 accept: /* -- */
 	.quad lit, stdin
@@ -398,7 +398,7 @@ accept: /* -- */
 	.quad syscall
 	.quad dup
 	.quad lit, 1
-	.quad enter, less
+	.quad call, less
 
 	.quad zjump, 0f
 
@@ -412,40 +412,40 @@ accept: /* -- */
 	.quad lit, input
 	.quad bstore
 	.quad lit, input+1
-	.quad enter, currkey
+	.quad call, currkey
 	.quad store
-	.quad exit
+	.quad ret
 
 keyq: /* -- bool */
-	.quad enter, currkey
+	.quad call, currkey
 	.quad fetch
 	.quad lit, input
-	.quad enter, load
+	.quad call, load
 	.quad add
-	.quad enter, uless
-	.quad exit
+	.quad call, uless
+	.quad ret
 
 key: /* -- char */
-	.quad enter, currkey
+	.quad call, currkey
 	.quad fetch
 	.quad dup
 	.quad incr
-	.quad enter, currkey
+	.quad call, currkey
 	.quad store
 	.quad bfetch
-	.quad exit
+	.quad ret
 
 flush: /* -- */
 	.quad lit, output
-	.quad enter, write
+	.quad call, write
 	.quad lit, 0
 	.quad lit, output
 	.quad bstore
-	.quad exit
+	.quad ret
 
 emit: /* char -- */
 	.quad lit, output
-	.quad enter, load
+	.quad call, load
 	.quad add
 	.quad bstore
 	.quad lit, output
@@ -460,14 +460,14 @@ emit: /* char -- */
 
 	.quad zjump, flush
 
-	.quad exit
+	.quad ret
 
 /* Read input, skip spaces.
    Then deposit non-space characters to buffer.
    If end of input is reached, return with buffer empty. */
 
 word: /* -- */
-	.quad enter, keyq
+	.quad call, keyq
 	.quad not
 
 	.quad zjump, 0f
@@ -475,13 +475,13 @@ word: /* -- */
 	.quad lit, 0
 	.quad lit, output
 	.quad bstore
-	.quad exit
+	.quad ret
 
 0:
-	.quad enter, key
+	.quad call, key
 	.quad dup
 	.quad lit, '!'
-	.quad enter, uless
+	.quad call, uless
 
 	.quad zjump, 0f
 
@@ -496,7 +496,7 @@ word: /* -- */
 0:
 	.quad dup
 	.quad lit, '!'
-	.quad enter, uless
+	.quad call, uless
 	.quad not
 
 	.quad zjump, 0f
@@ -506,7 +506,7 @@ word: /* -- */
 	.quad incr
 	.quad push
 	.quad bstore
-	.quad enter, key
+	.quad call, key
 
 	.quad jump, 0b
 0:
@@ -517,7 +517,7 @@ word: /* -- */
 	.quad sub
 	.quad lit, output
 	.quad bstore
-	.quad exit
+	.quad ret
 
 digitq: /* char base -- u bool */
 	.quad push
@@ -525,7 +525,7 @@ digitq: /* char base -- u bool */
 	.quad sub
 	.quad lit, 9
 	.quad over
-	.quad enter, less
+	.quad call, less
 
 	.quad zjump, 0f
 
@@ -533,7 +533,7 @@ digitq: /* char base -- u bool */
 	.quad sub
 	.quad dup
 	.quad lit, 10
-	.quad enter, less
+	.quad call, less
 	.quad or
 
 0:
@@ -546,9 +546,9 @@ natural: /* 0 addr1 u1 -- u2 addr2 u3 */
 	.quad dup
 	.quad push
 	.quad bfetch
-	.quad enter, base
+	.quad call, base
 	.quad fetch
-	.quad enter, digitq
+	.quad call, digitq
 	.quad pull
 	.quad over
 	.quad pull
@@ -561,7 +561,7 @@ natural: /* 0 addr1 u1 -- u2 addr2 u3 */
 	.quad push
 	.quad drop
 	.quad push
-	.quad enter, base
+	.quad call, base
 	.quad fetch
 	.quad mul
 	.quad drop
@@ -577,13 +577,13 @@ natural: /* 0 addr1 u1 -- u2 addr2 u3 */
 
 	.quad nip, nip
 	.quad pull
-	.quad exit
+	.quad ret
 
 number: /* 0 addr1 u1 -- n addr2 u2 */
 	.quad over
 	.quad bfetch
 	.quad lit, '-'
-	.quad enter, equals
+	.quad call, equals
 
 	.quad zjump, natural
 
@@ -591,18 +591,18 @@ number: /* 0 addr1 u1 -- n addr2 u2 */
 	.quad push
 	.quad incr
 	.quad pull
-	.quad enter, natural
+	.quad call, natural
 	.quad push, push
 	.quad neg
 	.quad pull, pull
-	.quad exit
+	.quad ret
 
 sameq: /* addr1 addr2 u1 -- u2 */
 	.quad dup
 	.quad push, push
 	.quad over, bfetch
 	.quad over, bfetch
-	.quad enter, equals
+	.quad call, equals
 	.quad pull
 	.quad and
 
@@ -620,10 +620,10 @@ sameq: /* addr1 addr2 u1 -- u2 */
 
 	.quad pull
 	.quad nip, nip
-	.quad exit
+	.quad ret
 
 find: /* -- */
-	.quad enter, last
+	.quad call, last
 
 0:
 	.quad fetch
@@ -637,44 +637,44 @@ find: /* -- */
 	.quad bfetch
 	.quad lit, output
 	.quad bfetch
-	.quad enter, equals
+	.quad call, equals
 
 	.quad zjump, 1f
 
 	.quad lit, cell*2+1
 	.quad add
 	.quad lit, output
-	.quad enter, load
-	.quad enter, sameq
+	.quad call, load
+	.quad call, sameq
 
 1:
-	.quad enter, zequals
+	.quad call, zequals
 
 	.quad zjump, 0b
 
-	.quad exit
+	.quad ret
 
 compile: /* x -- */
-	.quad enter, here
+	.quad call, here
 	.quad fetch
 	.quad store
-	.quad enter, here
+	.quad call, here
 	.quad fetch
 	.quad lit, cell
 	.quad add
-	.quad enter, here
+	.quad call, here
 	.quad store
-	.quad exit
+	.quad ret
 
 interpret: /* -- */
-	.quad enter, word
+	.quad call, word
 	.quad lit, output
 	.quad bfetch
 
 	.quad zjump, 2f
 
-	.quad enter, find
-	.quad enter, qdup
+	.quad call, find
+	.quad call, qdup
 
 	.quad zjump, 1f
 
@@ -682,7 +682,7 @@ interpret: /* -- */
 	.quad add
 	.quad fetch
 	.quad dup
-	.quad enter, zless
+	.quad call, zless
 	.quad push
 	.quad lit, ~flag
 	.quad and
@@ -690,29 +690,29 @@ interpret: /* -- */
 
 	.quad zjump, 0f
 
-	.quad execute
+	.quad exec
 	.quad jump, interpret
 
 0:
 	.quad dup
 	.quad lit, codeend
-	.quad enter, uless
+	.quad call, uless
 	.quad not
 
 	.quad zjump, 0f
 
-	.quad lit, enter
-	.quad enter, compile
+	.quad lit, call
+	.quad call, compile
 
 0:
-	.quad enter, compile
+	.quad call, compile
 	.quad jump, interpret
 
 1:
 	.quad lit, 0
 	.quad lit, output
-	.quad enter, load
-	.quad enter, number
+	.quad call, load
+	.quad call, number
 	.quad nip
 
 	.quad zjump, 0f
@@ -723,24 +723,24 @@ interpret: /* -- */
 
 0:
 	.quad lit, lit
-	.quad enter, compile
-	.quad enter, compile
+	.quad call, compile
+	.quad call, compile
 	.quad jump, interpret
 
 2:
-	.quad lit, exit
-	.quad enter, compile
+	.quad lit, ret
+	.quad call, compile
 	.quad jump, code
 
 start: /* -- */
 	.quad lit, code
-	.quad enter, here
+	.quad call, here
 	.quad store
-	.quad enter, flush	
+	.quad call, flush
 	.quad lit, string_prompt
-	.quad enter, write
-	.quad enter, accept
-	.quad enter, interpret
+	.quad call, write
+	.quad call, accept
+	.quad call, interpret
 	.quad jump, start
 
 define head_syscall, currkey, "currkey"
@@ -776,76 +776,76 @@ define head_interpret, start, "start"
    once we can compile them at runtime. */
 
 begin: /* -- addr */
-	.quad enter, here
+	.quad call, here
 	.quad fetch
-	.quad exit
+	.quad ret
 
 if: /* -- addr */
 	.quad lit, zjump
-	.quad enter, compile
-	.quad enter, here
+	.quad call, compile
+	.quad call, here
 	.quad fetch
 	.quad lit, 0
 	.quad jump, compile
 
 then: /* addr -- */
 	.quad push
-	.quad enter, here
+	.quad call, here
 	.quad fetch
 	.quad pull
 	.quad store
-	.quad exit
+	.quad ret
 
 again: /* addr1 addr2 -- */
 	.quad push
 	.quad lit, jump
-	.quad enter, compile
-	.quad enter, compile
-	.quad enter, here
+	.quad call, compile
+	.quad call, compile
+	.quad call, here
 	.quad fetch
 	.quad pull
 	.quad store
-	.quad exit
+	.quad ret
 
 dec: /* -- */
 	.quad lit, 10
-	.quad enter, base
+	.quad call, base
 	.quad store
-	.quad exit
+	.quad ret
 
 hex: /* -- */
 	.quad lit, 16
-	.quad enter, base
+	.quad call, base
 	.quad store
-	.quad exit
+	.quad ret
 
 dot: /* n -- */
 	.quad dup
-	.quad enter, zless
+	.quad call, zless
 
 	.quad zjump, udot
 
 	.quad neg
 	.quad lit, '-'
-	.quad enter, emit
+	.quad call, emit
 
 	/* Fallthrough! */
 
 udot: /* u -- */
 	.quad lit, 0
-	.quad enter, base
+	.quad call, base
 	.quad fetch
 	.quad div
-	.quad enter, qdup
+	.quad call, qdup
 
 	.quad zjump, 0f
 
-	.quad enter, udot
+	.quad call, udot
 
 0:
 	.quad dup
 	.quad lit, 10
-	.quad enter, uless
+	.quad call, uless
 
 	.quad zjump, 0f
 
