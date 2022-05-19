@@ -72,7 +72,7 @@
 .endm
 
 .macro string name, string
-\name:
+string_\name:
 	.byte 0f-.-1
 	.ascii "\string"
 0:
@@ -81,10 +81,10 @@
 .endm
 
 .macro define link, name, string, mask=0
-head\name:
+head_\name:
 	.quad \link
 	.quad \name+\mask
-	string string\name, "\string"
+	string \name, "\string"
 .endm
 
 .text
@@ -255,29 +255,29 @@ codeend:
 .data
 
 define 0, execute, "execute"
-define headexecute, exit, "exit"
-define headexit, dup, "dup"
-define headdup, nip, "nip"
-define headnip, drop, "drop"
-define headdrop, over, "over"
-define headover, push, "push"
-define headpush, pull, "pull"
-define headpull, not, "not"
-define headnot, and, "and"
-define headand, or, "or"
-define heador, xor, "xor"
-define headxor, incr, "1+"
-define headincr, decr, "1-"
-define headdecr, neg, "neg"
-define headneg, sub, "-"
-define headsub, add, "+"
-define headadd, mul, "*"
-define headmul, div, "/"
-define headdiv, fetch, "@"
-define headfetch, store, "!"
-define headstore, bfetch, "b@"
-define headbfetch, bstore, "b!"
-define headbstore, syscall, "syscall"
+define head_execute, exit, "exit"
+define head_exit, dup, "dup"
+define head_dup, nip, "nip"
+define head_nip, drop, "drop"
+define head_drop, over, "over"
+define head_over, push, "push"
+define head_push, pull, "pull"
+define head_pull, not, "not"
+define head_not, and, "and"
+define head_and, or, "or"
+define head_or, xor, "xor"
+define head_xor, incr, "1+"
+define head_incr, decr, "1-"
+define head_decr, neg, "neg"
+define head_neg, sub, "-"
+define head_sub, add, "+"
+define head_add, mul, "*"
+define head_mul, div, "/"
+define head_div, fetch, "@"
+define head_fetch, store, "!"
+define head_store, bfetch, "b@"
+define head_bfetch, bstore, "b!"
+define head_bstore, syscall, "syscall"
 
 string prompt, "# "
 
@@ -290,7 +290,7 @@ here: /* -- addr */
 	.quad exit
 
 last: /* -- addr */
-	.quad var, headudot
+	.quad var, head_udot
 	.quad exit
 
 base: /* -- addr */
@@ -737,40 +737,40 @@ start: /* -- */
 	.quad enter, here
 	.quad store
 	.quad enter, flush	
-	.quad lit, prompt
+	.quad lit, string_prompt
 	.quad enter, write
 	.quad enter, accept
 	.quad enter, interpret
 	.quad jump, start
 
-define headsyscall, currkey, "currkey"
-define headcurrkey, here, "here"
-define headhere, last, "last"
-define headlast, base, "base"
-define headbase, qdup, "?dup"
-define headqdup, less, "<"
-define headless, uless, "u<"
-define headuless, zless, "0<"
-define headzless, bool, "bool"
-define headbool, equals, "="
-define headequals, zequals, "0="
-define headzequals, within, "within"
-define headwithin, load, "load"
-define headload, write, "write"
-define headwrite, accept, "accept"
-define headaccept, keyq, "key?"
-define headkeyq, key, "key"
-define headkey, flush, "flush"
-define headflush, emit, "emit"
-define heademit, word, "word"
-define headword, digitq, "digit?"
-define headdigitq, natural, "natural"
-define headnatural, number, "number"
-define headnumber, sameq, "same?"
-define headsameq, find, "find"
-define headfind, compile, "compile"
-define headcompile, interpret, "interpret"
-define headinterpret, start, "start"
+define head_syscall, currkey, "currkey"
+define head_currkey, here, "here"
+define head_here, last, "last"
+define head_last, base, "base"
+define head_base, qdup, "?dup"
+define head_qdup, less, "<"
+define head_less, uless, "u<"
+define head_uless, zless, "0<"
+define head_zless, bool, "bool"
+define head_bool, equals, "="
+define head_equals, zequals, "0="
+define head_zequals, within, "within"
+define head_within, load, "load"
+define head_load, write, "write"
+define head_write, accept, "accept"
+define head_accept, keyq, "key?"
+define head_keyq, key, "key"
+define head_key, flush, "flush"
+define head_flush, emit, "emit"
+define head_emit, word, "word"
+define head_word, digitq, "digit?"
+define head_digitq, natural, "natural"
+define head_natural, number, "number"
+define head_number, sameq, "same?"
+define head_sameq, find, "find"
+define head_find, compile, "compile"
+define head_compile, interpret, "interpret"
+define head_interpret, start, "start"
 
 /* The following definitions should be moved out of core
    once we can compile them at runtime. */
@@ -858,14 +858,14 @@ udot: /* u -- */
 	.quad add
 	.quad jump, emit
 
-define headstart, begin, "begin", flag
-define headbegin, if, "if", flag
-define headif, then, "then", flag
-define headthen, again, "again", flag
-define headagain, dec, "dec", flag
-define headdec, hex, "hex", flag
-define headhex, dot, "."
-define headdot, udot, "u."
+define head_start, begin, "begin", flag
+define head_begin, if, "if", flag
+define head_if, then, "then", flag
+define head_then, again, "again", flag
+define head_again, dec, "dec", flag
+define head_dec, hex, "hex", flag
+define head_hex, dot, "."
+define head_dot, udot, "u."
 
 .bss
 
