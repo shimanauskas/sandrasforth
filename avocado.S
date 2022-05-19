@@ -435,13 +435,16 @@ key: /* -- char */
 	.quad bfetch
 	.quad ret
 
-flush: /* -- */
-	.quad lit, output
-	.quad call, write
+empty: /* -- */
 	.quad lit, 0
 	.quad lit, output
 	.quad bstore
 	.quad ret
+
+flush: /* -- */
+	.quad lit, output
+	.quad call, write
+	.quad jump, empty
 
 emit: /* char -- */
 	.quad lit, output
@@ -468,16 +471,9 @@ emit: /* char -- */
 
 word: /* -- */
 	.quad call, keyq
-	.quad not
 
-	.quad zjump, 0f
+	.quad zjump, empty
 
-	.quad lit, 0
-	.quad lit, output
-	.quad bstore
-	.quad ret
-
-0:
 	.quad call, key
 	.quad dup
 	.quad lit, '!'
@@ -760,7 +756,8 @@ define head_load, write, "write"
 define head_write, accept, "accept"
 define head_accept, keyq, "key?"
 define head_keyq, key, "key"
-define head_key, flush, "flush"
+define head_key, empty, "empty"
+define head_empty, flush, "flush"
 define head_flush, emit, "emit"
 define head_emit, word, "word"
 define head_word, digitq, "digit?"
