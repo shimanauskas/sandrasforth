@@ -183,6 +183,14 @@ xor: /* x1 x2 -- x3 */
 	nip
 	next
 
+incr: /* n1 -- n2 */
+	incq %rax
+	next
+
+decr: /* n1 -- n2 */
+	decq %rax
+	next
+
 neg: /* n1 -- n2 */
 	negq %rax
 	next
@@ -256,7 +264,9 @@ define headpull, not, "not"
 define headnot, and, "and"
 define headand, or, "or"
 define heador, xor, "xor"
-define headxor, neg, "neg"
+define headxor, incr, "1+"
+define headincr, decr, "1-"
+define headdecr, neg, "neg"
 define headneg, sub, "-"
 define headsub, add, "+"
 define headadd, mul, "*"
@@ -358,8 +368,7 @@ within: /* u1 u2 u3 -- bool */
 load: /* addr1 -- addr2 u */
 	.quad dup
 	.quad push
-	.quad lit, 1
-	.quad add
+	.quad incr
 	.quad pull
 	.quad bfetch
 	.quad exit
@@ -412,8 +421,7 @@ key: /* -- char */
 	.quad enter, currkey
 	.quad fetch
 	.quad dup
-	.quad lit, 1
-	.quad add
+	.quad incr
 	.quad enter, currkey
 	.quad store
 	.quad bfetch
@@ -434,8 +442,7 @@ emit: /* char -- */
 	.quad bstore
 	.quad lit, output
 	.quad bfetch
-	.quad lit, 1
-	.quad add
+	.quad incr
 	.quad lit, output
 	.quad bstore
 	.quad lit, output
@@ -488,8 +495,7 @@ word: /* -- */
 
 	.quad pull
 	.quad dup
-	.quad lit, 1
-	.quad add
+	.quad incr
 	.quad push
 	.quad bstore
 	.quad enter, key
@@ -554,11 +560,9 @@ natural: /* 0 addr1 u1 -- u2 addr2 u3 */
 	.quad pull
 	.quad add
 	.quad pull
-	.quad lit, 1
-	.quad add
+	.quad incr
 	.quad pull
-	.quad lit, 1
-	.quad sub
+	.quad decr
 
 	.quad jump, natural
 0:
@@ -575,11 +579,9 @@ number: /* 0 addr1 u1 -- n addr2 u2 */
 
 	.quad zjump, natural
 
-	.quad lit, 1
-	.quad sub
+	.quad decr
 	.quad push
-	.quad lit, 1
-	.quad add
+	.quad incr
 	.quad pull
 	.quad enter, natural
 	.quad push, push
@@ -599,14 +601,11 @@ sameq: /* addr1 addr2 u1 -- u2 */
 	.quad zjump, 0f
 
 	.quad push
-	.quad lit, 1
-	.quad add
+	.quad incr
 	.quad pull
-	.quad lit, 1
-	.quad add
+	.quad incr
 	.quad pull
-	.quad lit, 1
-	.quad sub
+	.quad decr
 
 	.quad jump, sameq
 0:
