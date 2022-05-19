@@ -36,8 +36,8 @@
 #define stdin  0
 #define stdout 1
 
-#define cell (8)
-#define flag (1<<cell*8-1)
+#define cell 8
+#define flag (1<<(cell*8-1))
 
 .macro dup /* x -- x x */
 	leaq -cell(%rbp), %rbp
@@ -67,13 +67,13 @@
 .endm
 
 .macro next /* -- */
-	addq $cell, %rbx
+	addq $(cell), %rbx
 	jmp *(%rbx)
 .endm
 
 .macro string name, string
 string_\name:
-	.byte 0f-.-1
+	.byte 0f-(.+1)
 	.ascii "\string"
 0:
 
@@ -98,13 +98,13 @@ main:
 	jmpq *(%rbx)
 
 call: /* -- */ /* r: -- addr */
-	addq $cell, %rbx
+	addq $(cell), %rbx
 	pushq %rbx
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
 
 jump: /* -- */
-	addq $cell, %rbx
+	addq $(cell), %rbx
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
 
@@ -127,13 +127,13 @@ ret: /* -- */ /* r: addr -- */
 
 lit: /* -- x */
 	dup
-	addq $cell, %rbx
+	addq $(cell), %rbx
 	movq (%rbx), %rax
 	next
 
 var: /* -- addr */
 	dup
-	addq $cell, %rbx
+	addq $(cell), %rbx
 	movq %rbx, %rax
 	next
 
