@@ -5,8 +5,8 @@
 
    rsi - syscall argument.
    rdi - syscall argument.
-   rbp - data stack pointer.
-   rsp - code stack pointer.
+   rbp - data   stack pointer.
+   rsp - return stack pointer.
 
    r8  - unused, syscall argument.
    r9  - unused, syscall argument.
@@ -92,7 +92,7 @@ head_\name:
 .global main
 
 main:
-	leaq stack(%rip), %rbp
+	leaq dstack(%rip), %rbp
 	movq $-1, %rax
 	leaq start(%rip), %rbx
 	jmpq *(%rbx)
@@ -875,4 +875,4 @@ output:
 code:
 	.skip 0x1000
 
-stack:
+dstack:
