@@ -198,6 +198,8 @@ neg: /* n1 -- n2 */
 sub: /* n1|u1 n2|u2 -- n3|u3 */
 	negq %rax
 
+	/* Fallthrough! */
+
 add: /* n1|u1 n2|u2 -- n3|u3 */
 	addq (%rbp), %rax
 	nip
@@ -332,9 +334,13 @@ uless: /* u1 u2 -- bool */
 0:
 	.quad sub
 
+	/* Fallthrough! */
+
 zless: /* n - bool */
 	.quad lit, flag
 	.quad and
+
+	/* Fallthrough! */
 
 bool: /* x -- bool */
 	.quad zjump, 0f
@@ -348,6 +354,8 @@ bool: /* x -- bool */
 
 equals: /* x1 x2 -- bool */
 	.quad xor
+
+	/* Fallthrough! */
 
 zequals: /* x -- bool */
 	.quad enter, bool
@@ -820,6 +828,8 @@ dot: /* n -- */
 	.quad neg
 	.quad lit, '-'
 	.quad enter, emit
+
+	/* Fallthrough! */
 
 udot: /* u -- */
 	.quad lit, 0
