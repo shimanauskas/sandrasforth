@@ -159,7 +159,7 @@ push: /* x -- */ /* r: -- x */
 	drop
 	next
 
-pull: /* -- x */ /* r: x -- */
+pop: /* -- x */ /* r: x -- */
 	dup
 	popq %rax
 	next
@@ -183,11 +183,11 @@ xor: /* x1 x2 -- x3 */
 	nip
 	next
 
-incr: /* n1 -- n2 */
+inc: /* n1 -- n2 */
 	incq %rax
 	next
 
-decr: /* n1 -- n2 */
+dec: /* n1 -- n2 */
 	decq %rax
 	next
 
@@ -261,14 +261,14 @@ define head_dup, nip, "nip"
 define head_nip, drop, "drop"
 define head_drop, over, "over"
 define head_over, push, "push"
-define head_push, pull, "pull"
-define head_pull, not, "not"
+define head_push, pop, "pop"
+define head_pop, not, "not"
 define head_not, and, "and"
 define head_and, or, "or"
 define head_or, xor, "xor"
-define head_xor, incr, "1+"
-define head_incr, decr, "1-"
-define head_decr, neg, "neg"
+define head_xor, inc, "1+"
+define head_inc, dec, "1-"
+define head_dec, neg, "neg"
 define head_neg, sub, "-"
 define head_sub, add, "+"
 define head_add, mul, "*"
@@ -368,7 +368,7 @@ within: /* u1 u2 u3 -- bool */
 	.quad push
 	.quad call, uless
 	.quad not
-	.quad pull, pull
+	.quad pop, pop
 	.quad call, uless
 	.quad and
 	.quad ret
@@ -376,8 +376,8 @@ within: /* u1 u2 u3 -- bool */
 load: /* addr1 -- addr2 u */
 	.quad dup
 	.quad push
-	.quad incr
-	.quad pull
+	.quad inc
+	.quad pop
 	.quad bfetch
 	.quad ret
 
@@ -429,7 +429,7 @@ key: /* -- char */
 	.quad call, currkey
 	.quad fetch
 	.quad dup
-	.quad incr
+	.quad inc
 	.quad call, currkey
 	.quad store
 	.quad bfetch
@@ -453,7 +453,7 @@ emit: /* char -- */
 	.quad bstore
 	.quad lit, output
 	.quad bfetch
-	.quad incr
+	.quad inc
 	.quad lit, output
 	.quad bstore
 	.quad lit, output
@@ -497,9 +497,9 @@ word: /* -- */
 
 	.quad zjump, 0f
 
-	.quad pull
+	.quad pop
 	.quad dup
-	.quad incr
+	.quad inc
 	.quad push
 	.quad bstore
 	.quad call, key
@@ -508,7 +508,7 @@ word: /* -- */
 0:
 
 	.quad drop
-	.quad pull
+	.quad pop
 	.quad lit, output+1
 	.quad sub
 	.quad lit, output
@@ -534,7 +534,7 @@ digitq: /* char base -- u bool */
 
 0:
 	.quad dup
-	.quad pull
+	.quad pop
 	.quad jump, uless
 
 natural: /* 0 addr1 u1 -- u2 addr2 u3 */
@@ -545,9 +545,9 @@ natural: /* 0 addr1 u1 -- u2 addr2 u3 */
 	.quad call, base
 	.quad fetch
 	.quad call, digitq
-	.quad pull
+	.quad pop
 	.quad over
-	.quad pull
+	.quad pop
 	.quad dup
 	.quad push
 	.quad and
@@ -561,18 +561,18 @@ natural: /* 0 addr1 u1 -- u2 addr2 u3 */
 	.quad fetch
 	.quad mul
 	.quad drop
-	.quad pull
+	.quad pop
 	.quad add
-	.quad pull
-	.quad incr
-	.quad pull
-	.quad decr
+	.quad pop
+	.quad inc
+	.quad pop
+	.quad dec
 
 	.quad jump, natural
 0:
 
 	.quad nip, nip
-	.quad pull
+	.quad pop
 	.quad ret
 
 number: /* 0 addr1 u1 -- n addr2 u2 */
@@ -583,14 +583,14 @@ number: /* 0 addr1 u1 -- n addr2 u2 */
 
 	.quad zjump, natural
 
-	.quad decr
+	.quad dec
 	.quad push
-	.quad incr
-	.quad pull
+	.quad inc
+	.quad pop
 	.quad call, natural
 	.quad push, push
 	.quad neg
-	.quad pull, pull
+	.quad pop, pop
 	.quad ret
 
 sameq: /* addr1 addr2 u1 -- u2 */
@@ -599,22 +599,22 @@ sameq: /* addr1 addr2 u1 -- u2 */
 	.quad over, bfetch
 	.quad over, bfetch
 	.quad call, equals
-	.quad pull
+	.quad pop
 	.quad and
 
 	.quad zjump, 0f
 
 	.quad push
-	.quad incr
-	.quad pull
-	.quad incr
-	.quad pull
-	.quad decr
+	.quad inc
+	.quad pop
+	.quad inc
+	.quad pop
+	.quad dec
 
 	.quad jump, sameq
 0:
 
-	.quad pull
+	.quad pop
 	.quad nip, nip
 	.quad ret
 
@@ -682,7 +682,7 @@ interpret: /* -- */
 	.quad push
 	.quad lit, ~flag
 	.quad and
-	.quad pull
+	.quad pop
 
 	.quad zjump, 0f
 
@@ -789,7 +789,7 @@ then: /* addr -- */
 	.quad push
 	.quad call, here
 	.quad fetch
-	.quad pull
+	.quad pop
 	.quad store
 	.quad ret
 
@@ -800,17 +800,17 @@ again: /* addr1 addr2 -- */
 	.quad call, compile
 	.quad call, here
 	.quad fetch
-	.quad pull
+	.quad pop
 	.quad store
 	.quad ret
 
-dec: /* -- */
+deci: /* -- */
 	.quad lit, 10
 	.quad call, base
 	.quad store
 	.quad ret
 
-hex: /* -- */
+hexa: /* -- */
 	.quad lit, 16
 	.quad call, base
 	.quad store
@@ -859,9 +859,9 @@ define head_start, begin, "begin", flag
 define head_begin, if, "if", flag
 define head_if, then, "then", flag
 define head_then, again, "again", flag
-define head_again, dec, "dec", flag
-define head_dec, hex, "hex", flag
-define head_hex, dot, "."
+define head_again, deci, "deci", flag
+define head_deci, hexa, "hexa", flag
+define head_hexa, dot, "."
 define head_dot, udot, "u."
 
 .bss
