@@ -213,7 +213,7 @@ mul: /* n1 n2 -- d */
 	movq %rdx, %rax
 	next
 
-div: /* n1 n2 -- n3 n4 */
+div: /* d n1 -- n2 n3 */
 	movq %rax, %rcx
 	movq (%rbp), %rdx
 	nip
