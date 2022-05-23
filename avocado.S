@@ -38,6 +38,7 @@
 
 #define cell 8
 #define flag (1<<(cell*8-1))
+#define imm  0x80
 
 .macro dup /* x -- x x */
 	leaq -cell(%rbp), %rbp
@@ -71,9 +72,9 @@
 	jmp *(%rbx)
 .endm
 
-.macro string name, string
+.macro string name, string, mask=0
 string_\name:
-	.byte 0f-(.+1)
+	.byte 0f-(.+1)+\mask
 	.ascii "\string"
 0:
 
@@ -83,8 +84,8 @@ string_\name:
 .macro define link, name, string, mask=0
 head_\name:
 	.quad \link
-	.quad \name+\mask
-	string \name, "\string"
+	.quad \name
+	string \name, "\string", \mask
 .endm
 
 .text
@@ -628,6 +629,8 @@ find: /* -- addr | 0 */
 	.quad lit, cell*2
 	.quad add
 	.quad bfetch
+	.quad lit, ~imm
+	.quad and
 	.quad lit, output
 	.quad bfetch
 	.quad call, equals
@@ -673,20 +676,21 @@ interpret: /* -- */
 
 	.quad lit, cell
 	.quad add
-	.quad fetch
 	.quad dup
-	.quad call, zless
-	.quad push
-	.quad lit, ~flag
+	.quad lit, cell
+	.quad add
+	.quad bfetch
+	.quad lit, imm
 	.quad and
-	.quad pop
 
 	.quad zjump, 0f
 
+	.quad fetch
 	.quad exec
 	.quad jump, interpret
 
 0:
+	.quad fetch
 	.quad dup
 	.quad lit, codeend
 	.quad call, uless
@@ -852,12 +856,12 @@ udot: /* u -- */
 	.quad add
 	.quad jump, emit
 
-define head_start, begin, "begin", flag
-define head_begin, if, "if", flag
-define head_if, then, "then", flag
-define head_then, again, "again", flag
-define head_again, deci, "deci", flag
-define head_deci, hexa, "hexa", flag
+define head_start, begin, "begin", imm
+define head_begin, if, "if", imm
+define head_if, then, "then", imm
+define head_then, again, "again", imm
+define head_again, deci, "deci", imm
+define head_deci, hexa, "hexa", imm
 define head_hexa, dot, "."
 define head_dot, udot, "u."
 
