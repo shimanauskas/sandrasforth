@@ -396,25 +396,22 @@ accept: /* -- */
 	.quad lit, 0xFF-1
 	.quad lit, sys_read
 	.quad syscall
-	.quad dup
-	.quad lit, 1
-	.quad call, less
+	.quad call, qdup
 
 	.quad zjump, 0f
 
-	.quad drop
-	.quad lit, 0
-	.quad dup, dup
-	.quad lit, sys_exit
-	.quad syscall
-
-0:
 	.quad lit, input
 	.quad bstore
 	.quad lit, input+1
 	.quad call, currkey
 	.quad store
 	.quad ret
+
+0:
+	.quad lit, 0
+	.quad dup, dup
+	.quad lit, sys_exit
+	.quad syscall
 
 keyq: /* -- bool */
 	.quad call, currkey
