@@ -73,7 +73,7 @@
 .endm
 
 .macro string name, string, mask=0
-string_\name:
+\name:
 	.byte 0f-(.+1)+\mask
 	.ascii "\string"
 0:
@@ -85,7 +85,7 @@ string_\name:
 head_\name:
 	.quad \link
 	.quad \name
-	string \name, "\string", \mask
+	string 0, "\string", \mask
 .endm
 
 .text
@@ -734,7 +734,7 @@ start: /* -- */
 	.quad call, here
 	.quad store
 	.quad call, flush
-	.quad lit, string_prompt
+	.quad lit, prompt
 	.quad call, write
 	.quad call, accept
 	.quad call, interpret
