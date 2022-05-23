@@ -37,7 +37,7 @@
 #define stdout 1
 
 #define cell 8
-#define flag (1<<(cell*8-1))
+#define sign (1<<(cell*8-1))
 #define imm  0x80
 
 .macro dup /* x -- x x */
@@ -282,7 +282,7 @@ define head_bstore, syscall, "syscall"
 
 string prompt, "# "
 
-currkey: /* -- addr */
+curr: /* -- addr */
 	.quad var, input
 	.quad ret
 
@@ -338,7 +338,7 @@ uless: /* u1 u2 -- bool */
 	/* Fallthrough! */
 
 zless: /* n - bool */
-	.quad lit, flag
+	.quad lit, sign
 	.quad and
 
 	/* Fallthrough! */
@@ -404,7 +404,7 @@ accept: /* -- */
 	.quad lit, input
 	.quad bstore
 	.quad lit, input+1
-	.quad call, currkey
+	.quad call, curr
 	.quad store
 	.quad ret
 
@@ -415,7 +415,7 @@ accept: /* -- */
 	.quad syscall
 
 keyq: /* -- bool */
-	.quad call, currkey
+	.quad call, curr
 	.quad fetch
 	.quad lit, input
 	.quad call, load
@@ -430,15 +430,15 @@ key: /* -- char */
 	.quad zjump, 0f
 
 	.quad lit, input+1
-	.quad call, currkey
+	.quad call, curr
 	.quad store
 
 0:
-	.quad call, currkey
+	.quad call, curr
 	.quad fetch
 	.quad dup
 	.quad inc
-	.quad call, currkey
+	.quad call, curr
 	.quad store
 	.quad bfetch
 	.quad ret
@@ -740,8 +740,8 @@ start: /* -- */
 	.quad call, interpret
 	.quad jump, start
 
-define head_syscall, currkey, "currkey"
-define head_currkey, here, "here"
+define head_syscall, curr, "curr"
+define head_curr, here, "here"
 define head_here, last, "last"
 define head_last, base, "base"
 define head_base, qdup, "?dup"
