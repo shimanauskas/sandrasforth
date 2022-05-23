@@ -283,7 +283,7 @@ define head_bstore, syscall, "syscall"
 string prompt, "# "
 
 curr: /* -- addr */
-	.quad var, input
+	.quad var, input+1
 	.quad ret
 
 here: /* -- addr */
