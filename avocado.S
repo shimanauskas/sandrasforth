@@ -255,7 +255,7 @@ codeend:
 
 .data
 
-define 0,           exec,   "exec"
+define 0,           exec,    "exec"
 define head_exec,   ret,     "ret"
 define head_ret,    dup,     "dup"
 define head_dup,    nip,     "nip"
