@@ -773,12 +773,12 @@ define head_interpret, start,     "start"
 /* The following definitions should be moved out of core
    once we can compile them at runtime. */
 
-begin: /* -- addr */
+begin: /* -- */ /* c: -- addr */
 	.quad call, here
 	.quad fetch
 	.quad ret
 
-if: /* -- addr */
+if: /* x -- */ /* c: -- addr */
 	.quad lit, zjump
 	.quad call, compile
 	.quad call, here
@@ -786,7 +786,7 @@ if: /* -- addr */
 	.quad lit, 0
 	.quad jump, compile
 
-then: /* addr -- */
+then: /* -- */ /* c: addr -- */
 	.quad push
 	.quad call, here
 	.quad fetch
@@ -794,7 +794,7 @@ then: /* addr -- */
 	.quad store
 	.quad ret
 
-again: /* addr1 addr2 -- */
+again: /* -- */ /* c: addr1 addr2 -- */
 	.quad push
 	.quad lit, jump
 	.quad call, compile
