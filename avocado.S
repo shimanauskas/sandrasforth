@@ -255,29 +255,29 @@ codeend:
 
 .data
 
-define 0, exec, "exec"
-define head_exec, ret, "ret"
-define head_ret, dup, "dup"
-define head_dup, nip, "nip"
-define head_nip, drop, "drop"
-define head_drop, over, "over"
-define head_over, push, "push"
-define head_push, pop, "pop"
-define head_pop, not, "not"
-define head_not, and, "and"
-define head_and, or, "or"
-define head_or, xor, "xor"
-define head_xor, inc, "1+"
-define head_inc, dec, "1-"
-define head_dec, neg, "neg"
-define head_neg, sub, "-"
-define head_sub, add, "+"
-define head_add, mul, "*"
-define head_mul, div, "/"
-define head_div, fetch, "@"
-define head_fetch, store, "!"
-define head_store, bfetch, "b@"
-define head_bfetch, bstore, "b!"
+define 0,           exec,   "exec"
+define head_exec,   ret,     "ret"
+define head_ret,    dup,     "dup"
+define head_dup,    nip,     "nip"
+define head_nip,    drop,    "drop"
+define head_drop,   over,    "over"
+define head_over,   push,    "push"
+define head_push,   pop,     "pop"
+define head_pop,    not,     "not"
+define head_not,    and,     "and"
+define head_and,    or,      "or"
+define head_or,     xor,     "xor"
+define head_xor,    inc,     "1+"
+define head_inc,    dec,     "1-"
+define head_dec,    neg,     "neg"
+define head_neg,    sub,     "-"
+define head_sub,    add,     "+"
+define head_add,    mul,     "*"
+define head_mul,    div,     "/"
+define head_div,    fetch,   "@"
+define head_fetch,  store,   "!"
+define head_store,  bfetch,  "b@"
+define head_bfetch, bstore,  "b!"
 define head_bstore, syscall, "syscall"
 
 string prompt, "# "
@@ -740,35 +740,35 @@ start: /* -- */
 	.quad call, interpret
 	.quad jump, start
 
-define head_syscall, curr, "curr"
-define head_curr, here, "here"
-define head_here, last, "last"
-define head_last, base, "base"
-define head_base, qdup, "?dup"
-define head_qdup, less, "<"
-define head_less, uless, "u<"
-define head_uless, zless, "0<"
-define head_zless, bool, "bool"
-define head_bool, equals, "="
-define head_equals, zequals, "0="
-define head_zequals, within, "within"
-define head_within, load, "load"
-define head_load, write, "write"
-define head_write, accept, "accept"
-define head_accept, keyq, "key?"
-define head_keyq, key, "key"
-define head_key, empty, "empty"
-define head_empty, flush, "flush"
-define head_flush, emit, "emit"
-define head_emit, word, "word"
-define head_word, digitq, "digit?"
-define head_digitq, natural, "natural"
-define head_natural, number, "number"
-define head_number, sameq, "same?"
-define head_sameq, find, "find"
-define head_find, compile, "compile"
-define head_compile, interpret, "interpret"
-define head_interpret, start, "start"
+define head_syscall,   curr,      "curr"
+define head_curr,      here,      "here"
+define head_here,      last,      "last"
+define head_last,      base,      "base"
+define head_base,      qdup,      "?dup"
+define head_qdup,      less,      "<"
+define head_less,      uless,     "u<"
+define head_uless,     zless,     "0<"
+define head_zless,     bool,      "bool"
+define head_bool,      equals,    "="
+define head_equals,    zequals,   "0="
+define head_zequals,   within,    "within"
+define head_within,    load,      "load"
+define head_load,      write,     "write"
+define head_write,     accept,    "accept"
+define head_accept,    keyq,      "key?"
+define head_keyq,      key,       "key"
+define head_key,       empty,     "empty"
+define head_empty,     flush,     "flush"
+define head_flush,     emit,      "emit"
+define head_emit,      word,      "word"
+define head_word,      digitq,    "digit?"
+define head_digitq,    natural,   "natural"
+define head_natural,   number,    "number"
+define head_number,    sameq,     "same?"
+define head_sameq,     find,      "find"
+define head_find,      compile,   "compile"
+define head_compile,   interpret, "interpret"
+define head_interpret, start,     "start"
 
 /* The following definitions should be moved out of core
    once we can compile them at runtime. */
@@ -857,13 +857,13 @@ udot: /* u -- */
 	.quad jump, emit
 
 define head_start, begin, "begin", imm
-define head_begin, if, "if", imm
-define head_if, then, "then", imm
-define head_then, again, "again", imm
-define head_again, deci, "deci", imm
-define head_deci, hexa, "hexa", imm
-define head_hexa, dot, "."
-define head_dot, udot, "u."
+define head_begin, if,    "if",    imm
+define head_if,    then,  "then",  imm
+define head_then,  again, "again", imm
+define head_again, deci,  "deci",  imm
+define head_deci,  hexa,  "hexa",  imm
+define head_hexa,  dot,   "."
+define head_dot,   udot,  "u."
 
 .bss
 
