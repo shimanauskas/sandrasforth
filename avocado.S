@@ -424,6 +424,16 @@ keyq: /* -- bool */
 	.quad ret
 
 key: /* -- char */
+	.quad call, keyq
+	.quad not
+
+	.quad zjump, 0f
+
+	.quad lit, input+1
+	.quad call, currkey
+	.quad store
+
+0:
 	.quad call, currkey
 	.quad fetch
 	.quad dup
