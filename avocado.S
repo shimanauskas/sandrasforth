@@ -618,7 +618,7 @@ sameq: /* addr1 addr2 u1 -- u2 */
 	.quad nip, nip
 	.quad ret
 
-find: /* -- */
+find: /* -- addr | 0 */
 	.quad call, last
 
 0:
