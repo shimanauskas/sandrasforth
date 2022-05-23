@@ -484,8 +484,7 @@ word: /* -- */
 	.quad jump, word
 0:
 
-	.quad lit, output+1
-	.quad push
+	.quad call, empty
 
 0:
 	.quad dup
@@ -495,22 +494,13 @@ word: /* -- */
 
 	.quad zjump, 0f
 
-	.quad pop
-	.quad dup
-	.quad inc
-	.quad push
-	.quad bstore
+	.quad call, emit
 	.quad call, key
 
 	.quad jump, 0b
 0:
 
 	.quad drop
-	.quad pop
-	.quad lit, output+1
-	.quad sub
-	.quad lit, output
-	.quad bstore
 	.quad ret
 
 digitq: /* char base -- u bool */
