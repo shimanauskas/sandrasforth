@@ -283,6 +283,14 @@ define head_bstore, syscall, "syscall"
 
 string prompt, "# "
 
+ainput: /* -- addr */
+	.quad lit, input
+	.quad ret
+
+aoutput: /* -- addr */
+	.quad lit, output
+	.quad ret
+
 curr: /* -- addr */
 	.quad var, input+1
 	.quad ret
@@ -745,7 +753,9 @@ start: /* -- */
 	.quad call, interpret
 	.quad jump, start
 
-define head_syscall,   curr,      "curr"
+define head_syscall,   ainput,    "'input"
+define head_ainput,    aoutput,   "'output"
+define head_aoutput,   curr,      "curr"
 define head_curr,      here,      "here"
 define head_here,      last,      "last"
 define head_last,      base,      "base"
