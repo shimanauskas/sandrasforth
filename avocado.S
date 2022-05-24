@@ -391,6 +391,12 @@ write: /* addr -- */
 	.quad drop, drop
 	.quad ret
 
+reset: /* -- */
+	.quad lit, input+1
+	.quad call, curr
+	.quad store
+	.quad ret
+
 accept: /* -- */
 	.quad lit, stdin
 	.quad lit, input+1
@@ -403,10 +409,7 @@ accept: /* -- */
 
 	.quad lit, input
 	.quad bstore
-	.quad lit, input+1
-	.quad call, curr
-	.quad store
-	.quad ret
+	.quad jump, reset
 
 0:
 	.quad lit, 0
@@ -429,9 +432,7 @@ key: /* -- char */
 
 	.quad zjump, 0f
 
-	.quad lit, input+1
-	.quad call, curr
-	.quad store
+	.quad call, reset
 
 0:
 	.quad call, curr
@@ -754,7 +755,8 @@ define head_equals,    zequals,   "0="
 define head_zequals,   within,    "within"
 define head_within,    load,      "load"
 define head_load,      write,     "write"
-define head_write,     accept,    "accept"
+define head_write,     reset,     "reset"
+define head_reset,     accept,    "accept"
 define head_accept,    keyq,      "key?"
 define head_keyq,      key,       "key"
 define head_key,       empty,     "empty"
