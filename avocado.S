@@ -383,13 +383,13 @@ load: /* addr1 -- addr2 u */
 	.quad bfetch
 	.quad ret
 
-write: /* addr -- */
+type: /* addr u -- */
+	.quad push, push
 	.quad lit, stdout
-	.quad over
-	.quad call, load
+	.quad pop, pop
 	.quad lit, sys_write
 	.quad syscall
-	.quad drop, drop
+	.quad drop
 	.quad ret
 
 reset: /* -- */
@@ -453,7 +453,8 @@ empty: /* -- */
 
 flush: /* -- */
 	.quad lit, output
-	.quad call, write
+	.quad call, load
+	.quad call, type
 	.quad jump, empty
 
 emit: /* char -- */
@@ -738,7 +739,8 @@ start: /* -- */
 	.quad store
 	.quad call, flush
 	.quad lit, prompt
-	.quad call, write
+	.quad call, load
+	.quad call, type
 	.quad call, accept
 	.quad call, interpret
 	.quad jump, start
@@ -756,8 +758,8 @@ define head_bool,      equals,    "="
 define head_equals,    zequals,   "0="
 define head_zequals,   within,    "within"
 define head_within,    load,      "load"
-define head_load,      write,     "write"
-define head_write,     reset,     "reset"
+define head_load,      type,      "type"
+define head_type,      reset,     "reset"
 define head_reset,     accept,    "accept"
 define head_accept,    keyq,      "key?"
 define head_keyq,      key,       "key"
