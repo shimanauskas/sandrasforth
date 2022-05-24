@@ -465,7 +465,13 @@ flush: /* -- */
 	.quad call, type
 	.quad jump, empty
 
+nl: /* -- */
+	.quad lit, '\n'
+
+	/* Fallthrough! */
+
 emit: /* char -- */
+	.quad dup
 	.quad lit, output
 	.quad call, load
 	.quad add
@@ -475,10 +481,14 @@ emit: /* char -- */
 	.quad inc
 	.quad lit, output
 	.quad bstore
+	.quad lit, '\n'
+	.quad call, equals
+	.quad not
 	.quad lit, output
 	.quad bfetch
 	.quad lit, buf-1
 	.quad xor
+	.quad and
 
 	.quad zjump, flush
 
@@ -775,7 +785,8 @@ define head_accept,    keyq,      "key?"
 define head_keyq,      key,       "key"
 define head_key,       empty,     "empty"
 define head_empty,     flush,     "flush"
-define head_flush,     emit,      "emit"
+define head_flush,     nl,        "nl"
+define head_nl,        emit,      "emit"
 define head_emit,      word,      "word"
 define head_word,      digitq,    "digit?"
 define head_digitq,    natural,   "natural"
