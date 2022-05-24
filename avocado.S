@@ -38,6 +38,7 @@
 
 #define cell 8
 #define sign (1<<(cell*8-1))
+#define buf  0x100
 #define imm  0x80
 
 .macro dup /* x -- x x */
@@ -400,7 +401,7 @@ reset: /* -- */
 accept: /* -- */
 	.quad lit, stdin
 	.quad lit, input+1
-	.quad lit, 0xFF-1
+	.quad lit, buf-2
 	.quad lit, sys_read
 	.quad syscall
 	.quad call, qdup
@@ -467,7 +468,7 @@ emit: /* char -- */
 	.quad bstore
 	.quad lit, output
 	.quad bfetch
-	.quad lit, 0xFF
+	.quad lit, buf-1
 	.quad xor
 
 	.quad zjump, flush
@@ -870,10 +871,10 @@ define head_dot,   udot,  "u."
 .bss
 
 input:
-	.skip 0x100
+	.skip buf
 
 output:
-	.skip 0x100
+	.skip buf
 
 code:
 	.skip 0x1000
