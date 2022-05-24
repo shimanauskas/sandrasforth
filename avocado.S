@@ -694,8 +694,9 @@ interpret: /* -- */
 0:
 	.quad fetch
 	.quad dup
+	.quad lit, main
 	.quad lit, codeend
-	.quad call, uless
+	.quad call, within
 	.quad not
 
 	.quad zjump, 0f
