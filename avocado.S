@@ -299,6 +299,10 @@ here: /* -- addr */
 	.quad var, code
 	.quad ret
 
+top: /* -- addr */
+	.quad var, code
+	.quad ret
+
 last: /* -- addr */
 	.quad var, head_udot
 	.quad ret
@@ -672,14 +676,14 @@ find: /* -- addr | 0 */
 	.quad ret
 
 compile: /* x -- */
-	.quad call, here
+	.quad call, top
 	.quad fetch
 	.quad store
-	.quad call, here
+	.quad call, top
 	.quad fetch
 	.quad lit, cell
 	.quad add
-	.quad call, here
+	.quad call, top
 	.quad store
 	.quad ret
 
@@ -749,11 +753,15 @@ interpret: /* -- */
 2:
 	.quad lit, ret
 	.quad call, compile
-	.quad jump, code
+	.quad call, here
+	.quad fetch
+	.quad exec
+	.quad ret
 
 start: /* -- */
-	.quad lit, code
 	.quad call, here
+	.quad fetch
+	.quad call, top
 	.quad store
 	.quad call, flush
 	.quad lit, prompt
@@ -763,11 +771,21 @@ start: /* -- */
 	.quad call, interpret
 	.quad jump, start
 
+semicolon:
+	.quad lit, ret
+	.quad call, compile
+	.quad call, top
+	.quad fetch
+	.quad call, here
+	.quad store
+	.quad ret
+
 define head_syscall,   ainput,    "'input"
 define head_ainput,    aoutput,   "'output"
 define head_aoutput,   curr,      "curr"
 define head_curr,      here,      "here"
-define head_here,      last,      "last"
+define head_here,      top,       "top"
+define head_top,       last,      "last"
 define head_last,      base,      "base"
 define head_base,      qdup,      "?dup"
 define head_qdup,      less,      "<"
@@ -796,6 +814,7 @@ define head_sameq,     find,      "find"
 define head_find,      compile,   "compile"
 define head_compile,   interpret, "interpret"
 define head_interpret, start,     "start"
+define head_start,     semicolon, ";",        imm
 
 /* The following definitions should be moved out of core
    once we can compile them at runtime. */
@@ -883,14 +902,14 @@ udot: /* u -- */
 	.quad add
 	.quad jump, emit
 
-define head_start, begin, "begin", imm
-define head_begin, if,    "if",    imm
-define head_if,    then,  "then",  imm
-define head_then,  again, "again", imm
-define head_again, deci,  "deci",  imm
-define head_deci,  hexa,  "hexa",  imm
-define head_hexa,  dot,   "."
-define head_dot,   udot,  "u."
+define head_semicolon, begin, "begin", imm
+define head_begin,     if,    "if",    imm
+define head_if,        then,  "then",  imm
+define head_then,      again, "again", imm
+define head_again,     deci,  "deci",  imm
+define head_deci,      hexa,  "hexa",  imm
+define head_hexa,      dot,   "."
+define head_dot,       udot,  "u."
 
 .bss
 
