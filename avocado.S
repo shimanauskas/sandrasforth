@@ -708,15 +708,25 @@ find: /* -- addr | 0 */
 
 	.quad ret
 
-compile: /* x -- */
+comma: /* x -- */
 	.quad call, top
 	.quad fetch
-	.quad store
-	.quad call, top
-	.quad fetch
+	.quad dup
 	.quad lit, cell
 	.quad add
 	.quad call, top
+	.quad store
+	.quad store
+	.quad ret
+
+headcomma: /* x -- */
+	.quad call, head
+	.quad fetch
+	.quad dup
+	.quad lit, cell
+	.quad add
+	.quad call, head
+	.quad store
 	.quad store
 	.quad ret
 
@@ -758,10 +768,10 @@ interpret: /* -- */
 	.quad zjump, 0f
 
 	.quad lit, call
-	.quad call, compile
+	.quad call, comma
 
 0:
-	.quad call, compile
+	.quad call, comma
 	.quad jump, interpret
 
 1:
@@ -779,13 +789,13 @@ interpret: /* -- */
 
 0:
 	.quad lit, lit
-	.quad call, compile
-	.quad call, compile
+	.quad call, comma
+	.quad call, comma
 	.quad jump, interpret
 
 2:
 	.quad lit, ret
-	.quad call, compile
+	.quad call, comma
 	.quad call, here
 	.quad fetch
 	.quad exec
@@ -815,21 +825,13 @@ colon: /* -- */
 
 	.quad call, last
 	.quad fetch
-	.quad call, head
-	.quad fetch
-	.quad store
-
-	.quad call, head
-	.quad fetch
-	.quad lit, cell
-	.quad add
+	.quad call, headcomma
 	.quad call, here
 	.quad fetch
-	.quad over
-	.quad store
-	.quad lit, cell
-	.quad add
+	.quad call, headcomma
 
+	.quad call, head
+	.quad fetch
 	.quad call, word
 	.quad lit, output
 	.quad over, over
@@ -849,7 +851,7 @@ colon: /* -- */
 
 semicolon: /* -- */
 	.quad lit, ret
-	.quad call, compile
+	.quad call, comma
 	.quad call, top
 	.quad fetch
 	.quad call, here
@@ -890,8 +892,9 @@ define head_natural,   number,    "number"
 define head_number,    bmove,     "bmove"
 define head_bmove,     sameq,     "same?"
 define head_sameq,     find,      "find"
-define head_find,      compile,   "compile"
-define head_compile,   interpret, "interpret"
+define head_find,      comma,     ","
+define head_comma,     headcomma, "head,"
+define head_headcomma, interpret, "interpret"
 define head_interpret, start,     "start"
 define head_start,     colon,     ":",        imm
 define head_colon,     semicolon, ";",        imm
@@ -906,11 +909,11 @@ begin: /* -- */ /* c: -- addr */
 
 if: /* x -- */ /* c: -- addr */
 	.quad lit, zjump
-	.quad call, compile
+	.quad call, comma
 	.quad call, top
 	.quad fetch
 	.quad lit, 0
-	.quad jump, compile
+	.quad jump, comma
 
 then: /* -- */ /* c: addr -- */
 	.quad push
@@ -923,8 +926,8 @@ then: /* -- */ /* c: addr -- */
 again: /* -- */ /* c: addr1 addr2 -- */
 	.quad push
 	.quad lit, jump
-	.quad call, compile
-	.quad call, compile
+	.quad call, comma
+	.quad call, comma
 	.quad call, top
 	.quad fetch
 	.quad pop
