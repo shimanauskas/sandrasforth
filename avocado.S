@@ -771,7 +771,7 @@ start: /* -- */
 	.quad call, interpret
 	.quad jump, start
 
-semicolon:
+semicolon: /* -- */
 	.quad lit, ret
 	.quad call, compile
 	.quad call, top
