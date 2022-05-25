@@ -383,7 +383,7 @@ within: /* u1 u2 u3 -- bool */
 	.quad and
 	.quad ret
 
-load: /* addr1 -- addr2 u */
+string: /* addr1 -- addr2 u */
 	.quad dup
 	.quad push
 	.quad inc
@@ -430,7 +430,7 @@ keyq: /* -- bool */
 	.quad call, curr
 	.quad fetch
 	.quad lit, input
-	.quad call, load
+	.quad call, string
 	.quad add
 	.quad call, uless
 	.quad ret
@@ -461,7 +461,7 @@ empty: /* -- */
 
 flush: /* -- */
 	.quad lit, output
-	.quad call, load
+	.quad call, string
 	.quad call, type
 	.quad jump, empty
 
@@ -473,7 +473,7 @@ nl: /* -- */
 emit: /* char -- */
 	.quad dup
 	.quad lit, output
-	.quad call, load
+	.quad call, string
 	.quad add
 	.quad bstore
 	.quad lit, output
@@ -661,7 +661,7 @@ find: /* -- addr | 0 */
 	.quad lit, cell*2+1
 	.quad add
 	.quad lit, output
-	.quad call, load
+	.quad call, string
 	.quad call, sameq
 
 1:
@@ -730,7 +730,7 @@ interpret: /* -- */
 1:
 	.quad lit, 0
 	.quad lit, output
-	.quad call, load
+	.quad call, string
 	.quad call, number
 	.quad nip
 
@@ -757,7 +757,7 @@ start: /* -- */
 	.quad store
 	.quad call, flush
 	.quad lit, prompt
-	.quad call, load
+	.quad call, string
 	.quad call, type
 	.quad call, accept
 	.quad call, interpret
@@ -777,8 +777,8 @@ define head_zless,     bool,      "bool"
 define head_bool,      equals,    "="
 define head_equals,    zequals,   "0="
 define head_zequals,   within,    "within"
-define head_within,    load,      "load"
-define head_load,      type,      "type"
+define head_within,    string,    "string"
+define head_string,    type,      "type"
 define head_type,      reset,     "reset"
 define head_reset,     accept,    "accept"
 define head_accept,    keyq,      "key?"
