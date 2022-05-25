@@ -303,6 +303,10 @@ top: /* -- addr */
 	.quad var, code
 	.quad ret
 
+head: /* -- addr */
+	.quad var, vocab
+	.quad ret
+
 last: /* -- addr */
 	.quad var, head_udot
 	.quad ret
@@ -384,6 +388,13 @@ within: /* u1 u2 u3 -- bool */
 	.quad not
 	.quad pop, pop
 	.quad call, uless
+	.quad and
+	.quad ret
+
+align: /* x -- x */
+	.quad lit, cell-1
+	.quad add
+	.quad lit, ~(cell-1)
 	.quad and
 	.quad ret
 
@@ -616,6 +627,28 @@ number: /* 0 addr1 u1 -- n addr2 u2 */
 	.quad pop, pop
 	.quad ret
 
+bmove: /* addr1 addr2 u -- */
+	.quad call, qdup
+
+	.quad zjump, 0f
+
+	.quad push
+	.quad over, bfetch
+	.quad over, bstore
+	.quad push
+	.quad inc
+	.quad pop
+	.quad inc
+	.quad pop
+	.quad dec
+
+	.quad jump, bmove
+
+0:
+	.quad nip
+	.quad drop
+	.quad ret
+
 sameq: /* addr1 addr2 u1 -- u2 */
 	.quad dup
 	.quad push, push
@@ -771,6 +804,49 @@ start: /* -- */
 	.quad call, interpret
 	.quad jump, start
 
+colon: /* -- */
+	.quad call, top
+	.quad fetch
+	.quad call, here
+	.quad store
+
+	.quad call, head
+	.quad fetch
+
+	.quad call, last
+	.quad fetch
+	.quad call, head
+	.quad fetch
+	.quad store
+
+	.quad call, head
+	.quad fetch
+	.quad lit, cell
+	.quad add
+	.quad call, here
+	.quad fetch
+	.quad over
+	.quad store
+	.quad lit, cell
+	.quad add
+
+	.quad call, word
+	.quad lit, output
+	.quad over, over
+	.quad bfetch
+	.quad inc
+	.quad dup, push
+	.quad call, bmove
+	.quad pop
+	.quad add
+	.quad call, align
+	.quad call, head
+	.quad store
+
+	.quad call, last
+	.quad store
+	.quad ret
+
 semicolon: /* -- */
 	.quad lit, ret
 	.quad call, compile
@@ -785,7 +861,8 @@ define head_ainput,    aoutput,   "'output"
 define head_aoutput,   curr,      "curr"
 define head_curr,      here,      "here"
 define head_here,      top,       "top"
-define head_top,       last,      "last"
+define head_top,       head,      "head"
+define head_head,      last,      "last"
 define head_last,      base,      "base"
 define head_base,      qdup,      "?dup"
 define head_qdup,      less,      "<"
@@ -795,7 +872,8 @@ define head_zless,     bool,      "bool"
 define head_bool,      equals,    "="
 define head_equals,    zequals,   "0="
 define head_zequals,   within,    "within"
-define head_within,    string,    "string"
+define head_within,    align,     "align"
+define head_align,    string,    "string"
 define head_string,    type,      "type"
 define head_type,      reset,     "reset"
 define head_reset,     accept,    "accept"
@@ -809,32 +887,34 @@ define head_emit,      word,      "word"
 define head_word,      digitq,    "digit?"
 define head_digitq,    natural,   "natural"
 define head_natural,   number,    "number"
-define head_number,    sameq,     "same?"
+define head_number,    bmove,     "bmove"
+define head_bmove,     sameq,     "same?"
 define head_sameq,     find,      "find"
 define head_find,      compile,   "compile"
 define head_compile,   interpret, "interpret"
 define head_interpret, start,     "start"
-define head_start,     semicolon, ";",        imm
+define head_start,     colon,     ":",        imm
+define head_colon,     semicolon, ";",        imm
 
 /* The following definitions should be moved out of core
    once we can compile them at runtime. */
 
 begin: /* -- */ /* c: -- addr */
-	.quad call, here
+	.quad call, top
 	.quad fetch
 	.quad ret
 
 if: /* x -- */ /* c: -- addr */
 	.quad lit, zjump
 	.quad call, compile
-	.quad call, here
+	.quad call, top
 	.quad fetch
 	.quad lit, 0
 	.quad jump, compile
 
 then: /* -- */ /* c: addr -- */
 	.quad push
-	.quad call, here
+	.quad call, top
 	.quad fetch
 	.quad pop
 	.quad store
@@ -845,7 +925,7 @@ again: /* -- */ /* c: addr1 addr2 -- */
 	.quad lit, jump
 	.quad call, compile
 	.quad call, compile
-	.quad call, here
+	.quad call, top
 	.quad fetch
 	.quad pop
 	.quad store
@@ -920,6 +1000,9 @@ output:
 	.skip buf
 
 code:
+	.skip 0x1000
+
+vocab:
 	.skip 0x1000
 
 dstack:
