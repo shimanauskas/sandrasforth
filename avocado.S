@@ -837,7 +837,8 @@ colon: /* -- */
 	.quad over, over
 	.quad bfetch
 	.quad inc
-	.quad dup, push
+	.quad dup
+	.quad push
 	.quad call, bmove
 	.quad pop
 	.quad add
