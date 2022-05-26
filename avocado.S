@@ -291,7 +291,7 @@ aoutput: /* -- addr */
 	.quad lit, output
 	.quad ret
 
-curr: /* -- addr */
+cur: /* -- addr */
 	.quad var, input+1
 	.quad ret
 
@@ -417,7 +417,7 @@ type: /* addr u -- */
 
 reset: /* -- */
 	.quad lit, input+1
-	.quad call, curr
+	.quad call, cur
 	.quad store
 	.quad ret
 
@@ -442,7 +442,7 @@ accept: /* -- */
 	.quad syscall
 
 keyq: /* -- bool */
-	.quad call, curr
+	.quad call, cur
 	.quad fetch
 	.quad lit, input
 	.quad call, string
@@ -459,11 +459,11 @@ key: /* -- char */
 	.quad call, reset
 
 0:
-	.quad call, curr
+	.quad call, cur
 	.quad fetch
 	.quad dup
 	.quad inc
-	.quad call, curr
+	.quad call, cur
 	.quad store
 	.quad bfetch
 	.quad ret
@@ -861,8 +861,8 @@ semicolon: /* -- */
 
 define head_syscall,   ainput,    "'input"
 define head_ainput,    aoutput,   "'output"
-define head_aoutput,   curr,      "curr"
-define head_curr,      here,      "here"
+define head_aoutput,   cur,       "cur"
+define head_cur,       here,      "here"
 define head_here,      top,       "top"
 define head_top,       head,      "head"
 define head_head,      last,      "last"
