@@ -295,6 +295,10 @@ cur: /* -- addr */
 	.quad var, input+1
 	.quad ret
 
+state: /* -- addr */
+	.quad var, 0
+	.quad ret
+
 here: /* -- addr */
 	.quad var, code
 	.quad ret
@@ -720,12 +724,38 @@ headcomma: /* x -- */
 	.quad store
 	.quad ret
 
+apply: /* -- */
+	.quad call, state
+	.quad fetch
+
+	.quad zjump, 0f
+
+	.quad call, top
+	.quad fetch
+	.quad call, here
+	.quad store
+	.quad ret
+
+0:
+	.quad lit, ret
+	.quad call, comma
+	.quad call, empty
+	.quad call, here
+	.quad fetch
+	.quad exec
+	.quad call, flush
+	.quad call, here
+	.quad fetch
+	.quad call, top
+	.quad store
+	.quad ret
+
 interpret: /* -- */
 	.quad call, word
 	.quad lit, output
 	.quad bfetch
 
-	.quad zjump, 2f
+	.quad zjump, apply
 
 	.quad call, find
 	.quad call, qdup
@@ -775,7 +805,8 @@ interpret: /* -- */
 
 	.quad drop
 	.quad lit, '?'
-	.quad jump, emit
+	.quad call, emit
+	.quad jump, flush
 
 0:
 	.quad lit, lit
@@ -783,20 +814,7 @@ interpret: /* -- */
 	.quad call, comma
 	.quad jump, interpret
 
-2:
-	.quad lit, ret
-	.quad call, comma
-	.quad call, here
-	.quad fetch
-	.quad exec
-	.quad ret
-
 start: /* -- */
-	.quad call, here
-	.quad fetch
-	.quad call, top
-	.quad store
-	.quad call, flush
 	.quad lit, prompt
 	.quad call, string
 	.quad call, type
@@ -805,9 +823,10 @@ start: /* -- */
 	.quad jump, start
 
 colon: /* -- */
-	.quad call, top
-	.quad fetch
-	.quad call, here
+	.quad call, apply
+
+	.quad lit, -1
+	.quad call, state
 	.quad store
 
 	.quad call, head
@@ -847,12 +866,16 @@ semicolon: /* -- */
 	.quad fetch
 	.quad call, here
 	.quad store
+	.quad lit, 0
+	.quad call, state
+	.quad store
 	.quad ret
 
 define head_syscall,   ainput,    "'input"
 define head_ainput,    aoutput,   "'output"
 define head_aoutput,   cur,       "cur"
-define head_cur,       here,      "here"
+define head_cur,       state,     "state"
+define head_state,     here,      "here"
 define head_here,      top,       "top"
 define head_top,       head,      "head"
 define head_head,      last,      "last"
@@ -884,7 +907,8 @@ define head_bmove,     sameq,     "same?"
 define head_sameq,     find,      "find"
 define head_find,      comma,     ","
 define head_comma,     headcomma, "head,"
-define head_headcomma, interpret, "interpret"
+define head_headcomma, apply,     "apply",    imm
+define head_apply,     interpret, "interpret"
 define head_interpret, start,     "start"
 define head_start,     colon,     ":",        imm
 define head_colon,     semicolon, ";",        imm
