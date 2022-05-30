@@ -99,7 +99,7 @@ main:
 	leaq start(%rip), %rbx
 	jmpq *(%rbx)
 
-call: /* -- */ /* r: -- addr */
+call: /* r: -- addr */
 	addq $(cell), %rbx
 	pushq %rbx
 	movq (%rbx), %rbx
@@ -123,7 +123,7 @@ exec: /* addr1 -- */ /* r: -- addr2 */
 	drop
 	jmpq *(%rbx)
 
-ret: /* -- */ /* r: addr -- */
+ret: /* r: addr -- */
 	popq %rbx
 	next
 
@@ -930,7 +930,7 @@ define head_colon,     semicolon, ";",        imm
 /* The following definitions should be moved out of core
    once we can compile them at runtime. */
 
-begin: /* -- */ /* c: -- addr */
+begin: /* c: -- addr */
 	.quad call, top
 	.quad fetch
 	.quad ret
@@ -943,7 +943,7 @@ if: /* x -- */ /* c: -- addr */
 	.quad lit, 0
 	.quad jump, comma
 
-then: /* -- */ /* c: addr -- */
+then: /* c: addr -- */
 	.quad push
 	.quad call, top
 	.quad fetch
@@ -951,7 +951,7 @@ then: /* -- */ /* c: addr -- */
 	.quad store
 	.quad ret
 
-again: /* -- */ /* c: addr1 addr2 -- */
+again: /* c: addr1 addr2 -- */
 	.quad push
 	.quad lit, jump
 	.quad call, comma
