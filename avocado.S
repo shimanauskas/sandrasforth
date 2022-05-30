@@ -410,15 +410,6 @@ string: /* addr1 -- addr2 u */
 	.quad bfetch
 	.quad ret
 
-type: /* addr u -- */
-	.quad push, push
-	.quad lit, stdout
-	.quad pop, pop
-	.quad lit, sys_write
-	.quad syscall
-	.quad drop
-	.quad ret
-
 reset: /* -- */
 	.quad lit, input+1
 	.quad call, cur
@@ -479,9 +470,12 @@ empty: /* -- */
 	.quad ret
 
 flush: /* -- */
+	.quad lit, stdout
 	.quad lit, output
 	.quad call, string
-	.quad call, type
+	.quad lit, sys_write
+	.quad syscall
+	.quad drop
 	.quad jump, empty
 
 emit: /* char -- */
@@ -501,6 +495,25 @@ emit: /* char -- */
 
 	.quad zjump, flush
 
+	.quad ret
+
+type: /* addr u -- */
+	.quad call, qdup
+
+	.quad zjump, 0f
+
+	.quad push
+	.quad dup
+	.quad bfetch
+	.quad call, emit
+	.quad inc
+	.quad pop
+	.quad dec
+
+	.quad jump, type
+0:
+
+	.quad drop
 	.quad ret
 
 /* Read input, skip spaces.
@@ -818,6 +831,7 @@ start: /* -- */
 	.quad lit, prompt
 	.quad call, string
 	.quad call, type
+	.quad call, flush
 	.quad call, accept
 	.quad call, interpret
 	.quad jump, start
@@ -890,15 +904,15 @@ define head_equals,    zequals,   "0="
 define head_zequals,   within,    "within"
 define head_within,    align,     "align"
 define head_align,     string,    "string"
-define head_string,    type,      "type"
-define head_type,      reset,     "reset"
+define head_string,    reset,     "reset"
 define head_reset,     accept,    "accept"
 define head_accept,    keyq,      "key?"
 define head_keyq,      key,       "key"
 define head_key,       empty,     "empty"
 define head_empty,     flush,     "flush"
 define head_flush,     emit,      "emit"
-define head_emit,      word,      "word"
+define head_emit,      type,      "type"
+define head_type,      word,      "word"
 define head_word,      digitq,    "digit?"
 define head_digitq,    natural,   "natural"
 define head_natural,   number,    "number"
