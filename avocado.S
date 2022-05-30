@@ -75,10 +75,10 @@
 
 .macro string name, string, mask=0
 \name:
-	.byte 0f-(.+1)+\mask
-	.ascii "\string"
+	.byte 1f-0f+\mask
 0:
-
+	.ascii "\string"
+1:
 .balign cell
 .endm
 
