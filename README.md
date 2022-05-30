@@ -1,6 +1,6 @@
 # Avocado
 
-Forth interpreter for Linux and macOS on x86-64.
+A Forth for Linux and macOS on x86-64.
 
 Avocado began as an attempt to write a Forth mostly in itself.
 
