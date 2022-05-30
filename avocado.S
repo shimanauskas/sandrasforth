@@ -716,9 +716,9 @@ comma: /* x -- */
 headcomma: /* x -- */
 	.quad call, head
 	.quad fetch
-	.quad dup
 	.quad lit, cell
-	.quad add
+	.quad sub
+	.quad dup
 	.quad call, head
 	.quad store
 	.quad store
@@ -829,32 +829,32 @@ colon: /* -- */
 	.quad call, state
 	.quad store
 
-	.quad call, head
-	.quad fetch
-
-	.quad call, last
-	.quad fetch
-	.quad call, headcomma
-	.quad call, here
-	.quad fetch
-	.quad call, headcomma
-
-	.quad call, head
-	.quad fetch
 	.quad call, word
 	.quad lit, output
-	.quad over, over
+	.quad call, head
+	.quad fetch
+	.quad over
 	.quad bfetch
 	.quad inc
 	.quad dup
 	.quad push
-	.quad call, bmove
-	.quad pop
-	.quad add
 	.quad call, align
+	.quad sub
+	.quad dup
 	.quad call, head
 	.quad store
+	.quad pop
+	.quad call, bmove
 
+	.quad call, here
+	.quad fetch
+	.quad call, headcomma
+	.quad call, last
+	.quad fetch
+	.quad call, headcomma
+
+	.quad call, head
+	.quad fetch
 	.quad call, last
 	.quad store
 	.quad ret
@@ -1018,8 +1018,7 @@ output:
 
 code:
 	.skip 0x1000
-
 vocab:
-	.skip 0x1000
 
+	.skip 0x1000
 dstack:
