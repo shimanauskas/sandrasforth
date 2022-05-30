@@ -37,7 +37,7 @@
 #define stdout 1
 
 #define cell 8
-#define sign (1<<(cell*8-1))
+#define sign 1<<(cell*8-1)
 #define buf  0x100
 #define imm  0x80
 
@@ -75,7 +75,7 @@
 
 .macro string name, string, mask=0
 \name:
-	.byte 1f-0f+\mask
+	.byte (1f-0f)+\mask
 0:
 	.ascii "\string"
 1:
