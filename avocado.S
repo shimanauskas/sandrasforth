@@ -492,10 +492,9 @@ emit: /* char -- */
 	.quad lit, _out
 	.quad bfetch
 	.quad inc
+	.quad dup
 	.quad lit, _out
 	.quad bstore
-	.quad lit, _out
-	.quad bfetch
 	.quad lit, line-1
 	.quad xor
 
