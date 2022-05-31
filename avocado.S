@@ -54,10 +54,6 @@
 	leaq cell*2(%rbp), %rbp
 .endm
 
-.macro threenip /* x1 x2 x3 x4-- x4 */
-	leaq cell*3(%rbp), %rbp
-.endm
-
 .macro drop /* x -- */
 	movq (%rbp), %rax
 	nip
@@ -248,7 +244,7 @@ syscall: /* x1 x2 x3 x4 -- x5 */
 	movq (%rbp), %rdx
 	movq cell(%rbp), %rsi
 	movq cell*2(%rbp), %rdi
-	threenip
+	leaq cell*3(%rbp), %rbp
 	syscall
 	next
 
