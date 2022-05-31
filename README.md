@@ -8,9 +8,9 @@ Large part of Avocado is threaded code. There is no limit on the number of primi
 
 ## The IO System
 
-There's a pair of buffers for input and output. `accept` reads input and places it in the `input` buffer. Each invocation of `key` then accesses the buffer and reads a character from it onto the stack. Then, `emit` can take that character and put it in the `output` buffer, which we can `flush`.
+There's a pair of buffers for input and output. `accept` reads input and places it in the `in` buffer. Each invocation of `key` then accesses the buffer and reads a character from it onto the stack. Then, `emit` can take that character and put it in the `out` buffer, which we can `flush`.
 
-`input` and `output` buffers are circular.
+`in` and `out` buffers are circular.
 
 ## Prerequisites
 
