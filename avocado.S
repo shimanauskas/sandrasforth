@@ -677,8 +677,8 @@ bmove: /* addr1 addr2 u -- */
 	.quad dec
 
 	.quad jump, bmove
-
 0:
+
 	.quad nip
 	.quad drop
 	.quad ret
