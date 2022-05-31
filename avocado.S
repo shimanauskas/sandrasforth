@@ -782,7 +782,6 @@ apply: /* -- */
 	.quad call, here
 	.quad fetch
 	.quad exec
-	.quad call, flush
 	.quad call, here
 	.quad fetch
 	.quad call, top
@@ -847,8 +846,7 @@ interpret: /* -- */
 	.quad call, string
 	.quad call, type
 	.quad lit, '?'
-	.quad call, emit
-	.quad jump, flush
+	.quad jump, emit
 
 0:
 	.quad lit, lit
