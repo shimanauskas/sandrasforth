@@ -432,7 +432,7 @@ accept: /* -- */
 	.quad lit, line-2
 	.quad lit, sys_read
 	.quad syscall
-	.quad call, qdup
+	.quad dup
 
 	.quad zjump, 0f
 
@@ -441,7 +441,6 @@ accept: /* -- */
 	.quad jump, reset
 
 0:
-	.quad lit, 0
 	.quad dup, dup
 	.quad lit, sys_exit
 	.quad syscall
