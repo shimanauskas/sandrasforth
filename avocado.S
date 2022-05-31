@@ -724,7 +724,7 @@ comma: /* x -- */
 	.quad store
 	.quad ret
 
-headcomma: /* x -- */
+link: /* x -- */
 	.quad call, head
 	.quad fetch
 	.quad lit, cell
@@ -860,10 +860,10 @@ colon: /* -- */
 
 	.quad call, here
 	.quad fetch
-	.quad call, headcomma
+	.quad call, link
 	.quad call, last
 	.quad fetch
-	.quad call, headcomma
+	.quad call, link
 
 	.quad call, head
 	.quad fetch
@@ -918,8 +918,8 @@ define head_number,    bmove,     "bmove"
 define head_bmove,     sameq,     "same?"
 define head_sameq,     find,      "find"
 define head_find,      comma,     ","
-define head_comma,     headcomma, "head,"
-define head_headcomma, apply,     "apply",    imm
+define head_comma,     link,      "link"
+define head_link,      apply,     "apply",    imm
 define head_apply,     interpret, "interpret"
 define head_interpret, start,     "start"
 define head_start,     colon,     ":",        imm
