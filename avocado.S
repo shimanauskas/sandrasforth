@@ -289,6 +289,10 @@ out: /* -- addr */
 	.quad lit, _out
 	.quad ret
 
+buff: /* -- addr */
+	.quad lit, _buff
+	.quad ret
+
 code: /* -- addr */
 	.quad lit, _code
 	.quad ret
@@ -528,9 +532,16 @@ type: /* addr u -- */
 
 word: /* -- */
 	.quad call, keyq
+	.quad not
 
-	.quad zjump, empty
+	.quad zjump, 0f
 
+	.quad lit, 0
+	.quad lit, _buff
+	.quad bstore
+	.quad ret
+
+0:
 	.quad call, key
 	.quad dup
 	.quad lit, '!'
@@ -543,17 +554,32 @@ word: /* -- */
 	.quad jump, word
 0:
 
-	.quad call, empty
+	.quad lit, 0
+	.quad lit, _buff
+	.quad bstore
 
 0:
 	.quad dup
 	.quad lit, '!'
 	.quad call, uless
 	.quad not
+	.quad lit, _buff
+	.quad bfetch
+	.quad lit, line-2
+	.quad call, equals
+	.quad not
+	.quad and
 
 	.quad zjump, 0f
 
-	.quad call, emit
+	.quad lit, _buff
+	.quad call, string
+	.quad dup
+	.quad inc
+	.quad lit, _buff
+	.quad bstore
+	.quad add
+	.quad bstore
 	.quad call, key
 
 	.quad jump, 0b
@@ -702,7 +728,7 @@ find: /* -- addr | 0 */
 	.quad bfetch
 	.quad lit, ~imm
 	.quad and
-	.quad lit, _out
+	.quad lit, _buff
 	.quad bfetch
 	.quad call, equals
 
@@ -710,7 +736,7 @@ find: /* -- addr | 0 */
 
 	.quad lit, cell*2+1
 	.quad add
-	.quad lit, _out
+	.quad lit, _buff
 	.quad call, string
 	.quad call, sameq
 
@@ -771,7 +797,7 @@ apply: /* -- */
 
 interpret: /* -- */
 	.quad call, word
-	.quad lit, _out
+	.quad lit, _buff
 	.quad bfetch
 
 	.quad zjump, apply
@@ -815,7 +841,7 @@ interpret: /* -- */
 
 1:
 	.quad lit, 0
-	.quad lit, _out
+	.quad lit, _buff
 	.quad call, string
 	.quad call, number
 	.quad nip
@@ -823,6 +849,9 @@ interpret: /* -- */
 	.quad zjump, 0f
 
 	.quad drop
+	.quad lit, _buff
+	.quad call, string
+	.quad call, type
 	.quad lit, '?'
 	.quad call, emit
 	.quad jump, flush
@@ -850,7 +879,7 @@ colon: /* -- */
 	.quad store
 
 	.quad call, word
-	.quad lit, _out
+	.quad lit, _buff
 	.quad call, head
 	.quad fetch
 	.quad over
@@ -893,7 +922,8 @@ semicolon: /* -- */
 
 define head_syscall,   in,        "in"
 define head_in,        out,       "out"
-define head_out,       code,      "code"
+define head_out,       buff,      "buff"
+define head_buff,      code,      "code"
 define head_code,      vocab,     "vocab"
 define head_vocab,     curr,      "curr"
 define head_curr,      state,     "state"
@@ -1036,6 +1066,9 @@ _in:
 	.skip line
 
 _out:
+	.skip line
+
+_buff:
 	.skip line
 
 _code:
