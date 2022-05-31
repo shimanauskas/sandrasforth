@@ -473,12 +473,6 @@ key: /* -- char */
 	.quad bfetch
 	.quad ret
 
-empty: /* -- */
-	.quad lit, 0
-	.quad lit, _out
-	.quad bstore
-	.quad ret
-
 flush: /* -- */
 	.quad lit, stdout
 	.quad lit, _out
@@ -486,7 +480,10 @@ flush: /* -- */
 	.quad lit, sys_write
 	.quad syscall
 	.quad drop
-	.quad jump, empty
+	.quad lit, 0
+	.quad lit, _out
+	.quad bstore
+	.quad ret
 
 emit: /* char -- */
 	.quad lit, _out
@@ -784,7 +781,6 @@ apply: /* -- */
 0:
 	.quad lit, ret
 	.quad call, comma
-	.quad call, empty
 	.quad call, here
 	.quad fetch
 	.quad exec
@@ -946,8 +942,7 @@ define head_string,    reset,     "reset"
 define head_reset,     accept,    "accept"
 define head_accept,    keyq,      "key?"
 define head_keyq,      key,       "key"
-define head_key,       empty,     "empty"
-define head_empty,     flush,     "flush"
+define head_key,       flush,     "flush"
 define head_flush,     emit,      "emit"
 define head_emit,      type,      "type"
 define head_type,      word,      "word"
