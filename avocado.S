@@ -605,16 +605,18 @@ digitq: /* char base -- u bool */
 	.quad pop
 	.quad jump, uless
 
-natural: /* 0 addr1 u1 -- u2 addr2 u3 */
+natural: /* addr u1 -- u2 u3 */
 	.quad push
-	.quad dup
+	.quad lit, 0
+	.quad pop
+
+0:
 	.quad push
+	.quad over
 	.quad bfetch
 	.quad call, base
 	.quad fetch
 	.quad call, digitq
-	.quad pop
-	.quad over
 	.quad pop
 	.quad dup
 	.quad push
@@ -623,27 +625,27 @@ natural: /* 0 addr1 u1 -- u2 addr2 u3 */
 	.quad zjump, 0f
 
 	.quad push
-	.quad drop
-	.quad push
 	.quad call, base
 	.quad fetch
 	.quad mul
 	.quad drop
 	.quad pop
 	.quad add
-	.quad pop
+	.quad push
 	.quad inc
+	.quad pop
 	.quad pop
 	.quad dec
 
-	.quad jump, natural
+	.quad jump, 0b
 0:
 
-	.quad nip, nip
+	.quad drop
+	.quad nip
 	.quad pop
 	.quad ret
 
-number: /* 0 addr1 u1 -- n addr2 u2 */
+number: /* addr u1 -- n u2 */
 	.quad over
 	.quad bfetch
 	.quad lit, '-'
@@ -656,9 +658,9 @@ number: /* 0 addr1 u1 -- n addr2 u2 */
 	.quad inc
 	.quad pop
 	.quad call, natural
-	.quad push, push
+	.quad push
 	.quad neg
-	.quad pop, pop
+	.quad pop
 	.quad ret
 
 bmove: /* addr1 addr2 u -- */
@@ -833,11 +835,9 @@ interpret: /* -- */
 	.quad jump, interpret
 
 1:
-	.quad lit, 0
 	.quad lit, _buff
 	.quad call, string
 	.quad call, number
-	.quad nip
 
 	.quad zjump, 0f
 
