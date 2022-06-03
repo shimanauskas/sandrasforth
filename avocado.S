@@ -521,19 +521,17 @@ type: /* addr u -- */
 	.quad drop
 	.quad ret
 
-/* Read input, skip spaces.
-   Then deposit non-space characters to buffer.
-   If end of input is reached, return with buffer empty. */
+/* Read input, skip whitepace.
+   Return first non-whitespace character,
+   or zero if end of input is reached. */
 
-word: /* -- */
+skip: /* -- char | 0 */
 	.quad call, keyq
 	.quad not
 
 	.quad zjump, 0f
 
 	.quad lit, 0
-	.quad lit, _buff
-	.quad bstore
 	.quad ret
 
 0:
@@ -546,12 +544,23 @@ word: /* -- */
 
 	.quad drop
 
-	.quad jump, word
+	.quad jump, skip
 0:
 
+	.quad ret
+
+/* Extract a whitespace-bounded word from input to buffer,
+   or leave it empty if end of input is reached.
+   Note that there is always whitespace (newline) before end of input. */
+
+word: /* -- */
 	.quad lit, 0
 	.quad lit, _buff
 	.quad bstore
+	.quad call, skip
+	.quad dup
+
+	.quad zjump, 1f
 
 0:
 	.quad dup
@@ -565,7 +574,7 @@ word: /* -- */
 	.quad not
 	.quad and
 
-	.quad zjump, 0f
+	.quad zjump, 1f
 
 	.quad lit, _buff
 	.quad call, string
@@ -578,7 +587,7 @@ word: /* -- */
 	.quad call, key
 
 	.quad jump, 0b
-0:
+1:
 
 	.quad drop
 	.quad ret
@@ -937,7 +946,8 @@ define head_keyq,      key,       "key"
 define head_key,       flush,     "flush"
 define head_flush,     emit,      "emit"
 define head_emit,      type,      "type"
-define head_type,      word,      "word"
+define head_type,      skip,      "skip"
+define head_skip,      word,      "word"
 define head_word,      digitq,    "digit?"
 define head_digitq,    natural,   "natural"
 define head_natural,   number,    "number"
