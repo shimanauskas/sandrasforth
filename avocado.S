@@ -254,9 +254,14 @@ codeend:
 
 .data
 
-define 0,           exec,    "exec"
+define 0,           call,    "call"
+define head_call,   jump,    "jump"
+define head_jump,   zjump,   "0jump"
+define head_zjump,  exec,    "exec"
 define head_exec,   ret,     "ret"
-define head_ret,    dup,     "dup"
+define head_ret,    lit,     "lit"
+define head_lit,    var,     "var"
+define head_var,    dup,     "dup"
 define head_dup,    nip,     "nip"
 define head_nip,    drop,    "drop"
 define head_drop,   over,    "over"
