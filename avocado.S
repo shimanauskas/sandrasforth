@@ -89,12 +89,12 @@ head_\body:
 
 .text
 
-.global main
+.global _start
 
-main:
+_start:
 	leaq dstack(%rip), %rbp
 	movq $-1, %rax
-	leaq start(%rip), %rbx
+	leaq main(%rip), %rbx
 	jmpq *(%rbx)
 
 call: /* r: -- addr */
@@ -834,7 +834,7 @@ interpret: /* -- */
 0:
 	.quad fetch
 	.quad dup
-	.quad lit, main
+	.quad lit, _start
 	.quad lit, codeend
 	.quad call, within
 	.quad not
@@ -868,14 +868,14 @@ interpret: /* -- */
 	.quad call, comma
 	.quad jump, interpret
 
-start: /* -- */
+main: /* -- */
 	.quad lit, prompt
 	.quad call, string
 	.quad call, type
 	.quad call, flush
 	.quad call, accept
 	.quad call, interpret
-	.quad jump, start
+	.quad jump, main
 
 colon: /* -- */
 	.quad call, apply
@@ -963,8 +963,8 @@ define head_find,      comma,     ","
 define head_comma,     link,      "link"
 define head_link,      apply,     "apply",    imm
 define head_apply,     interpret, "interpret"
-define head_interpret, start,     "start"
-define head_start,     colon,     ":",        imm
+define head_interpret, main,      "main"
+define head_main,      colon,     ":",        imm
 define head_colon,     semicolon, ";",        imm
 
 /* The following definitions should be moved out of core
