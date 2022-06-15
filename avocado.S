@@ -959,8 +959,8 @@ define head_natural,   number,    "number"
 define head_number,    bmove,     "bmove"
 define head_bmove,     sameq,     "same?"
 define head_sameq,     find,      "find"
-define head_find,      comma,     ","
-define head_comma,     link,      "link"
+define head_find,      comma,     ",",        imm
+define head_comma,     link,      "link",     imm
 define head_link,      apply,     "apply",    imm
 define head_apply,     interpret, "interpret"
 define head_interpret, main,      "main"
