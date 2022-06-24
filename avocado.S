@@ -37,8 +37,6 @@
 #define stdout 1
 
 #define cell 8
-#define line 0x100
-#define page 0x1000
 
 #define sign 1<<63
 #define imm  0x80
@@ -434,7 +432,7 @@ reset: /* -- */
 accept: /* -- */
 	.quad lit, stdin
 	.quad lit, _in+1
-	.quad lit, line-2
+	.quad lit, 0xFF-1
 	.quad lit, sys_read
 	.quad syscall
 	.quad dup
@@ -500,7 +498,7 @@ emit: /* char -- */
 	.quad dup
 	.quad lit, _out
 	.quad bstore
-	.quad lit, line-1
+	.quad lit, 0xFF
 	.quad xor
 
 	.quad zjump, flush
@@ -574,7 +572,7 @@ word: /* -- */
 	.quad not
 	.quad lit, _buff
 	.quad bfetch
-	.quad lit, line-2
+	.quad lit, 0xFF-1
 	.quad call, equals
 	.quad not
 	.quad and
@@ -1065,17 +1063,17 @@ define head_dot,       udot,  "u."
 .bss
 
 _in:
-	.skip line
+	.skip 0x100
 
 _out:
-	.skip line
+	.skip 0x100
 
 _buff:
-	.skip line
+	.skip 0x100
 
 _code:
-	.skip page
+	.skip 0x1000
 _vocab:
 
-	.skip page
+	.skip 0x1000
 dstack:
