@@ -802,6 +802,51 @@ apply: /* -- */
 	.quad store
 	.quad ret
 
+colon: /* -- */
+	.quad call, apply
+	.quad lit, -1
+	.quad call, state
+	.quad store
+	.quad call, word
+	.quad lit, _buff
+	.quad call, head
+	.quad fetch
+	.quad over
+	.quad bfetch
+	.quad inc
+	.quad dup
+	.quad push
+	.quad call, align
+	.quad sub
+	.quad dup
+	.quad call, head
+	.quad store
+	.quad pop
+	.quad call, bmove
+	.quad call, here
+	.quad fetch
+	.quad call, link
+	.quad call, last
+	.quad fetch
+	.quad call, link
+	.quad call, head
+	.quad fetch
+	.quad call, last
+	.quad store
+	.quad ret
+
+semicolon: /* -- */
+	.quad lit, ret
+	.quad call, comma
+	.quad call, top
+	.quad fetch
+	.quad call, here
+	.quad store
+	.quad lit, 0
+	.quad call, state
+	.quad store
+	.quad ret
+
 interpret: /* -- */
 	.quad call, word
 	.quad lit, _buff
@@ -875,51 +920,6 @@ main: /* -- */
 	.quad call, interpret
 	.quad jump, main
 
-colon: /* -- */
-	.quad call, apply
-	.quad lit, -1
-	.quad call, state
-	.quad store
-	.quad call, word
-	.quad lit, _buff
-	.quad call, head
-	.quad fetch
-	.quad over
-	.quad bfetch
-	.quad inc
-	.quad dup
-	.quad push
-	.quad call, align
-	.quad sub
-	.quad dup
-	.quad call, head
-	.quad store
-	.quad pop
-	.quad call, bmove
-	.quad call, here
-	.quad fetch
-	.quad call, link
-	.quad call, last
-	.quad fetch
-	.quad call, link
-	.quad call, head
-	.quad fetch
-	.quad call, last
-	.quad store
-	.quad ret
-
-semicolon: /* -- */
-	.quad lit, ret
-	.quad call, comma
-	.quad call, top
-	.quad fetch
-	.quad call, here
-	.quad store
-	.quad lit, 0
-	.quad call, state
-	.quad store
-	.quad ret
-
 define head_syscall,   in,        "in"
 define head_in,        out,       "out"
 define head_out,       buff,      "buff"
@@ -960,10 +960,10 @@ define head_sameq,     find,      "find"
 define head_find,      comma,     ",",        imm
 define head_comma,     link,      "link",     imm
 define head_link,      apply,     "apply",    imm
-define head_apply,     interpret, "interpret"
-define head_interpret, main,      "main"
-define head_main,      colon,     ":",        imm
+define head_apply,     colon,     ":",        imm
 define head_colon,     semicolon, ";",        imm
+define head_semicolon, interpret, "interpret"
+define head_interpret, main,      "main"
 
 /* The following definitions should be moved out of core
    once we can compile them at runtime. */
@@ -1051,14 +1051,14 @@ udot: /* u -- */
 	.quad add
 	.quad jump, emit
 
-define head_semicolon, begin, "begin", imm
-define head_begin,     if,    "if",    imm
-define head_if,        then,  "then",  imm
-define head_then,      again, "again", imm
-define head_again,     deci,  "deci",  imm
-define head_deci,      hexa,  "hexa",  imm
-define head_hexa,      dot,   "."
-define head_dot,       udot,  "u."
+define head_main,  begin, "begin", imm
+define head_begin, if,    "if",    imm
+define head_if,    then,  "then",  imm
+define head_then,  again, "again", imm
+define head_again, deci,  "deci",  imm
+define head_deci,  hexa,  "hexa",  imm
+define head_hexa,  dot,   "."
+define head_dot,   udot,  "u."
 
 .bss
 
