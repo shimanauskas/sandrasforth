@@ -37,8 +37,7 @@
 #define stdout 1
 
 #define cell 8
-
-#define sign 1<<63
+#define sign 1<<(cell*8-1)
 #define imm  0x80
 
 .macro dup /* x -- x x */
