@@ -999,18 +999,6 @@ again: /* c: addr1 addr2 -- */
 	.quad store
 	.quad ret
 
-deci: /* -- */
-	.quad lit, 10
-	.quad call, base
-	.quad store
-	.quad ret
-
-hexa: /* -- */
-	.quad lit, 16
-	.quad call, base
-	.quad store
-	.quad ret
-
 dot: /* n -- */
 	.quad dup
 	.quad call, zless
@@ -1054,9 +1042,7 @@ define head_main,  begin, "begin", imm
 define head_begin, if,    "if",    imm
 define head_if,    then,  "then",  imm
 define head_then,  again, "again", imm
-define head_again, deci,  "deci",  imm
-define head_deci,  hexa,  "hexa",  imm
-define head_hexa,  dot,   "."
+define head_again, dot,   "."
 define head_dot,   udot,  "u."
 
 .bss
