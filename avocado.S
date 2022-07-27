@@ -846,6 +846,25 @@ semicolon: /* -- */
 	.quad store
 	.quad ret
 
+tick: /* -- xt | error */
+	.quad call, word
+	.quad call, find
+	.quad call, qdup
+
+	.quad zjump, 0f
+
+	.quad lit, 8
+	.quad add
+	.quad fetch
+	.quad ret
+
+0:
+	.quad lit, _buff
+	.quad call, string
+	.quad call, type
+	.quad lit, '?'
+	.quad jump, emit
+
 interpret: /* -- */
 	.quad call, word
 	.quad lit, _buff
@@ -961,7 +980,8 @@ define head_comma,     link,      "link",     imm
 define head_link,      apply,     "apply",    imm
 define head_apply,     colon,     ":",        imm
 define head_colon,     semicolon, ";",        imm
-define head_semicolon, interpret, "interpret"
+define head_semicolon, tick,      "'",        imm
+define head_tick,      interpret, "interpret"
 define head_interpret, main,      "main"
 
 /* The following definitions should be moved out of core
