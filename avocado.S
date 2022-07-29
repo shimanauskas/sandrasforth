@@ -486,6 +486,14 @@ flush: /* -- */
 	.quad bstore
 	.quad ret
 
+error: /* -- */
+	.quad lit, _buff
+	.quad call, string
+	.quad call, type
+	.quad lit, '?'
+
+	/* Fallthrough! */
+
 emit: /* char -- */
 	.quad lit, _out
 	.quad call, string
@@ -851,19 +859,12 @@ tick: /* -- xt | error */
 	.quad call, find
 	.quad call, qdup
 
-	.quad zjump, 0f
+	.quad zjump, error
 
 	.quad lit, 8
 	.quad add
 	.quad fetch
 	.quad ret
-
-0:
-	.quad lit, _buff
-	.quad call, string
-	.quad call, type
-	.quad lit, '?'
-	.quad jump, emit
 
 interpret: /* -- */
 	.quad call, word
@@ -917,11 +918,7 @@ interpret: /* -- */
 	.quad zjump, 0f
 
 	.quad drop
-	.quad lit, _buff
-	.quad call, string
-	.quad call, type
-	.quad lit, '?'
-	.quad jump, emit
+	.quad jump, error
 
 0:
 	.quad lit, lit
@@ -965,7 +962,8 @@ define head_reset,     accept,    "accept"
 define head_accept,    keyq,      "key?"
 define head_keyq,      key,       "key"
 define head_key,       flush,     "flush"
-define head_flush,     emit,      "emit"
+define head_flush,     error,     "error"
+define head_error,     emit,      "emit"
 define head_emit,      type,      "type"
 define head_type,      skip,      "skip"
 define head_skip,      word,      "word"
