@@ -866,6 +866,12 @@ tick: /* -- xt | error */
 	.quad fetch
 	.quad ret
 
+postpone: /* -- */
+	.quad call, tick
+	.quad lit, call
+	.quad call, comma
+	.quad jump, comma
+
 interpret: /* -- */
 	.quad call, word
 	.quad lit, _buff
@@ -979,7 +985,8 @@ define head_link,      apply,     "apply",    imm
 define head_apply,     colon,     ":",        imm
 define head_colon,     semicolon, ";",        imm
 define head_semicolon, tick,      "'",        imm
-define head_tick,      interpret, "interpret"
+define head_tick,      postpone,  "postpone", imm
+define head_postpone,  interpret, "interpret"
 define head_interpret, main,      "main"
 
 /* The following definitions should be moved out of core
