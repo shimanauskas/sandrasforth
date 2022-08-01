@@ -462,7 +462,7 @@ key: /* -- char */
 
 	.quad zjump, 0f
 
-	.quad call, reset
+	.quad call, accept
 
 0:
 	.quad call, curr
