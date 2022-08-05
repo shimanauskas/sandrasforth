@@ -814,7 +814,20 @@ colon: /* -- */
 	.quad lit, -1
 	.quad call, state
 	.quad store
+
+0:
 	.quad call, word
+	.quad lit, _buff
+	.quad bfetch
+	.quad call, zequals
+
+	.quad zjump, 0f
+
+	.quad call, accept
+
+	.quad jump, 0b
+0:
+
 	.quad lit, _buff
 	.quad call, head
 	.quad fetch
