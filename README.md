@@ -6,12 +6,6 @@ Avocado began as an attempt to write a Forth mostly in itself.
 
 Large part of Avocado is threaded code. There is no limit on the number of primitives used, however, each primitive should contain only a handful of assembly instructions.
 
-## The IO System
-
-There's a pair of buffers for input and output. `accept` reads input and places it in the `in` buffer. Each invocation of `key` then accesses the buffer and reads a character from it onto the stack. Then, `emit` can take that character and put it in the `out` buffer, which we can `flush`.
-
-`in` and `out` buffers are circular.
-
 ## Prerequisites
 
 * `make`
