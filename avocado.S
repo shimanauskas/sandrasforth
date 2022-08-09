@@ -1005,38 +1005,6 @@ define head_interpret, main,      "main"
 /* The following definitions should be moved out of core
    once we can compile them at runtime. */
 
-begin: /* c: -- addr */
-	.quad call, top
-	.quad fetch
-	.quad ret
-
-if: /* x -- */ /* c: -- addr */
-	.quad lit, zjump
-	.quad call, comma
-	.quad call, top
-	.quad fetch
-	.quad lit, 0
-	.quad jump, comma
-
-then: /* c: addr -- */
-	.quad push
-	.quad call, top
-	.quad fetch
-	.quad pop
-	.quad store
-	.quad ret
-
-again: /* c: addr1 addr2 -- */
-	.quad push
-	.quad lit, jump
-	.quad call, comma
-	.quad call, comma
-	.quad call, top
-	.quad fetch
-	.quad pop
-	.quad store
-	.quad ret
-
 dot: /* n -- */
 	.quad dup
 	.quad call, zless
@@ -1076,12 +1044,8 @@ udot: /* u -- */
 	.quad add
 	.quad jump, emit
 
-define head_main,  begin, "begin", imm
-define head_begin, if,    "if",    imm
-define head_if,    then,  "then",  imm
-define head_then,  again, "again", imm
-define head_again, dot,   "."
-define head_dot,   udot,  "u."
+define head_main, dot,  "."
+define head_dot,  udot, "u."
 
 .bss
 
