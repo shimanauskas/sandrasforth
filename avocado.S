@@ -422,12 +422,6 @@ string: /* addr1 -- addr2 u */
 	.quad bfetch
 	.quad ret
 
-reset: /* -- */
-	.quad lit, _in+1
-	.quad call, curr
-	.quad store
-	.quad ret
-
 accept: /* -- */
 	.quad lit, stdin
 	.quad lit, _in+1
@@ -440,7 +434,10 @@ accept: /* -- */
 
 	.quad lit, _in
 	.quad bstore
-	.quad jump, reset
+	.quad lit, _in+1
+	.quad call, curr
+	.quad store
+	.quad ret
 
 0:
 	.quad dup, dup
@@ -976,8 +973,7 @@ define head_equals,    zequals,   "0="
 define head_zequals,   within,    "within"
 define head_within,    align,     "align"
 define head_align,     string,    "string"
-define head_string,    reset,     "reset"
-define head_reset,     accept,    "accept"
+define head_string,    accept,    "accept"
 define head_accept,    keyq,      "key?"
 define head_keyq,      key,       "key"
 define head_key,       flush,     "flush"
