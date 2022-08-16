@@ -2,10 +2,6 @@
 
 A Forth for Linux and macOS on x86-64.
 
-Avocado began as an attempt to write a Forth mostly in itself.
-
-Large part of Avocado is threaded code. There is no limit on the number of primitives used, however, each primitive should contain only a handful of assembly instructions.
-
 ## Prerequisites
 
 * `make`
