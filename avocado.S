@@ -68,20 +68,15 @@
 	jmp *(%rbx)
 .endm
 
-.macro string name, string, mask=0
-\name:
-	.byte (1f-0f)+\mask
-0:
-	.ascii "\string"
-1:
-.balign cell
-.endm
-
 .macro define link, body, word, mask=0
 head_\body:
 	.quad \link
 	.quad \body
-	string 0, "\word", \mask
+	.byte (1f-0f)+\mask
+0:
+	.ascii "\word"
+1:
+.balign cell
 .endm
 
 .text
@@ -281,8 +276,6 @@ define head_store,  bfetch,  "b@"
 define head_bfetch, bstore,  "b!"
 define head_bstore, syscall, "syscall"
 
-string prompt, "# "
-
 in: /* -- addr */
 	.quad lit, _in
 	.quad ret
@@ -422,6 +415,42 @@ string: /* addr1 -- addr2 u */
 	.quad bfetch
 	.quad ret
 
+comma: /* x -- */
+	.quad call, top
+	.quad fetch
+	.quad dup
+	.quad lit, cell
+	.quad add
+	.quad call, top
+	.quad store
+	.quad store
+	.quad ret
+
+apply: /* -- */
+	.quad call, state
+	.quad fetch
+
+	.quad zjump, 0f
+
+	.quad call, top
+	.quad fetch
+	.quad call, here
+	.quad store
+	.quad ret
+
+0:
+	.quad lit, ret
+	.quad call, comma
+	.quad call, here
+	.quad fetch
+	.quad exec
+	.quad call, flush
+	.quad call, here
+	.quad fetch
+	.quad call, top
+	.quad store
+	.quad ret
+
 accept: /* -- */
 	.quad lit, stdin
 	.quad lit, _in+1
@@ -459,6 +488,7 @@ key: /* -- char */
 
 	.quad zjump, 0f
 
+	.quad call, apply
 	.quad call, accept
 
 0:
@@ -482,14 +512,6 @@ flush: /* -- */
 	.quad lit, _out
 	.quad bstore
 	.quad ret
-
-error: /* -- */
-	.quad lit, _buff
-	.quad call, string
-	.quad call, type
-	.quad lit, '?'
-
-	/* Fallthrough! */
 
 emit: /* char -- */
 	.quad lit, _out
@@ -528,20 +550,15 @@ type: /* addr u -- */
 	.quad drop
 	.quad ret
 
-/* Read input, skip whitepace.
-   Return first non-whitespace character,
-   or zero if end of input is reached. */
+error: /* -- */
+	.quad lit, _buff
+	.quad call, string
+	.quad call, type
+	.quad lit, '?'
+	.quad call, emit
+	.quad jump, flush
 
-skip: /* -- char | 0 */
-	.quad call, keyq
-	.quad not
-
-	.quad zjump, 0f
-
-	.quad lit, 0
-	.quad ret
-
-0:
+skip: /* -- char */
 	.quad call, key
 	.quad dup
 	.quad lit, '!'
@@ -556,16 +573,12 @@ skip: /* -- char | 0 */
 
 	.quad ret
 
-/* Extract a whitespace-bounded word from input to buffer,
-   or leave it empty if end of input is reached.
-   Note that there is always whitespace (newline) before end of input. */
-
 word: /* -- */
+	.quad call, skip
+	.quad dup
 	.quad lit, 0
 	.quad lit, _buff
 	.quad bstore
-	.quad call, skip
-	.quad dup
 
 	.quad zjump, 1f
 
@@ -760,17 +773,6 @@ find: /* -- addr | 0 */
 
 	.quad ret
 
-comma: /* x -- */
-	.quad call, top
-	.quad fetch
-	.quad dup
-	.quad lit, cell
-	.quad add
-	.quad call, top
-	.quad store
-	.quad store
-	.quad ret
-
 link: /* x -- */
 	.quad call, head
 	.quad fetch
@@ -782,49 +784,12 @@ link: /* x -- */
 	.quad store
 	.quad ret
 
-apply: /* -- */
-	.quad call, state
-	.quad fetch
-
-	.quad zjump, 0f
-
-	.quad call, top
-	.quad fetch
-	.quad call, here
-	.quad store
-	.quad ret
-
-0:
-	.quad lit, ret
-	.quad call, comma
-	.quad call, here
-	.quad fetch
-	.quad exec
-	.quad call, here
-	.quad fetch
-	.quad call, top
-	.quad store
-	.quad ret
-
 colon: /* -- */
 	.quad call, apply
 	.quad lit, -1
 	.quad call, state
 	.quad store
-
-0:
 	.quad call, word
-	.quad lit, _buff
-	.quad bfetch
-	.quad call, zequals
-
-	.quad zjump, 0f
-
-	.quad call, accept
-
-	.quad jump, 0b
-0:
-
 	.quad lit, _buff
 	.quad call, head
 	.quad fetch
@@ -882,13 +847,8 @@ postpone: /* -- */
 	.quad call, comma
 	.quad jump, comma
 
-interpret: /* -- */
+main: /* -- */
 	.quad call, word
-	.quad lit, _buff
-	.quad bfetch
-
-	.quad zjump, apply
-
 	.quad call, find
 	.quad call, qdup
 
@@ -907,7 +867,7 @@ interpret: /* -- */
 
 	.quad fetch
 	.quad exec
-	.quad jump, interpret
+	.quad jump, main
 
 0:
 	.quad fetch
@@ -924,7 +884,7 @@ interpret: /* -- */
 
 0:
 	.quad call, comma
-	.quad jump, interpret
+	.quad jump, main
 
 1:
 	.quad lit, _buff
@@ -934,21 +894,13 @@ interpret: /* -- */
 	.quad zjump, 0f
 
 	.quad drop
-	.quad jump, error
+	.quad call, error
+	.quad jump, main
 
 0:
 	.quad lit, lit
 	.quad call, comma
 	.quad call, comma
-	.quad jump, interpret
-
-main: /* -- */
-	.quad lit, prompt
-	.quad call, string
-	.quad call, type
-	.quad call, flush
-	.quad call, accept
-	.quad call, interpret
 	.quad jump, main
 
 define head_syscall,   in,        "in"
@@ -973,14 +925,16 @@ define head_equals,    zequals,   "0="
 define head_zequals,   within,    "within"
 define head_within,    align,     "align"
 define head_align,     string,    "string"
-define head_string,    accept,    "accept"
+define head_string,    comma,     ",",        imm
+define head_comma,     apply,     "apply",    imm
+define head_apply,     accept,    "accept"
 define head_accept,    keyq,      "key?"
 define head_keyq,      key,       "key"
 define head_key,       flush,     "flush"
-define head_flush,     error,     "error"
-define head_error,     emit,      "emit"
+define head_flush,     emit,      "emit"
 define head_emit,      type,      "type"
-define head_type,      skip,      "skip"
+define head_type,      error,     "error"
+define head_error,     skip,      "skip"
 define head_skip,      word,      "word"
 define head_word,      digitq,    "digit?"
 define head_digitq,    natural,   "natural"
@@ -988,15 +942,12 @@ define head_natural,   number,    "number"
 define head_number,    bmove,     "bmove"
 define head_bmove,     sameq,     "same?"
 define head_sameq,     find,      "find"
-define head_find,      comma,     ",",        imm
-define head_comma,     link,      "link",     imm
-define head_link,      apply,     "apply",    imm
-define head_apply,     colon,     ":",        imm
+define head_find,      link,      "link",     imm
+define head_link,      colon,     ":",        imm
 define head_colon,     semicolon, ";",        imm
 define head_semicolon, tick,      "'",        imm
 define head_tick,      postpone,  "postpone", imm
-define head_postpone,  interpret, "interpret"
-define head_interpret, main,      "main"
+define head_postpone,  main,      "main"
 
 /* The following definitions should be moved out of core
    once we can compile them at runtime. */
