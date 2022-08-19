@@ -896,6 +896,7 @@ main: /* -- */
 
 	.quad drop
 	.quad call, error
+	.quad call, accept
 	.quad jump, main
 
 0:
