@@ -576,12 +576,9 @@ skip: /* -- char */
 
 word: /* -- */
 	.quad call, skip
-	.quad dup
 	.quad lit, 0
 	.quad lit, _buff
 	.quad bstore
-
-	.quad zjump, 1f
 
 0:
 	.quad dup
