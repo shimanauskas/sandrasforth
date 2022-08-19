@@ -587,7 +587,7 @@ word: /* -- */
 	.quad not
 	.quad lit, _buff
 	.quad bfetch
-	.quad lit, 0xFF-1
+	.quad lit, 0x7F
 	.quad call, equals
 	.quad not
 	.quad and
@@ -608,6 +608,11 @@ word: /* -- */
 1:
 
 	.quad drop
+	.quad call, curr
+	.quad fetch
+	.quad dec
+	.quad call, curr
+	.quad store
 	.quad ret
 
 digitq: /* char base -- u bool */
