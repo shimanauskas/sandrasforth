@@ -839,7 +839,7 @@ tick: /* -- xt | *error* */
 
 	.quad zjump, error
 
-	.quad lit, 8
+	.quad lit, cell
 	.quad add
 	.quad fetch
 	.quad ret
