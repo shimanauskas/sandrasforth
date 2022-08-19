@@ -830,7 +830,7 @@ semicolon: /* -- */
 	.quad store
 	.quad ret
 
-tick: /* -- xt | error */
+tick: /* -- xt | *error* */
 	.quad call, word
 	.quad call, find
 	.quad call, qdup
