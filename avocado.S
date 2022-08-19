@@ -69,13 +69,13 @@
 	jmp *(%rbx)
 .endm
 
-.macro define link, body, word, mask=0
+.macro define link, body, name, mask=0
 head_\body:
 	.quad \link
 	.quad \body
 	.byte (1f-0f)+\mask
 0:
-	.ascii "\word"
+	.ascii "\name"
 1:
 .balign cell
 .endm
