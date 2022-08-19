@@ -38,7 +38,8 @@
 
 #define cell 8
 #define sign 1<<(cell*8-1)
-#define imm  0x80
+
+#define immediate 0x80
 
 .macro dup /* x -- x x */
 	leaq -cell(%rbp), %rbp
@@ -752,7 +753,7 @@ find: /* -- addr | 0 */
 	.quad lit, cell*2
 	.quad add
 	.quad bfetch
-	.quad lit, ~imm
+	.quad lit, ~immediate
 	.quad and
 	.quad lit, _buff
 	.quad bfetch
@@ -860,7 +861,7 @@ main: /* -- */
 	.quad lit, cell
 	.quad add
 	.quad bfetch
-	.quad lit, imm
+	.quad lit, immediate
 	.quad and
 
 	.quad zjump, 0f
@@ -925,8 +926,8 @@ define head_equals,    zequals,   "0="
 define head_zequals,   within,    "within"
 define head_within,    align,     "align"
 define head_align,     string,    "string"
-define head_string,    comma,     ",",        imm
-define head_comma,     apply,     "apply",    imm
+define head_string,    comma,     ",",        immediate
+define head_comma,     apply,     "apply",    immediate
 define head_apply,     accept,    "accept"
 define head_accept,    keyq,      "key?"
 define head_keyq,      key,       "key"
@@ -942,11 +943,11 @@ define head_natural,   number,    "number"
 define head_number,    bmove,     "bmove"
 define head_bmove,     sameq,     "same?"
 define head_sameq,     find,      "find"
-define head_find,      link,      "link",     imm
-define head_link,      colon,     ":",        imm
-define head_colon,     semicolon, ";",        imm
-define head_semicolon, tick,      "'",        imm
-define head_tick,      postpone,  "postpone", imm
+define head_find,      link,      "link",     immediate
+define head_link,      colon,     ":",        immediate
+define head_colon,     semicolon, ";",        immediate
+define head_semicolon, tick,      "'",        immediate
+define head_tick,      postpone,  "postpone", immediate
 define head_postpone,  main,      "main"
 
 /* The following definitions should be moved out of core
