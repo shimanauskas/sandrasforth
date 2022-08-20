@@ -474,20 +474,16 @@ accept: /* -- */
 	.quad lit, sys_exit
 	.quad syscall
 
-key: /* -- char */
+keyq: /* -- bool */
 	.quad call, curr
 	.quad fetch
 	.quad lit, _in
 	.quad call, string
 	.quad add
-	.quad call, equals
+	.quad call, uless
+	.quad ret
 
-	.quad zjump, 0f
-
-	.quad call, apply
-	.quad call, accept
-
-0:
+key: /* -- char */
 	.quad call, curr
 	.quad fetch
 	.quad bfetch
@@ -559,7 +555,11 @@ error: /* -- */
 	.quad call, flush
 	.quad jump, accept
 
-skip: /* -- char */
+skip: /* -- */
+	.quad call, keyq
+
+	.quad zjump, 0f
+
 	.quad call, key
 	.quad lit, '!'
 	.quad call, uless
@@ -575,11 +575,29 @@ skip: /* -- char */
 
 word: /* -- */
 	.quad call, skip
+	.quad call, keyq
+	.quad not
+
+	.quad zjump, 0f
+
+	.quad call, apply
+	.quad call, accept
+	.quad jump, word
+
+0:
 	.quad lit, 0
 	.quad lit, _buff
 	.quad bstore
 
 0:
+	.quad call, keyq
+	.quad not
+
+	.quad zjump, 1f
+
+	.quad call, accept
+
+1:
 	.quad call, key
 	.quad dup
 	.quad lit, '!'
@@ -588,7 +606,8 @@ word: /* -- */
 	.quad lit, _buff
 	.quad bfetch
 	.quad lit, 0x7F
-	.quad call, uless
+	.quad call, equals
+	.quad not
 	.quad and
 
 	.quad zjump, 0f
@@ -925,7 +944,8 @@ define head_align,     string,    "string"
 define head_string,    comma,     ",",        immediate
 define head_comma,     apply,     "apply",    immediate
 define head_apply,     accept,    "accept"
-define head_accept,    key,       "key"
+define head_accept,    keyq,      "key?"
+define head_keyq,      key,       "key"
 define head_key,       advance,   "advance"
 define head_advance,   flush,     "flush"
 define head_flush,     emit,      "emit"
