@@ -474,18 +474,13 @@ accept: /* -- */
 	.quad lit, sys_exit
 	.quad syscall
 
-keyq: /* -- bool */
+key: /* -- char */
 	.quad call, curr
 	.quad fetch
 	.quad lit, _in
 	.quad call, string
 	.quad add
-	.quad call, uless
-	.quad ret
-
-key: /* -- char */
-	.quad call, keyq
-	.quad not
+	.quad call, equals
 
 	.quad zjump, 0f
 
@@ -932,8 +927,7 @@ define head_align,     string,    "string"
 define head_string,    comma,     ",",        immediate
 define head_comma,     apply,     "apply",    immediate
 define head_apply,     accept,    "accept"
-define head_accept,    keyq,      "key?"
-define head_keyq,      key,       "key"
+define head_accept,    key,       "key"
 define head_key,       flush,     "flush"
 define head_flush,     emit,      "emit"
 define head_emit,      type,      "type"
