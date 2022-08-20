@@ -606,8 +606,7 @@ word: /* -- */
 	.quad lit, _buff
 	.quad bfetch
 	.quad lit, 0x7F
-	.quad call, equals
-	.quad not
+	.quad call, uless
 	.quad and
 
 	.quad zjump, 0f
