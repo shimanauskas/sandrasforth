@@ -552,7 +552,8 @@ error: /* -- */
 	.quad call, type
 	.quad lit, '?'
 	.quad call, emit
-	.quad jump, flush
+	.quad call, flush
+	.quad jump, accept
 
 skip: /* -- char */
 	.quad call, key
@@ -893,7 +894,6 @@ main: /* -- */
 
 	.quad drop
 	.quad call, error
-	.quad call, accept
 	.quad jump, main
 
 0:
