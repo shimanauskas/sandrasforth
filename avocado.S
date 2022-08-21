@@ -277,6 +277,10 @@ define head_store,  bfetch,  "b@"
 define head_bfetch, bstore,  "b!"
 define head_bstore, syscall, "syscall"
 
+_cell: /* -- u */
+	.quad lit, cell
+	.quad ret
+
 _in: /* -- addr */
 	.quad lit, in
 	.quad ret
@@ -920,7 +924,8 @@ main: /* -- */
 	.quad call, comma
 	.quad jump, main
 
-define head_syscall,   _in,       "in"
+define head_syscall,   _cell,     "cell"
+define head__cell,     _in,       "in"
 define head__in,       _out,      "out"
 define head__out,      _buff,     "buff"
 define head__buff,     _code,     "code"

@@ -1,4 +1,4 @@
-: immediate last @ 16 + dup b@ 128 or over b! drop ; immediate
+: immediate last @ cell + cell + dup b@ 128 or over b! drop ; immediate
 
 : begin top @ ; immediate
 : until lit 0jump postpone , postpone , ; immediate
