@@ -844,16 +844,18 @@ semicolon: /* -- */
 	.quad store
 	.quad ret
 
-tick: /* -- xt | *error* */
+tick: /* -- xt | 0 */
 	.quad call, word
 	.quad call, find
-	.quad call, qdup
+	.quad dup
 
-	.quad zjump, error
+	.quad zjump, 0f
 
 	.quad lit, cell
 	.quad add
 	.quad fetch
+
+0:
 	.quad ret
 
 postpone: /* -- */
