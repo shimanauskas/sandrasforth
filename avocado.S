@@ -277,28 +277,28 @@ define head_store,  bfetch,  "b@"
 define head_bfetch, bstore,  "b!"
 define head_bstore, syscall, "syscall"
 
-in: /* -- addr */
-	.quad lit, _in
+_in: /* -- addr */
+	.quad lit, in
 	.quad ret
 
-out: /* -- addr */
-	.quad lit, _out
+_out: /* -- addr */
+	.quad lit, out
 	.quad ret
 
-buff: /* -- addr */
-	.quad lit, _buff
+_buff: /* -- addr */
+	.quad lit, buff
 	.quad ret
 
-code: /* -- addr */
-	.quad lit, _code
+_code: /* -- addr */
+	.quad lit, code
 	.quad ret
 
-vocab: /* -- addr */
-	.quad lit, _vocab
+_vocab: /* -- addr */
+	.quad lit, vocab
 	.quad ret
 
 curr: /* -- addr */
-	.quad var, _in+1
+	.quad var, in+1
 	.quad ret
 
 state: /* -- addr */
@@ -306,15 +306,15 @@ state: /* -- addr */
 	.quad ret
 
 here: /* -- addr */
-	.quad var, _code
+	.quad var, code
 	.quad ret
 
 top: /* -- addr */
-	.quad var, _code
+	.quad var, code
 	.quad ret
 
 head: /* -- addr */
-	.quad var, _vocab
+	.quad var, vocab
 	.quad ret
 
 last: /* -- addr */
@@ -454,7 +454,7 @@ apply: /* -- */
 
 accept: /* -- */
 	.quad lit, stdin
-	.quad lit, _in+1
+	.quad lit, in+1
 	.quad lit, 0xFF-1
 	.quad lit, sys_read
 	.quad syscall
@@ -462,9 +462,9 @@ accept: /* -- */
 
 	.quad zjump, 0f
 
-	.quad lit, _in
+	.quad lit, in
 	.quad bstore
-	.quad lit, _in+1
+	.quad lit, in+1
 	.quad call, curr
 	.quad store
 	.quad ret
@@ -477,7 +477,7 @@ accept: /* -- */
 keyq: /* -- bool */
 	.quad call, curr
 	.quad fetch
-	.quad lit, _in
+	.quad lit, in
 	.quad call, string
 	.quad add
 	.quad call, uless
@@ -499,26 +499,26 @@ advance: /* -- */
 
 flush: /* -- */
 	.quad lit, stdout
-	.quad lit, _out
+	.quad lit, out
 	.quad call, string
 	.quad lit, sys_write
 	.quad syscall
 	.quad drop
 	.quad lit, 0
-	.quad lit, _out
+	.quad lit, out
 	.quad bstore
 	.quad ret
 
 emit: /* char -- */
-	.quad lit, _out
+	.quad lit, out
 	.quad call, string
 	.quad add
 	.quad bstore
-	.quad lit, _out
+	.quad lit, out
 	.quad bfetch
 	.quad inc
 	.quad dup
-	.quad lit, _out
+	.quad lit, out
 	.quad bstore
 	.quad lit, 0xFF
 	.quad xor
@@ -547,7 +547,7 @@ type: /* addr u -- */
 	.quad ret
 
 error: /* -- */
-	.quad lit, _buff
+	.quad lit, buff
 	.quad call, string
 	.quad call, type
 	.quad lit, '?'
@@ -586,7 +586,7 @@ word: /* -- */
 
 0:
 	.quad lit, 0
-	.quad lit, _buff
+	.quad lit, buff
 	.quad bstore
 
 0:
@@ -603,7 +603,7 @@ word: /* -- */
 	.quad lit, '!'
 	.quad call, uless
 	.quad not
-	.quad lit, _buff
+	.quad lit, buff
 	.quad bfetch
 	.quad lit, 0x7F
 	.quad call, uless
@@ -611,11 +611,11 @@ word: /* -- */
 
 	.quad zjump, 0f
 
-	.quad lit, _buff
+	.quad lit, buff
 	.quad call, string
 	.quad dup
 	.quad inc
-	.quad lit, _buff
+	.quad lit, buff
 	.quad bstore
 	.quad add
 	.quad bstore
@@ -769,7 +769,7 @@ find: /* -- addr | 0 */
 	.quad bfetch
 	.quad lit, ~immediate
 	.quad and
-	.quad lit, _buff
+	.quad lit, buff
 	.quad bfetch
 	.quad call, equals
 
@@ -777,7 +777,7 @@ find: /* -- addr | 0 */
 
 	.quad lit, cell*2+1
 	.quad add
-	.quad lit, _buff
+	.quad lit, buff
 	.quad call, string
 	.quad call, sameq
 
@@ -805,7 +805,7 @@ colon: /* -- */
 	.quad call, state
 	.quad store
 	.quad call, word
-	.quad lit, _buff
+	.quad lit, buff
 	.quad call, head
 	.quad fetch
 	.quad over
@@ -904,7 +904,7 @@ main: /* -- */
 	.quad jump, main
 
 1:
-	.quad lit, _buff
+	.quad lit, buff
 	.quad call, string
 	.quad call, number
 
@@ -920,12 +920,12 @@ main: /* -- */
 	.quad call, comma
 	.quad jump, main
 
-define head_syscall,   in,        "in"
-define head_in,        out,       "out"
-define head_out,       buff,      "buff"
-define head_buff,      code,      "code"
-define head_code,      vocab,     "vocab"
-define head_vocab,     curr,      "curr"
+define head_syscall,   _in,       "in"
+define head__in,       _out,      "out"
+define head__out,      _buff,     "buff"
+define head__buff,     _code,     "code"
+define head__code,     _vocab,    "vocab"
+define head__vocab,    curr,      "curr"
 define head_curr,      state,     "state"
 define head_state,     here,      "here"
 define head_here,      top,       "top"
@@ -1014,18 +1014,18 @@ define head_dot,  udot, "u."
 
 .bss
 
-_in:
+in:
 	.skip 0x100
 
-_out:
+out:
 	.skip 0x100
 
-_buff:
+buff:
 	.skip 0x100
 
-_code:
+code:
 	.skip 0x1000
-_vocab:
+vocab:
 
 	.skip 0x1000
 dstack:
