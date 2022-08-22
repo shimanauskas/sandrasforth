@@ -561,12 +561,10 @@ error: /* -- */
 
 skip: /* -- */
 	.quad call, keyq
-
-	.quad zjump, 0f
-
 	.quad call, key
 	.quad lit, '!'
 	.quad call, uless
+	.quad and
 
 	.quad zjump, 0f
 
