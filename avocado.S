@@ -747,7 +747,7 @@ sameq: /* addr1 addr2 u1 -- u2 */
 	.quad nip, nip
 	.quad ret
 
-find: /* -- addr | 0 */
+find: /* -- 0 | addr */
 	.quad call, last
 
 0:
@@ -837,7 +837,7 @@ semicolon: /* -- */
 	.quad store
 	.quad ret
 
-tick: /* -- xt | 0 */
+tick: /* -- 0 | xt */
 	.quad call, word
 	.quad call, find
 	.quad dup
