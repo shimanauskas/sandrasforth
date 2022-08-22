@@ -550,15 +550,6 @@ type: /* addr u -- */
 	.quad drop
 	.quad ret
 
-error: /* -- */
-	.quad lit, buff
-	.quad call, string
-	.quad call, type
-	.quad lit, '?'
-	.quad call, emit
-	.quad call, flush
-	.quad jump, accept
-
 skip: /* -- */
 	.quad call, keyq
 	.quad call, key
@@ -913,7 +904,13 @@ main: /* -- */
 	.quad zjump, 0f
 
 	.quad drop
-	.quad call, error
+	.quad lit, buff
+	.quad call, string
+	.quad call, type
+	.quad lit, '?'
+	.quad call, emit
+	.quad call, flush
+	.quad call, accept
 	.quad jump, main
 
 0:
@@ -954,8 +951,7 @@ define head_key,       advance,   "advance"
 define head_advance,   flush,     "flush"
 define head_flush,     emit,      "emit"
 define head_emit,      type,      "type"
-define head_type,      error,     "error"
-define head_error,     skip,      "skip"
+define head_type,      skip,      "skip"
 define head_skip,      word,      "word"
 define head_word,      digitq,    "digit?"
 define head_digitq,    natural,   "natural"
