@@ -243,7 +243,7 @@ syscall: /* x1 x2 x3 x4 -- x5 */
 	syscall
 	next
 
-codeend:
+_end:
 
 .data
 
@@ -883,7 +883,7 @@ main: /* -- */
 	.quad fetch
 	.quad dup
 	.quad lit, _start
-	.quad lit, codeend
+	.quad lit, _end
 	.quad call, within
 	.quad not
 
