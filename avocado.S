@@ -69,9 +69,9 @@
 	jmp *(%rbx)
 .endm
 
-.macro define link, body, name, mask=0
+.macro define previous, body, name, mask=0
 head_\body:
-	.quad \link
+	.quad \previous
 	.quad \body
 	.byte (1f-0f)+\mask
 0:
