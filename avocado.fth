@@ -14,5 +14,10 @@
 
 : variable postpone : lit var postpone , 0 postpone , postpone ; ; immediate
 
+variable temporary
+
+: [ postpone apply state @ temporary ! 0 state ! ; immediate
+: ] postpone apply temporary @ state ! ; immediate
+
 : dec ( -- ) 10 base ! ; immediate
 : hex ( -- ) 16 base ! ; immediate
