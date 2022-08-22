@@ -420,42 +420,6 @@ string: /* addr1 -- addr2 u */
 	.quad bfetch
 	.quad ret
 
-comma: /* x -- */
-	.quad call, top
-	.quad fetch
-	.quad dup
-	.quad lit, cell
-	.quad add
-	.quad call, top
-	.quad store
-	.quad store
-	.quad ret
-
-apply: /* -- */
-	.quad call, state
-	.quad fetch
-
-	.quad zjump, 0f
-
-	.quad call, top
-	.quad fetch
-	.quad call, here
-	.quad store
-	.quad ret
-
-0:
-	.quad lit, ret
-	.quad call, comma
-	.quad call, here
-	.quad fetch
-	.quad exec
-	.quad call, flush
-	.quad call, here
-	.quad fetch
-	.quad call, top
-	.quad store
-	.quad ret
-
 accept: /* -- */
 	.quad lit, stdin
 	.quad lit, in+1
@@ -548,6 +512,42 @@ type: /* addr u -- */
 0:
 
 	.quad drop
+	.quad ret
+
+comma: /* x -- */
+	.quad call, top
+	.quad fetch
+	.quad dup
+	.quad lit, cell
+	.quad add
+	.quad call, top
+	.quad store
+	.quad store
+	.quad ret
+
+apply: /* -- */
+	.quad call, state
+	.quad fetch
+
+	.quad zjump, 0f
+
+	.quad call, top
+	.quad fetch
+	.quad call, here
+	.quad store
+	.quad ret
+
+0:
+	.quad lit, ret
+	.quad call, comma
+	.quad call, here
+	.quad fetch
+	.quad exec
+	.quad call, flush
+	.quad call, here
+	.quad fetch
+	.quad call, top
+	.quad store
 	.quad ret
 
 skip: /* -- */
@@ -942,16 +942,16 @@ define head_equals,    zequals,   "0="
 define head_zequals,   within,    "within"
 define head_within,    align,     "align"
 define head_align,     string,    "string"
-define head_string,    comma,     ",",        immediate
-define head_comma,     apply,     "apply",    immediate
-define head_apply,     accept,    "accept"
+define head_string,    accept,    "accept"
 define head_accept,    keyq,      "key?"
 define head_keyq,      key,       "key"
 define head_key,       advance,   "advance"
 define head_advance,   flush,     "flush"
 define head_flush,     emit,      "emit"
 define head_emit,      type,      "type"
-define head_type,      skip,      "skip"
+define head_type,      comma,     ",",        immediate
+define head_comma,     apply,     "apply",    immediate
+define head_apply,     skip,      "skip"
 define head_skip,      word,      "word"
 define head_word,      digitq,    "digit?"
 define head_digitq,    natural,   "natural"
