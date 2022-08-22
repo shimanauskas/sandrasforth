@@ -12,5 +12,7 @@
 : again ( c: addr1 addr2 -- )
   push lit jump postpone , postpone , top @ pop ! ; immediate
 
+: variable postpone : lit var postpone , 0 postpone , postpone ; ; immediate
+
 : dec ( -- ) 10 base ! ; immediate
 : hex ( -- ) 16 base ! ; immediate
