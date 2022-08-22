@@ -405,7 +405,7 @@ within: /* u1 u2 u3 -- bool */
 	.quad and
 	.quad ret
 
-align: /* x -- x */
+align: /* x1 -- x2 */
 	.quad lit, cell-1
 	.quad add
 	.quad lit, ~(cell-1)
