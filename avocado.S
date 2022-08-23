@@ -322,7 +322,7 @@ head: /* -- addr */
 	.quad ret
 
 last: /* -- addr */
-	.quad var, head_udot
+	.quad var, head_main
 	.quad ret
 
 base: /* -- addr */
@@ -976,51 +976,6 @@ define head_colon,     semicolon, ";",        immediate
 define head_semicolon, tick,      "'",        immediate
 define head_tick,      postpone,  "postpone", immediate
 define head_postpone,  main,      "main"
-
-/* The following definitions should be moved out of core
-   once we can compile them at runtime. */
-
-dot: /* n -- */
-	.quad dup
-	.quad call, zless
-
-	.quad zjump, udot
-
-	.quad neg
-	.quad lit, '-'
-	.quad call, emit
-
-	/* Fallthrough! */
-
-udot: /* u -- */
-	.quad lit, 0
-	.quad call, base
-	.quad fetch
-	.quad div
-	.quad call, qdup
-
-	.quad zjump, 0f
-
-	.quad call, udot
-
-0:
-	.quad dup
-	.quad lit, 10
-	.quad call, uless
-
-	.quad zjump, 0f
-
-	.quad lit, '0'
-	.quad add
-	.quad jump, emit
-
-0:
-	.quad lit, 'A'-10
-	.quad add
-	.quad jump, emit
-
-define head_main, dot,  "."
-define head_dot,  udot, "u."
 
 .bss
 
