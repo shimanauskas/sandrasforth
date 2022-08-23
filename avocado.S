@@ -340,7 +340,8 @@ qdup: /* x -- 0 | x x */
 	.quad ret
 
 less: /* n1 n2 -- bool */
-	.quad over, over
+	.quad over
+	.quad over
 	.quad xor
 	.quad call, zless
 
@@ -354,7 +355,8 @@ less: /* n1 n2 -- bool */
 	.quad jump, zless
 
 uless: /* u1 u2 -- bool */
-	.quad over, over
+	.quad over
+	.quad over
 	.quad xor
 	.quad call, zless
 
@@ -400,7 +402,8 @@ within: /* u1 u2 u3 -- bool */
 	.quad push
 	.quad call, uless
 	.quad not
-	.quad pop, pop
+	.quad pop
+	.quad pop
 	.quad call, uless
 	.quad and
 	.quad ret
@@ -438,7 +441,8 @@ accept: /* -- */
 	.quad ret
 
 0:
-	.quad dup, dup
+	.quad dup
+	.quad dup
 	.quad lit, sys_exit
 	.quad syscall
 
@@ -706,8 +710,10 @@ bmove: /* addr1 addr2 u -- */
 	.quad zjump, 0f
 
 	.quad push
-	.quad over, bfetch
-	.quad over, bstore
+	.quad over
+	.quad bfetch
+	.quad over
+	.quad bstore
 	.quad push
 	.quad inc
 	.quad pop
@@ -724,9 +730,12 @@ bmove: /* addr1 addr2 u -- */
 
 sameq: /* addr1 addr2 u1 -- u2 */
 	.quad dup
-	.quad push, push
-	.quad over, bfetch
-	.quad over, bfetch
+	.quad push
+	.quad push
+	.quad over
+	.quad bfetch
+	.quad over
+	.quad bfetch
 	.quad call, equals
 	.quad pop
 	.quad and
@@ -744,7 +753,8 @@ sameq: /* addr1 addr2 u1 -- u2 */
 0:
 
 	.quad pop
-	.quad nip, nip
+	.quad nip
+	.quad nip
 	.quad ret
 
 find: /* -- 0 | addr */
@@ -752,7 +762,8 @@ find: /* -- 0 | addr */
 
 0:
 	.quad fetch
-	.quad dup, dup
+	.quad dup
+	.quad dup
 
 	.quad zjump, 1f
 
