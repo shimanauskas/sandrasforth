@@ -6,16 +6,17 @@
 : char word buffer 1+ b@ ; immediate
 : ( begin word buffer b@ 1 = buffer 1+ b@ lit char ) , = and until ; immediate
 
-: if ( c: -- addr ) lit 0jump postpone , top @ 0 postpone , ; immediate
-: then ( c: addr -- ) push top @ pop ! ; immediate
+: if ( -- addr ) lit 0jump postpone , top @ 0 postpone , ; immediate
+: then ( addr -- ) push top @ pop ! ; immediate
 
-: again ( c: addr1 addr2 -- )
+: again ( addr1 addr2 -- )
   push lit jump postpone , postpone , top @ pop ! ; immediate
 
-: [ postpone apply  0 state ! ; immediate
-: ] postpone apply -1 state ! ; immediate
+: [ ( -- ) postpone apply  0 state ! ; immediate
+: ] ( -- ) postpone apply -1 state ! ; immediate
 
-: variable postpone : lit var postpone , 0 postpone , postpone ; ; immediate
+: variable ( -- ) postpone : lit var postpone , 0 postpone ,
+  postpone ; ; immediate
 
 : dec ( -- ) 10 base ! ; immediate
 : hex ( -- ) 16 base ! ; immediate
