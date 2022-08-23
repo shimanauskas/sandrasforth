@@ -3,8 +3,8 @@
 : begin top @ ; immediate
 : until lit 0jump postpone , postpone , ; immediate
 
-: char word buff 1+ b@ ; immediate
-: ( begin word buff b@ 1 = buff 1+ b@ lit char ) , = and until ; immediate
+: char word buffer 1+ b@ ; immediate
+: ( begin word buffer b@ 1 = buffer 1+ b@ lit char ) , = and until ; immediate
 
 : if ( c: -- addr ) lit 0jump postpone , top @ 0 postpone , ; immediate
 : then ( c: addr -- ) push top @ pop ! ; immediate

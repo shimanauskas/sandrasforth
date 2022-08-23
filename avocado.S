@@ -281,16 +281,16 @@ _cell: /* -- u */
 	.quad lit, cell
 	.quad ret
 
-_in: /* -- addr */
-	.quad lit, in
+_input: /* -- addr */
+	.quad lit, input
 	.quad ret
 
-_out: /* -- addr */
-	.quad lit, out
+_output: /* -- addr */
+	.quad lit, output
 	.quad ret
 
-_buff: /* -- addr */
-	.quad lit, buff
+_buffer: /* -- addr */
+	.quad lit, buffer
 	.quad ret
 
 _code: /* -- addr */
@@ -302,7 +302,7 @@ _vocab: /* -- addr */
 	.quad ret
 
 curr: /* -- addr */
-	.quad var, in+1
+	.quad var, input+1
 	.quad ret
 
 state: /* -- addr */
@@ -425,7 +425,7 @@ string: /* addr1 -- addr2 u */
 
 accept: /* -- */
 	.quad lit, stdin
-	.quad lit, in+1
+	.quad lit, input+1
 	.quad lit, 0xFF-1
 	.quad lit, sys_read
 	.quad syscall
@@ -433,9 +433,9 @@ accept: /* -- */
 
 	.quad zjump, 0f
 
-	.quad lit, in
+	.quad lit, input
 	.quad bstore
-	.quad lit, in+1
+	.quad lit, input+1
 	.quad call, curr
 	.quad store
 	.quad ret
@@ -449,7 +449,7 @@ accept: /* -- */
 keyq: /* -- bool */
 	.quad call, curr
 	.quad fetch
-	.quad lit, in
+	.quad lit, input
 	.quad call, string
 	.quad add
 	.quad call, uless
@@ -471,26 +471,26 @@ advance: /* -- */
 
 flush: /* -- */
 	.quad lit, stdout
-	.quad lit, out
+	.quad lit, output
 	.quad call, string
 	.quad lit, sys_write
 	.quad syscall
 	.quad drop
 	.quad lit, 0
-	.quad lit, out
+	.quad lit, output
 	.quad bstore
 	.quad ret
 
 emit: /* char -- */
-	.quad lit, out
+	.quad lit, output
 	.quad call, string
 	.quad add
 	.quad bstore
-	.quad lit, out
+	.quad lit, output
 	.quad bfetch
 	.quad inc
 	.quad dup
-	.quad lit, out
+	.quad lit, output
 	.quad bstore
 	.quad lit, 0xFF
 	.quad xor
@@ -583,7 +583,7 @@ word: /* -- */
 
 0:
 	.quad lit, 0
-	.quad lit, buff
+	.quad lit, buffer
 	.quad bstore
 
 0:
@@ -600,7 +600,7 @@ word: /* -- */
 	.quad lit, '!'
 	.quad call, uless
 	.quad not
-	.quad lit, buff
+	.quad lit, buffer
 	.quad bfetch
 	.quad lit, 0x7F
 	.quad call, uless
@@ -608,11 +608,11 @@ word: /* -- */
 
 	.quad zjump, 0f
 
-	.quad lit, buff
+	.quad lit, buffer
 	.quad call, string
 	.quad dup
 	.quad inc
-	.quad lit, buff
+	.quad lit, buffer
 	.quad bstore
 	.quad add
 	.quad bstore
@@ -773,7 +773,7 @@ find: /* -- 0 | addr */
 	.quad bfetch
 	.quad lit, ~immediate
 	.quad and
-	.quad lit, buff
+	.quad lit, buffer
 	.quad bfetch
 	.quad call, equals
 
@@ -781,7 +781,7 @@ find: /* -- 0 | addr */
 
 	.quad lit, cell*2+1
 	.quad add
-	.quad lit, buff
+	.quad lit, buffer
 	.quad call, string
 	.quad call, sameq
 
@@ -806,7 +806,7 @@ link: /* x -- */
 colon: /* -- */
 	.quad call, apply
 	.quad call, word
-	.quad lit, buff
+	.quad lit, buffer
 	.quad call, head
 	.quad fetch
 	.quad over
@@ -908,14 +908,14 @@ main: /* -- */
 	.quad jump, main
 
 1:
-	.quad lit, buff
+	.quad lit, buffer
 	.quad call, string
 	.quad call, number
 
 	.quad zjump, 0f
 
 	.quad drop
-	.quad lit, buff
+	.quad lit, buffer
 	.quad call, string
 	.quad call, type
 	.quad lit, '?'
@@ -931,10 +931,10 @@ main: /* -- */
 	.quad jump, main
 
 define head_syscall,   _cell,     "cell"
-define head__cell,     _in,       "in"
-define head__in,       _out,      "out"
-define head__out,      _buff,     "buff"
-define head__buff,     _code,     "code"
+define head__cell,     _input,    "input"
+define head__input,    _output,   "output"
+define head__output,   _buffer,   "buffer"
+define head__buffer,   _code,     "code"
 define head__code,     _vocab,    "vocab"
 define head__vocab,    curr,      "curr"
 define head_curr,      state,     "state"
@@ -1024,13 +1024,13 @@ define head_dot,  udot, "u."
 
 .bss
 
-in:
+input:
 	.skip 0x100
 
-out:
+output:
 	.skip 0x100
 
-buff:
+buffer:
 	.skip 0x100
 
 code:
