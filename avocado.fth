@@ -12,8 +12,8 @@
 : again ( c: addr1 addr2 -- )
   push lit jump postpone , postpone , top @ pop ! ; immediate
 
-: [ postpone apply state @ push 0 state ! main pop state ! ; immediate
-: ] postpone apply pop pop drop push ; immediate
+: [ postpone apply  0 state ! ; immediate
+: ] postpone apply -1 state ! ; immediate
 
 : variable postpone : lit var postpone , 0 postpone , postpone ; ; immediate
 
