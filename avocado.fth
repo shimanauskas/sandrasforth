@@ -12,7 +12,7 @@
 : again ( addr1 addr2 -- )
   push lit jump postpone , postpone , top @ pop ! ; immediate
 
-: [ ( -- ) postpone apply  0 state ! ; immediate
+: [ ( -- ) top @ here ! 0 state ! ; immediate
 : ] ( -- ) postpone apply -1 state ! ; immediate
 
 : variable ( -- ) postpone : lit var postpone , 0 postpone ,
