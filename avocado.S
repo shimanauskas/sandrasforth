@@ -301,7 +301,7 @@ _vocab: /* -- addr */
 	.quad lit, vocab
 	.quad ret
 
-curr: /* -- addr */
+mark: /* -- addr */
 	.quad var, input+1
 	.quad ret
 
@@ -436,7 +436,7 @@ accept: /* -- */
 	.quad lit, input
 	.quad bstore
 	.quad lit, input+1
-	.quad call, curr
+	.quad call, mark
 	.quad store
 	.quad ret
 
@@ -447,7 +447,7 @@ accept: /* -- */
 	.quad syscall
 
 keyq: /* -- bool */
-	.quad call, curr
+	.quad call, mark
 	.quad fetch
 	.quad lit, input
 	.quad call, string
@@ -456,16 +456,16 @@ keyq: /* -- bool */
 	.quad ret
 
 key: /* -- char */
-	.quad call, curr
+	.quad call, mark
 	.quad fetch
 	.quad bfetch
 	.quad ret
 
 advance: /* -- */
-	.quad call, curr
+	.quad call, mark
 	.quad fetch
 	.quad inc
-	.quad call, curr
+	.quad call, mark
 	.quad store
 	.quad ret
 
@@ -936,8 +936,8 @@ define head__input,    _output,   "output"
 define head__output,   _buffer,   "buffer"
 define head__buffer,   _code,     "code"
 define head__code,     _vocab,    "vocab"
-define head__vocab,    curr,      "curr"
-define head_curr,      state,     "state"
+define head__vocab,    mark,      "mark"
+define head_mark,      state,     "state"
 define head_state,     here,      "here"
 define head_here,      top,       "top"
 define head_top,       head,      "head"
