@@ -805,9 +805,6 @@ link: /* x -- */
 
 colon: /* -- */
 	.quad call, apply
-	.quad lit, -1
-	.quad call, state
-	.quad store
 	.quad call, word
 	.quad lit, buff
 	.quad call, head
@@ -833,6 +830,9 @@ colon: /* -- */
 	.quad call, head
 	.quad fetch
 	.quad call, last
+	.quad store
+	.quad lit, -1
+	.quad call, state
 	.quad store
 	.quad ret
 
