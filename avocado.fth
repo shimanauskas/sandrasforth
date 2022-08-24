@@ -9,7 +9,7 @@
 : if ( -- addr ) lit 0jump postpone , top @ 0 postpone , ; immediate
 : then ( addr -- ) push top @ pop ! ; immediate
 
-: again ( addr1 addr2 -- ) push lit jump postpone , postpone , top @ pop ! ;
+: repeat ( addr1 addr2 -- ) push lit jump postpone , postpone , top @ pop ! ;
   immediate
 
 : [ ( -- ) top @ here ! 0 state ! ; immediate
