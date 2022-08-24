@@ -25,11 +25,13 @@
 : digit ( u -- char ) dup 10 u<
   if char 0 literal + ; then [ char A 10 - ] literal + ;
 
-: hold ( addr1 u1 byte -- addr2 u2 ) push push 1- pop over pop over b! drop 1+ ;
+variable hld
+
+: hold ( byte -- ) hld @ 1- dup hld ! b! ;
 
 : . ( n -- ) dup 0< if char - literal emit neg then
   ( Fallthrough! )
 
-: u. ( u -- ) push [ buffer 256 + ] literal 0 pop
+: u. ( u -- ) [ buffer 256 + ] literal hld !
   begin 0 base @ / push digit hold pop dup 0= until
-  drop type ;
+  drop hld @ [ buffer 256 + ] literal over - type ;
