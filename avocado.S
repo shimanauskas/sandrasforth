@@ -328,6 +328,22 @@ base: /* -- addr */
 	.quad var, 10
 	.quad ret
 
+zless: /* n - bool */
+	.quad lit, 1<<(cell*8-1)
+	.quad and
+
+	/* Fallthrough! */
+
+bool: /* x -- bool */
+	.quad zjump, 0f
+
+	.quad lit, -1
+	.quad ret
+
+0:
+	.quad lit, 0
+	.quad ret
+
 less: /* n1 n2 -- bool */
 	.quad over
 	.quad over
@@ -356,24 +372,7 @@ uless: /* u1 u2 -- bool */
 
 0:
 	.quad sub
-
-	/* Fallthrough! */
-
-zless: /* n - bool */
-	.quad lit, 1<<(cell*8-1)
-	.quad and
-
-	/* Fallthrough! */
-
-bool: /* x -- bool */
-	.quad zjump, 0f
-
-	.quad lit, -1
-	.quad ret
-
-0:
-	.quad lit, 0
-	.quad ret
+	.quad jump, zless
 
 equals: /* x1 x2 -- bool */
 	.quad xor
@@ -935,11 +934,11 @@ define head_here,      top,       "top"
 define head_top,       head,      "head"
 define head_head,      last,      "last"
 define head_last,      base,      "base"
-define head_base,      less,      "<"
-define head_less,      uless,     "u<"
-define head_uless,     zless,     "0<"
+define head_base,      zless,     "0<"
 define head_zless,     bool,      "bool"
-define head_bool,      equals,    "="
+define head_bool,      less,      "<"
+define head_less,      uless,     "u<"
+define head_uless,     equals,    "="
 define head_equals,    zequals,   "0="
 define head_zequals,   within,    "within"
 define head_within,    align,     "align"
