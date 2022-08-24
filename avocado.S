@@ -517,6 +517,22 @@ type: /* addr u -- */
 	.quad drop
 	.quad ret
 
+skip: /* -- */
+	.quad call, keyq
+	.quad call, key
+	.quad lit, '!'
+	.quad call, uless
+	.quad and
+
+	.quad zjump, 0f
+
+	.quad call, advance
+
+	.quad jump, skip
+0:
+
+	.quad ret
+
 comma: /* x -- */
 	.quad call, top
 	.quad fetch
@@ -551,22 +567,6 @@ apply: /* -- */
 	.quad fetch
 	.quad call, top
 	.quad store
-	.quad ret
-
-skip: /* -- */
-	.quad call, keyq
-	.quad call, key
-	.quad lit, '!'
-	.quad call, uless
-	.quad and
-
-	.quad zjump, 0f
-
-	.quad call, advance
-
-	.quad jump, skip
-0:
-
 	.quad ret
 
 word: /* -- */
@@ -703,30 +703,6 @@ number: /* addr u1 -- n u2 */
 	.quad pop
 	.quad ret
 
-bmove: /* addr1 addr2 u -- */
-	.quad call, qdup
-
-	.quad zjump, 0f
-
-	.quad push
-	.quad over
-	.quad bfetch
-	.quad over
-	.quad bstore
-	.quad push
-	.quad inc
-	.quad pop
-	.quad inc
-	.quad pop
-	.quad dec
-
-	.quad jump, bmove
-0:
-
-	.quad nip
-	.quad drop
-	.quad ret
-
 sameq: /* addr1 addr2 u1 -- u2 */
 	.quad dup
 	.quad push
@@ -789,6 +765,30 @@ find: /* -- 0 | addr */
 
 	.quad zjump, 0b
 
+	.quad ret
+
+bmove: /* addr1 addr2 u -- */
+	.quad call, qdup
+
+	.quad zjump, 0f
+
+	.quad push
+	.quad over
+	.quad bfetch
+	.quad over
+	.quad bstore
+	.quad push
+	.quad inc
+	.quad pop
+	.quad inc
+	.quad pop
+	.quad dec
+
+	.quad jump, bmove
+0:
+
+	.quad nip
+	.quad drop
 	.quad ret
 
 link: /* x -- */
@@ -959,17 +959,17 @@ define head_key,       advance,   "advance"
 define head_advance,   flush,     "flush"
 define head_flush,     emit,      "emit"
 define head_emit,      type,      "type"
-define head_type,      comma,     ",",        immediate
+define head_type,      skip,      "skip"
+define head_skip,      comma,     ",",        immediate
 define head_comma,     apply,     "apply",    immediate
-define head_apply,     skip,      "skip"
-define head_skip,      word,      "word"
+define head_apply,     word,      "word"
 define head_word,      digitq,    "digit?"
 define head_digitq,    natural,   "natural"
 define head_natural,   number,    "number"
-define head_number,    bmove,     "bmove"
-define head_bmove,     sameq,     "same?"
+define head_number,    sameq,     "same?"
 define head_sameq,     find,      "find"
-define head_find,      link,      "link",     immediate
+define head_find,      bmove,     "bmove"
+define head_bmove,     link,      "link",     immediate
 define head_link,      colon,     ":",        immediate
 define head_colon,     semicolon, ";",        immediate
 define head_semicolon, tick,      "'",        immediate
