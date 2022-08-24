@@ -13,7 +13,8 @@
 
 : char word lit [ buffer 1+ ] , b@ ; immediate
 
-: ( begin word buffer b@ 1 = buffer 1+ b@ lit char ) , = and until ; immediate
+: ( begin word buffer b@ 1 = lit [ buffer 1+ ] , b@ lit char ) , = and until ;
+  immediate
 
 : variable ( -- ) postpone : lit var postpone , 0 postpone , postpone ; ;
   immediate
