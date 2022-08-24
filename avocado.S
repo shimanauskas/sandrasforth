@@ -328,16 +328,6 @@ base: /* -- addr */
 	.quad var, 10
 	.quad ret
 
-qdup: /* x -- 0 | x x */
-	.quad dup
-
-	.quad zjump, 0f
-
-	.quad dup
-
-0:
-	.quad ret
-
 less: /* n1 n2 -- bool */
 	.quad over
 	.quad over
@@ -499,7 +489,7 @@ emit: /* char -- */
 	.quad ret
 
 type: /* addr u -- */
-	.quad call, qdup
+	.quad dup
 
 	.quad zjump, 0f
 
@@ -514,6 +504,7 @@ type: /* addr u -- */
 	.quad jump, type
 0:
 
+	.quad drop
 	.quad drop
 	.quad ret
 
@@ -768,7 +759,7 @@ find: /* -- 0 | addr */
 	.quad ret
 
 bmove: /* addr1 addr2 u -- */
-	.quad call, qdup
+	.quad dup
 
 	.quad zjump, 0f
 
@@ -787,6 +778,7 @@ bmove: /* addr1 addr2 u -- */
 	.quad jump, bmove
 0:
 
+	.quad nip
 	.quad nip
 	.quad drop
 	.quad ret
@@ -870,7 +862,7 @@ postpone: /* -- */
 main: /* -- */
 	.quad call, word
 	.quad call, find
-	.quad call, qdup
+	.quad dup
 
 	.quad zjump, 1f
 
@@ -907,6 +899,7 @@ main: /* -- */
 	.quad jump, main
 
 1:
+	.quad drop
 	.quad lit, buffer
 	.quad call, string
 	.quad call, number
@@ -942,8 +935,7 @@ define head_here,      top,       "top"
 define head_top,       head,      "head"
 define head_head,      last,      "last"
 define head_last,      base,      "base"
-define head_base,      qdup,      "?dup"
-define head_qdup,      less,      "<"
+define head_base,      less,      "<"
 define head_less,      uless,     "u<"
 define head_uless,     zless,     "0<"
 define head_zless,     bool,      "bool"
