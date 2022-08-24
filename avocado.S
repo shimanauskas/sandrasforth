@@ -37,7 +37,6 @@
 #define stdout 1
 
 #define cell 8
-#define sign 1<<(cell*8-1)
 
 #define immediate 0x80
 
@@ -371,7 +370,7 @@ uless: /* u1 u2 -- bool */
 	/* Fallthrough! */
 
 zless: /* n - bool */
-	.quad lit, sign
+	.quad lit, 1<<(cell*8-1)
 	.quad and
 
 	/* Fallthrough! */
