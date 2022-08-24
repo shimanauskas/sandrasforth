@@ -858,6 +858,12 @@ postpone: /* -- */
 	.quad call, comma
 	.quad jump, comma
 
+literal: /* x -- */
+	.quad lit, lit
+	.quad call, comma
+	.quad call, comma
+	.quad ret
+
 main: /* -- */
 	.quad call, word
 	.quad call, find
@@ -902,9 +908,14 @@ main: /* -- */
 	.quad lit, buffer
 	.quad call, string
 	.quad call, number
+	.quad call, zequals
 
 	.quad zjump, 0f
 
+	.quad call, literal
+	.quad jump, main
+
+0:
 	.quad drop
 	.quad lit, buffer
 	.quad call, string
@@ -913,12 +924,6 @@ main: /* -- */
 	.quad call, emit
 	.quad call, flush
 	.quad call, accept
-	.quad jump, main
-
-0:
-	.quad lit, lit
-	.quad call, comma
-	.quad call, comma
 	.quad jump, main
 
 define head_syscall,   _cell,     "cell"
@@ -965,7 +970,8 @@ define head_link,      colon,     ":",        immediate
 define head_colon,     semicolon, ";",        immediate
 define head_semicolon, tick,      "'",        immediate
 define head_tick,      postpone,  "postpone", immediate
-define head_postpone,  main,      "main"
+define head_postpone,  literal,   "literal",  immediate
+define head_literal,   main,      "main"
 
 .bss
 

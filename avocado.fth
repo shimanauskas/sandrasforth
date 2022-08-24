@@ -11,10 +11,10 @@
 : repeat push lit jump postpone , postpone , top @ pop ! ; immediate
 : until lit 0jump postpone , postpone , ; immediate
 
-: char word lit [ buffer 1+ ] , b@ ; immediate
+: char word [ buffer 1+ ] literal b@ ; immediate
 
-: ( begin word buffer b@ 1 = lit [ buffer 1+ ] , b@ lit char ) , = and until ;
-  immediate
+: ( begin word [ buffer ] literal b@ 1 =
+  [ buffer 1+ ] literal b@ char ) literal = and until ; immediate
 
 : variable ( -- ) postpone : lit var postpone , 0 postpone , postpone ; ;
   immediate
@@ -23,13 +23,13 @@
 : hex ( -- ) 16 base ! ; immediate
 
 : digit ( u -- char ) dup 10 u<
-  if lit char 0 , + ; then lit [ char A 10 - ] , + ;
+  if char 0 literal + ; then [ char A 10 - ] literal + ;
 
 : hold ( addr1 u1 byte -- addr2 u2 ) push push 1- pop over pop over b! drop 1+ ;
 
-: . ( n -- ) dup 0< if lit char - , emit neg then
+: . ( n -- ) dup 0< if char - literal emit neg then
   ( Fallthrough! )
 
-: u. ( u -- ) push buffer 256 + 0 pop
+: u. ( u -- ) push [ buffer 256 + ] literal 0 pop
   begin 0 base @ / push digit hold pop dup 0= until
   drop type ;
