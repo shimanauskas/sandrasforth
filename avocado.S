@@ -539,28 +539,14 @@ apply: /* -- */
 word: /* -- */
 	.quad call, skip
 	.quad call, keyq
-	.quad not
 
-	.quad zjump, 0f
+	.quad zjump, 1f
 
-	.quad call, apply
-	.quad call, accept
-	.quad jump, word
-
-0:
 	.quad lit, 0
 	.quad lit, buffer
 	.quad bstore
 
 0:
-	.quad call, keyq
-	.quad not
-
-	.quad zjump, 1f
-
-	.quad call, accept
-
-1:
 	.quad call, key
 	.quad dup
 	.quad lit, '!'
@@ -583,12 +569,23 @@ word: /* -- */
 	.quad add
 	.quad bstore
 	.quad call, advance
+	.quad call, keyq
+	.quad not
+
+	.quad zjump, 0b
+
+	.quad call, accept
 
 	.quad jump, 0b
 0:
 
 	.quad drop
 	.quad ret
+
+1:
+	.quad call, apply
+	.quad call, accept
+	.quad jump, word
 
 digitq: /* char base -- u bool */
 	.quad push
