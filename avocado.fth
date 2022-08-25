@@ -33,5 +33,5 @@ variable hld
   ( Fallthrough! )
 
 : u. ( u -- ) [ ' buffer 256 + ] literal hld !
-  begin 0 base @ / push digit hold pop dup 0= until
-  drop hld @ [ ' buffer 256 + ] literal over - type ;
+  begin 0 base @ / push digit hold pop dup 0= until drop
+  hld @ [ ' buffer 256 + ] literal over - type ;
