@@ -197,20 +197,17 @@ add: /* n1|u1 n2|u2 -- n3|u3 */
 	nip
 	next
 
-mul: /* n1 n2 -- d */
-	movq %rax, %rcx
-	drop
-	mulq %rcx
-	dup
-	movq %rdx, %rax
+mul: /* n1|u1 n2|u2 -- n3|u3 */
+	movq (%rbp), %rcx
+	imulq %rcx
+	nip
 	next
 
-div: /* d n1 -- n2 n3 */
+divmod: /* n1 n2 -- n3 n4 */
 	movq %rax, %rcx
-	movq (%rbp), %rdx
-	nip
 	movq (%rbp), %rax
-	divq %rcx
+	cqo
+	idivq %rcx
 	movq %rdx, (%rbp)
 	next
 
@@ -269,8 +266,8 @@ define head_dec,    neg,     "neg"
 define head_neg,    sub,     "-"
 define head_sub,    add,     "+"
 define head_add,    mul,     "*"
-define head_mul,    div,     "/"
-define head_div,    fetch,   "@"
+define head_mul,    divmod,  "/mod"
+define head_divmod, fetch,   "@"
 define head_fetch,  store,   "!"
 define head_store,  bfetch,  "b@"
 define head_bfetch, bstore,  "b!"
@@ -638,7 +635,6 @@ natural: /* addr u1 -- u2 u3 */
 	.quad call, base
 	.quad fetch
 	.quad mul
-	.quad drop
 	.quad pop
 	.quad add
 	.quad push
