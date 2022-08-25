@@ -280,26 +280,6 @@ _cell: /* -- u */
 	.quad lit, cell
 	.quad ret
 
-_input: /* -- addr */
-	.quad lit, input
-	.quad ret
-
-_output: /* -- addr */
-	.quad lit, output
-	.quad ret
-
-_buffer: /* -- addr */
-	.quad lit, buffer
-	.quad ret
-
-_code: /* -- addr */
-	.quad lit, code
-	.quad ret
-
-_vocab: /* -- addr */
-	.quad lit, vocab
-	.quad ret
-
 mark: /* -- addr */
 	.quad var, input+1
 	.quad ret
@@ -927,12 +907,12 @@ main: /* -- */
 	.quad jump, main
 
 define head_syscall,   _cell,     "cell"
-define head__cell,     _input,    "input"
-define head__input,    _output,   "output"
-define head__output,   _buffer,   "buffer"
-define head__buffer,   _code,     "code"
-define head__code,     _vocab,    "vocab"
-define head__vocab,    mark,      "mark"
+define head__cell,     input,     "input"
+define head_input,     output,    "output"
+define head_output,    buffer,    "buffer"
+define head_buffer,    code,      "code"
+define head_code,      vocab,     "vocab"
+define head_vocab,     mark,      "mark"
 define head_mark,      state,     "state"
 define head_state,     here,      "here"
 define head_here,      top,       "top"
