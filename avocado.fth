@@ -13,7 +13,7 @@
 
 : char word [ ' buffer 1+ ] literal b@ ; immediate
 
-: ( begin word [ ' buffer ] literal b@ 1 =
+: ( begin word ' buffer literal b@ 1 =
   [ ' buffer 1+ ] literal b@ char ) literal = and until ; immediate
 
 : digit ( u -- char ) dup 10 u<
