@@ -34,8 +34,9 @@ variable hld
   begin base @ u/mod push digit hold pop dup 0= until drop
   hld @ [ ' buffer 256 + ] literal over - type ;
 
-: dec ( -- ) 10 base ! ; immediate
-: hex ( -- ) 16 base ! ; immediate
+: bina ( -- )  2 base ! ; immediate
+: deci ( -- ) 10 base ! ; immediate
+: hexa ( -- ) 16 base ! ; immediate
 
 : space ( -- ) 32 emit ;
 
