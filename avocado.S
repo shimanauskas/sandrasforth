@@ -720,7 +720,7 @@ sameq: /* addr1 addr2 u1 -- u2 */
 	.quad pop
 	.quad nip
 	.quad nip
-	.quad ret
+	.quad jump, bool
 
 find: /* -- 0 | addr */
 	.quad call, last
