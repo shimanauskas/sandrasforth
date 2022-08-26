@@ -203,11 +203,11 @@ mul: /* n1|u1 n2|u2 -- n3|u3 */
 	nip
 	next
 
-divmod: /* n1 n2 -- n3 n4 */
+udivmod: /* n1 n2 -- n3 n4 */
 	movq %rax, %rcx
 	movq (%rbp), %rax
-	cqo
-	idivq %rcx
+	xorq %rdx, %rdx
+	divq %rcx
 	movq %rdx, (%rbp)
 	next
 
@@ -243,35 +243,35 @@ _end:
 
 .data
 
-define 0,           call,    "call"
-define head_call,   jump,    "jump"
-define head_jump,   qjump,   "?jump"
-define head_qjump,  exec,    "exec"
-define head_exec,   ret,     "ret"
-define head_ret,    lit,     "lit"
-define head_lit,    var,     "var"
-define head_var,    dup,     "dup"
-define head_dup,    nip,     "nip"
-define head_nip,    drop,    "drop"
-define head_drop,   over,    "over"
-define head_over,   push,    "push"
-define head_push,   pop,     "pop"
-define head_pop,    not,     "not"
-define head_not,    and,     "and"
-define head_and,    or,      "or"
-define head_or,     xor,     "xor"
-define head_xor,    inc,     "1+"
-define head_inc,    dec,     "1-"
-define head_dec,    neg,     "neg"
-define head_neg,    sub,     "-"
-define head_sub,    add,     "+"
-define head_add,    mul,     "*"
-define head_mul,    divmod,  "/mod"
-define head_divmod, fetch,   "@"
-define head_fetch,  store,   "!"
-define head_store,  bfetch,  "b@"
-define head_bfetch, bstore,  "b!"
-define head_bstore, syscall, "syscall"
+define 0,            call,    "call"
+define head_call,    jump,    "jump"
+define head_jump,    qjump,   "?jump"
+define head_qjump,   exec,    "exec"
+define head_exec,    ret,     "ret"
+define head_ret,     lit,     "lit"
+define head_lit,     var,     "var"
+define head_var,     dup,     "dup"
+define head_dup,     nip,     "nip"
+define head_nip,     drop,    "drop"
+define head_drop,    over,    "over"
+define head_over,    push,    "push"
+define head_push,    pop,     "pop"
+define head_pop,     not,     "not"
+define head_not,     and,     "and"
+define head_and,     or,      "or"
+define head_or,      xor,     "xor"
+define head_xor,     inc,     "1+"
+define head_inc,     dec,     "1-"
+define head_dec,     neg,     "neg"
+define head_neg,     sub,     "-"
+define head_sub,     add,     "+"
+define head_add,     mul,     "*"
+define head_mul,     udivmod, "u/mod"
+define head_udivmod, fetch,   "@"
+define head_fetch,   store,   "!"
+define head_store,   bfetch,  "b@"
+define head_bfetch,  bstore,  "b!"
+define head_bstore,  syscall, "syscall"
 
 _cell: /* -- u */
 	.quad lit, cell
