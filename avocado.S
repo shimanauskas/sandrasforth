@@ -72,7 +72,7 @@
 head_\body:
 	.quad \previous
 	.quad \body
-	.byte (1f-0f)+\mask
+	.byte (1f-0f)|\mask
 0:
 	.ascii "\name"
 1:
