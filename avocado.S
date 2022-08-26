@@ -38,6 +38,7 @@
 
 #define CELL 8
 
+#define LENGTH    0x7F
 #define IMMEDIATE 0x80
 
 .macro dup /* x -- x x */
@@ -580,7 +581,7 @@ word: /* -- */
 	.quad not
 	.quad lit, buffer
 	.quad bfetch
-	.quad lit, 0x7F
+	.quad lit, LENGTH
 	.quad call, uless
 	.quad and
 
@@ -735,7 +736,7 @@ find: /* -- 0 | addr */
 	.quad lit, CELL*2
 	.quad add
 	.quad bfetch
-	.quad lit, ~IMMEDIATE
+	.quad lit, LENGTH
 	.quad and
 	.quad lit, buffer
 	.quad bfetch
