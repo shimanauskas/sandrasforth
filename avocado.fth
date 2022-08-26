@@ -27,6 +27,7 @@ variable hld
 : hold ( char -- ) hld @ 1- dup hld ! b! ;
 
 : . ( n -- ) dup 0< if char - literal emit neg then
+
   ( Fallthrough! )
 
 : u. ( u -- ) [ ' buffer 256 + ] literal hld !
