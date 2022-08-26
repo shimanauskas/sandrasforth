@@ -100,7 +100,7 @@ jump: /* -- */
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
 
-zjump: /* x -- */
+qjump: /* x -- */
 	testq %rax, %rax
 	drop
 	leaq cell*2(%rbx), %rbx
@@ -245,8 +245,8 @@ _end:
 
 define 0,           call,    "call"
 define head_call,   jump,    "jump"
-define head_jump,   zjump,   "0jump"
-define head_zjump,  exec,    "exec"
+define head_jump,   qjump,   "?jump"
+define head_qjump,  exec,    "exec"
 define head_exec,   ret,     "ret"
 define head_ret,    lit,     "lit"
 define head_lit,    var,     "var"
@@ -312,7 +312,7 @@ zless: /* n - bool */
 	/* Fallthrough! */
 
 bool: /* x -- bool */
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad lit, -1
 	.quad ret
@@ -327,7 +327,7 @@ less: /* n1 n2 -- bool */
 	.quad xor
 	.quad call, zless
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad drop
 	.quad jump, zless
@@ -342,7 +342,7 @@ uless: /* u1 u2 -- bool */
 	.quad xor
 	.quad call, zless
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad nip
 	.quad jump, zless
@@ -396,7 +396,7 @@ accept: /* -- */
 	.quad syscall
 	.quad dup
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad lit, input
 	.quad bstore
@@ -460,14 +460,14 @@ emit: /* char -- */
 	.quad lit, 0xFF
 	.quad xor
 
-	.quad zjump, flush
+	.quad qjump, flush
 
 	.quad ret
 
 type: /* addr u -- */
 	.quad dup
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad push
 	.quad dup
@@ -491,7 +491,7 @@ skip: /* -- */
 	.quad call, uless
 	.quad and
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad call, advance
 
@@ -508,7 +508,7 @@ collision: /* -- */
 	.quad call, uless
 	.quad not
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad lit, head_collision+cell*2
 	.quad call, string
@@ -541,7 +541,7 @@ apply: /* -- */
 	.quad call, state
 	.quad fetch
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad call, top
 	.quad fetch
@@ -566,7 +566,7 @@ word: /* -- */
 	.quad call, skip
 	.quad call, keyq
 
-	.quad zjump, 1f
+	.quad qjump, 1f
 
 	.quad lit, 0
 	.quad lit, buffer
@@ -584,7 +584,7 @@ word: /* -- */
 	.quad call, uless
 	.quad and
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad lit, buffer
 	.quad call, string
@@ -598,7 +598,7 @@ word: /* -- */
 	.quad call, keyq
 	.quad not
 
-	.quad zjump, 0b
+	.quad qjump, 0b
 
 	.quad call, accept
 
@@ -621,7 +621,7 @@ digitq: /* char base -- u bool */
 	.quad over
 	.quad call, less
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad lit, 'A'-'0'-10
 	.quad sub
@@ -652,7 +652,7 @@ natural: /* addr u1 -- u2 u3 */
 	.quad push
 	.quad and
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad push
 	.quad call, base
@@ -680,7 +680,7 @@ number: /* addr u1 -- n u2 */
 	.quad lit, '-'
 	.quad call, equals
 
-	.quad zjump, natural
+	.quad qjump, natural
 
 	.quad dec
 	.quad push
@@ -704,7 +704,7 @@ sameq: /* addr1 addr2 u1 -- u2 */
 	.quad pop
 	.quad and
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad push
 	.quad inc
@@ -729,7 +729,7 @@ find: /* -- 0 | addr */
 	.quad dup
 	.quad dup
 
-	.quad zjump, 1f
+	.quad qjump, 1f
 
 	.quad dup
 	.quad lit, cell*2
@@ -741,7 +741,7 @@ find: /* -- 0 | addr */
 	.quad bfetch
 	.quad call, equals
 
-	.quad zjump, 1f
+	.quad qjump, 1f
 
 	.quad lit, cell*2+1
 	.quad add
@@ -752,14 +752,14 @@ find: /* -- 0 | addr */
 1:
 	.quad call, zequals
 
-	.quad zjump, 0b
+	.quad qjump, 0b
 
 	.quad ret
 
 bmove: /* addr1 addr2 u -- */
 	.quad dup
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad push
 	.quad over
@@ -844,7 +844,7 @@ tick: /* -- 0 | xt */
 	.quad call, find
 	.quad dup
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad lit, cell
 	.quad add
@@ -870,7 +870,7 @@ main: /* -- */
 	.quad call, find
 	.quad dup
 
-	.quad zjump, 1f
+	.quad qjump, 1f
 
 	.quad lit, cell
 	.quad add
@@ -881,7 +881,7 @@ main: /* -- */
 	.quad lit, immediate
 	.quad and
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad fetch
 	.quad exec
@@ -895,7 +895,7 @@ main: /* -- */
 	.quad call, within
 	.quad not
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad lit, call
 	.quad call, comma
@@ -910,7 +910,7 @@ main: /* -- */
 	.quad call, string
 	.quad call, number
 
-	.quad zjump, 0f
+	.quad qjump, 0f
 
 	.quad drop
 	.quad lit, buffer
