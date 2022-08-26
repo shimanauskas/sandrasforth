@@ -36,21 +36,21 @@
 #define stdin  0
 #define stdout 1
 
-#define cell 8
+#define CELL 8
 
-#define immediate 0x80
+#define IMMEDIATE 0x80
 
 .macro dup /* x -- x x */
-	leaq -cell(%rbp), %rbp
+	leaq -CELL(%rbp), %rbp
 	movq %rax, (%rbp)
 .endm
 
 .macro nip /* x1 x2 -- x2 */
-	leaq cell(%rbp), %rbp
+	leaq CELL(%rbp), %rbp
 .endm
 
 .macro twonip /* x1 x2 x3-- x3 */
-	leaq cell*2(%rbp), %rbp
+	leaq CELL*2(%rbp), %rbp
 .endm
 
 .macro drop /* x -- */
@@ -59,12 +59,12 @@
 .endm
 
 .macro twodrop /* x1 x2 -- */
-	movq cell(%rbp), %rax
+	movq CELL(%rbp), %rax
 	twonip
 .endm
 
 .macro next /* -- */
-	addq $(cell), %rbx
+	addq $(CELL), %rbx
 	jmp *(%rbx)
 .endm
 
@@ -76,7 +76,7 @@ head_\body:
 0:
 	.ascii "\name"
 1:
-.balign cell
+.balign CELL
 .endm
 
 .text
@@ -90,21 +90,21 @@ _start:
 	jmpq *(%rbx)
 
 call: /* r: -- addr */
-	addq $(cell), %rbx
+	addq $(CELL), %rbx
 	pushq %rbx
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
 
 jump: /* -- */
-	addq $(cell), %rbx
+	addq $(CELL), %rbx
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
 
 qjump: /* x -- */
 	testq %rax, %rax
 	drop
-	leaq cell*2(%rbx), %rbx
-	cmovzq -cell(%rbx), %rbx
+	leaq CELL*2(%rbx), %rbx
+	cmovzq -CELL(%rbx), %rbx
 	jmpq *(%rbx)
 
 exec: /* addr1 -- */ /* r: -- addr2 */
@@ -119,13 +119,13 @@ ret: /* r: addr -- */
 
 lit: /* -- x */
 	dup
-	addq $(cell), %rbx
+	addq $(CELL), %rbx
 	movq (%rbx), %rax
 	next
 
 var: /* -- addr */
 	dup
-	addq $(cell), %rbx
+	addq $(CELL), %rbx
 	movq %rbx, %rax
 	next
 
@@ -143,7 +143,7 @@ drop: /* x -- */
 
 over: /* x1 x2 -- x1 x2 x1 */
 	dup
-	movq cell(%rbp), %rax
+	movq CELL(%rbp), %rax
 	next
 
 push: /* x -- */ /* r: -- x */
@@ -233,9 +233,9 @@ bstore: /* byte addr -- */
 
 syscall: /* x1 x2 x3 x4 -- x5 */
 	movq (%rbp), %rdx
-	movq cell(%rbp), %rsi
-	movq cell*2(%rbp), %rdi
-	leaq cell*3(%rbp), %rbp
+	movq CELL(%rbp), %rsi
+	movq CELL*2(%rbp), %rdi
+	leaq CELL*3(%rbp), %rbp
 	syscall
 	next
 
@@ -273,8 +273,8 @@ define head_store,   bfetch,  "b@"
 define head_bfetch,  bstore,  "b!"
 define head_bstore,  syscall, "syscall"
 
-_cell: /* -- u */
-	.quad lit, cell
+cell: /* -- u */
+	.quad lit, CELL
 	.quad ret
 
 mark: /* -- addr */
@@ -306,7 +306,7 @@ base: /* -- addr */
 	.quad ret
 
 zless: /* n - bool */
-	.quad lit, 1<<(cell*8-1)
+	.quad lit, 1<<(CELL*8-1)
 	.quad and
 
 	/* Fallthrough! */
@@ -374,9 +374,9 @@ within: /* u1 u2 u3 -- bool */
 	.quad ret
 
 align: /* x1 -- x2 */
-	.quad lit, cell-1
+	.quad lit, CELL-1
 	.quad add
-	.quad lit, ~(cell-1)
+	.quad lit, ~(CELL-1)
 	.quad and
 	.quad ret
 
@@ -510,7 +510,7 @@ collision: /* -- */
 
 	.quad qjump, 0f
 
-	.quad lit, head_collision+cell*2
+	.quad lit, head_collision+CELL*2
 	.quad call, string
 	.quad call, type
 	.quad lit, '!'
@@ -529,7 +529,7 @@ comma: /* x -- */
 	.quad call, top
 	.quad fetch
 	.quad dup
-	.quad lit, cell
+	.quad lit, CELL
 	.quad add
 	.quad call, top
 	.quad store
@@ -732,10 +732,10 @@ find: /* -- 0 | addr */
 	.quad qjump, 1f
 
 	.quad dup
-	.quad lit, cell*2
+	.quad lit, CELL*2
 	.quad add
 	.quad bfetch
-	.quad lit, ~immediate
+	.quad lit, ~IMMEDIATE
 	.quad and
 	.quad lit, buffer
 	.quad bfetch
@@ -743,7 +743,7 @@ find: /* -- 0 | addr */
 
 	.quad qjump, 1f
 
-	.quad lit, cell*2+1
+	.quad lit, CELL*2+1
 	.quad add
 	.quad lit, buffer
 	.quad call, string
@@ -784,7 +784,7 @@ bmove: /* addr1 addr2 u -- */
 link: /* x -- */
 	.quad call, head
 	.quad fetch
-	.quad lit, cell
+	.quad lit, CELL
 	.quad sub
 	.quad dup
 	.quad call, head
@@ -846,7 +846,7 @@ tick: /* -- 0 | xt */
 
 	.quad qjump, 0f
 
-	.quad lit, cell
+	.quad lit, CELL
 	.quad add
 	.quad fetch
 
@@ -865,6 +865,20 @@ literal: /* x -- */
 	.quad call, comma
 	.quad ret
 
+immediate: /* -- */
+	.quad call, last
+	.quad fetch
+	.quad lit, CELL*2
+	.quad add
+	.quad dup
+	.quad bfetch
+	.quad lit, IMMEDIATE
+	.quad or
+	.quad over
+	.quad bstore
+	.quad drop
+	.quad ret
+
 main: /* -- */
 	.quad call, word
 	.quad call, find
@@ -872,13 +886,13 @@ main: /* -- */
 
 	.quad qjump, 1f
 
-	.quad lit, cell
+	.quad lit, CELL
 	.quad add
 	.quad dup
-	.quad lit, cell
+	.quad lit, CELL
 	.quad add
 	.quad bfetch
-	.quad lit, immediate
+	.quad lit, IMMEDIATE
 	.quad and
 
 	.quad qjump, 0f
@@ -926,8 +940,8 @@ main: /* -- */
 	.quad call, literal
 	.quad jump, main
 
-define head_syscall,   _cell,     "cell"
-define head__cell,     input,     "input"
+define head_syscall,   cell,      "cell"
+define head_cell,      input,     "input"
 define head_input,     output,    "output"
 define head_output,    buffer,    "buffer"
 define head_buffer,    code,      "code"
@@ -957,8 +971,8 @@ define head_flush,     emit,      "emit"
 define head_emit,      type,      "type"
 define head_type,      skip,      "skip"
 define head_skip,      collision, "collision"
-define head_collision, comma,     ",",        immediate
-define head_comma,     apply,     "apply",    immediate
+define head_collision, comma,     ",",         IMMEDIATE
+define head_comma,     apply,     "apply",     IMMEDIATE
 define head_apply,     word,      "word"
 define head_word,      digitq,    "digit?"
 define head_digitq,    natural,   "natural"
@@ -966,13 +980,14 @@ define head_natural,   number,    "number"
 define head_number,    sameq,     "same?"
 define head_sameq,     find,      "find"
 define head_find,      bmove,     "bmove"
-define head_bmove,     link,      "link",     immediate
-define head_link,      colon,     ":",        immediate
-define head_colon,     semicolon, ";",        immediate
-define head_semicolon, tick,      "'",        immediate
-define head_tick,      postpone,  "postpone", immediate
-define head_postpone,  literal,   "literal",  immediate
-define head_literal,   main,      "main"
+define head_bmove,     link,      "link",      IMMEDIATE
+define head_link,      colon,     ":",         IMMEDIATE
+define head_colon,     semicolon, ";",         IMMEDIATE
+define head_semicolon, tick,      "'",         IMMEDIATE
+define head_tick,      postpone,  "postpone",  IMMEDIATE
+define head_postpone,  literal,   "literal",   IMMEDIATE
+define head_literal,   immediate, "immediate", IMMEDIATE
+define head_immediate, main,      "main"
 
 .bss
 

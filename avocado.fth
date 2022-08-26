@@ -1,5 +1,3 @@
-: immediate last @ cell + cell + dup b@ 128 or over b! drop ; immediate
-
 : [ top @ here ! 0 state ! ; immediate
 : ] postpone apply -1 state ! ; immediate
 
