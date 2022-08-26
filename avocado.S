@@ -1004,5 +1004,5 @@ code:
 	.skip 0x1000
 vocab:
 
-	.skip 0x1000
+	.skip 0x100
 dstack:
