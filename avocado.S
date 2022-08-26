@@ -391,7 +391,7 @@ string: /* addr1 -- addr2 u */
 accept: /* -- */
 	.quad lit, stdin
 	.quad lit, input+1
-	.quad lit, 0xFF-1
+	.quad lit, 0xFF
 	.quad lit, sys_read
 	.quad syscall
 	.quad dup
