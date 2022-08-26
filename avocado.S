@@ -500,6 +500,31 @@ skip: /* -- */
 
 	.quad ret
 
+collision: /* -- */
+	.quad call, top
+	.quad fetch
+	.quad call, head
+	.quad fetch
+	.quad call, uless
+	.quad not
+
+	.quad zjump, 0f
+
+	.quad lit, head_collision+cell*2
+	.quad call, string
+	.quad call, type
+	.quad lit, '!'
+	.quad call, emit
+	.quad call, flush
+	.quad lit, 1
+	.quad lit, 0
+	.quad dup
+	.quad lit, sys_exit
+	.quad syscall
+
+0:
+	.quad ret
+
 comma: /* x -- */
 	.quad call, top
 	.quad fetch
@@ -509,6 +534,7 @@ comma: /* x -- */
 	.quad call, top
 	.quad store
 	.quad store
+	.quad call, collision
 	.quad ret
 
 apply: /* -- */
@@ -764,6 +790,7 @@ link: /* x -- */
 	.quad call, head
 	.quad store
 	.quad store
+	.quad call, collision
 	.quad ret
 
 colon: /* -- */
@@ -782,6 +809,7 @@ colon: /* -- */
 	.quad dup
 	.quad call, head
 	.quad store
+	.quad call, collision
 	.quad pop
 	.quad call, bmove
 	.quad call, here
@@ -929,7 +957,8 @@ define head_advance,   flush,     "flush"
 define head_flush,     emit,      "emit"
 define head_emit,      type,      "type"
 define head_type,      skip,      "skip"
-define head_skip,      comma,     ",",        immediate
+define head_skip,      collision, "collision"
+define head_collision, comma,     ",",        immediate
 define head_comma,     apply,     "apply",    immediate
 define head_apply,     word,      "word"
 define head_word,      digitq,    "digit?"
