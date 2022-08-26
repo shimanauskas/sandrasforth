@@ -19,22 +19,22 @@
    r15 - unused. */
 
 #ifdef __linux__
-	#define sys_read  0
-	#define sys_write 1
-	#define sys_exit  60
+	#define SYSREAD  0
+	#define SYSWRITE 1
+	#define SYSEXIT  60
 #elif __APPLE__
 	#include "TargetConditionals.h"
 	#ifdef TARGET_OS_MAC
-		#define sys_read  0x2000003
-		#define sys_write 0x2000004
-		#define sys_exit  0x2000001
+		#define SYSREAD  0x2000003
+		#define SYSWRITE 0x2000004
+		#define SYSEXIT  0x2000001
 	#endif
 #elif
 	#error "Unsupported platform."
 #endif
 
-#define stdin  0
-#define stdout 1
+#define STDIN  0
+#define STDOUT 1
 
 #define CELL 8
 
@@ -390,10 +390,10 @@ string: /* addr1 -- addr2 u */
 	.quad ret
 
 accept: /* -- */
-	.quad lit, stdin
+	.quad lit, STDIN
 	.quad lit, input+1
 	.quad lit, 0xFF
-	.quad lit, sys_read
+	.quad lit, SYSREAD
 	.quad syscall
 	.quad dup
 
@@ -409,7 +409,7 @@ accept: /* -- */
 0:
 	.quad dup
 	.quad dup
-	.quad lit, sys_exit
+	.quad lit, SYSEXIT
 	.quad syscall
 
 keyq: /* -- bool */
@@ -436,10 +436,10 @@ advance: /* -- */
 	.quad ret
 
 flush: /* -- */
-	.quad lit, stdout
+	.quad lit, STDOUT
 	.quad lit, output
 	.quad call, string
-	.quad lit, sys_write
+	.quad lit, SYSWRITE
 	.quad syscall
 	.quad drop
 	.quad lit, 0
@@ -520,7 +520,7 @@ collision: /* -- */
 	.quad lit, 1
 	.quad lit, 0
 	.quad dup
-	.quad lit, sys_exit
+	.quad lit, SYSEXIT
 	.quad syscall
 
 0:
