@@ -682,10 +682,10 @@ number: /* addr u1 -- n u2 */
 
 	.quad qjump, natural
 
-	.quad dec
 	.quad push
 	.quad inc
 	.quad pop
+	.quad dec
 	.quad call, natural
 	.quad push
 	.quad neg
