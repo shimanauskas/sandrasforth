@@ -909,14 +909,9 @@ main: /* -- */
 	.quad lit, buffer
 	.quad call, string
 	.quad call, number
-	.quad call, zequals
 
 	.quad zjump, 0f
 
-	.quad call, literal
-	.quad jump, main
-
-0:
 	.quad drop
 	.quad lit, buffer
 	.quad call, string
@@ -925,6 +920,10 @@ main: /* -- */
 	.quad call, emit
 	.quad call, flush
 	.quad call, accept
+	.quad jump, main
+
+0:
+	.quad call, literal
 	.quad jump, main
 
 define head_syscall,   _cell,     "cell"
