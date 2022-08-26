@@ -36,3 +36,11 @@ variable hld
 
 : dec ( -- ) 10 base ! ; immediate
 : hex ( -- ) 16 base ! ; immediate
+
+: space ( -- ) 32 emit ;
+
+: cells ( n1 -- n2 ) [ cell ] literal * ;
+
+: words ( -- ) last
+  begin @ dup if dup [ 2 cells ] literal + string 127 and type space repeat
+  drop ;
