@@ -942,11 +942,13 @@ main: /* -- */
 	.quad jump, main
 
 define head_syscall,   cell,      "cell"
+
 define head_cell,      input,     "input"
 define head_input,     output,    "output"
 define head_output,    buffer,    "buffer"
 define head_buffer,    code,      "code"
 define head_code,      vocab,     "vocab"
+
 define head_vocab,     mark,      "mark"
 define head_mark,      state,     "state"
 define head_state,     here,      "here"
@@ -954,6 +956,7 @@ define head_here,      top,       "top"
 define head_top,       head,      "head"
 define head_head,      last,      "last"
 define head_last,      base,      "base"
+
 define head_base,      zless,     "0<"
 define head_zless,     bool,      "bool"
 define head_bool,      less,      "<"
