@@ -389,6 +389,12 @@ string: /* addr1 -- addr2 u */
 	.quad bfetch
 	.quad ret
 
+bye: /* n -- */
+	.quad lit, 0
+	.quad dup
+	.quad lit, SYSEXIT
+	.quad syscall
+
 accept: /* -- */
 	.quad lit, STDIN
 	.quad lit, input+1
@@ -397,7 +403,7 @@ accept: /* -- */
 	.quad syscall
 	.quad dup
 
-	.quad qjump, 0f
+	.quad qjump, bye
 
 	.quad lit, input
 	.quad bstore
@@ -405,12 +411,6 @@ accept: /* -- */
 	.quad call, mark
 	.quad store
 	.quad ret
-
-0:
-	.quad dup
-	.quad dup
-	.quad lit, SYSEXIT
-	.quad syscall
 
 keyq: /* -- bool */
 	.quad call, mark
@@ -517,10 +517,7 @@ collision: /* -- */
 	.quad call, emit
 	.quad call, flush
 	.quad lit, 1
-	.quad lit, 0
-	.quad dup
-	.quad lit, SYSEXIT
-	.quad syscall
+	.quad jump, bye
 
 0:
 	.quad ret
@@ -980,7 +977,8 @@ define head_equals,    zequals,   "0="
 define head_zequals,   within,    "within"
 define head_within,    align,     "align"
 define head_align,     string,    "string"
-define head_string,    accept,    "accept"
+define head_string,    bye,       "bye"
+define head_bye,       accept,    "accept"
 define head_accept,    keyq,      "key?"
 define head_keyq,      key,       "key"
 define head_key,       advance,   "advance"
