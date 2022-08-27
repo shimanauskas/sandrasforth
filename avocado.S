@@ -108,7 +108,7 @@ qjump: /* x -- */
 	cmovzq -CELL(%rbx), %rbx
 	jmpq *(%rbx)
 
-exec: /* addr1 -- */
+exec: /* addr -- */
 	pushq %rbx
 	movq %rax, %rbx
 	drop
