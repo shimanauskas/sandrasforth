@@ -204,7 +204,7 @@ mul: /* n1|u1 n2|u2 -- n3|u3 */
 	nip
 	next
 
-udivmod: /* n1 n2 -- n3 n4 */
+udivmod: /* u1 u2 -- u3 u4 */
 	movq %rax, %rcx
 	movq (%rbp), %rax
 	xorq %rdx, %rdx
