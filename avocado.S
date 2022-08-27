@@ -90,7 +90,7 @@ _start:
 	leaq main(%rip), %rbx
 	jmpq *(%rbx)
 
-call: /* r: -- addr */
+call:
 	addq $(CELL), %rbx
 	pushq %rbx
 	movq (%rbx), %rbx
@@ -108,13 +108,13 @@ qjump: /* x -- */
 	cmovzq -CELL(%rbx), %rbx
 	jmpq *(%rbx)
 
-exec: /* addr1 -- */ /* r: -- addr2 */
+exec: /* addr1 -- */
 	pushq %rbx
 	movq %rax, %rbx
 	drop
 	jmpq *(%rbx)
 
-ret: /* r: addr -- */
+ret:
 	popq %rbx
 	next
 
@@ -147,12 +147,12 @@ over: /* x1 x2 -- x1 x2 x1 */
 	movq CELL(%rbp), %rax
 	next
 
-push: /* x -- */ /* r: -- x */
+push: /* x -- */
 	pushq %rax
 	drop
 	next
 
-pop: /* -- x */ /* r: x -- */
+pop: /* -- x */
 	dup
 	popq %rax
 	next
