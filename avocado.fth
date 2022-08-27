@@ -1,5 +1,5 @@
-: [ top @ here ! 0 state ! ; immediate
-: ] postpone apply -1 state ! ; immediate
+: [ top @ here ! -1 state ! ; immediate
+: ] postpone apply 0 state ! ; immediate
 
 : begin top @ ; immediate
 

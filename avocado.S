@@ -283,7 +283,7 @@ mark: /* -- addr */
 	.quad ret
 
 state: /* -- addr */
-	.quad var, 0
+	.quad var, -1
 	.quad ret
 
 here: /* -- addr */
@@ -538,19 +538,19 @@ comma: /* x -- */
 	.quad call, collision
 	.quad ret
 
-apply: /* -- */
-	.quad call, state
-	.quad fetch
-
-	.quad qjump, 0f
-
+commit: /* -- */
 	.quad call, top
 	.quad fetch
 	.quad call, here
 	.quad store
 	.quad ret
 
-0:
+apply: /* -- */
+	.quad call, state
+	.quad fetch
+
+	.quad qjump, commit
+
 	.quad lit, ret
 	.quad call, comma
 	.quad call, here
@@ -846,21 +846,17 @@ colon: /* -- */
 	.quad fetch
 	.quad call, last
 	.quad store
-	.quad lit, -1
+	.quad lit, 0
 	.quad call, state
 	.quad store
 	.quad ret
 
 semicolon: /* -- */
 	.quad call, tail
-	.quad call, top
-	.quad fetch
-	.quad call, here
-	.quad store
-	.quad lit, 0
+	.quad lit, -1
 	.quad call, state
 	.quad store
-	.quad ret
+	.quad jump, commit
 
 tick: /* -- 0 | xt */
 	.quad call, word
@@ -998,7 +994,8 @@ define head_emit,      type,      "type"
 define head_type,      skip,      "skip"
 define head_skip,      collision, "collision"
 define head_collision, comma,     ",",         IMMEDIATE
-define head_comma,     apply,     "apply",     IMMEDIATE
+define head_comma,     commit,    "commit",    IMMEDIATE
+define head_commit,    apply,     "apply",     IMMEDIATE
 define head_apply,     word,      "word"
 define head_word,      digitq,    "digit?"
 define head_digitq,    natural,   "natural"
