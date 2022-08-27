@@ -389,8 +389,9 @@ string: /* addr1 -- addr2 u */
 	.quad bfetch
 	.quad ret
 
-bye: /* n -- */
+bye:
 	.quad lit, 0
+	.quad dup
 	.quad dup
 	.quad lit, SYS_EXIT
 	.quad syscall
@@ -516,7 +517,6 @@ collision:
 	.quad lit, '!'
 	.quad call, emit
 	.quad call, flush
-	.quad lit, 1
 	.quad jump, bye
 
 0:
