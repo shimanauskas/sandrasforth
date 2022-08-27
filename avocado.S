@@ -418,8 +418,7 @@ keyq: /* -- bool */
 	.quad lit, input
 	.quad call, string
 	.quad add
-	.quad call, uless
-	.quad ret
+	.quad jump, uless
 
 key: /* -- char */
 	.quad call, mark
@@ -535,8 +534,7 @@ comma: /* x -- */
 	.quad call, top
 	.quad store
 	.quad store
-	.quad call, collision
-	.quad ret
+	.quad jump, collision
 
 commit: /* -- */
 	.quad call, top
@@ -791,8 +789,7 @@ link: /* x -- */
 	.quad call, head
 	.quad store
 	.quad store
-	.quad call, collision
-	.quad ret
+	.quad jump, collision
 
 tail: /* -- */
 	.quad lit, jump
@@ -881,8 +878,7 @@ postpone: /* -- */
 literal: /* x -- */
 	.quad lit, lit
 	.quad call, comma
-	.quad call, comma
-	.quad ret
+	.quad jump, comma
 
 immediate: /* -- */
 	.quad call, last
