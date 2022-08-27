@@ -64,7 +64,7 @@
 	twonip
 .endm
 
-.macro next /* -- */
+.macro next
 	addq $(CELL), %rbx
 	jmp *(%rbx)
 .endm
@@ -96,7 +96,7 @@ call: /* r: -- addr */
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
 
-jump: /* -- */
+jump:
 	addq $(CELL), %rbx
 	movq (%rbx), %rbx
 	jmpq *(%rbx)
@@ -395,7 +395,7 @@ bye: /* n -- */
 	.quad lit, SYS_EXIT
 	.quad syscall
 
-accept: /* -- */
+accept:
 	.quad lit, STDIN
 	.quad lit, input+1
 	.quad lit, 0xFF
@@ -426,7 +426,7 @@ key: /* -- char */
 	.quad bfetch
 	.quad ret
 
-advance: /* -- */
+advance:
 	.quad call, mark
 	.quad fetch
 	.quad inc
@@ -434,7 +434,7 @@ advance: /* -- */
 	.quad store
 	.quad ret
 
-flush: /* -- */
+flush:
 	.quad lit, STDOUT
 	.quad lit, output
 	.quad call, string
@@ -484,7 +484,7 @@ type: /* addr u -- */
 	.quad drop
 	.quad ret
 
-skip: /* -- */
+skip:
 	.quad call, keyq
 	.quad call, key
 	.quad lit, '!'
@@ -500,7 +500,7 @@ skip: /* -- */
 
 	.quad ret
 
-collision: /* -- */
+collision:
 	.quad call, top
 	.quad fetch
 	.quad call, head
@@ -533,14 +533,14 @@ comma: /* x -- */
 	.quad store
 	.quad jump, collision
 
-commit: /* -- */
+commit:
 	.quad call, top
 	.quad fetch
 	.quad call, here
 	.quad store
 	.quad ret
 
-apply: /* -- */
+apply:
 	.quad call, state
 	.quad fetch
 
@@ -558,7 +558,7 @@ apply: /* -- */
 	.quad store
 	.quad ret
 
-word: /* -- */
+word:
 	.quad call, skip
 	.quad call, keyq
 
@@ -788,7 +788,7 @@ link: /* x -- */
 	.quad store
 	.quad jump, collision
 
-tail: /* -- */
+tail:
 	.quad lit, jump
 	.quad call, top
 	.quad fetch
@@ -810,7 +810,7 @@ tail: /* -- */
 	.quad lit, ret
 	.quad jump, comma
 
-colon: /* -- */
+colon:
 	.quad call, apply
 	.quad call, word
 	.quad lit, buffer
@@ -844,7 +844,7 @@ colon: /* -- */
 	.quad store
 	.quad ret
 
-semicolon: /* -- */
+semicolon:
 	.quad call, tail
 	.quad lit, -1
 	.quad call, state
@@ -865,7 +865,7 @@ tick: /* -- 0 | xt */
 0:
 	.quad ret
 
-postpone: /* -- */
+postpone:
 	.quad call, tick
 	.quad lit, call
 	.quad call, comma
@@ -876,7 +876,7 @@ literal: /* x -- */
 	.quad call, comma
 	.quad jump, comma
 
-immediate: /* -- */
+immediate:
 	.quad call, last
 	.quad fetch
 	.quad lit, CELL*2
@@ -890,7 +890,7 @@ immediate: /* -- */
 	.quad drop
 	.quad ret
 
-main: /* -- */
+main:
 	.quad call, word
 	.quad call, find
 	.quad dup

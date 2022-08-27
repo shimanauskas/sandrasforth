@@ -17,8 +17,7 @@
 : digit ( u -- char ) dup 10 u<
   if char 0 literal + ; then [ char A 10 - ] literal + ;
 
-: variable ( -- ) postpone : lit var postpone , 0 postpone , postpone ; ;
-  immediate
+: variable postpone : lit var postpone , 0 postpone , postpone ; ; immediate
 
 variable hld
 
@@ -32,14 +31,14 @@ variable hld
   begin base @ u/mod push digit hold pop dup 0= until drop
   hld @ [ ' buffer 256 + ] literal over - type ;
 
-: bina ( -- )  2 base ! ; immediate
-: deci ( -- ) 10 base ! ; immediate
-: hexa ( -- ) 16 base ! ; immediate
+: bina  2 base ! ; immediate
+: deci 10 base ! ; immediate
+: hexa 16 base ! ; immediate
 
-: space ( -- ) 32 emit ;
+: space 32 emit ;
 
 : cells ( n1 -- n2 ) [ cell ] literal * ;
 
-: words ( -- ) last
+: words last
   begin @ dup if dup [ 2 cells ] literal + string 127 and type space repeat
   drop ;
