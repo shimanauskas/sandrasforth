@@ -688,7 +688,7 @@ number: /* addr u1 -- n u2 */
 	.quad pop
 	.quad ret
 
-sameq: /* addr1 addr2 u1 -- u2 */
+sameq: /* addr1 addr2 u -- bool */
 	.quad dup
 	.quad push
 	.quad push
