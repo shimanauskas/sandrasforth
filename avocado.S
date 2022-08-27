@@ -794,6 +794,29 @@ link: /* x -- */
 	.quad call, collision
 	.quad ret
 
+tail: /* -- */
+	.quad lit, jump
+	.quad call, top
+	.quad fetch
+	.quad lit, CELL*2
+	.quad sub
+	.quad dup
+	.quad fetch
+	.quad lit, call
+	.quad call, equals
+
+	.quad qjump, 0f
+
+	.quad store
+	.quad ret
+
+0:
+	.quad nip
+	.quad drop
+	.quad lit, ret
+	.quad call, comma
+	.quad ret
+
 colon: /* -- */
 	.quad call, apply
 	.quad call, word
@@ -829,8 +852,7 @@ colon: /* -- */
 	.quad ret
 
 semicolon: /* -- */
-	.quad lit, ret
-	.quad call, comma
+	.quad call, tail
 	.quad call, top
 	.quad fetch
 	.quad call, here
@@ -985,7 +1007,8 @@ define head_number,    sameq,     "same?"
 define head_sameq,     find,      "find"
 define head_find,      bmove,     "bmove"
 define head_bmove,     link,      "link",      IMMEDIATE
-define head_link,      colon,     ":",         IMMEDIATE
+define head_link,      tail,      "tail",      IMMEDIATE
+define head_tail,      colon,     ":",         IMMEDIATE
 define head_colon,     semicolon, ";",         IMMEDIATE
 define head_semicolon, tick,      "'",         IMMEDIATE
 define head_tick,      postpone,  "postpone",  IMMEDIATE
