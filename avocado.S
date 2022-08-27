@@ -501,63 +501,6 @@ skip:
 
 	.quad ret
 
-collision:
-	.quad call, top
-	.quad fetch
-	.quad call, head
-	.quad fetch
-	.quad call, uless
-	.quad not
-
-	.quad qjump, 0f
-
-	.quad lit, head_collision+CELL*2
-	.quad call, string
-	.quad call, type
-	.quad lit, '!'
-	.quad call, emit
-	.quad call, flush
-	.quad jump, bye
-
-0:
-	.quad ret
-
-comma: /* x -- */
-	.quad call, top
-	.quad fetch
-	.quad dup
-	.quad lit, CELL
-	.quad add
-	.quad call, top
-	.quad store
-	.quad store
-	.quad jump, collision
-
-commit:
-	.quad call, top
-	.quad fetch
-	.quad call, here
-	.quad store
-	.quad ret
-
-apply:
-	.quad call, state
-	.quad fetch
-
-	.quad qjump, commit
-
-	.quad lit, ret
-	.quad call, comma
-	.quad call, here
-	.quad fetch
-	.quad exec
-	.quad call, flush
-	.quad call, here
-	.quad fetch
-	.quad call, top
-	.quad store
-	.quad ret
-
 word:
 	.quad call, skip
 	.quad lit, 0
@@ -771,6 +714,63 @@ bmove: /* addr1 addr2 u -- */
 	.quad nip
 	.quad nip
 	.quad drop
+	.quad ret
+
+collision:
+	.quad call, top
+	.quad fetch
+	.quad call, head
+	.quad fetch
+	.quad call, uless
+	.quad not
+
+	.quad qjump, 0f
+
+	.quad lit, head_collision+CELL*2
+	.quad call, string
+	.quad call, type
+	.quad lit, '!'
+	.quad call, emit
+	.quad call, flush
+	.quad jump, bye
+
+0:
+	.quad ret
+
+comma: /* x -- */
+	.quad call, top
+	.quad fetch
+	.quad dup
+	.quad lit, CELL
+	.quad add
+	.quad call, top
+	.quad store
+	.quad store
+	.quad jump, collision
+
+commit:
+	.quad call, top
+	.quad fetch
+	.quad call, here
+	.quad store
+	.quad ret
+
+apply:
+	.quad call, state
+	.quad fetch
+
+	.quad qjump, commit
+
+	.quad lit, ret
+	.quad call, comma
+	.quad call, here
+	.quad fetch
+	.quad exec
+	.quad call, flush
+	.quad call, here
+	.quad fetch
+	.quad call, top
+	.quad store
 	.quad ret
 
 link: /* x -- */
@@ -991,18 +991,18 @@ define head_advance,   flush,     "flush"
 define head_flush,     emit,      "emit"
 define head_emit,      type,      "type"
 define head_type,      skip,      "skip"
-define head_skip,      collision, "collision"
-define head_collision, comma,     ",",         IMMEDIATE
-define head_comma,     commit,    "commit",    IMMEDIATE
-define head_commit,    apply,     "apply",     IMMEDIATE
-define head_apply,     word,      "word"
+define head_skip,      word,      "word"
 define head_word,      digitq,    "digit?"
 define head_digitq,    natural,   "natural"
 define head_natural,   number,    "number"
 define head_number,    sameq,     "same?"
 define head_sameq,     find,      "find"
 define head_find,      bmove,     "bmove"
-define head_bmove,     link,      "link",      IMMEDIATE
+define head_bmove,     collision, "collision"
+define head_collision, comma,     ",",         IMMEDIATE
+define head_comma,     commit,    "commit",    IMMEDIATE
+define head_commit,    apply,     "apply",     IMMEDIATE
+define head_apply,     link,      "link",      IMMEDIATE
 define head_link,      tail,      "tail",      IMMEDIATE
 define head_tail,      colon,     ":",         IMMEDIATE
 define head_colon,     semicolon, ";",         IMMEDIATE
