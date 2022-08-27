@@ -19,15 +19,15 @@
    r15 - unused. */
 
 #ifdef __linux__
-	#define SYSREAD  0
-	#define SYSWRITE 1
-	#define SYSEXIT  60
+	#define SYS_READ  0
+	#define SYS_WRITE 1
+	#define SYS_EXIT  60
 #elif __APPLE__
 	#include "TargetConditionals.h"
 	#ifdef TARGET_OS_MAC
-		#define SYSREAD  0x2000003
-		#define SYSWRITE 0x2000004
-		#define SYSEXIT  0x2000001
+		#define SYS_READ  0x2000003
+		#define SYS_WRITE 0x2000004
+		#define SYS_EXIT  0x2000001
 	#endif
 #elif
 	#error "Unsupported platform."
@@ -392,14 +392,14 @@ string: /* addr1 -- addr2 u */
 bye: /* n -- */
 	.quad lit, 0
 	.quad dup
-	.quad lit, SYSEXIT
+	.quad lit, SYS_EXIT
 	.quad syscall
 
 accept: /* -- */
 	.quad lit, STDIN
 	.quad lit, input+1
 	.quad lit, 0xFF
-	.quad lit, SYSREAD
+	.quad lit, SYS_READ
 	.quad syscall
 	.quad dup
 
@@ -438,7 +438,7 @@ flush: /* -- */
 	.quad lit, STDOUT
 	.quad lit, output
 	.quad call, string
-	.quad lit, SYSWRITE
+	.quad lit, SYS_WRITE
 	.quad syscall
 	.quad drop
 	.quad lit, 0
