@@ -560,13 +560,12 @@ apply:
 
 word:
 	.quad call, skip
-	.quad call, keyq
-
-	.quad qjump, 1f
-
 	.quad lit, 0
 	.quad lit, buffer
 	.quad bstore
+	.quad call, keyq
+
+	.quad qjump, 1f
 
 0:
 	.quad call, key
@@ -602,12 +601,9 @@ word:
 0:
 
 	.quad drop
-	.quad ret
 
 1:
-	.quad call, apply
-	.quad call, accept
-	.quad jump, word
+	.quad ret
 
 digitq: /* char base -- u bool */
 	.quad push
@@ -892,6 +888,11 @@ immediate:
 
 main:
 	.quad call, word
+	.quad lit, buffer
+	.quad bfetch
+
+	.quad qjump, 2f
+
 	.quad call, find
 	.quad dup
 
@@ -949,6 +950,11 @@ main:
 
 0:
 	.quad call, literal
+	.quad jump, main
+
+2:
+	.quad call, apply
+	.quad call, accept
 	.quad jump, main
 
 define head_syscall,   cell,      "cell"
