@@ -480,7 +480,7 @@ type: /* addr u -- */
 	.quad jump, type
 0:
 
-	.quad drop
+	.quad nip
 	.quad drop
 	.quad ret
 
