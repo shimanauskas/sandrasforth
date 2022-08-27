@@ -808,8 +808,7 @@ tail: /* -- */
 	.quad nip
 	.quad drop
 	.quad lit, ret
-	.quad call, comma
-	.quad ret
+	.quad jump, comma
 
 colon: /* -- */
 	.quad call, apply
