@@ -1000,13 +1000,13 @@ define head_natural,   number,    "number"
 define head_number,    sameq,     "same?"
 define head_sameq,     find,      "find"
 define head_find,      bmove,     "bmove"
-define head_bmove,     tail,      "tail",      IMMEDIATE
+define head_bmove,     tail,      "tail"
 define head_tail,      comma,     ",",         IMMEDIATE
 define head_comma,     collision, "collision"
 define head_collision, semicolon, ";",         IMMEDIATE
 define head_semicolon, commit,    "commit",    IMMEDIATE
-define head_commit,    apply,     "apply",     IMMEDIATE
-define head_apply,     link,      "link",      IMMEDIATE
+define head_commit,    apply,     "apply"
+define head_apply,     link,      "link"
 define head_link,      colon,     ":",         IMMEDIATE
 define head_colon,     tick,      "'",         IMMEDIATE
 define head_tick,      postpone,  "postpone",  IMMEDIATE
