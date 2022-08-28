@@ -191,7 +191,7 @@ neg: /* n1 -- n2 */
 sub: /* n1|u1 n2|u2 -- n3|u3 */
 	negq %rax
 
-	/* Fallthrough! */
+	/* Fallthrough. */
 
 add: /* n1|u1 n2|u2 -- n3|u3 */
 	addq (%rbp), %rax
@@ -310,7 +310,7 @@ zless: /* n - bool */
 	.quad lit, 1<<(CELL*8-1)
 	.quad and
 
-	/* Fallthrough! */
+	/* Fallthrough. */
 
 bool: /* x -- bool */
 	.quad qjump, 0f
@@ -355,7 +355,7 @@ uless: /* u1 u2 -- bool */
 equals: /* x1 x2 -- bool */
 	.quad xor
 
-	/* Fallthrough! */
+	/* Fallthrough. */
 
 zequals: /* x -- bool */
 	.quad call, bool
@@ -729,8 +729,6 @@ collision:
 	.quad lit, head_collision+CELL*2
 	.quad call, string
 	.quad call, type
-	.quad lit, '!'
-	.quad call, emit
 	.quad call, flush
 	.quad jump, bye
 
