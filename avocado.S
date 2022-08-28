@@ -29,7 +29,7 @@
 		#define SYS_WRITE 0x2000004
 		#define SYS_EXIT  0x2000001
 	#endif
-#elif
+#else
 	#error Unsupported platform.
 #endif
 
