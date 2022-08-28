@@ -716,6 +716,41 @@ bmove: /* addr1 addr2 u -- */
 	.quad drop
 	.quad ret
 
+tail:
+	.quad lit, jump
+	.quad call, top
+	.quad fetch
+	.quad lit, CELL*2
+	.quad sub
+	.quad dup
+	.quad fetch
+	.quad lit, call
+	.quad call, equals
+
+	.quad qjump, 0f
+
+	.quad store
+	.quad ret
+
+0:
+	.quad nip
+	.quad drop
+	.quad lit, ret
+
+	/* Fallthrough. */
+
+comma: /* x -- */
+	.quad call, top
+	.quad fetch
+	.quad dup
+	.quad lit, CELL
+	.quad add
+	.quad call, top
+	.quad store
+	.quad store
+
+	/* Fallthrough. */
+
 collision:
 	.quad call, top
 	.quad fetch
@@ -735,16 +770,13 @@ collision:
 0:
 	.quad ret
 
-comma: /* x -- */
-	.quad call, top
-	.quad fetch
-	.quad dup
-	.quad lit, CELL
-	.quad add
-	.quad call, top
+semicolon:
+	.quad call, tail
+	.quad lit, -1
+	.quad call, state
 	.quad store
-	.quad store
-	.quad jump, collision
+
+	/* Fallthrough. */
 
 commit:
 	.quad call, top
@@ -782,28 +814,6 @@ link: /* x -- */
 	.quad store
 	.quad jump, collision
 
-tail:
-	.quad lit, jump
-	.quad call, top
-	.quad fetch
-	.quad lit, CELL*2
-	.quad sub
-	.quad dup
-	.quad fetch
-	.quad lit, call
-	.quad call, equals
-
-	.quad qjump, 0f
-
-	.quad store
-	.quad ret
-
-0:
-	.quad nip
-	.quad drop
-	.quad lit, ret
-	.quad jump, comma
-
 colon:
 	.quad call, apply
 	.quad call, word
@@ -837,13 +847,6 @@ colon:
 	.quad call, state
 	.quad store
 	.quad ret
-
-semicolon:
-	.quad call, tail
-	.quad lit, -1
-	.quad call, state
-	.quad store
-	.quad jump, commit
 
 tick: /* -- 0 | xt */
 	.quad call, word
@@ -996,15 +999,15 @@ define head_natural,   number,    "number"
 define head_number,    sameq,     "same?"
 define head_sameq,     find,      "find"
 define head_find,      bmove,     "bmove"
-define head_bmove,     collision, "collision"
-define head_collision, comma,     ",",         IMMEDIATE
-define head_comma,     commit,    "commit",    IMMEDIATE
+define head_bmove,     tail,      "tail",      IMMEDIATE
+define head_tail,      comma,     ",",         IMMEDIATE
+define head_comma,     collision, "collision"
+define head_collision, semicolon, ";",         IMMEDIATE
+define head_semicolon, commit,    "commit",    IMMEDIATE
 define head_commit,    apply,     "apply",     IMMEDIATE
 define head_apply,     link,      "link",      IMMEDIATE
-define head_link,      tail,      "tail",      IMMEDIATE
-define head_tail,      colon,     ":",         IMMEDIATE
-define head_colon,     semicolon, ";",         IMMEDIATE
-define head_semicolon, tick,      "'",         IMMEDIATE
+define head_link,      colon,     ":",         IMMEDIATE
+define head_colon,     tick,      "'",         IMMEDIATE
 define head_tick,      postpone,  "postpone",  IMMEDIATE
 define head_postpone,  literal,   "literal",   IMMEDIATE
 define head_literal,   immediate, "immediate", IMMEDIATE
