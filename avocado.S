@@ -30,7 +30,7 @@
 		#define SYS_EXIT  0x2000001
 	#endif
 #elif
-	#error "Unsupported platform."
+	#error Unsupported platform.
 #endif
 
 #define STDIN  0
