@@ -25,7 +25,7 @@ variable hld
 
 : . ( n -- ) dup 0< if char - literal emit neg then
 
-  ( Fallthrough! )
+  ( Fallthrough. )
 
 : u. ( u -- ) [ ' buffer 256 + ] literal hld !
   begin base @ u/mod push digit hold pop dup 0= until drop
