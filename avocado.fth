@@ -28,7 +28,7 @@ variable hld
   ( Fallthrough. )
 
 : u. ( u -- ) [ ' buffer 256 + ] literal hld !
-  begin base @ u/mod push digit hold pop dup 0= until drop
+  begin 0 base @ um/mod push digit hold pop dup 0= until drop
   hld @ [ ' buffer 256 + ] literal over - type ;
 
 : bina  2 base ! ; immediate
@@ -37,7 +37,7 @@ variable hld
 
 : space 32 emit ;
 
-: cells ( n1 -- n2 ) [ cell ] literal * ;
+: cells ( u1 -- u2 ) [ cell ] literal um* drop ;
 
 : words last
   begin @ dup if dup [ 2 cells ] literal + string 127 and type space repeat
