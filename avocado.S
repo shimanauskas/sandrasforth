@@ -340,6 +340,21 @@ less: /* n1 n2 -- bool */
 	.quad sub
 	.quad jump, zless
 
+uless: /* u1 u2 -- bool */
+	.quad over
+	.quad over
+	.quad xor
+	.quad call, zless
+
+	.quad qjump, 0f
+
+	.quad nip
+	.quad jump, zless
+
+0:
+	.quad sub
+	.quad jump, zless
+
 equals: /* x1 x2 -- bool */
 	.quad xor
 
@@ -407,23 +422,7 @@ keyq: /* -- bool */
 	.quad lit, input
 	.quad call, string
 	.quad add
-
-	/* Fallthrough. */
-
-uless: /* u1 u2 -- bool */
-	.quad over
-	.quad over
-	.quad xor
-	.quad call, zless
-
-	.quad qjump, 0f
-
-	.quad nip
-	.quad jump, zless
-
-0:
-	.quad sub
-	.quad jump, zless
+	.quad jump, uless
 
 key: /* -- char */
 	.quad call, mark
@@ -982,7 +981,8 @@ define head_last,      base,      "base"
 define head_base,      zless,     "0<"
 define head_zless,     bool,      "bool"
 define head_bool,      less,      "<"
-define head_less,      equals,    "="
+define head_less,      uless,     "u<"
+define head_uless,     equals,    "="
 define head_equals,    zequals,   "0="
 define head_zequals,   within,    "within"
 define head_within,    align,     "align"
@@ -990,8 +990,7 @@ define head_align,     string,    "string"
 define head_string,    bye,       "bye"
 define head_bye,       accept,    "accept"
 define head_accept,    keyq,      "key?"
-define head_keyq,      uless,     "u<"
-define head_uless,     key,       "key"
+define head_keyq,      key,       "key"
 define head_key,       advance,   "advance"
 define head_advance,   flush,     "flush"
 define head_flush,     emit,      "emit"
