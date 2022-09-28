@@ -309,12 +309,6 @@ base: /* -- addr */
 	.quad var, 10
 	.quad ret
 
-zless: /* n - bool */
-	.quad lit, 1<<(CELL*8-1)
-	.quad and
-
-	/* Fallthrough. */
-
 bool: /* x -- bool */
 	.quad qjump, 0f
 
@@ -324,6 +318,11 @@ bool: /* x -- bool */
 0:
 	.quad lit, 0
 	.quad ret
+
+zless: /* n - bool */
+	.quad lit, 1<<(CELL*8-1)
+	.quad and
+	.quad jump, bool
 
 less: /* n1 n2 -- bool */
 	.quad over
@@ -978,9 +977,9 @@ define head_top,       head,      "head"
 define head_head,      last,      "last"
 define head_last,      base,      "base"
 
-define head_base,      zless,     "0<"
-define head_zless,     bool,      "bool"
-define head_bool,      less,      "<"
+define head_base,      bool,      "bool"
+define head_bool,      zless,     "0<"
+define head_zless,     less,      "<"
 define head_less,      uless,     "u<"
 define head_uless,     equals,    "="
 define head_equals,    zequals,   "0="
