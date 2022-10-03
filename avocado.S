@@ -354,15 +354,14 @@ uless: /* u1 u2 -- bool */
 	.quad sub
 	.quad jump, zless
 
-equals: /* x1 x2 -- bool */
-	.quad xor
-
-	/* Fallthrough. */
-
 zequals: /* x -- bool */
 	.quad call, bool
 	.quad not
 	.quad ret
+
+equals: /* x1 x2 -- bool */
+	.quad xor
+	.quad jump, zequals
 
 within: /* u1 u2 u3 -- bool */
 	.quad push
@@ -981,9 +980,9 @@ define head_base,      bool,      "bool"
 define head_bool,      zless,     "0<"
 define head_zless,     less,      "<"
 define head_less,      uless,     "u<"
-define head_uless,     equals,    "="
-define head_equals,    zequals,   "0="
-define head_zequals,   within,    "within"
+define head_uless,     zequals,   "0="
+define head_zequals,   equals,    "="
+define head_equals,    within,    "within"
 define head_within,    align,     "align"
 define head_align,     string,    "string"
 define head_string,    bye,       "bye"
