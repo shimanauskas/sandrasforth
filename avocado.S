@@ -319,6 +319,15 @@ bool: /* x -- bool */
 	.quad lit, 0
 	.quad ret
 
+zequals: /* x -- bool */
+	.quad call, bool
+	.quad not
+	.quad ret
+
+equals: /* x1 x2 -- bool */
+	.quad xor
+	.quad jump, zequals
+
 zless: /* n - bool */
 	.quad lit, 1<<(CELL*8-1)
 	.quad and
@@ -353,15 +362,6 @@ uless: /* u1 u2 -- bool */
 0:
 	.quad sub
 	.quad jump, zless
-
-zequals: /* x -- bool */
-	.quad call, bool
-	.quad not
-	.quad ret
-
-equals: /* x1 x2 -- bool */
-	.quad xor
-	.quad jump, zequals
 
 within: /* u1 u2 u3 -- bool */
 	.quad push
@@ -977,12 +977,12 @@ define head_head,      last,      "last"
 define head_last,      base,      "base"
 
 define head_base,      bool,      "bool"
-define head_bool,      zless,     "0<"
+define head_bool,      zequals,   "0="
+define head_zequals,   equals,    "="
+define head_equals,    zless,     "0<"
 define head_zless,     less,      "<"
 define head_less,      uless,     "u<"
-define head_uless,     zequals,   "0="
-define head_zequals,   equals,    "="
-define head_equals,    within,    "within"
+define head_uless,     within,    "within"
 define head_within,    align,     "align"
 define head_align,     string,    "string"
 define head_string,    bye,       "bye"
