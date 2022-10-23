@@ -1004,7 +1004,7 @@ define head_bmove,     tail,      "tail"
 define head_tail,      comma,     ",",         IMMEDIATE
 define head_comma,     collision, "collision"
 define head_collision, commit,    "commit",    IMMEDIATE
-define head_commit,    apply,     "apply"
+define head_commit,    apply,     "apply",     IMMEDIATE
 define head_apply,     link,      "link"
 define head_link,      colon,     ":",         IMMEDIATE
 define head_colon,     semicolon, ";",         IMMEDIATE
