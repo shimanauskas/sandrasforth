@@ -772,6 +772,17 @@ collision:
 0:
 	.quad ret
 
+link: /* x -- */
+	.quad call, head
+	.quad fetch
+	.quad lit, CELL
+	.quad sub
+	.quad dup
+	.quad call, head
+	.quad store
+	.quad store
+	.quad jump, collision
+
 commit:
 	.quad call, top
 	.quad fetch
@@ -796,17 +807,6 @@ apply:
 	.quad call, top
 	.quad store
 	.quad ret
-
-link: /* x -- */
-	.quad call, head
-	.quad fetch
-	.quad lit, CELL
-	.quad sub
-	.quad dup
-	.quad call, head
-	.quad store
-	.quad store
-	.quad jump, collision
 
 colon:
 	.quad call, apply
@@ -1003,10 +1003,10 @@ define head_find,      bmove,     "bmove"
 define head_bmove,     tail,      "tail"
 define head_tail,      comma,     ",",         IMMEDIATE
 define head_comma,     collision, "collision"
-define head_collision, commit,    "commit",    IMMEDIATE
+define head_collision, link,      "link"
+define head_link,      commit,    "commit",    IMMEDIATE
 define head_commit,    apply,     "apply",     IMMEDIATE
-define head_apply,     link,      "link"
-define head_link,      colon,     ":",         IMMEDIATE
+define head_apply,     colon,     ":",         IMMEDIATE
 define head_colon,     semicolon, ";",         IMMEDIATE
 define head_semicolon, tick,      "'",         IMMEDIATE
 define head_tick,      postpone,  "postpone",  IMMEDIATE
