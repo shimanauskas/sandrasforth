@@ -718,6 +718,47 @@ bmove: /* addr1 addr2 u -- */
 	.quad drop
 	.quad ret
 
+collision:
+	.quad call, top
+	.quad fetch
+	.quad call, head
+	.quad fetch
+	.quad call, uless
+	.quad not
+
+	.quad qjump, 0f
+
+	.quad lit, head_collision+CELL*2
+	.quad call, string
+	.quad call, type
+	.quad call, flush
+	.quad jump, bye
+
+0:
+	.quad ret
+
+comma: /* x -- */
+	.quad call, top
+	.quad fetch
+	.quad dup
+	.quad lit, CELL
+	.quad add
+	.quad call, top
+	.quad store
+	.quad store
+	.quad jump, collision
+
+link: /* x -- */
+	.quad call, head
+	.quad fetch
+	.quad lit, CELL
+	.quad sub
+	.quad dup
+	.quad call, head
+	.quad store
+	.quad store
+	.quad jump, collision
+
 tail:
 	.quad lit, jump
 	.quad call, top
@@ -738,50 +779,7 @@ tail:
 	.quad nip
 	.quad drop
 	.quad lit, ret
-
-	/* Fallthrough. */
-
-comma: /* x -- */
-	.quad call, top
-	.quad fetch
-	.quad dup
-	.quad lit, CELL
-	.quad add
-	.quad call, top
-	.quad store
-	.quad store
-
-	/* Fallthrough. */
-
-collision:
-	.quad call, top
-	.quad fetch
-	.quad call, head
-	.quad fetch
-	.quad call, uless
-	.quad not
-
-	.quad qjump, 0f
-
-	.quad lit, head_collision+CELL*2
-	.quad call, string
-	.quad call, type
-	.quad call, flush
-	.quad jump, bye
-
-0:
-	.quad ret
-
-link: /* x -- */
-	.quad call, head
-	.quad fetch
-	.quad lit, CELL
-	.quad sub
-	.quad dup
-	.quad call, head
-	.quad store
-	.quad store
-	.quad jump, collision
+	.quad jump, comma
 
 commit:
 	.quad call, top
@@ -1000,11 +998,11 @@ define head_natural,   number,    "number"
 define head_number,    sameq,     "same?"
 define head_sameq,     find,      "find"
 define head_find,      bmove,     "bmove"
-define head_bmove,     tail,      "tail",      IMMEDIATE
-define head_tail,      comma,     ",",         IMMEDIATE
-define head_comma,     collision, "collision", IMMEDIATE
-define head_collision, link,      "link",      IMMEDIATE
-define head_link,      commit,    "commit",    IMMEDIATE
+define head_bmove,     collision, "collision", IMMEDIATE
+define head_collision, comma,     ",",         IMMEDIATE
+define head_comma,     link,      "link",      IMMEDIATE
+define head_link,      tail,      "tail",      IMMEDIATE
+define head_tail,      commit,    "commit",    IMMEDIATE
 define head_commit,    apply,     "apply",     IMMEDIATE
 define head_apply,     colon,     ":",         IMMEDIATE
 define head_colon,     semicolon, ";",         IMMEDIATE
