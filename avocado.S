@@ -247,36 +247,6 @@ _end:
 
 .data
 
-define 0,             call,     "call"
-define head_call,     jump,     "jump"
-define head_jump,     qjump,    "?jump"
-define head_qjump,    exec,     "exec"
-define head_exec,     ret,      "ret"
-define head_ret,      lit,      "lit"
-define head_lit,      var,      "var"
-define head_var,      dup,      "dup"
-define head_dup,      nip,      "nip"
-define head_nip,      drop,     "drop"
-define head_drop,     over,     "over"
-define head_over,     push,     "push"
-define head_push,     pop,      "pop"
-define head_pop,      not,      "not"
-define head_not,      and,      "and"
-define head_and,      or,       "or"
-define head_or,       xor,      "xor"
-define head_xor,      inc,      "1+"
-define head_inc,      dec,      "1-"
-define head_dec,      neg,      "neg"
-define head_neg,      sub,      "-"
-define head_sub,      add,      "+"
-define head_add,      ummul,    "um*"
-define head_ummul,    umdivmod, "um/mod"
-define head_umdivmod, fetch,    "@"
-define head_fetch,    store,    "!"
-define head_store,    bfetch,   "b@"
-define head_bfetch,   bstore,   "b!"
-define head_bstore,   syscall,  "syscall"
-
 cell: /* -- u */
 	.quad lit, CELL
 	.quad ret
@@ -956,6 +926,36 @@ main:
 	.quad call, apply
 	.quad call, accept
 	.quad jump, main
+
+define 0,              call,      "call"
+define head_call,      jump,      "jump"
+define head_jump,      qjump,     "?jump"
+define head_qjump,     exec,      "exec"
+define head_exec,      ret,       "ret"
+define head_ret,       lit,       "lit"
+define head_lit,       var,       "var"
+define head_var,       dup,       "dup"
+define head_dup,       nip,       "nip"
+define head_nip,       drop,      "drop"
+define head_drop,      over,      "over"
+define head_over,      push,      "push"
+define head_push,      pop,       "pop"
+define head_pop,       not,       "not"
+define head_not,       and,       "and"
+define head_and,       or,        "or"
+define head_or,        xor,       "xor"
+define head_xor,       inc,       "1+"
+define head_inc,       dec,       "1-"
+define head_dec,       neg,       "neg"
+define head_neg,       sub,       "-"
+define head_sub,       add,       "+"
+define head_add,       ummul,     "um*"
+define head_ummul,     umdivmod,  "um/mod"
+define head_umdivmod,  fetch,     "@"
+define head_fetch,     store,     "!"
+define head_store,     bfetch,    "b@"
+define head_bfetch,    bstore,    "b!"
+define head_bstore,    syscall,   "syscall"
 
 define head_syscall,   cell,      "cell"
 
