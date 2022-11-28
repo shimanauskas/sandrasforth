@@ -958,7 +958,6 @@ define head_bfetch,    bstore,    "b!"
 define head_bstore,    syscall,   "syscall"
 
 define head_syscall,   cell,      "cell"
-
 define head_cell,      input,     "input"
 define head_input,     output,    "output"
 define head_output,    buffer,    "buffer"
