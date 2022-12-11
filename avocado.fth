@@ -9,10 +9,10 @@
 : repeat push lit jump postpone , postpone , top @ pop ! ; immediate
 : until lit ?jump postpone , postpone , ; immediate
 
-: char word [ ' buffer 1+ ] literal b@ ; immediate
+: char word [ 'buffer 1+ ] literal b@ ; immediate
 
-: ( begin word ' buffer literal b@ 1 =
-  [ ' buffer 1+ ] literal b@ char ) literal = and until ; immediate
+: ( begin word [ 'buffer ] literal b@ 1 =
+  [ 'buffer 1+ ] literal b@ char ) literal = and until ; immediate
 
 : digit ( u -- char ) dup 10 u<
   if char 0 literal + ; then [ char A 10 - ] literal + ;
@@ -27,9 +27,9 @@ variable hld
 
   ( Fallthrough. )
 
-: u. ( u -- ) [ ' buffer 256 + ] literal hld !
+: u. ( u -- ) [ 'buffer 256 + ] literal hld !
   begin 0 base @ um/mod push digit hold pop dup 0= until drop
-  hld @ [ ' buffer 256 + ] literal over - type ;
+  hld @ [ 'buffer 256 + ] literal over - type ;
 
 : bina  2 base ! ; immediate
 : deci 10 base ! ; immediate

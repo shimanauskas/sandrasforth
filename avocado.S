@@ -251,6 +251,26 @@ cell: /* -- u */
 	.quad lit, CELL
 	.quad ret
 
+tickinput: /* -- addr */
+	.quad lit, input
+	.quad ret
+
+tickoutput: /* -- addr */
+	.quad lit, output
+	.quad ret
+
+tickbuffer: /* -- addr */
+	.quad lit, buffer
+	.quad ret
+
+tickcode: /* -- addr */
+	.quad lit, code
+	.quad ret
+
+tickvocab: /* -- addr */
+	.quad lit, vocab
+	.quad ret
+
 mark: /* -- addr */
 	.quad var, input+1
 	.quad ret
@@ -927,89 +947,89 @@ main:
 	.quad call, accept
 	.quad jump, main
 
-define 0,              call,      "call"
-define head_call,      jump,      "jump"
-define head_jump,      qjump,     "?jump"
-define head_qjump,     exec,      "exec"
-define head_exec,      ret,       "ret"
-define head_ret,       lit,       "lit"
-define head_lit,       var,       "var"
-define head_var,       dup,       "dup"
-define head_dup,       nip,       "nip"
-define head_nip,       drop,      "drop"
-define head_drop,      over,      "over"
-define head_over,      push,      "push"
-define head_push,      pop,       "pop"
-define head_pop,       not,       "not"
-define head_not,       and,       "and"
-define head_and,       or,        "or"
-define head_or,        xor,       "xor"
-define head_xor,       inc,       "1+"
-define head_inc,       dec,       "1-"
-define head_dec,       neg,       "neg"
-define head_neg,       sub,       "-"
-define head_sub,       add,       "+"
-define head_add,       ummul,     "um*"
-define head_ummul,     umdivmod,  "um/mod"
-define head_umdivmod,  fetch,     "@"
-define head_fetch,     store,     "!"
-define head_store,     bfetch,    "b@"
-define head_bfetch,    bstore,    "b!"
-define head_bstore,    syscall,   "syscall"
+define 0,               call,       "call"
+define head_call,       jump,       "jump"
+define head_jump,       qjump,      "?jump"
+define head_qjump,      exec,       "exec"
+define head_exec,       ret,        "ret"
+define head_ret,        lit,        "lit"
+define head_lit,        var,        "var"
+define head_var,        dup,        "dup"
+define head_dup,        nip,        "nip"
+define head_nip,        drop,       "drop"
+define head_drop,       over,       "over"
+define head_over,       push,       "push"
+define head_push,       pop,        "pop"
+define head_pop,        not,        "not"
+define head_not,        and,        "and"
+define head_and,        or,         "or"
+define head_or,         xor,        "xor"
+define head_xor,        inc,        "1+"
+define head_inc,        dec,        "1-"
+define head_dec,        neg,        "neg"
+define head_neg,        sub,        "-"
+define head_sub,        add,        "+"
+define head_add,        ummul,      "um*"
+define head_ummul,      umdivmod,   "um/mod"
+define head_umdivmod,   fetch,      "@"
+define head_fetch,      store,      "!"
+define head_store,      bfetch,     "b@"
+define head_bfetch,     bstore,     "b!"
+define head_bstore,     syscall,    "syscall"
 
-define head_syscall,   cell,      "cell"
-define head_cell,      input,     "input"
-define head_input,     output,    "output"
-define head_output,    buffer,    "buffer"
-define head_buffer,    code,      "code"
-define head_code,      vocab,     "vocab"
+define head_syscall,    cell,       "cell"
+define head_cell,       tickinput,  "'input"
+define head_tickinput,  tickoutput, "'output"
+define head_tickoutput, tickbuffer, "'buffer"
+define head_tickbuffer, tickcode,   "'code"
+define head_tickcode,   tickvocab,  "'vocab"
 
-define head_vocab,     mark,      "mark"
-define head_mark,      state,     "state"
-define head_state,     here,      "here"
-define head_here,      top,       "top"
-define head_top,       head,      "head"
-define head_head,      last,      "last"
-define head_last,      base,      "base"
+define head_tickvocab,  mark,       "mark"
+define head_mark,       state,      "state"
+define head_state,      here,       "here"
+define head_here,       top,        "top"
+define head_top,        head,       "head"
+define head_head,       last,       "last"
+define head_last,       base,       "base"
 
-define head_base,      bool,      "bool"
-define head_bool,      zequals,   "0="
-define head_zequals,   equals,    "="
-define head_equals,    zless,     "0<"
-define head_zless,     less,      "<"
-define head_less,      uless,     "u<"
-define head_uless,     within,    "within"
-define head_within,    align,     "align"
-define head_align,     string,    "string"
-define head_string,    bye,       "bye"
-define head_bye,       accept,    "accept"
-define head_accept,    keyq,      "key?"
-define head_keyq,      key,       "key"
-define head_key,       advance,   "advance"
-define head_advance,   flush,     "flush"
-define head_flush,     emit,      "emit"
-define head_emit,      type,      "type"
-define head_type,      skip,      "skip"
-define head_skip,      word,      "word"
-define head_word,      digitq,    "digit?"
-define head_digitq,    natural,   "natural"
-define head_natural,   number,    "number"
-define head_number,    sameq,     "same?"
-define head_sameq,     find,      "find"
-define head_find,      bmove,     "bmove"
-define head_bmove,     collision, "collision", IMMEDIATE
-define head_collision, comma,     ",",         IMMEDIATE
-define head_comma,     link,      "link",      IMMEDIATE
-define head_link,      tail,      "tail",      IMMEDIATE
-define head_tail,      commit,    "commit",    IMMEDIATE
-define head_commit,    apply,     "apply",     IMMEDIATE
-define head_apply,     colon,     ":",         IMMEDIATE
-define head_colon,     semicolon, ";",         IMMEDIATE
-define head_semicolon, tick,      "'",         IMMEDIATE
-define head_tick,      postpone,  "postpone",  IMMEDIATE
-define head_postpone,  literal,   "literal",   IMMEDIATE
-define head_literal,   immediate, "immediate", IMMEDIATE
-define head_immediate, main,      "main"
+define head_base,       bool,       "bool"
+define head_bool,       zequals,    "0="
+define head_zequals,    equals,     "="
+define head_equals,     zless,      "0<"
+define head_zless,      less,       "<"
+define head_less,       uless,      "u<"
+define head_uless,      within,     "within"
+define head_within,     align,      "align"
+define head_align,      string,     "string"
+define head_string,     bye,        "bye"
+define head_bye,        accept,     "accept"
+define head_accept,     keyq,       "key?"
+define head_keyq,       key,        "key"
+define head_key,        advance,    "advance"
+define head_advance,    flush,      "flush"
+define head_flush,      emit,       "emit"
+define head_emit,       type,       "type"
+define head_type,       skip,       "skip"
+define head_skip,       word,       "word"
+define head_word,       digitq,     "digit?"
+define head_digitq,     natural,    "natural"
+define head_natural,    number,     "number"
+define head_number,     sameq,      "same?"
+define head_sameq,      find,       "find"
+define head_find,       bmove,      "bmove"
+define head_bmove,      collision,  "collision", IMMEDIATE
+define head_collision,  comma,      ",",         IMMEDIATE
+define head_comma,      link,       "link",      IMMEDIATE
+define head_link,       tail,       "tail",      IMMEDIATE
+define head_tail,       commit,     "commit",    IMMEDIATE
+define head_commit,     apply,      "apply",     IMMEDIATE
+define head_apply,      colon,      ":",         IMMEDIATE
+define head_colon,      semicolon,  ";",         IMMEDIATE
+define head_semicolon,  tick,       "'",         IMMEDIATE
+define head_tick,       postpone,   "postpone",  IMMEDIATE
+define head_postpone,   literal,    "literal",   IMMEDIATE
+define head_literal,    immediate,  "immediate", IMMEDIATE
+define head_immediate,  main,       "main"
 
 .bss
 
