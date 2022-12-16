@@ -23,13 +23,11 @@ variable hld
 
 : hold ( char -- ) hld @ 1- dup hld ! b! ;
 
-: . ( n -- ) dup 0< if char - literal emit neg then
-
-  ( Fallthrough. )
-
 : u. ( u -- ) [ 'buffer 256 + ] literal hld !
   begin 0 base @ um/mod push digit hold pop dup 0= until drop
   hld @ [ 'buffer 256 + ] literal over - type ;
+
+: . ( n -- ) dup 0< if char - literal emit neg then u. ;
 
 : bina  2 base ! ; immediate
 : deci 10 base ! ; immediate
