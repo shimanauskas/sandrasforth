@@ -188,14 +188,14 @@ neg: /* n1 -- n2 */
 	negq %rax
 	next
 
-sub: /* n1|u1 n2|u2 -- n3|u3 */
-	negq %rax
-
-	/* Fallthrough. */
-
 add: /* n1|u1 n2|u2 -- n3|u3 */
-	addq (%rbp), %rax
-	nip
+	addq %rax, (%rbp)
+	drop
+	next
+
+sub: /* n1|u1 n2|u2 -- n3|u3 */
+	subq %rax, (%rbp)
+	drop
 	next
 
 ummul: /* u1 u2 -- ud */
@@ -967,9 +967,9 @@ define head_or,         xor,        "xor"
 define head_xor,        inc,        "1+"
 define head_inc,        dec,        "1-"
 define head_dec,        neg,        "neg"
-define head_neg,        sub,        "-"
-define head_sub,        add,        "+"
-define head_add,        ummul,      "um*"
+define head_neg,        add,        "+"
+define head_add,        sub,        "-"
+define head_sub,        ummul,      "um*"
 define head_ummul,      umdivmod,   "um/mod"
 define head_umdivmod,   fetch,      "@"
 define head_fetch,      store,      "!"
