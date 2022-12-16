@@ -23,12 +23,9 @@
 	#define SYS_WRITE 1
 	#define SYS_EXIT  60
 #elif __APPLE__
-	#include "TargetConditionals.h"
-	#ifdef TARGET_OS_MAC
-		#define SYS_READ  0x2000003
-		#define SYS_WRITE 0x2000004
-		#define SYS_EXIT  0x2000001
-	#endif
+	#define SYS_READ  0x2000003
+	#define SYS_WRITE 0x2000004
+	#define SYS_EXIT  0x2000001
 #else
 	#error Unsupported platform.
 #endif
