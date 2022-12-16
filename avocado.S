@@ -38,35 +38,35 @@
 #define LENGTH    0x7F
 #define IMMEDIATE 0x80
 
-.macro dup /* x -- x x */
+.macro DUP /* x -- x x */
 	leaq -CELL(%rbp), %rbp
 	movq %rax, (%rbp)
 .endm
 
-.macro nip /* x1 x2 -- x2 */
+.macro NIP /* x1 x2 -- x2 */
 	leaq CELL(%rbp), %rbp
 .endm
 
-.macro twonip /* x1 x2 x3-- x3 */
+.macro TWONIP /* x1 x2 x3-- x3 */
 	leaq CELL*2(%rbp), %rbp
 .endm
 
-.macro drop /* x -- */
+.macro DROP /* x -- */
 	movq (%rbp), %rax
-	nip
+	NIP
 .endm
 
-.macro twodrop /* x1 x2 -- */
+.macro TWODROP /* x1 x2 -- */
 	movq CELL(%rbp), %rax
-	twonip
+	TWONIP
 .endm
 
-.macro next
+.macro NEXT
 	addq $(CELL), %rbx
 	jmp *(%rbx)
 .endm
 
-.macro define previous, body, name, mask=0
+.macro DEFINE previous, body, name, mask=0
 head_\body:
 	.quad \previous
 	.quad \body
@@ -100,7 +100,7 @@ jump:
 
 qjump: /* x -- */
 	testq %rax, %rax
-	drop
+	DROP
 	leaq CELL*2(%rbx), %rbx
 	cmovzq -CELL(%rbx), %rbx
 	jmpq *(%rbx)
@@ -108,129 +108,129 @@ qjump: /* x -- */
 exec: /* addr -- */
 	pushq %rbx
 	movq %rax, %rbx
-	drop
+	DROP
 	jmpq *(%rbx)
 
 ret:
 	popq %rbx
-	next
+	NEXT
 
 lit: /* -- x */
-	dup
+	DUP
 	addq $(CELL), %rbx
 	movq (%rbx), %rax
-	next
+	NEXT
 
 var: /* -- addr */
-	dup
+	DUP
 	addq $(CELL), %rbx
 	movq %rbx, %rax
-	next
+	NEXT
 
 dup: /* x -- x x */
-	dup
-	next
+	DUP
+	NEXT
 
 nip: /* x1 x2 -- x2 */
-	nip
-	next
+	NIP
+	NEXT
 
 drop: /* x -- */
-	drop
-	next
+	DROP
+	NEXT
 
 over: /* x1 x2 -- x1 x2 x1 */
-	dup
+	DUP
 	movq CELL(%rbp), %rax
-	next
+	NEXT
 
 push: /* x -- */
 	pushq %rax
-	drop
-	next
+	DROP
+	NEXT
 
 pop: /* -- x */
-	dup
+	DUP
 	popq %rax
-	next
+	NEXT
 
 not: /* x1 -- x2 */
 	notq %rax
-	next
+	NEXT
 
 and: /* x1 x2 -- x3 */
 	andq (%rbp), %rax
-	nip
-	next
+	NIP
+	NEXT
 
 or: /* x1 x2 -- x3 */
 	orq (%rbp), %rax
-	nip
-	next
+	NIP
+	NEXT
 
 xor: /* x1 x2 -- x3 */
 	xorq (%rbp), %rax
-	nip
-	next
+	NIP
+	NEXT
 
 inc: /* n1 -- n2 */
 	incq %rax
-	next
+	NEXT
 
 dec: /* n1 -- n2 */
 	decq %rax
-	next
+	NEXT
 
 neg: /* n1 -- n2 */
 	negq %rax
-	next
+	NEXT
 
 add: /* n1|u1 n2|u2 -- n3|u3 */
 	addq %rax, (%rbp)
-	drop
-	next
+	DROP
+	NEXT
 
 sub: /* n1|u1 n2|u2 -- n3|u3 */
 	subq %rax, (%rbp)
-	drop
-	next
+	DROP
+	NEXT
 
 ummul: /* u1 u2 -- ud */
 	movq %rax, %rcx
-	drop
+	DROP
 	mulq %rcx
-	dup
+	DUP
 	movq %rdx, %rax
-	next
+	NEXT
 
 umdivmod: /* ud u1 -- u2 u3 */
 	movq %rax, %rcx
 	movq (%rbp), %rdx
-	nip
+	NIP
 	movq (%rbp), %rax
 	divq %rcx
 	movq %rdx, (%rbp)
-	next
+	NEXT
 
 fetch: /* addr -- x */
 	movq (%rax), %rax
-	next
+	NEXT
 
 store: /* x addr -- */
 	movq (%rbp), %rdx
 	movq %rdx, (%rax)
-	twodrop
-	next
+	TWODROP
+	NEXT
 
 bfetch: /* addr -- byte */
 	movzbq (%rax), %rax
-	next
+	NEXT
 
 bstore: /* byte addr -- */
 	movb (%rbp), %dl
 	movb %dl, (%rax)
-	twodrop
-	next
+	TWODROP
+	NEXT
 
 syscall: /* x1 x2 x3 x4 -- x5 */
 	movq (%rbp), %rdx
@@ -238,7 +238,7 @@ syscall: /* x1 x2 x3 x4 -- x5 */
 	movq CELL*2(%rbp), %rdi
 	leaq CELL*3(%rbp), %rbp
 	syscall
-	next
+	NEXT
 
 end:
 
@@ -944,89 +944,89 @@ main:
 	.quad call, accept
 	.quad jump, main
 
-define 0,               call,       "call"
-define head_call,       jump,       "jump"
-define head_jump,       qjump,      "?jump"
-define head_qjump,      exec,       "exec"
-define head_exec,       ret,        "ret"
-define head_ret,        lit,        "lit"
-define head_lit,        var,        "var"
-define head_var,        dup,        "dup"
-define head_dup,        nip,        "nip"
-define head_nip,        drop,       "drop"
-define head_drop,       over,       "over"
-define head_over,       push,       "push"
-define head_push,       pop,        "pop"
-define head_pop,        not,        "not"
-define head_not,        and,        "and"
-define head_and,        or,         "or"
-define head_or,         xor,        "xor"
-define head_xor,        inc,        "1+"
-define head_inc,        dec,        "1-"
-define head_dec,        neg,        "neg"
-define head_neg,        add,        "+"
-define head_add,        sub,        "-"
-define head_sub,        ummul,      "um*"
-define head_ummul,      umdivmod,   "um/mod"
-define head_umdivmod,   fetch,      "@"
-define head_fetch,      store,      "!"
-define head_store,      bfetch,     "b@"
-define head_bfetch,     bstore,     "b!"
-define head_bstore,     syscall,    "syscall"
+DEFINE 0,               call,       "call"
+DEFINE head_call,       jump,       "jump"
+DEFINE head_jump,       qjump,      "?jump"
+DEFINE head_qjump,      exec,       "exec"
+DEFINE head_exec,       ret,        "ret"
+DEFINE head_ret,        lit,        "lit"
+DEFINE head_lit,        var,        "var"
+DEFINE head_var,        dup,        "dup"
+DEFINE head_dup,        nip,        "nip"
+DEFINE head_nip,        drop,       "drop"
+DEFINE head_drop,       over,       "over"
+DEFINE head_over,       push,       "push"
+DEFINE head_push,       pop,        "pop"
+DEFINE head_pop,        not,        "not"
+DEFINE head_not,        and,        "and"
+DEFINE head_and,        or,         "or"
+DEFINE head_or,         xor,        "xor"
+DEFINE head_xor,        inc,        "1+"
+DEFINE head_inc,        dec,        "1-"
+DEFINE head_dec,        neg,        "neg"
+DEFINE head_neg,        add,        "+"
+DEFINE head_add,        sub,        "-"
+DEFINE head_sub,        ummul,      "um*"
+DEFINE head_ummul,      umdivmod,   "um/mod"
+DEFINE head_umdivmod,   fetch,      "@"
+DEFINE head_fetch,      store,      "!"
+DEFINE head_store,      bfetch,     "b@"
+DEFINE head_bfetch,     bstore,     "b!"
+DEFINE head_bstore,     syscall,    "syscall"
 
-define head_syscall,    cell,       "cell"
-define head_cell,       tickinput,  "'input"
-define head_tickinput,  tickoutput, "'output"
-define head_tickoutput, tickbuffer, "'buffer"
-define head_tickbuffer, tickcode,   "'code"
-define head_tickcode,   tickvocab,  "'vocab"
+DEFINE head_syscall,    cell,       "cell"
+DEFINE head_cell,       tickinput,  "'input"
+DEFINE head_tickinput,  tickoutput, "'output"
+DEFINE head_tickoutput, tickbuffer, "'buffer"
+DEFINE head_tickbuffer, tickcode,   "'code"
+DEFINE head_tickcode,   tickvocab,  "'vocab"
 
-define head_tickvocab,  mark,       "mark"
-define head_mark,       state,      "state"
-define head_state,      here,       "here"
-define head_here,       top,        "top"
-define head_top,        head,       "head"
-define head_head,       last,       "last"
-define head_last,       base,       "base"
+DEFINE head_tickvocab,  mark,       "mark"
+DEFINE head_mark,       state,      "state"
+DEFINE head_state,      here,       "here"
+DEFINE head_here,       top,        "top"
+DEFINE head_top,        head,       "head"
+DEFINE head_head,       last,       "last"
+DEFINE head_last,       base,       "base"
 
-define head_base,       bool,       "bool"
-define head_bool,       zequals,    "0="
-define head_zequals,    equals,     "="
-define head_equals,     zless,      "0<"
-define head_zless,      less,       "<"
-define head_less,       uless,      "u<"
-define head_uless,      within,     "within"
-define head_within,     align,      "align"
-define head_align,      string,     "string"
-define head_string,     bye,        "bye"
-define head_bye,        accept,     "accept"
-define head_accept,     keyq,       "key?"
-define head_keyq,       key,        "key"
-define head_key,        advance,    "advance"
-define head_advance,    flush,      "flush"
-define head_flush,      emit,       "emit"
-define head_emit,       type,       "type"
-define head_type,       skip,       "skip"
-define head_skip,       word,       "word"
-define head_word,       digitq,     "digit?"
-define head_digitq,     natural,    "natural"
-define head_natural,    number,     "number"
-define head_number,     sameq,      "same?"
-define head_sameq,      find,       "find"
-define head_find,       bmove,      "bmove"
-define head_bmove,      collision,  "collision", IMMEDIATE
-define head_collision,  comma,      ",",         IMMEDIATE
-define head_comma,      link,       "link",      IMMEDIATE
-define head_link,       tail,       "tail",      IMMEDIATE
-define head_tail,       commit,     "commit",    IMMEDIATE
-define head_commit,     apply,      "apply",     IMMEDIATE
-define head_apply,      colon,      ":",         IMMEDIATE
-define head_colon,      semicolon,  ";",         IMMEDIATE
-define head_semicolon,  tick,       "'",         IMMEDIATE
-define head_tick,       postpone,   "postpone",  IMMEDIATE
-define head_postpone,   literal,    "literal",   IMMEDIATE
-define head_literal,    immediate,  "immediate", IMMEDIATE
-define head_immediate,  main,       "main"
+DEFINE head_base,       bool,       "bool"
+DEFINE head_bool,       zequals,    "0="
+DEFINE head_zequals,    equals,     "="
+DEFINE head_equals,     zless,      "0<"
+DEFINE head_zless,      less,       "<"
+DEFINE head_less,       uless,      "u<"
+DEFINE head_uless,      within,     "within"
+DEFINE head_within,     align,      "align"
+DEFINE head_align,      string,     "string"
+DEFINE head_string,     bye,        "bye"
+DEFINE head_bye,        accept,     "accept"
+DEFINE head_accept,     keyq,       "key?"
+DEFINE head_keyq,       key,        "key"
+DEFINE head_key,        advance,    "advance"
+DEFINE head_advance,    flush,      "flush"
+DEFINE head_flush,      emit,       "emit"
+DEFINE head_emit,       type,       "type"
+DEFINE head_type,       skip,       "skip"
+DEFINE head_skip,       word,       "word"
+DEFINE head_word,       digitq,     "digit?"
+DEFINE head_digitq,     natural,    "natural"
+DEFINE head_natural,    number,     "number"
+DEFINE head_number,     sameq,      "same?"
+DEFINE head_sameq,      find,       "find"
+DEFINE head_find,       bmove,      "bmove"
+DEFINE head_bmove,      collision,  "collision", IMMEDIATE
+DEFINE head_collision,  comma,      ",",         IMMEDIATE
+DEFINE head_comma,      link,       "link",      IMMEDIATE
+DEFINE head_link,       tail,       "tail",      IMMEDIATE
+DEFINE head_tail,       commit,     "commit",    IMMEDIATE
+DEFINE head_commit,     apply,      "apply",     IMMEDIATE
+DEFINE head_apply,      colon,      ":",         IMMEDIATE
+DEFINE head_colon,      semicolon,  ";",         IMMEDIATE
+DEFINE head_semicolon,  tick,       "'",         IMMEDIATE
+DEFINE head_tick,       postpone,   "postpone",  IMMEDIATE
+DEFINE head_postpone,   literal,    "literal",   IMMEDIATE
+DEFINE head_literal,    immediate,  "immediate", IMMEDIATE
+DEFINE head_immediate,  main,       "main"
 
 .bss
 
