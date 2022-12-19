@@ -19,13 +19,11 @@
 
 : variable postpone : lit var postpone , 0 postpone , postpone ; ; immediate
 
-variable hld
+: hold ( char -- ) [ 'buffer ] literal @ 1- dup [ 'buffer ] literal ! b! ;
 
-: hold ( char -- ) hld @ 1- dup hld ! b! ;
-
-: u. ( u -- ) [ 'buffer 256 + ] literal hld !
+: u. ( u -- ) [ 'buffer 256 + ] literal [ 'buffer ] literal !
   begin 0 base @ um/mod push digit hold pop dup 0= until drop
-  hld @ [ 'buffer 256 + ] literal over - type ;
+  [ 'buffer ] literal @ [ 'buffer 256 + ] literal over - type ;
 
 : . ( n -- ) dup 0< if char - literal emit neg then u. ;
 
