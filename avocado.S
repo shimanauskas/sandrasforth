@@ -173,7 +173,7 @@ xor: /* x1 x2 -- x3 */
 	NIP
 	NEXT
 
-neg: /* n1 -- n2 */
+negate: /* n1 -- n2 */
 	negq %rax
 	NEXT
 
@@ -612,7 +612,7 @@ number: /* addr u1 -- n u2 */
 	.quad dec
 	.quad call, natural
 	.quad push
-	.quad neg
+	.quad negate
 	.quad pop
 	.quad ret
 
@@ -961,8 +961,8 @@ DEFINE head_pop,        not,        "not"
 DEFINE head_not,        and,        "and"
 DEFINE head_and,        or,         "or"
 DEFINE head_or,         xor,        "xor"
-DEFINE head_xor,        neg,        "neg"
-DEFINE head_neg,        inc,        "1+"
+DEFINE head_xor,        negate,     "negate"
+DEFINE head_negate,     inc,        "1+"
 DEFINE head_inc,        dec,        "1-"
 DEFINE head_dec,        add,        "+"
 DEFINE head_add,        sub,        "-"

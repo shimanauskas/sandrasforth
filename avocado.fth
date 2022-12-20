@@ -25,7 +25,7 @@
   begin 0 base @ um/mod push digit hold pop dup 0= until drop
   [ 'buffer ] literal @ [ 'buffer 256 + ] literal over - type ;
 
-: . ( n -- ) dup 0< if char - literal emit neg then u. ;
+: . ( n -- ) dup 0< if char - literal emit negate then u. ;
 
 : bina  2 base ! ; immediate
 : deci 10 base ! ; immediate
