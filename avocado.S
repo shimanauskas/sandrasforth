@@ -105,7 +105,7 @@ qjump: /* x -- */
 	cmovzq -CELL(%rbx), %rbx
 	jmpq *(%rbx)
 
-exec: /* addr -- */
+execute: /* addr -- */
 	pushq %rbx
 	movq %rax, %rbx
 	DROP
@@ -785,7 +785,7 @@ apply:
 	.quad call, comma
 	.quad call, here
 	.quad fetch
-	.quad exec
+	.quad execute
 	.quad call, flush
 	.quad call, here
 	.quad fetch
@@ -897,7 +897,7 @@ main:
 	.quad qjump, 0f
 
 	.quad fetch
-	.quad exec
+	.quad execute
 	.quad jump, main
 
 0:
@@ -947,8 +947,8 @@ main:
 DEFINE 0,               call,       "call"
 DEFINE head_call,       jump,       "jump"
 DEFINE head_jump,       qjump,      "?jump"
-DEFINE head_qjump,      exec,       "exec"
-DEFINE head_exec,       ret,        "ret"
+DEFINE head_qjump,      execute,    "execute"
+DEFINE head_execute,    ret,        "ret"
 DEFINE head_ret,        lit,        "lit"
 DEFINE head_lit,        var,        "var"
 DEFINE head_var,        dup,        "dup"
