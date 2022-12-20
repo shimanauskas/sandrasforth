@@ -362,7 +362,7 @@ within: /* u1 u2 u3 -- bool */
 	.quad and
 	.quad ret
 
-align: /* x1 -- x2 */
+aligned: /* x1 -- x2 */
 	.quad lit, CELL-1
 	.quad add
 	.quad lit, ~(CELL-1)
@@ -804,7 +804,7 @@ colon:
 	.quad inc
 	.quad dup
 	.quad push
-	.quad call, align
+	.quad call, aligned
 	.quad sub
 	.quad dup
 	.quad call, head
@@ -996,8 +996,8 @@ DEFINE head_equals,     zless,      "0<"
 DEFINE head_zless,      less,       "<"
 DEFINE head_less,       uless,      "u<"
 DEFINE head_uless,      within,     "within"
-DEFINE head_within,     align,      "align"
-DEFINE head_align,      string,     "string"
+DEFINE head_within,     aligned,    "aligned"
+DEFINE head_aligned,    string,     "string"
 DEFINE head_string,     bye,        "bye"
 DEFINE head_bye,        accept,     "accept"
 DEFINE head_accept,     keyq,       "key?"
