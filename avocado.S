@@ -173,16 +173,16 @@ xor: /* x1 x2 -- x3 */
 	NIP
 	NEXT
 
+neg: /* n1 -- n2 */
+	negq %rax
+	NEXT
+
 inc: /* n1 -- n2 */
 	incq %rax
 	NEXT
 
 dec: /* n1 -- n2 */
 	decq %rax
-	NEXT
-
-neg: /* n1 -- n2 */
-	negq %rax
 	NEXT
 
 add: /* n1|u1 n2|u2 -- n3|u3 */
@@ -961,10 +961,10 @@ DEFINE head_pop,        not,        "not"
 DEFINE head_not,        and,        "and"
 DEFINE head_and,        or,         "or"
 DEFINE head_or,         xor,        "xor"
-DEFINE head_xor,        inc,        "1+"
+DEFINE head_xor,        neg,        "neg"
+DEFINE head_neg,        inc,        "1+"
 DEFINE head_inc,        dec,        "1-"
-DEFINE head_dec,        neg,        "neg"
-DEFINE head_neg,        add,        "+"
+DEFINE head_dec,        add,        "+"
 DEFINE head_add,        sub,        "-"
 DEFINE head_sub,        ummul,      "um*"
 DEFINE head_ummul,      umdivmod,   "um/mod"
