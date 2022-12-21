@@ -158,6 +158,14 @@ not: /* x1 -- x2 */
 	notq %rax
 	NEXT
 
+twomul: /* x1 -- x2 */
+	shlq %rax
+	NEXT
+
+twodiv: /* x1 -- x2 */
+	shrq %rax
+	NEXT
+
 and: /* x1 x2 -- x3 */
 	andq (%rbp), %rax
 	NIP
@@ -958,7 +966,9 @@ DEFINE head_drop,       over,       "over"
 DEFINE head_over,       push,       "push"
 DEFINE head_push,       pop,        "pop"
 DEFINE head_pop,        not,        "not"
-DEFINE head_not,        and,        "and"
+DEFINE head_not,        twomul,     "2*"
+DEFINE head_twomul,     twodiv,     "2/"
+DEFINE head_twodiv,     and,        "and"
 DEFINE head_and,        or,         "or"
 DEFINE head_or,         xor,        "xor"
 DEFINE head_xor,        negate,     "negate"
