@@ -483,6 +483,14 @@ type: /* addr u -- */
 
 skip:
 	.quad call, keyq
+	.quad not
+
+	.quad qjump, 0f
+
+	.quad call, accept
+
+0:
+	.quad call, keyq
 	.quad call, key
 	.quad lit, '!'
 	.quad call, uless
@@ -492,7 +500,7 @@ skip:
 
 	.quad call, advance
 
-	.quad jump, skip
+	.quad jump, 0b
 0:
 
 	.quad ret
