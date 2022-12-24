@@ -19,7 +19,7 @@
 : hold ( char -- ) [ 'buffer ] literal @ 1- dup [ 'buffer ] literal ! b! ;
 
 : digit ( u -- char ) dup 10 u<
-  if char 0 literal + ; then [ char A 10 - ] literal + ;
+  if char 0 literal + tail then [ char A 10 - ] literal + ;
 
 : u. ( u -- ) [ 'buffer 256 + ] literal [ 'buffer ] literal !
   begin 0 base @ um/mod push digit hold pop dup 0= until drop
@@ -39,7 +39,7 @@
 
 : cells ( n1 -- n2 ) [ cell ] literal * ;
 
-: bool ( x -- bool ) if -1 ; then 0 ;
+: bool ( x -- bool ) if -1 tail then 0 ;
 
 : 0= ( x -- bool ) bool not ;
 
@@ -47,9 +47,9 @@
 
 : 0< ( n -- bool ) [ 1 8 cells 1- lshift ] literal and bool ;
 
-:  < ( n1 n2 -- bool ) over over xor 0< if drop 0< ; then - 0< ;
+:  < ( n1 n2 -- bool ) over over xor 0< if drop 0< tail then - 0< ;
 
-: u< ( u1 u2 -- bool ) over over xor 0< if nip  0< ; then - 0< ;
+: u< ( u1 u2 -- bool ) over over xor 0< if nip  0< tail then - 0< ;
 
 : whithin ( u1 u2 u3 -- bool ) push over push u< not pop pop u< and ;
 
