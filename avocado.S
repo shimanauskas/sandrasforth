@@ -811,7 +811,14 @@ apply:
 
 colon:
 	.quad call, apply
+
+0:
 	.quad call, word
+	.quad lit, buffer
+	.quad bfetch
+
+	.quad qjump, 0b
+
 	.quad lit, buffer
 	.quad call, head
 	.quad fetch
