@@ -859,6 +859,11 @@ semicolon:
 
 tick: /* -- 0 | xt */
 	.quad call, word
+	.quad lit, buffer
+	.quad bfetch
+
+	.quad qjump, tick
+
 	.quad call, find
 	.quad dup
 
