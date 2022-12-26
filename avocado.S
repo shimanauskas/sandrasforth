@@ -505,7 +505,7 @@ skip:
 
 	.quad ret
 
-word:
+wordq:
 	.quad call, skip
 	.quad lit, 0
 	.quad lit, buffer
@@ -550,6 +550,15 @@ word:
 	.quad drop
 
 1:
+	.quad ret
+
+word:
+	.quad call, wordq
+	.quad lit, buffer
+	.quad bfetch
+
+	.quad qjump, word
+
 	.quad ret
 
 digitq: /* char base -- u bool */
@@ -811,14 +820,7 @@ apply:
 
 colon:
 	.quad call, apply
-
-0:
 	.quad call, word
-	.quad lit, buffer
-	.quad bfetch
-
-	.quad qjump, 0b
-
 	.quad lit, buffer
 	.quad call, head
 	.quad fetch
@@ -859,11 +861,6 @@ semicolon:
 
 tick: /* -- 0 | xt */
 	.quad call, word
-	.quad lit, buffer
-	.quad bfetch
-
-	.quad qjump, tick
-
 	.quad call, find
 	.quad dup
 
@@ -902,7 +899,7 @@ immediate:
 	.quad ret
 
 main:
-	.quad call, word
+	.quad call, wordq
 	.quad lit, buffer
 	.quad bfetch
 
@@ -1037,7 +1034,8 @@ DEFINE head_advance,    flush,      "flush"
 DEFINE head_flush,      emit,       "emit"
 DEFINE head_emit,       type,       "type"
 DEFINE head_type,       skip,       "skip"
-DEFINE head_skip,       word,       "word"
+DEFINE head_skip,       wordq,      "word?"
+DEFINE head_wordq,      word,       "word"
 DEFINE head_word,       digitq,     "digit?"
 DEFINE head_digitq,     natural,    "natural"
 DEFINE head_natural,    number,     "number"

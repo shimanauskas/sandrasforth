@@ -11,10 +11,9 @@
 
 : variable postpone : lit var postpone , 0 postpone , postpone ; ; immediate
 
-: char begin word [ 'buffer ] literal b@ until
-  [ 'buffer 1+ ] literal b@ ; immediate
+: char word [ 'buffer 1+ ] literal b@ ; immediate
 
-: ( begin word [ 'buffer ] literal b@ 1 =
+: ( begin word? [ 'buffer ] literal b@ 1 =
   [ 'buffer 1+ ] literal b@ char ) literal = and until ; immediate
 
 : hold ( char -- ) [ 'buffer ] literal @ 1- dup [ 'buffer ] literal ! b! ;
