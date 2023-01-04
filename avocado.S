@@ -256,6 +256,18 @@ cell: /* -- u */
 	.quad lit, CELL
 	.quad ret
 
+sys_read: /* -- x */
+	.quad lit, SYS_READ
+	.quad ret
+
+sys_write: /* -- x */
+	.quad lit, SYS_WRITE
+	.quad ret
+
+sys_exit: /* -- x */
+	.quad lit, SYS_EXIT
+	.quad ret
+
 tickinput: /* -- addr */
 	.quad lit, input
 	.quad ret
@@ -1002,7 +1014,10 @@ DEFINE head_bfetch,     bstore,     "b!"
 DEFINE head_bstore,     syscall,    "syscall"
 
 DEFINE head_syscall,    cell,       "cell"
-DEFINE head_cell,       tickinput,  "'input"
+DEFINE head_cell,       sys_read,   "sys-read"
+DEFINE head_sys_read,   sys_write,  "sys-write"
+DEFINE head_sys_write,  sys_exit,   "sys-exit"
+DEFINE head_sys_exit,   tickinput,  "'input"
 DEFINE head_tickinput,  tickoutput, "'output"
 DEFINE head_tickoutput, tickbuffer, "'buffer"
 DEFINE head_tickbuffer, tickcode,   "'code"
