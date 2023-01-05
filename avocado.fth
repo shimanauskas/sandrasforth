@@ -53,8 +53,9 @@
 
 : cells ( n1 -- n2 ) cell * ;
 
-0 constant stdin
-1 constant stdout
+  0 constant stdin
+  1 constant stdout
+127 constant length
 
 : bool ( x -- bool ) if -1 tail then 0 ;
 
@@ -90,3 +91,18 @@
   'output b@ 1+ dup 'output b! 255 xor ?jump ' flush , ;
 
 : type ( addr u -- ) begin dup if push dup b@ emit 1+ pop 1- repeat nip drop ;
+
+: skip key? not if accept then
+  begin key? key char ! literal u< and if advance repeat ;
+
+: word? skip 0 'buffer b! key?
+  if
+    begin
+      key dup char ! literal u< not 'buffer b@ 127 u< and
+    if
+      'buffer string dup 1+ 'buffer b! + b! advance key? not if accept then
+    repeat
+    drop
+  then ;
+
+: word begin word? 'buffer b@ until ;
