@@ -46,6 +46,8 @@
 
 : rshift ( x1 u -- x2 ) begin dup if push 2/ pop 1- repeat drop ;
 
+: space 32 emit ;
+
 : * ( n1 n2 -- n3 ) um* drop ;
 
 : cells ( n1 -- n2 ) [ cell ] literal * ;
@@ -69,5 +71,3 @@
 : string ( addr1 -- addr2 u ) dup push 1+ pop b@ ;
 
 : bye flush 0 dup dup [ sys-exit ] literal syscall ( We never return. )
-
-: space 32 emit ;
