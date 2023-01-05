@@ -98,7 +98,7 @@
 : word? skip 0 'buffer b! key?
   if
     begin
-      key dup char ! literal u< not 'buffer b@ 127 u< and
+      key dup char ! literal u< not 'buffer b@ length u< and
     if
       'buffer string dup 1+ 'buffer b! + b! advance key? not if accept then
     repeat
