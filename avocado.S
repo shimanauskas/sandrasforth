@@ -19,10 +19,12 @@
    r15 - unused. */
 
 #ifdef __linux__
+	#define START     _start
 	#define SYS_READ  0
 	#define SYS_WRITE 1
 	#define SYS_EXIT  60
 #elif __APPLE__
+	#define START      start
 	#define SYS_READ  0x2000003
 	#define SYS_WRITE 0x2000004
 	#define SYS_EXIT  0x2000001
@@ -79,9 +81,9 @@ head_\body:
 
 .text
 
-.global _start
+.global START
 
-_start:
+START:
 	leaq dstack(%rip), %rbp
 	movq $-1, %rax
 	leaq main(%rip), %rbx
@@ -941,7 +943,7 @@ interpret:
 0:
 	.quad fetch
 	.quad dup
-	.quad lit, _start
+	.quad lit, START
 	.quad lit, end
 	.quad call, within
 	.quad not
