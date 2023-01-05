@@ -1,5 +1,5 @@
 : words last
-  begin @ dup if dup [ 2 cells ] literal + string 127 and type space repeat
+  begin @ dup if dup [ 2 cells ] literal + string length and type space repeat
   drop ;
 
 " # "
