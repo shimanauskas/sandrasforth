@@ -86,3 +86,6 @@
 
 : flush [ stdout ] literal [ 'output ] literal string [ sys-write ] literal
   syscall drop 0 [ 'output ] literal b! ;
+
+: emit [ 'output ] literal string + b!
+  [ 'output ] literal b@ 1+ dup [ 'output ] literal b! 255 xor ?jump ' flush , ;
