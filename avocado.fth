@@ -81,3 +81,5 @@
 
 : key? mark @ [ 'input ] literal string + u< ;
 : key  mark @ b@ ;
+
+: advance mark @ 1+ mark ! ;
