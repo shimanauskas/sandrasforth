@@ -44,7 +44,6 @@
 : hexa 16 base ! ; immediate
 
 : lshift ( x1 u -- x2 ) begin dup if push 2* pop 1- repeat drop ;
-
 : rshift ( x1 u -- x2 ) begin dup if push 2/ pop 1- repeat drop ;
 
 : space 32 emit ;
