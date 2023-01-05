@@ -65,7 +65,6 @@
 : 0< ( n -- bool ) [ 1 8 cells 1- lshift ] literal and bool ;
 
 :  < ( n1 n2 -- bool ) over over xor 0< if drop 0< tail then - 0< ;
-
 : u< ( u1 u2 -- bool ) over over xor 0< if nip  0< tail then - 0< ;
 
 : whithin ( u1 u2 u3 -- bool ) push over push u< not pop pop u< and ;
