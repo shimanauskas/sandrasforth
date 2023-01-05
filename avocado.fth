@@ -89,3 +89,5 @@
 
 : emit [ 'output ] literal string + b!
   [ 'output ] literal b@ 1+ dup [ 'output ] literal b! 255 xor ?jump ' flush , ;
+
+: type begin dup if push dup b@ emit 1+ pop 1- repeat nip drop ;
