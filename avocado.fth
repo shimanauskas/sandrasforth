@@ -12,17 +12,17 @@
 : variable postpone : lit var postpone , 0 postpone , postpone ; ; immediate
 : constant postpone : postpone literal postpone ; ; immediate
 
-: char word [ 'buffer 1+ ] literal b@ ; immediate
+: char word [ 'buffer 1+ ] literal b@ postpone literal ; immediate
 
 : ( begin word? 'buffer b@ 1 =
-  [ 'buffer 1+ ] literal b@ char ) literal = and until ; immediate
+  [ 'buffer 1+ ] literal b@ char ) = and until ; immediate
 
 : b, ( byte -- ) top @ dup 1+ top ! b! collision ; immediate
 
 : " ( -- addr ) top @ 0 postpone b,
   begin skip key? not if accept repeat
   begin
-    key advance dup char " literal xor
+    key advance dup char " xor
   if
     postpone b, key? not [ over ] until accept
   repeat
@@ -31,13 +31,13 @@
 : hold ( char -- ) 'buffer @ 1- dup 'buffer ! b! ;
 
 : digit ( u -- char ) dup 10 u<
-  if char 0 literal + tail then [ char A 10 - ] literal + ;
+  if char 0 + tail then [ char A 10 - ] literal + ;
 
 : u. ( u -- ) [ 'buffer 256 + ] literal 'buffer !
   begin 0 base @ um/mod push digit hold pop dup 0= until drop
   'buffer @ [ 'buffer 256 + ] literal over - type ;
 
-: . ( n -- ) dup 0< if char - literal emit negate then u. ;
+: . ( n -- ) dup 0< if char - emit negate then u. ;
 
 : bina  2 base ! ; immediate
 : deci 10 base ! ; immediate
@@ -92,12 +92,12 @@
 : type ( addr u -- ) begin dup if push dup b@ emit 1+ pop 1- repeat nip drop ;
 
 : skip key? not if accept then
-  begin key? key char ! literal u< and if advance repeat ;
+  begin key? key char ! u< and if advance repeat ;
 
 : word? skip 0 'buffer b! key?
   if
     begin
-      key dup char ! literal u< not 'buffer b@ length u< and
+      key dup char ! u< not 'buffer b@ length u< and
     if
       'buffer string dup 1+ 'buffer b! + b! advance key? not
       [ over ] until accept
