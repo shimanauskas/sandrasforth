@@ -52,6 +52,9 @@
 
 : cells ( n1 -- n2 ) [ cell ] literal * ;
 
+: stdin  0 ;
+: stdout 1 ;
+
 : bool ( x -- bool ) if -1 tail then 0 ;
 
 : 0= ( x -- bool ) bool not ;
@@ -71,3 +74,7 @@
 : string ( addr1 -- addr2 u ) dup push 1+ pop b@ ;
 
 : bye flush 0 dup dup [ sys-exit ] literal syscall ( We never return. )
+
+: accept [ stdin ] literal [ 'input 1+ ] literal 255 [ sys-read ] literal
+  syscall dup ?jump ' bye ,
+  [ 'input ] literal b! [ 'input 1+ ] literal mark ! ;
