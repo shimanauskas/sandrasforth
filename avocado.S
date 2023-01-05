@@ -254,48 +254,39 @@ end:
 
 cell: /* -- u */
 	.quad lit, CELL
-	.quad call, literal
-	.quad ret
+	.quad jump, literal
 
 sys_read: /* -- x */
 	.quad lit, SYS_READ
-	.quad call, literal
-	.quad ret
+	.quad jump, literal
 
 sys_write: /* -- x */
 	.quad lit, SYS_WRITE
-	.quad call, literal
-	.quad ret
+	.quad jump, literal
 
 sys_exit: /* -- x */
 	.quad lit, SYS_EXIT
-	.quad call, literal
-	.quad ret
+	.quad jump, literal
 
 tickinput: /* -- addr */
 	.quad lit, input
-	.quad call, literal
-	.quad ret
+	.quad jump, literal
 
 tickoutput: /* -- addr */
 	.quad lit, output
-	.quad call, literal
-	.quad ret
+	.quad jump, literal
 
 tickbuffer: /* -- addr */
 	.quad lit, buffer
-	.quad call, literal
-	.quad ret
+	.quad jump, literal
 
 tickcode: /* -- addr */
 	.quad lit, code
-	.quad call, literal
-	.quad ret
+	.quad jump, literal
 
 tickvocab: /* -- addr */
 	.quad lit, vocab
-	.quad call, literal
-	.quad ret
+	.quad jump, literal
 
 mark: /* -- addr */
 	.quad var, input+1
