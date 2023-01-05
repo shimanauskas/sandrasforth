@@ -83,3 +83,6 @@
 : key  ( -- char ) mark @ b@ ;
 
 : advance mark @ 1+ mark ! ;
+
+: flush [ stdout ] literal [ 'output ] literal string [ sys-write ] literal
+  syscall drop 0 [ 'output ] literal b! ;
