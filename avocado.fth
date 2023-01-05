@@ -10,10 +10,11 @@
 : until lit ?jump postpone , postpone , ; immediate
 
 : variable postpone : lit var postpone , 0 postpone , postpone ; ; immediate
+: constant postpone : postpone literal postpone ; ; immediate
 
 : char word [ 'buffer 1+ ] literal b@ ; immediate
 
-: ( begin word? [ 'buffer ] literal b@ 1 =
+: ( begin word? 'buffer b@ 1 =
   [ 'buffer 1+ ] literal b@ char ) literal = and until ; immediate
 
 : b, ( byte -- ) top @ dup 1+ top ! b! collision ; immediate
@@ -27,14 +28,14 @@
   repeat
   drop top @ over 1+ - over b! top @ aligned top ! postpone commit ; immediate
 
-: hold ( char -- ) [ 'buffer ] literal @ 1- dup [ 'buffer ] literal ! b! ;
+: hold ( char -- ) 'buffer @ 1- dup 'buffer ! b! ;
 
 : digit ( u -- char ) dup 10 u<
   if char 0 literal + tail then [ char A 10 - ] literal + ;
 
-: u. ( u -- ) [ 'buffer 256 + ] literal [ 'buffer ] literal !
+: u. ( u -- ) [ 'buffer 256 + ] literal 'buffer !
   begin 0 base @ um/mod push digit hold pop dup 0= until drop
-  [ 'buffer ] literal @ [ 'buffer 256 + ] literal over - type ;
+  'buffer @ [ 'buffer 256 + ] literal over - type ;
 
 : . ( n -- ) dup 0< if char - literal emit negate then u. ;
 
@@ -50,10 +51,10 @@
 
 : * ( n1 n2 -- n3 ) um* drop ;
 
-: cells ( n1 -- n2 ) [ cell ] literal * ;
+: cells ( n1 -- n2 ) cell * ;
 
-: stdin  0 ;
-: stdout 1 ;
+0 constant stdin
+1 constant stdout
 
 : bool ( x -- bool ) if -1 tail then 0 ;
 
@@ -73,21 +74,19 @@
 
 : string ( addr1 -- addr2 u ) dup push 1+ pop b@ ;
 
-: bye flush 0 dup dup [ sys-exit ] literal syscall ( We never return. )
+: bye flush 0 dup dup sys-exit syscall ( We never return. )
 
-: accept [ stdin ] literal [ 'input 1+ ] literal 255 [ sys-read ] literal
-  syscall dup ?jump ' bye ,
-  [ 'input ] literal b! [ 'input 1+ ] literal mark ! ;
+: accept stdin [ 'input 1+ ] literal 255 sys-read syscall dup ?jump ' bye ,
+  'input b! [ 'input 1+ ] literal mark ! ;
 
-: key? ( -- bool ) mark @ [ 'input ] literal string + u< ;
+: key? ( -- bool ) mark @ 'input string + u< ;
 : key  ( -- char ) mark @ b@ ;
 
 : advance mark @ 1+ mark ! ;
 
-: flush [ stdout ] literal [ 'output ] literal string [ sys-write ] literal
-  syscall drop 0 [ 'output ] literal b! ;
+: flush stdout 'output string sys-write syscall drop 0 'output b! ;
 
-: emit ( char -- ) [ 'output ] literal string + b!
-  [ 'output ] literal b@ 1+ dup [ 'output ] literal b! 255 xor ?jump ' flush , ;
+: emit ( char -- ) 'output string + b!
+  'output b@ 1+ dup 'output b! 255 xor ?jump ' flush , ;
 
 : type ( addr u -- ) begin dup if push dup b@ emit 1+ pop 1- repeat nip drop ;
