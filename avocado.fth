@@ -68,6 +68,6 @@
 
 : string ( addr1 -- addr2 u ) dup push 1+ pop b@ ;
 
-: bye 0 dup dup [ sys-exit ] literal syscall ( We never return. )
+: bye flush 0 dup dup [ sys-exit ] literal syscall ( We never return. )
 
 : space 32 emit ;

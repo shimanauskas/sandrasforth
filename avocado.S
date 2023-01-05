@@ -398,6 +398,7 @@ string: /* addr1 -- addr2 u */
 	.quad ret
 
 bye:
+	.quad call, flush
 	.quad lit, 0
 	.quad dup
 	.quad dup
@@ -755,7 +756,6 @@ collision:
 	.quad lit, head_collision+CELL*2
 	.quad call, string
 	.quad call, type
-	.quad call, flush
 	.quad jump, bye
 
 0:
