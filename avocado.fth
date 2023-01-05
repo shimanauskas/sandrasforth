@@ -16,6 +16,17 @@
 : ( begin word? [ 'buffer ] literal b@ 1 =
   [ 'buffer 1+ ] literal b@ char ) literal = and until ; immediate
 
+: b, ( byte -- ) top @ dup 1+ top ! b! collision ; immediate
+
+: " ( -- addr ) top @ 0 postpone b,
+  begin skip key? not if accept repeat
+  begin
+    key advance dup char " literal xor
+  if
+    postpone b, key? not if accept then
+  repeat
+  drop top @ over 1+ - over b! top @ aligned top ! postpone commit ; immediate
+
 : hold ( char -- ) [ 'buffer ] literal @ 1- dup [ 'buffer ] literal ! b! ;
 
 : digit ( u -- char ) dup 10 u<
