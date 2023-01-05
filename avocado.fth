@@ -87,7 +87,7 @@
 : flush [ stdout ] literal [ 'output ] literal string [ sys-write ] literal
   syscall drop 0 [ 'output ] literal b! ;
 
-: emit [ 'output ] literal string + b!
+: emit ( char -- ) [ 'output ] literal string + b!
   [ 'output ] literal b@ 1+ dup [ 'output ] literal b! 255 xor ?jump ' flush , ;
 
-: type begin dup if push dup b@ emit 1+ pop 1- repeat nip drop ;
+: type ( addr u -- ) begin dup if push dup b@ emit 1+ pop 1- repeat nip drop ;
