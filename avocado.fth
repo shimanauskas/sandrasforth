@@ -78,3 +78,6 @@
 : accept [ stdin ] literal [ 'input 1+ ] literal 255 [ sys-read ] literal
   syscall dup ?jump ' bye ,
   [ 'input ] literal b! [ 'input 1+ ] literal mark ! ;
+
+: key? mark @ [ 'input ] literal string + u< ;
+: key  mark @ b@ ;
