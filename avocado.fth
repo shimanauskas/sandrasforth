@@ -91,8 +91,7 @@
 
 : type ( addr u -- ) begin dup if push dup b@ emit 1+ pop 1- repeat nip drop ;
 
-: skip key? not if accept then
-  begin key? key char ! u< and if advance repeat ;
+: skip key? not if accept then begin key? key char ! u< and if advance repeat ;
 
 : word? skip 0 'buffer b! key?
   if
