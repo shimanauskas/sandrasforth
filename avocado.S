@@ -865,6 +865,7 @@ colon:
 	.quad ret
 
 semicolon:
+	.quad call, apply
 	.quad call, tail
 	.quad lit, -1
 	.quad call, state
@@ -910,7 +911,7 @@ immediate:
 	.quad drop
 	.quad ret
 
-main:
+interpret:
 	.quad call, wordq
 	.quad lit, buffer
 	.quad bfetch
@@ -935,7 +936,7 @@ main:
 
 	.quad fetch
 	.quad execute
-	.quad jump, main
+	.quad jump, interpret
 
 0:
 	.quad fetch
@@ -952,7 +953,7 @@ main:
 
 0:
 	.quad call, comma
-	.quad jump, main
+	.quad jump, interpret
 
 1:
 	.quad drop
@@ -967,18 +968,19 @@ main:
 	.quad call, string
 	.quad call, type
 	.quad lit, '?'
-	.quad call, emit
-	.quad call, flush
-	.quad call, accept
-	.quad jump, main
+	.quad jump, emit
 
 0:
 	.quad call, literal
-	.quad jump, main
+	.quad jump, interpret
 
 2:
-	.quad call, apply
+	.quad ret
+
+main:
 	.quad call, accept
+	.quad call, interpret
+	.quad call, flush
 	.quad jump, main
 
 DEFINE 0,               call,       "call"
@@ -1069,7 +1071,8 @@ DEFINE head_semicolon,  tick,       "'",         IMMEDIATE
 DEFINE head_tick,       postpone,   "postpone",  IMMEDIATE
 DEFINE head_postpone,   literal,    "literal",   IMMEDIATE
 DEFINE head_literal,    immediate,  "immediate", IMMEDIATE
-DEFINE head_immediate,  main,       "main"
+DEFINE head_immediate,  interpret,  "interpret", IMMEDIATE
+DEFINE head_interpret,  main,       "main",      IMMEDIATE
 
 .bss
 
@@ -1083,7 +1086,7 @@ buffer:
 	.skip 0x100
 
 code:
-	.skip 0x1000
+	.skip 0x2000
 vocab:
 
 	.skip 0x100

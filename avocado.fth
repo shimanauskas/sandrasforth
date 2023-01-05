@@ -71,7 +71,3 @@
 : bye 0 dup dup [ sys-exit ] literal syscall ( We never return. )
 
 : space 32 emit ;
-
-: words last
-  begin @ dup if dup [ 2 cells ] literal + string 127 and type space repeat
-  drop ;

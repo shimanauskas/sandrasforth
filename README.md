@@ -2,8 +2,6 @@
 
 A Forth for Linux and macOS on x86-64.
 
-It does not provide a prompt.
-
 ## Prerequisites
 
 * `make`
