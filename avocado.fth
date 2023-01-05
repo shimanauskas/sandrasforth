@@ -24,7 +24,7 @@
   begin
     key advance dup char " literal xor
   if
-    postpone b, key? not if accept then
+    postpone b, key? not [ over ] until accept
   repeat
   drop top @ over 1+ - over b! top @ aligned top ! postpone commit ; immediate
 
@@ -100,7 +100,8 @@
     begin
       key dup char ! literal u< not 'buffer b@ length u< and
     if
-      'buffer string dup 1+ 'buffer b! + b! advance key? not if accept then
+      'buffer string dup 1+ 'buffer b! + b! advance key? not
+      [ over ] until accept
     repeat
     drop
   then ;
