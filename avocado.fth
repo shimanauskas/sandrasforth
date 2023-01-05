@@ -79,7 +79,7 @@
   syscall dup ?jump ' bye ,
   [ 'input ] literal b! [ 'input 1+ ] literal mark ! ;
 
-: key? mark @ [ 'input ] literal string + u< ;
-: key  mark @ b@ ;
+: key? ( -- bool ) mark @ [ 'input ] literal string + u< ;
+: key  ( -- char ) mark @ b@ ;
 
 : advance mark @ 1+ mark ! ;
