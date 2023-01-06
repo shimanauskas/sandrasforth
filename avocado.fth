@@ -18,16 +18,13 @@
 : ( begin word? 'buffer b@ 1 =
   [ 'buffer 1+ ] literal b@ char ) = and until ; immediate
 
-: b, ( byte -- ) top @ dup 1+ top ! b! collision ; immediate
-
-: " ( -- addr ) postpone apply top @ 0 postpone b,
-  begin skip key? until
+: " ( -- addr ) postpone apply begin skip key? until 0 'buffer b!
   begin
     key advance dup char " xor
   if
-    postpone b, key? not [ over ] until accept
+    accumulate key? not [ over ] until accept
   repeat
-  drop top @ over 1+ - over b! top @ aligned top ! postpone commit ; immediate
+  drop save head @ ; immediate
 
 : hold ( char -- ) 'buffer @ 1- dup 'buffer ! b! ;
 
