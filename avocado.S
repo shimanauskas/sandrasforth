@@ -1084,7 +1084,7 @@ DEFINE head_semicolon,  tick,       "'",         IMMEDIATE
 DEFINE head_tick,       postpone,   "postpone",  IMMEDIATE
 DEFINE head_postpone,   literal,    "literal",   IMMEDIATE
 DEFINE head_literal,    immediate,  "immediate", IMMEDIATE
-DEFINE head_immediate,  interpret,  "interpret", IMMEDIATE
+DEFINE head_immediate,  interpret,  "interpret"
 DEFINE head_interpret,  main,       "main",      IMMEDIATE
 
 .bss
