@@ -19,8 +19,8 @@
 
 : b, ( byte -- ) top @ dup 1+ top ! b! collision ; immediate
 
-: " ( -- addr ) top @ 0 postpone b,
-  begin skip key? not if accept repeat
+: " ( -- addr ) postpone apply top @ 0 postpone b,
+  begin skip key? until
   begin
     key advance dup char " xor
   if
