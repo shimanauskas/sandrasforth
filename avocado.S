@@ -496,6 +496,17 @@ type: /* addr u -- */
 	.quad drop
 	.quad ret
 
+accumulate: /* char -- */
+	.quad lit, buffer
+	.quad call, string
+	.quad dup
+	.quad inc
+	.quad lit, buffer
+	.quad bstore
+	.quad add
+	.quad bstore
+	.quad ret
+
 skip:
 	.quad call, keyq
 	.quad not
@@ -543,14 +554,7 @@ wordq:
 
 	.quad qjump, 0f
 
-	.quad lit, buffer
-	.quad call, string
-	.quad dup
-	.quad inc
-	.quad lit, buffer
-	.quad bstore
-	.quad add
-	.quad bstore
+	.quad call, accumulate
 	.quad call, advance
 	.quad call, keyq
 	.quad not
@@ -746,6 +750,24 @@ bmove: /* addr1 addr2 u -- */
 	.quad drop
 	.quad ret
 
+save:
+	.quad lit, buffer
+	.quad call, head
+	.quad fetch
+	.quad over
+	.quad bfetch
+	.quad inc
+	.quad dup
+	.quad push
+	.quad call, aligned
+	.quad sub
+	.quad dup
+	.quad call, head
+	.quad store
+	.quad call, collision
+	.quad pop
+	.quad jump, bmove
+
 collision:
 	.quad call, top
 	.quad fetch
@@ -836,22 +858,7 @@ apply:
 colon:
 	.quad call, apply
 	.quad call, word
-	.quad lit, buffer
-	.quad call, head
-	.quad fetch
-	.quad over
-	.quad bfetch
-	.quad inc
-	.quad dup
-	.quad push
-	.quad call, aligned
-	.quad sub
-	.quad dup
-	.quad call, head
-	.quad store
-	.quad call, collision
-	.quad pop
-	.quad call, bmove
+	.quad call, save
 	.quad call, here
 	.quad fetch
 	.quad call, link
@@ -1053,7 +1060,8 @@ DEFINE head_key,        advance,    "advance"
 DEFINE head_advance,    flush,      "flush"
 DEFINE head_flush,      emit,       "emit"
 DEFINE head_emit,       type,       "type"
-DEFINE head_type,       skip,       "skip"
+DEFINE head_type,       accumulate, "accumulate"
+DEFINE head_accumulate, skip,       "skip"
 DEFINE head_skip,       wordq,      "word?"
 DEFINE head_wordq,      word,       "word"
 DEFINE head_word,       digitq,     "digit?"
@@ -1062,7 +1070,8 @@ DEFINE head_natural,    number,     "number"
 DEFINE head_number,     sameq,      "same?"
 DEFINE head_sameq,      find,       "find"
 DEFINE head_find,       bmove,      "bmove"
-DEFINE head_bmove,      collision,  "collision", IMMEDIATE
+DEFINE head_bmove,      save,       "save"
+DEFINE head_save,       collision,  "collision", IMMEDIATE
 DEFINE head_collision,  comma,      ",",         IMMEDIATE
 DEFINE head_comma,      link,       "link",      IMMEDIATE
 DEFINE head_link,       tail,       "tail",      IMMEDIATE
