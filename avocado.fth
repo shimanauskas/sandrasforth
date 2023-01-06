@@ -76,12 +76,12 @@
 : accept stdin [ 'input 1+ ] literal 255 sys-read syscall dup ?jump ' bye ,
   'input b! [ 'input 1+ ] literal mark ! ;
 
+: flush stdout 'output string sys-write syscall drop 0 'output b! ;
+
 : key? ( -- bool ) mark @ 'input string + u< ;
 : key  ( -- char ) mark @ b@ ;
 
 : advance mark @ 1+ mark ! ;
-
-: flush stdout 'output string sys-write syscall drop 0 'output b! ;
 
 : emit ( char -- ) 'output string + b!
   'output b@ 1+ dup 'output b! 255 xor ?jump ' flush , ;

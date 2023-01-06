@@ -424,6 +424,18 @@ accept:
 	.quad store
 	.quad ret
 
+flush:
+	.quad lit, STDOUT
+	.quad lit, output
+	.quad call, string
+	.quad lit, SYS_WRITE
+	.quad syscall
+	.quad drop
+	.quad lit, 0
+	.quad lit, output
+	.quad bstore
+	.quad ret
+
 keyq: /* -- bool */
 	.quad call, mark
 	.quad fetch
@@ -444,18 +456,6 @@ advance:
 	.quad inc
 	.quad call, mark
 	.quad store
-	.quad ret
-
-flush:
-	.quad lit, STDOUT
-	.quad lit, output
-	.quad call, string
-	.quad lit, SYS_WRITE
-	.quad syscall
-	.quad drop
-	.quad lit, 0
-	.quad lit, output
-	.quad bstore
 	.quad ret
 
 emit: /* char -- */
@@ -1054,11 +1054,11 @@ DEFINE head_within,     aligned,    "aligned"
 DEFINE head_aligned,    string,     "string"
 DEFINE head_string,     bye,        "bye"
 DEFINE head_bye,        accept,     "accept"
-DEFINE head_accept,     keyq,       "key?"
+DEFINE head_accept,     flush,      "flush"
+DEFINE head_flush,      keyq,       "key?"
 DEFINE head_keyq,       key,        "key"
 DEFINE head_key,        advance,    "advance"
-DEFINE head_advance,    flush,      "flush"
-DEFINE head_flush,      emit,       "emit"
+DEFINE head_advance,    emit,       "emit"
 DEFINE head_emit,       type,       "type"
 DEFINE head_type,       accumulate, "accumulate"
 DEFINE head_accumulate, skip,       "skip"
