@@ -1,5 +1,5 @@
 : [ commit -1 state ! ; immediate
-: ] apply 0 state ! ; immediate
+: ] apply   0 state ! ; immediate
 
 : begin top @ ; immediate
 
