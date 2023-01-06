@@ -632,8 +632,7 @@ natural: /* addr u1 -- u2 u3 */
 	.quad push
 	.quad call, base
 	.quad fetch
-	.quad ummul
-	.quad drop
+	.quad mul
 	.quad pop
 	.quad add
 	.quad push
