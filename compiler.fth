@@ -80,7 +80,7 @@
     if
       over [ 2 cells ] literal + b@ length and 'buffer b@ =
       if
-        over [ 2 cells 1+ ] literal + 'buffer string same? nip
+        drop dup [ 2 cells 1+ ] literal + 'buffer string same?
       then
     then
   until ;
