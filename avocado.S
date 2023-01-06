@@ -683,7 +683,7 @@ sameq: /* addr1 addr2 u -- bool */
 	.quad pop
 	.quad nip
 	.quad nip
-	.quad jump, bool
+	.quad jump, zequals
 
 find: /* -- 0 | addr */
 	.quad call, last
@@ -691,11 +691,12 @@ find: /* -- 0 | addr */
 0:
 	.quad fetch
 	.quad dup
-	.quad dup
+	.quad call, zequals
+	.quad over
 
 	.quad qjump, 1f
 
-	.quad dup
+	.quad over
 	.quad lit, CELL*2
 	.quad add
 	.quad bfetch
@@ -707,15 +708,15 @@ find: /* -- 0 | addr */
 
 	.quad qjump, 1f
 
+	.quad over
 	.quad lit, CELL*2+1
 	.quad add
 	.quad lit, buffer
 	.quad call, string
 	.quad call, sameq
+	.quad nip
 
 1:
-	.quad call, zequals
-
 	.quad qjump, 0b
 
 	.quad ret
