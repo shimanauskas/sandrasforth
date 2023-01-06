@@ -73,3 +73,14 @@
     push 1+ pop 1+ pop 1-
   repeat
   pop nip nip 0= ;
+
+: find ( -- 0 | addr ) last
+  begin
+    @ dup 0= over
+    if
+      over [ 2 cells ] literal + b@ length and 'buffer b@ =
+      if
+        over [ 2 cells 1+ ] literal + 'buffer string same? nip
+      then
+    then
+  until ;
