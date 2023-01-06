@@ -584,8 +584,7 @@ word:
 
 	.quad ret
 
-digitq: /* char base -- u bool */
-	.quad push
+digitq: /* char -- u bool */
 	.quad lit, '0'
 	.quad sub
 	.quad lit, 9
@@ -603,7 +602,8 @@ digitq: /* char base -- u bool */
 
 0:
 	.quad dup
-	.quad pop
+	.quad call, base
+	.quad fetch
 	.quad jump, uless
 
 natural: /* addr u1 -- u2 u3 */
@@ -615,8 +615,6 @@ natural: /* addr u1 -- u2 u3 */
 	.quad push
 	.quad over
 	.quad bfetch
-	.quad call, base
-	.quad fetch
 	.quad call, digitq
 	.quad pop
 	.quad dup

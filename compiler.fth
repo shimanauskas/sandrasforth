@@ -51,13 +51,13 @@
 
 : word begin word? 'buffer b@ until ;
 
-: digit? ( char base -- u bool ) push char 0 - 9 over <
+: digit? ( char -- u bool ) char 0 - 9 over <
   if [ char A char 0 - 10 - ] literal - dup 10 < or then
-  dup pop u< ;
+  dup base @ u< ;
 
 : natural ( addr u1 -- u2 u3 ) push 0 pop
   begin
-    push over b@ base @ digit? pop dup push and
+    push over b@ digit? pop dup push and
   if
     push base @ * pop + push 1+ pop pop 1- 
   repeat
