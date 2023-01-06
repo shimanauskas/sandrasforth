@@ -88,6 +88,8 @@
 
 : type ( addr u -- ) begin dup if push dup b@ emit 1+ pop 1- repeat nip drop ;
 
+: accumulate 'buffer string dup 1+ 'buffer b! + b! ;
+
 : skip key? not if accept then begin key? key char ! u< and if advance repeat ;
 
 : word? skip 0 'buffer b! key?
@@ -95,8 +97,7 @@
     begin
       key dup char ! u< not 'buffer b@ length u< and
     if
-      'buffer string dup 1+ 'buffer b! + b! advance key? not
-      [ over ] until accept
+      accumulate advance key? not [ over ] until accept
     repeat
     drop
   then ;
