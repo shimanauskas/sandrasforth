@@ -1,5 +1,5 @@
 : [ top @ here ! -1 state ! ; immediate
-: ] postpone apply 0 state ! ; immediate
+: ] apply 0 state ! ; immediate
 
 : begin top @ ; immediate
 
@@ -18,7 +18,7 @@
 : ( begin word? 'buffer b@ 1 =
   [ 'buffer 1+ ] literal b@ char ) = and until ; immediate
 
-: " ( -- addr ) postpone apply begin skip key? until 0 'buffer b!
+: " ( -- addr ) apply begin skip key? until 0 'buffer b!
   begin
     key advance dup char " xor
   if

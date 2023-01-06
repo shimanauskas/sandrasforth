@@ -4,5 +4,5 @@
 
 " # "
 
-: main literal string type flush accept postpone interpret postpone apply main ;
+: main literal string type flush accept postpone interpret apply main ;
   immediate main
