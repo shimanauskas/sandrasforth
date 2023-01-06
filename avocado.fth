@@ -10,7 +10,8 @@
 : until lit ?jump postpone , postpone , ; immediate
 
 : variable postpone : lit var postpone , 0 postpone , postpone ; ; immediate
-: constant postpone : postpone literal postpone ; ; immediate
+: constant postpone : postpone literal lit call postpone ,
+  ' literal literal postpone , postpone ; postpone immediate ; immediate
 
 : char word [ 'buffer 1+ ] literal b@ postpone literal ; immediate
 
