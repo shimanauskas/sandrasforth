@@ -65,3 +65,11 @@
 
 : number ( addr u1 -- u2 u3 ) over b@ char - = ?jump ' natural ,
   push 1+ pop 1- natural push negate pop ;
+
+: same? ( addr1 addr2 u -- bool )
+  begin
+    dup push push over b@ over b@ = pop and
+  if
+    push 1+ pop 1+ pop 1-
+  repeat
+  pop nip nip 0= ;
