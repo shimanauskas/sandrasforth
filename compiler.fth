@@ -62,3 +62,6 @@
     push base @ * pop + push 1+ pop pop 1- 
   repeat
   drop nip pop ;
+
+: number ( addr u1 -- u2 u3 ) over b@ char - = ?jump ' natural ,
+  push 1+ pop 1- natural push negate pop ;
