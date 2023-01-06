@@ -205,6 +205,12 @@ sub: /* n1|u1 n2|u2 -- n3|u3 */
 	DROP
 	NEXT
 
+mul: /* n1 n2 -- n3 */
+	movq %rax, %rcx
+	DROP
+	mulq %rcx
+	NEXT
+
 ummul: /* u1 u2 -- ud */
 	movq %rax, %rcx
 	DROP
@@ -1015,7 +1021,8 @@ DEFINE head_negate,     inc,        "1+"
 DEFINE head_inc,        dec,        "1-"
 DEFINE head_dec,        add,        "+"
 DEFINE head_add,        sub,        "-"
-DEFINE head_sub,        ummul,      "um*"
+DEFINE head_sub,        mul,        "*"
+DEFINE head_mul,        ummul,      "um*"
 DEFINE head_ummul,      umdivmod,   "um/mod"
 DEFINE head_umdivmod,   fetch,      "@"
 DEFINE head_fetch,      store,      "!"

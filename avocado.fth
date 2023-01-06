@@ -46,6 +46,4 @@
 
 : space 32 emit ;
 
-: * ( n1 n2 -- n3 ) um* drop ;
-
 : cells ( n1 -- n2 ) cell * ;
