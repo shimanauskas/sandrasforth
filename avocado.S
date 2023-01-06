@@ -258,6 +258,10 @@ cell: /* -- u */
 	.quad lit, CELL
 	.quad jump, literal
 
+length: /* -- u */
+	.quad lit, LENGTH
+	.quad jump, literal
+
 sys_read: /* -- x */
 	.quad lit, SYS_READ
 	.quad jump, literal
@@ -1026,7 +1030,8 @@ DEFINE head_bfetch,     bstore,     "b!"
 DEFINE head_bstore,     syscall,    "syscall"
 
 DEFINE head_syscall,    cell,       "cell",      IMMEDIATE
-DEFINE head_cell,       sys_read,   "sys-read",  IMMEDIATE
+DEFINE head_cell,       length,     "length",    IMMEDIATE
+DEFINE head_length,     sys_read,   "sys-read",  IMMEDIATE
 DEFINE head_sys_read,   sys_write,  "sys-write", IMMEDIATE
 DEFINE head_sys_write,  sys_exit,   "sys-exit",  IMMEDIATE
 DEFINE head_sys_exit,   tickinput,  "'input",    IMMEDIATE

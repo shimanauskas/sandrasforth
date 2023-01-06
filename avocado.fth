@@ -50,9 +50,8 @@
 
 : cells ( n1 -- n2 ) cell * ;
 
-  0 constant stdin
-  1 constant stdout
-127 constant length
+0 constant stdin
+1 constant stdout
 
 : bool ( x -- bool ) if -1 tail then 0 ;
 
