@@ -1,4 +1,4 @@
-: [ top @ here ! -1 state ! ; immediate
+: [ commit -1 state ! ; immediate
 : ] apply 0 state ! ; immediate
 
 : begin top @ ; immediate
