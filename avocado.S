@@ -842,22 +842,19 @@ commit:
 	.quad ret
 
 apply:
+	.quad call, tail
 	.quad call, state
 	.quad fetch
 
 	.quad qjump, commit
 
-	.quad lit, ret
-	.quad call, comma
 	.quad call, here
 	.quad fetch
-	.quad execute
-	.quad call, flush
-	.quad call, here
-	.quad fetch
+	.quad dup
 	.quad call, top
 	.quad store
-	.quad ret
+	.quad execute
+	.quad jump, flush
 
 colon:
 	.quad call, apply
@@ -880,7 +877,6 @@ colon:
 
 semicolon:
 	.quad call, apply
-	.quad call, tail
 	.quad lit, -1
 	.quad call, state
 	.quad store
