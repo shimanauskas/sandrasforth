@@ -719,13 +719,13 @@ find: /* -- 0 | addr */
 
 	.quad qjump, 1f
 
-	.quad over
+	.quad drop
+	.quad dup
 	.quad lit, CELL*2+1
 	.quad add
 	.quad lit, buffer
 	.quad call, string
 	.quad call, sameq
-	.quad nip
 
 1:
 	.quad qjump, 0b
