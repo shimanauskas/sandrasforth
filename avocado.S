@@ -1080,7 +1080,7 @@ DEFINE head_save,       collision,  "collision", IMMEDIATE
 DEFINE head_collision,  comma,      ",",         IMMEDIATE
 DEFINE head_comma,      link,       "link",      IMMEDIATE
 DEFINE head_link,       tail,       "tail",      IMMEDIATE
-DEFINE head_tail,       commit,     "commit",    IMMEDIATE
+DEFINE head_tail,       commit,     "commit"
 DEFINE head_commit,     apply,      "apply"
 DEFINE head_apply,      colon,      ":",         IMMEDIATE
 DEFINE head_colon,      semicolon,  ";",         IMMEDIATE
