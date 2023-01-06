@@ -854,7 +854,7 @@ apply:
 	.quad call, top
 	.quad store
 	.quad execute
-	.quad jump, flush
+	.quad ret
 
 colon:
 	.quad call, apply
@@ -880,7 +880,7 @@ semicolon:
 	.quad lit, -1
 	.quad call, state
 	.quad store
-	.quad jump, commit
+	.quad ret
 
 tick: /* -- 0 | xt */
 	.quad call, word
