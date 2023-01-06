@@ -50,3 +50,7 @@
   then ;
 
 : word begin word? 'buffer b@ until ;
+
+: digit? ( char base -- u bool ) push char 0 - 9 over <
+  if [ char A char 0 - 10 - ] literal - dup 10 < or then
+  dup pop u< ;
