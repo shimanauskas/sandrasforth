@@ -107,6 +107,7 @@
   if ! ret then nip drop lit ret postpone , ; immediate
 
 : commit top @ here ! ;
+
 : apply postpone tail state @ ?jump ' commit , here @ dup top ! execute ;
 
 : : apply word save head @ b@ hidden or head @ b!
