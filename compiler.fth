@@ -84,3 +84,14 @@
       then
     then
   until ;
+
+: bmove ( addr1 addr2 u -- )
+  begin
+    dup
+  if
+    push over b@ over b! push 1+ pop 1+ pop 1-
+  repeat
+  nip nip drop ;
+
+: save 'buffer head @ over b@ 1+ dup push aligned - dup head ! collision pop
+  bmove ;
