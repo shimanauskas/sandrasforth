@@ -1103,7 +1103,7 @@ buffer:
 	.skip 0x100
 
 code:
-	.skip 0x2000
+	.skip 0x3000
 vocab:
 
 	.skip 0x100
