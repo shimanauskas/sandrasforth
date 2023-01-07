@@ -762,24 +762,6 @@ bmove: /* addr1 addr2 u -- */
 	.quad drop
 	.quad ret
 
-save:
-	.quad lit, buffer
-	.quad call, head
-	.quad fetch
-	.quad over
-	.quad bfetch
-	.quad inc
-	.quad dup
-	.quad push
-	.quad call, aligned
-	.quad sub
-	.quad dup
-	.quad call, head
-	.quad store
-	.quad call, collision
-	.quad pop
-	.quad jump, bmove
-
 collision:
 	.quad call, top
 	.quad fetch
@@ -797,6 +779,24 @@ collision:
 
 0:
 	.quad ret
+
+save:
+	.quad lit, buffer
+	.quad call, head
+	.quad fetch
+	.quad over
+	.quad bfetch
+	.quad inc
+	.quad dup
+	.quad push
+	.quad call, aligned
+	.quad sub
+	.quad dup
+	.quad call, head
+	.quad store
+	.quad call, collision
+	.quad pop
+	.quad jump, bmove
 
 comma: /* x -- */
 	.quad call, top
@@ -1100,9 +1100,9 @@ DEFINE head_natural,    number,     "number"
 DEFINE head_number,     sameq,      "same?"
 DEFINE head_sameq,      find,       "find"
 DEFINE head_find,       bmove,      "bmove"
-DEFINE head_bmove,      save,       "save"
-DEFINE head_save,       collision,  "collision"
-DEFINE head_collision,  comma,      ",",         IMMEDIATE
+DEFINE head_bmove,      collision,  "collision"
+DEFINE head_collision,  save,       "save"
+DEFINE head_save,       comma,      ",",         IMMEDIATE
 DEFINE head_comma,      link,       "link"
 DEFINE head_link,       tail,       "tail",      IMMEDIATE
 DEFINE head_tail,       commit,     "commit"

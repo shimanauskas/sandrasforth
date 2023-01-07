@@ -94,11 +94,11 @@
   repeat
   nip nip drop ;
 
-: save 'buffer head @ over b@ 1+ dup push aligned - dup head ! collision pop
-  bmove ;
-
 : collision top @ head @ u< not
   if [ last @ 2 cells + ] literal string type bye tail then ;
+
+: save 'buffer head @ over b@ 1+ dup push aligned - dup head ! collision pop
+  bmove ;
 
 : ,    ( x -- ) top  @ dup cell + top  ! ! collision ; immediate
 : link ( x -- ) head @ cell - dup head ! ! collision ;
