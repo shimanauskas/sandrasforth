@@ -78,7 +78,8 @@
   begin
     @ dup 0= over
     if
-      over [ 2 cells ] literal + b@ length and 'buffer b@ =
+      over [ 2 cells ] literal + b@ [ length hidden or ] literal and
+      'buffer b@ =
       if
         drop dup [ 2 cells 1+ ] literal + 'buffer string same?
       then

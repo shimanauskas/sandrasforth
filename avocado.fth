@@ -9,6 +9,8 @@
 : repeat push lit jump postpone , postpone , top @ pop ! ; immediate
 : until lit ?jump postpone , postpone , ; immediate
 
+: recurse lit call postpone , last @ cell + @ postpone , ; immediate
+
 : variable postpone : lit var postpone , 0 postpone , postpone ; ; immediate
 : constant postpone : postpone literal lit call postpone ,
   ' literal literal postpone , postpone ; postpone immediate ; immediate

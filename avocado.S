@@ -37,7 +37,8 @@
 
 #define CELL 8
 
-#define LENGTH    0x7F
+#define LENGTH    0x3F
+#define HIDDEN    0x40
 #define IMMEDIATE 0x80
 
 .macro DUP /* x -- x x */
@@ -266,6 +267,10 @@ cell: /* -- u */
 
 length: /* -- u */
 	.quad lit, LENGTH
+	.quad jump, literal
+
+hidden: /* -- x */
+	.quad lit, HIDDEN
 	.quad jump, literal
 
 sys_read: /* -- x */
@@ -711,7 +716,7 @@ find: /* -- 0 | addr */
 	.quad lit, CELL*2
 	.quad add
 	.quad bfetch
-	.quad lit, LENGTH
+	.quad lit, LENGTH|HIDDEN
 	.quad and
 	.quad lit, buffer
 	.quad bfetch
@@ -863,6 +868,14 @@ colon:
 	.quad call, apply
 	.quad call, word
 	.quad call, save
+	.quad call, head
+	.quad fetch
+	.quad bfetch
+	.quad lit, HIDDEN
+	.quad or
+	.quad call, head
+	.quad fetch
+	.quad bstore
 	.quad call, here
 	.quad fetch
 	.quad call, link
@@ -880,6 +893,17 @@ colon:
 
 semicolon:
 	.quad call, apply
+	.quad call, last
+	.quad fetch
+	.quad lit, CELL*2
+	.quad add
+	.quad dup
+	.quad bfetch
+	.quad lit, ~HIDDEN
+	.quad and
+	.quad over
+	.quad bstore
+	.quad drop
 	.quad lit, -1
 	.quad call, state
 	.quad store
@@ -1031,7 +1055,8 @@ DEFINE head_bstore,     syscall,    "syscall"
 
 DEFINE head_syscall,    cell,       "cell",      IMMEDIATE
 DEFINE head_cell,       length,     "length",    IMMEDIATE
-DEFINE head_length,     sys_read,   "sys-read",  IMMEDIATE
+DEFINE head_length,     hidden,     "hidden",    IMMEDIATE
+DEFINE head_hidden,     sys_read,   "sys-read",  IMMEDIATE
 DEFINE head_sys_read,   sys_write,  "sys-write", IMMEDIATE
 DEFINE head_sys_write,  sys_exit,   "sys-exit",  IMMEDIATE
 DEFINE head_sys_exit,   tickinput,  "'input",    IMMEDIATE

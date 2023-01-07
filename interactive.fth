@@ -4,4 +4,5 @@
 
 " # "
 
-: main literal string type flush accept interpret apply main ; immediate main
+: main literal string type flush accept interpret apply recurse ;
+  immediate main
