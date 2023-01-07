@@ -1103,7 +1103,7 @@ DEFINE head_find,       bmove,      "bmove"
 DEFINE head_bmove,      save,       "save"
 DEFINE head_save,       collision,  "collision"
 DEFINE head_collision,  comma,      ",",         IMMEDIATE
-DEFINE head_comma,      link,       "link",      IMMEDIATE
+DEFINE head_comma,      link,       "link"
 DEFINE head_link,       tail,       "tail",      IMMEDIATE
 DEFINE head_tail,       commit,     "commit"
 DEFINE head_commit,     apply,      "apply"
