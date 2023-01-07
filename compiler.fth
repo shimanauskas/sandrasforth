@@ -101,7 +101,7 @@
   if [ last @ 2 cells + ] literal string type bye tail then ;
 
 : ,    ( x -- ) top  @ dup cell + top  ! ! collision ; immediate
-: link ( x -- ) head @ cell - dup head ! ! collision ; immediate
+: link ( x -- ) head @ cell - dup head ! ! collision ;
 
 : tail lit jump top @ [ 2 cells ] literal - dup @ lit call =
   if ! ret then nip drop lit ret postpone , ; immediate
@@ -111,7 +111,7 @@
 : apply postpone tail state @ ?jump ' commit , here @ dup top ! execute ;
 
 : : apply word save head @ b@ hidden or head @ b!
-  here @ postpone link last @ postpone link head @ last ! 0 state ! ; immediate
+  here @ link last @ link head @ last ! 0 state ! ; immediate
 
 : ; apply
   last @ [ 2 cells ] literal + dup b@ [ hidden not ] literal and over b! drop
