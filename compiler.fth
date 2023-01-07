@@ -101,3 +101,6 @@
 
 : ,    ( x -- ) top  @ dup cell + top  ! ! collision ; immediate
 : link ( x -- ) head @ cell - dup head ! ! collision ; immediate
+
+: tail lit jump top @ [ 2 cells ] literal - dup @ lit call =
+  if ! ret then nip drop lit ret postpone , ; immediate
