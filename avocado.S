@@ -1076,7 +1076,7 @@ DEFINE head_number,     sameq,      "same?"
 DEFINE head_sameq,      find,       "find"
 DEFINE head_find,       bmove,      "bmove"
 DEFINE head_bmove,      save,       "save"
-DEFINE head_save,       collision,  "collision", IMMEDIATE
+DEFINE head_save,       collision,  "collision"
 DEFINE head_collision,  comma,      ",",         IMMEDIATE
 DEFINE head_comma,      link,       "link",      IMMEDIATE
 DEFINE head_link,       tail,       "tail",      IMMEDIATE
