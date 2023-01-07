@@ -20,7 +20,7 @@
 : ( begin word? 'buffer b@ 1 =
   [ 'buffer 1+ ] literal b@ char ) = and until ; immediate
 
-: " ( -- addr ) apply begin skip key? until 0 'buffer b!
+: " ( -- addr ) begin skip key? until 0 'buffer b!
   begin
     key advance dup char " xor
   if
