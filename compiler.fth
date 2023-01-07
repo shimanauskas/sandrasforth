@@ -107,3 +107,11 @@
   if ! ret then nip drop lit ret postpone , ; immediate
 
 : commit top @ here ! ;
+: apply postpone tail state @ ?jump ' commit , here @ dup top ! execute ;
+
+: : apply word save head @ b@ hidden or head @ b!
+  here @ postpone link last @ postpone link head @ last ! 0 state ! ; immediate
+
+: ; apply
+  last @ [ 2 cells ] literal + dup b@ [ hidden not ] literal and over b! drop
+  -1 state ! ; immediate
