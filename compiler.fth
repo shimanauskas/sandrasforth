@@ -102,16 +102,13 @@
 : ,    ( x -- ) top  @ dup cell + top  ! ! collision ; immediate
 : link ( x -- ) head @ cell - dup head ! ! collision ;
 
-: tail lit jump top @ [ 2 cells ] literal - dup @ lit call =
-  if ! tail then nip drop lit ret postpone , ; immediate
+: tail hidden lit jump top @ [ 2 cells ] literal - dup @ lit call =
+  if ! tail then nip drop lit ret postpone , ; hidden immediate
 
 : commit top @ here ! ;
 
 : apply postpone tail state @ ?jump ' commit , here @ dup top ! execute ;
 
-: : apply word save head @ b@ f-hidden or head @ b!
-  here @ link last @ link head @ last ! 0 state ! ; immediate
+: : apply word save here @ link last @ link head @ last ! 0 state ! ; immediate
 
-: ; apply
-  last @ nfa + dup b@ [ f-hidden not ] literal and over b! drop -1 state ! ;
-  immediate
+: ; hidden apply -1 state ! ; hidden immediate

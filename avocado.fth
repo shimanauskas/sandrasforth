@@ -1,4 +1,5 @@
 : immediate last @ nfa + dup b@ f-immediate xor over b! drop ; immediate
+: hidden    last @ nfa + dup b@ f-hidden    xor over b! drop ; immediate
 
 : [ commit -1 state ! ; immediate
 : ] apply   0 state ! ; immediate
@@ -10,8 +11,6 @@
 
 : repeat push lit jump postpone , postpone , top @ pop ! ; immediate
 : until lit ?jump postpone , postpone , ; immediate
-
-: recurse lit call postpone , last @ cell + @ postpone , ; immediate
 
 : variable postpone : lit var postpone , 0 postpone , postpone ; ; immediate
 : constant postpone : postpone literal lit call postpone ,

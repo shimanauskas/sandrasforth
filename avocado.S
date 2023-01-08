@@ -877,14 +877,6 @@ colon:
 	.quad call, apply
 	.quad call, word
 	.quad call, save
-	.quad call, head
-	.quad fetch
-	.quad bfetch
-	.quad lit, F_HIDDEN
-	.quad or
-	.quad call, head
-	.quad fetch
-	.quad bstore
 	.quad call, here
 	.quad fetch
 	.quad call, link
@@ -902,17 +894,6 @@ colon:
 
 semicolon:
 	.quad call, apply
-	.quad call, last
-	.quad fetch
-	.quad lit, NFA
-	.quad add
-	.quad dup
-	.quad bfetch
-	.quad lit, ~F_HIDDEN
-	.quad and
-	.quad over
-	.quad bstore
-	.quad drop
 	.quad lit, -1
 	.quad call, state
 	.quad store
