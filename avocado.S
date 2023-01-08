@@ -858,6 +858,13 @@ commit:
 	.quad store
 	.quad ret
 
+reset:
+	.quad call, here
+	.quad fetch
+	.quad call, top
+	.quad store
+	.quad ret
+
 apply:
 	.quad call, tail
 	.quad call, state
@@ -865,11 +872,9 @@ apply:
 
 	.quad qjump, commit
 
+	.quad call, reset
 	.quad call, here
 	.quad fetch
-	.quad dup
-	.quad call, top
-	.quad store
 	.quad execute
 	.quad ret
 
@@ -977,6 +982,10 @@ interpret:
 	.quad qjump, 0f
 
 	.quad drop
+	.quad call, reset
+	.quad lit, -1
+	.quad call, state
+	.quad store
 	.quad lit, buffer
 	.quad call, string
 	.quad call, type
@@ -1084,7 +1093,8 @@ DEFINE head_save,        comma,       ",",           F_IMMEDIATE
 DEFINE head_comma,       link,        "link"
 DEFINE head_link,        tail,        "tail",        F_IMMEDIATE
 DEFINE head_tail,        commit,      "commit"
-DEFINE head_commit,      apply,       "apply"
+DEFINE head_commit,      reset,       "reset"
+DEFINE head_reset,       apply,       "apply"
 DEFINE head_apply,       colon,       ":",           F_IMMEDIATE
 DEFINE head_colon,       semicolon,   ";",           F_IMMEDIATE
 DEFINE head_semicolon,   tick,        "'",           F_IMMEDIATE

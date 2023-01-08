@@ -106,8 +106,9 @@
   if ! tail then nip drop lit ret postpone , ; hidden immediate
 
 : commit top @ here ! ;
+: reset  here @ top ! ;
 
-: apply postpone tail state @ ?jump ' commit , here @ dup top ! execute ;
+: apply postpone tail state @ ?jump ' commit , reset here @ execute ;
 
 : : apply word save here @ link last @ link head @ last ! 0 state ! ; immediate
 
