@@ -104,7 +104,7 @@
 : link ( x -- ) head @ cell - dup head ! ! collision ;
 
 : tail lit jump top @ [ 2 cells ] literal - dup @ lit call =
-  if ! ret then nip drop lit ret postpone , ; immediate
+  if ! tail then nip drop lit ret postpone , ; immediate
 
 : commit top @ here ! ;
 
