@@ -78,10 +78,10 @@
   begin
     @ dup 0= over
     if
-      over [ 2 cells ] literal + b@ [ length hidden or ] literal and
+      over nfa + b@ [ length hidden or ] literal and
       'buffer b@ =
       if
-        drop dup [ 2 cells 1+ ] literal + 'buffer string same?
+        drop dup [ nfa 1+ ] literal + 'buffer string same?
       then
     then
   until ;
@@ -95,7 +95,7 @@
   nip nip drop ;
 
 : collision top @ head @ u< not
-  if [ last @ 2 cells + ] literal string type bye tail then ;
+  if [ last @ nfa + ] literal string type bye tail then ;
 
 : save 'buffer head @ over b@ 1+ dup push aligned - dup head ! collision pop
   bmove ;
@@ -114,5 +114,5 @@
   here @ link last @ link head @ last ! 0 state ! ; immediate
 
 : ; apply
-  last @ [ 2 cells ] literal + dup b@ [ hidden not ] literal and over b! drop
-  -1 state ! ; immediate
+  last @ nfa + dup b@ [ hidden not ] literal and over b! drop -1 state ! ;
+  immediate

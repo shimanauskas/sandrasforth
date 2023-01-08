@@ -36,6 +36,7 @@
 #define STDOUT 1
 
 #define CELL 8
+#define NFA  CELL*2
 
 #define LENGTH    0x3F
 #define HIDDEN    0x40
@@ -263,6 +264,10 @@ end:
 
 cell: /* -- u */
 	.quad lit, CELL
+	.quad jump, literal
+
+nfa: /* -- u */
+	.quad lit, NFA
 	.quad jump, literal
 
 length: /* -- u */
@@ -713,7 +718,7 @@ find: /* -- 0 | addr */
 	.quad qjump, 1f
 
 	.quad over
-	.quad lit, CELL*2
+	.quad lit, NFA
 	.quad add
 	.quad bfetch
 	.quad lit, LENGTH|HIDDEN
@@ -726,7 +731,7 @@ find: /* -- 0 | addr */
 
 	.quad drop
 	.quad dup
-	.quad lit, CELL*2+1
+	.quad lit, NFA+1
 	.quad add
 	.quad lit, buffer
 	.quad call, string
@@ -772,7 +777,7 @@ collision:
 
 	.quad qjump, 0f
 
-	.quad lit, head_collision+CELL*2
+	.quad lit, head_collision+NFA
 	.quad call, string
 	.quad call, type
 	.quad jump, bye
@@ -895,7 +900,7 @@ semicolon:
 	.quad call, apply
 	.quad call, last
 	.quad fetch
-	.quad lit, CELL*2
+	.quad lit, NFA
 	.quad add
 	.quad dup
 	.quad bfetch
@@ -937,7 +942,7 @@ literal: /* x -- */
 immediate:
 	.quad call, last
 	.quad fetch
-	.quad lit, CELL*2
+	.quad lit, NFA
 	.quad add
 	.quad dup
 	.quad bfetch
@@ -1054,7 +1059,8 @@ DEFINE head_bfetch,     bstore,     "b!"
 DEFINE head_bstore,     syscall,    "syscall"
 
 DEFINE head_syscall,    cell,       "cell",      IMMEDIATE
-DEFINE head_cell,       length,     "length",    IMMEDIATE
+DEFINE head_cell,       nfa,        "nfa",       IMMEDIATE
+DEFINE head_nfa,        length,     "length",    IMMEDIATE
 DEFINE head_length,     hidden,     "hidden",    IMMEDIATE
 DEFINE head_hidden,     sys_read,   "sys-read",  IMMEDIATE
 DEFINE head_sys_read,   sys_write,  "sys-write", IMMEDIATE
