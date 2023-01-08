@@ -112,3 +112,5 @@
 : : apply word save here @ link last @ link head @ last ! 0 state ! ; immediate
 
 : ; hidden apply -1 state ! ; hidden immediate
+
+: ' word find dup if cell + @ then ; immediate
