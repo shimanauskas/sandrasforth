@@ -943,20 +943,6 @@ literal: /* x -- */
 	.quad call, comma
 	.quad jump, comma
 
-immediate:
-	.quad call, last
-	.quad fetch
-	.quad lit, NFA
-	.quad add
-	.quad dup
-	.quad bfetch
-	.quad lit, F_IMMEDIATE
-	.quad or
-	.quad over
-	.quad bstore
-	.quad drop
-	.quad ret
-
 interpret:
 	.quad call, wordq
 	.quad lit, buffer
@@ -1123,8 +1109,7 @@ DEFINE head_colon,       semicolon,   ";",           F_IMMEDIATE
 DEFINE head_semicolon,   tick,        "'",           F_IMMEDIATE
 DEFINE head_tick,        postpone,    "postpone",    F_IMMEDIATE
 DEFINE head_postpone,    literal,     "literal",     F_IMMEDIATE
-DEFINE head_literal,     immediate,   "immediate",   F_IMMEDIATE
-DEFINE head_immediate,   interpret,   "interpret"
+DEFINE head_literal,     interpret,   "interpret"
 DEFINE head_interpret,   main,        "main",        F_IMMEDIATE
 
 .bss
