@@ -42,7 +42,7 @@
 : word? skip 0 'buffer b! key?
   if
     begin
-      key dup char ! u< not 'buffer b@ length u< and
+      key dup char ! u< not 'buffer b@ f-length u< and
     if
       accumulate advance key? not [ over ] until accept
     repeat
@@ -78,7 +78,7 @@
   begin
     @ dup 0= over
     if
-      over nfa + b@ [ length hidden or ] literal and
+      over nfa + b@ [ f-length f-hidden or ] literal and
       'buffer b@ =
       if
         drop dup [ nfa 1+ ] literal + 'buffer string same?
@@ -110,9 +110,9 @@
 
 : apply postpone tail state @ ?jump ' commit , here @ dup top ! execute ;
 
-: : apply word save head @ b@ hidden or head @ b!
+: : apply word save head @ b@ f-hidden or head @ b!
   here @ link last @ link head @ last ! 0 state ! ; immediate
 
 : ; apply
-  last @ nfa + dup b@ [ hidden not ] literal and over b! drop -1 state ! ;
+  last @ nfa + dup b@ [ f-hidden not ] literal and over b! drop -1 state ! ;
   immediate

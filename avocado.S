@@ -38,9 +38,9 @@
 #define CELL 8
 #define NFA  CELL*2
 
-#define LENGTH    0x3F
-#define HIDDEN    0x40
-#define IMMEDIATE 0x80
+#define F_LENGTH    0x3F
+#define F_HIDDEN    0x40
+#define F_IMMEDIATE 0x80
 
 .macro DUP /* x -- x x */
 	leaq -CELL(%rbp), %rbp
@@ -270,12 +270,12 @@ nfa: /* -- u */
 	.quad lit, NFA
 	.quad jump, literal
 
-length: /* -- u */
-	.quad lit, LENGTH
+f_length: /* -- u */
+	.quad lit, F_LENGTH
 	.quad jump, literal
 
-hidden: /* -- x */
-	.quad lit, HIDDEN
+f_hidden: /* -- x */
+	.quad lit, F_HIDDEN
 	.quad jump, literal
 
 sys_read: /* -- x */
@@ -568,7 +568,7 @@ wordq:
 	.quad not
 	.quad lit, buffer
 	.quad bfetch
-	.quad lit, LENGTH
+	.quad lit, F_LENGTH
 	.quad call, uless
 	.quad and
 
@@ -721,7 +721,7 @@ find: /* -- 0 | addr */
 	.quad lit, NFA
 	.quad add
 	.quad bfetch
-	.quad lit, LENGTH|HIDDEN
+	.quad lit, F_LENGTH|F_HIDDEN
 	.quad and
 	.quad lit, buffer
 	.quad bfetch
@@ -876,7 +876,7 @@ colon:
 	.quad call, head
 	.quad fetch
 	.quad bfetch
-	.quad lit, HIDDEN
+	.quad lit, F_HIDDEN
 	.quad or
 	.quad call, head
 	.quad fetch
@@ -904,7 +904,7 @@ semicolon:
 	.quad add
 	.quad dup
 	.quad bfetch
-	.quad lit, ~HIDDEN
+	.quad lit, ~F_HIDDEN
 	.quad and
 	.quad over
 	.quad bstore
@@ -946,7 +946,7 @@ immediate:
 	.quad add
 	.quad dup
 	.quad bfetch
-	.quad lit, IMMEDIATE
+	.quad lit, F_IMMEDIATE
 	.quad or
 	.quad over
 	.quad bstore
@@ -971,7 +971,7 @@ interpret:
 	.quad lit, CELL
 	.quad add
 	.quad bfetch
-	.quad lit, IMMEDIATE
+	.quad lit, F_IMMEDIATE
 	.quad and
 
 	.quad qjump, 0f
@@ -1058,18 +1058,18 @@ DEFINE head_store,      bfetch,     "b@"
 DEFINE head_bfetch,     bstore,     "b!"
 DEFINE head_bstore,     syscall,    "syscall"
 
-DEFINE head_syscall,    cell,       "cell",      IMMEDIATE
-DEFINE head_cell,       nfa,        "nfa",       IMMEDIATE
-DEFINE head_nfa,        length,     "length",    IMMEDIATE
-DEFINE head_length,     hidden,     "hidden",    IMMEDIATE
-DEFINE head_hidden,     sys_read,   "sys-read",  IMMEDIATE
-DEFINE head_sys_read,   sys_write,  "sys-write", IMMEDIATE
-DEFINE head_sys_write,  sys_exit,   "sys-exit",  IMMEDIATE
-DEFINE head_sys_exit,   tickinput,  "'input",    IMMEDIATE
-DEFINE head_tickinput,  tickoutput, "'output",   IMMEDIATE
-DEFINE head_tickoutput, tickbuffer, "'buffer",   IMMEDIATE
-DEFINE head_tickbuffer, tickcode,   "'code",     IMMEDIATE
-DEFINE head_tickcode,   tickvocab,  "'vocab",    IMMEDIATE
+DEFINE head_syscall,    cell,       "cell",      F_IMMEDIATE
+DEFINE head_cell,       nfa,        "nfa",       F_IMMEDIATE
+DEFINE head_nfa,        f_length,   "f-length",  F_IMMEDIATE
+DEFINE head_f_length,   f_hidden,   "f-hidden",  F_IMMEDIATE
+DEFINE head_f_hidden,   sys_read,   "sys-read",  F_IMMEDIATE
+DEFINE head_sys_read,   sys_write,  "sys-write", F_IMMEDIATE
+DEFINE head_sys_write,  sys_exit,   "sys-exit",  F_IMMEDIATE
+DEFINE head_sys_exit,   tickinput,  "'input",    F_IMMEDIATE
+DEFINE head_tickinput,  tickoutput, "'output",   F_IMMEDIATE
+DEFINE head_tickoutput, tickbuffer, "'buffer",   F_IMMEDIATE
+DEFINE head_tickbuffer, tickcode,   "'code",     F_IMMEDIATE
+DEFINE head_tickcode,   tickvocab,  "'vocab",    F_IMMEDIATE
 
 DEFINE head_tickvocab,  mark,       "mark"
 DEFINE head_mark,       state,      "state"
@@ -1108,19 +1108,19 @@ DEFINE head_sameq,      find,       "find"
 DEFINE head_find,       bmove,      "bmove"
 DEFINE head_bmove,      collision,  "collision"
 DEFINE head_collision,  save,       "save"
-DEFINE head_save,       comma,      ",",         IMMEDIATE
+DEFINE head_save,       comma,      ",",         F_IMMEDIATE
 DEFINE head_comma,      link,       "link"
-DEFINE head_link,       tail,       "tail",      IMMEDIATE
+DEFINE head_link,       tail,       "tail",      F_IMMEDIATE
 DEFINE head_tail,       commit,     "commit"
 DEFINE head_commit,     apply,      "apply"
-DEFINE head_apply,      colon,      ":",         IMMEDIATE
-DEFINE head_colon,      semicolon,  ";",         IMMEDIATE
-DEFINE head_semicolon,  tick,       "'",         IMMEDIATE
-DEFINE head_tick,       postpone,   "postpone",  IMMEDIATE
-DEFINE head_postpone,   literal,    "literal",   IMMEDIATE
-DEFINE head_literal,    immediate,  "immediate", IMMEDIATE
+DEFINE head_apply,      colon,      ":",         F_IMMEDIATE
+DEFINE head_colon,      semicolon,  ";",         F_IMMEDIATE
+DEFINE head_semicolon,  tick,       "'",         F_IMMEDIATE
+DEFINE head_tick,       postpone,   "postpone",  F_IMMEDIATE
+DEFINE head_postpone,   literal,    "literal",   F_IMMEDIATE
+DEFINE head_literal,    immediate,  "immediate", F_IMMEDIATE
 DEFINE head_immediate,  interpret,  "interpret"
-DEFINE head_interpret,  main,       "main",      IMMEDIATE
+DEFINE head_interpret,  main,       "main",      F_IMMEDIATE
 
 .bss
 
