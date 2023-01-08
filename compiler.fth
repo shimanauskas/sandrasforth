@@ -115,4 +115,4 @@
 
 : ' word find dup if cell + @ then ; immediate
 
-: postpone hidden postpone ' lit call postpone , postpone , ; immediate
+: postpone hidden postpone ' lit call postpone , postpone , ; hidden immediate
