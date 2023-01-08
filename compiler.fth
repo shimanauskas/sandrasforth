@@ -116,3 +116,5 @@
 : ' word find dup if cell + @ then ; immediate
 
 : postpone hidden postpone ' lit call postpone , postpone , ; hidden immediate
+
+: literal lit lit postpone , postpone , ; immediate
