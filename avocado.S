@@ -725,7 +725,7 @@ find: /* -- 0 | addr */
 	.quad lit, NFA
 	.quad add
 	.quad bfetch
-	.quad lit, F_LENGTH|F_HIDDEN
+	.quad lit, ~F_IMMEDIATE
 	.quad and
 	.quad lit, buffer
 	.quad bfetch
