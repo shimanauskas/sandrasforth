@@ -114,3 +114,5 @@
 : ; hidden apply -1 state ! ; hidden immediate
 
 : ' word find dup if cell + @ then ; immediate
+
+: postpone hidden postpone ' lit call postpone , postpone , ; immediate
