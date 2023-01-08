@@ -78,8 +78,7 @@
   begin
     @ dup 0= over
     if
-      over nfa + b@ [ f-immediate not ] literal and
-      'buffer b@ =
+      over nfa + b@ [ f-immediate not ] literal and 'buffer b@ =
       if
         drop dup [ nfa 1+ ] literal + 'buffer string same?
       then
