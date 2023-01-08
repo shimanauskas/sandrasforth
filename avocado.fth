@@ -1,4 +1,4 @@
-: immediate last @ nfa + dup b@ f-immediate or over b! drop ; immediate
+: immediate last @ nfa + dup b@ f-immediate xor over b! drop ; immediate
 
 : [ commit -1 state ! ; immediate
 : ] apply   0 state ! ; immediate
