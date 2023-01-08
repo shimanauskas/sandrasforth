@@ -278,6 +278,10 @@ f_hidden: /* -- x */
 	.quad lit, F_HIDDEN
 	.quad jump, literal
 
+f_immediate: /* -- x */
+	.quad lit, F_IMMEDIATE
+	.quad jump, literal
+
 sys_read: /* -- x */
 	.quad lit, SYS_READ
 	.quad jump, literal
@@ -1025,102 +1029,103 @@ main:
 	.quad call, flush
 	.quad jump, main
 
-DEFINE 0,               call,       "call"
-DEFINE head_call,       jump,       "jump"
-DEFINE head_jump,       qjump,      "?jump"
-DEFINE head_qjump,      execute,    "execute"
-DEFINE head_execute,    ret,        "ret"
-DEFINE head_ret,        lit,        "lit"
-DEFINE head_lit,        var,        "var"
-DEFINE head_var,        dup,        "dup"
-DEFINE head_dup,        nip,        "nip"
-DEFINE head_nip,        drop,       "drop"
-DEFINE head_drop,       over,       "over"
-DEFINE head_over,       push,       "push"
-DEFINE head_push,       pop,        "pop"
-DEFINE head_pop,        not,        "not"
-DEFINE head_not,        twomul,     "2*"
-DEFINE head_twomul,     twodiv,     "2/"
-DEFINE head_twodiv,     and,        "and"
-DEFINE head_and,        or,         "or"
-DEFINE head_or,         xor,        "xor"
-DEFINE head_xor,        negate,     "negate"
-DEFINE head_negate,     inc,        "1+"
-DEFINE head_inc,        dec,        "1-"
-DEFINE head_dec,        add,        "+"
-DEFINE head_add,        sub,        "-"
-DEFINE head_sub,        mul,        "*"
-DEFINE head_mul,        ummul,      "um*"
-DEFINE head_ummul,      umdivmod,   "um/mod"
-DEFINE head_umdivmod,   fetch,      "@"
-DEFINE head_fetch,      store,      "!"
-DEFINE head_store,      bfetch,     "b@"
-DEFINE head_bfetch,     bstore,     "b!"
-DEFINE head_bstore,     syscall,    "syscall"
+DEFINE 0,                call,        "call"
+DEFINE head_call,        jump,        "jump"
+DEFINE head_jump,        qjump,       "?jump"
+DEFINE head_qjump,       execute,     "execute"
+DEFINE head_execute,     ret,         "ret"
+DEFINE head_ret,         lit,         "lit"
+DEFINE head_lit,         var,         "var"
+DEFINE head_var,         dup,         "dup"
+DEFINE head_dup,         nip,         "nip"
+DEFINE head_nip,         drop,        "drop"
+DEFINE head_drop,        over,        "over"
+DEFINE head_over,        push,        "push"
+DEFINE head_push,        pop,         "pop"
+DEFINE head_pop,         not,         "not"
+DEFINE head_not,         twomul,      "2*"
+DEFINE head_twomul,      twodiv,      "2/"
+DEFINE head_twodiv,      and,         "and"
+DEFINE head_and,         or,          "or"
+DEFINE head_or,          xor,         "xor"
+DEFINE head_xor,         negate,      "negate"
+DEFINE head_negate,      inc,         "1+"
+DEFINE head_inc,         dec,         "1-"
+DEFINE head_dec,         add,         "+"
+DEFINE head_add,         sub,         "-"
+DEFINE head_sub,         mul,         "*"
+DEFINE head_mul,         ummul,       "um*"
+DEFINE head_ummul,       umdivmod,    "um/mod"
+DEFINE head_umdivmod,    fetch,       "@"
+DEFINE head_fetch,       store,       "!"
+DEFINE head_store,       bfetch,      "b@"
+DEFINE head_bfetch,      bstore,      "b!"
+DEFINE head_bstore,      syscall,     "syscall"
 
-DEFINE head_syscall,    cell,       "cell",      F_IMMEDIATE
-DEFINE head_cell,       nfa,        "nfa",       F_IMMEDIATE
-DEFINE head_nfa,        f_length,   "f-length",  F_IMMEDIATE
-DEFINE head_f_length,   f_hidden,   "f-hidden",  F_IMMEDIATE
-DEFINE head_f_hidden,   sys_read,   "sys-read",  F_IMMEDIATE
-DEFINE head_sys_read,   sys_write,  "sys-write", F_IMMEDIATE
-DEFINE head_sys_write,  sys_exit,   "sys-exit",  F_IMMEDIATE
-DEFINE head_sys_exit,   tickinput,  "'input",    F_IMMEDIATE
-DEFINE head_tickinput,  tickoutput, "'output",   F_IMMEDIATE
-DEFINE head_tickoutput, tickbuffer, "'buffer",   F_IMMEDIATE
-DEFINE head_tickbuffer, tickcode,   "'code",     F_IMMEDIATE
-DEFINE head_tickcode,   tickvocab,  "'vocab",    F_IMMEDIATE
+DEFINE head_syscall,     cell,        "cell",        F_IMMEDIATE
+DEFINE head_cell,        nfa,         "nfa",         F_IMMEDIATE
+DEFINE head_nfa,         f_length,    "f-length",    F_IMMEDIATE
+DEFINE head_f_length,    f_hidden,    "f-hidden",    F_IMMEDIATE
+DEFINE head_f_hidden,    f_immediate, "f-immediate", F_IMMEDIATE
+DEFINE head_f_immediate, sys_read,    "sys-read",    F_IMMEDIATE
+DEFINE head_sys_read,    sys_write,   "sys-write",   F_IMMEDIATE
+DEFINE head_sys_write,   sys_exit,    "sys-exit",    F_IMMEDIATE
+DEFINE head_sys_exit,    tickinput,   "'input",      F_IMMEDIATE
+DEFINE head_tickinput,   tickoutput,  "'output",     F_IMMEDIATE
+DEFINE head_tickoutput,  tickbuffer,  "'buffer",     F_IMMEDIATE
+DEFINE head_tickbuffer,  tickcode,    "'code",       F_IMMEDIATE
+DEFINE head_tickcode,    tickvocab,   "'vocab",      F_IMMEDIATE
 
-DEFINE head_tickvocab,  mark,       "mark"
-DEFINE head_mark,       state,      "state"
-DEFINE head_state,      here,       "here"
-DEFINE head_here,       top,        "top"
-DEFINE head_top,        head,       "head"
-DEFINE head_head,       last,       "last"
-DEFINE head_last,       base,       "base"
+DEFINE head_tickvocab,   mark,        "mark"
+DEFINE head_mark,        state,       "state"
+DEFINE head_state,       here,        "here"
+DEFINE head_here,        top,         "top"
+DEFINE head_top,         head,        "head"
+DEFINE head_head,        last,        "last"
+DEFINE head_last,        base,        "base"
 
-DEFINE head_base,       bool,       "bool"
-DEFINE head_bool,       zequals,    "0="
-DEFINE head_zequals,    equals,     "="
-DEFINE head_equals,     zless,      "0<"
-DEFINE head_zless,      less,       "<"
-DEFINE head_less,       uless,      "u<"
-DEFINE head_uless,      within,     "within"
-DEFINE head_within,     aligned,    "aligned"
-DEFINE head_aligned,    string,     "string"
-DEFINE head_string,     bye,        "bye"
-DEFINE head_bye,        accept,     "accept"
-DEFINE head_accept,     flush,      "flush"
-DEFINE head_flush,      keyq,       "key?"
-DEFINE head_keyq,       key,        "key"
-DEFINE head_key,        advance,    "advance"
-DEFINE head_advance,    emit,       "emit"
-DEFINE head_emit,       type,       "type"
-DEFINE head_type,       accumulate, "accumulate"
-DEFINE head_accumulate, skip,       "skip"
-DEFINE head_skip,       wordq,      "word?"
-DEFINE head_wordq,      word,       "word"
-DEFINE head_word,       digitq,     "digit?"
-DEFINE head_digitq,     natural,    "natural"
-DEFINE head_natural,    number,     "number"
-DEFINE head_number,     sameq,      "same?"
-DEFINE head_sameq,      find,       "find"
-DEFINE head_find,       bmove,      "bmove"
-DEFINE head_bmove,      collision,  "collision"
-DEFINE head_collision,  save,       "save"
-DEFINE head_save,       comma,      ",",         F_IMMEDIATE
-DEFINE head_comma,      link,       "link"
-DEFINE head_link,       tail,       "tail",      F_IMMEDIATE
-DEFINE head_tail,       commit,     "commit"
-DEFINE head_commit,     apply,      "apply"
-DEFINE head_apply,      colon,      ":",         F_IMMEDIATE
-DEFINE head_colon,      semicolon,  ";",         F_IMMEDIATE
-DEFINE head_semicolon,  tick,       "'",         F_IMMEDIATE
-DEFINE head_tick,       postpone,   "postpone",  F_IMMEDIATE
-DEFINE head_postpone,   literal,    "literal",   F_IMMEDIATE
-DEFINE head_literal,    immediate,  "immediate", F_IMMEDIATE
-DEFINE head_immediate,  interpret,  "interpret"
-DEFINE head_interpret,  main,       "main",      F_IMMEDIATE
+DEFINE head_base,        bool,        "bool"
+DEFINE head_bool,        zequals,     "0="
+DEFINE head_zequals,     equals,      "="
+DEFINE head_equals,      zless,       "0<"
+DEFINE head_zless,       less,        "<"
+DEFINE head_less,        uless,       "u<"
+DEFINE head_uless,       within,      "within"
+DEFINE head_within,      aligned,     "aligned"
+DEFINE head_aligned,     string,      "string"
+DEFINE head_string,      bye,         "bye"
+DEFINE head_bye,         accept,      "accept"
+DEFINE head_accept,      flush,       "flush"
+DEFINE head_flush,       keyq,        "key?"
+DEFINE head_keyq,        key,         "key"
+DEFINE head_key,         advance,     "advance"
+DEFINE head_advance,     emit,        "emit"
+DEFINE head_emit,        type,        "type"
+DEFINE head_type,        accumulate,  "accumulate"
+DEFINE head_accumulate,  skip,        "skip"
+DEFINE head_skip,        wordq,       "word?"
+DEFINE head_wordq,       word,        "word"
+DEFINE head_word,        digitq,      "digit?"
+DEFINE head_digitq,      natural,     "natural"
+DEFINE head_natural,     number,      "number"
+DEFINE head_number,      sameq,       "same?"
+DEFINE head_sameq,       find,        "find"
+DEFINE head_find,        bmove,       "bmove"
+DEFINE head_bmove,       collision,   "collision"
+DEFINE head_collision,   save,        "save"
+DEFINE head_save,        comma,       ",",           F_IMMEDIATE
+DEFINE head_comma,       link,        "link"
+DEFINE head_link,        tail,        "tail",        F_IMMEDIATE
+DEFINE head_tail,        commit,      "commit"
+DEFINE head_commit,      apply,       "apply"
+DEFINE head_apply,       colon,       ":",           F_IMMEDIATE
+DEFINE head_colon,       semicolon,   ";",           F_IMMEDIATE
+DEFINE head_semicolon,   tick,        "'",           F_IMMEDIATE
+DEFINE head_tick,        postpone,    "postpone",    F_IMMEDIATE
+DEFINE head_postpone,    literal,     "literal",     F_IMMEDIATE
+DEFINE head_literal,     immediate,   "immediate",   F_IMMEDIATE
+DEFINE head_immediate,   interpret,   "interpret"
+DEFINE head_interpret,   main,        "main",        F_IMMEDIATE
 
 .bss
 
