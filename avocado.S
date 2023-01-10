@@ -985,6 +985,19 @@ interpret:
 
 	.quad drop
 	.quad call, reset
+	.quad call, state
+	.quad fetch
+	.quad not
+
+	.quad qjump, 1f
+
+	.quad call, last
+	.quad fetch
+	.quad fetch
+	.quad call, last
+	.quad store
+
+1:
 	.quad lit, -1
 	.quad call, state
 	.quad store
