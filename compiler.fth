@@ -108,11 +108,11 @@
 : commit top @ here ! ;
 : reset  here @ top ! ;
 
-: apply postpone tail state @ ?jump ' commit , reset here @ execute ;
+: apply state @ ?jump ' commit , lit ret postpone , reset here @ execute ;
 
 : : apply word save here @ link last @ link head @ last ! 0 state ! ; immediate
 
-: ; hidden apply -1 state ! ; hidden immediate
+: ; hidden apply postpone tail -1 state ! commit ; hidden immediate
 
 : ' ( -- 0 | xt ) word find dup if cell + @ then ; immediate
 

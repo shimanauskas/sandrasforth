@@ -866,12 +866,13 @@ reset:
 	.quad ret
 
 apply:
-	.quad call, tail
 	.quad call, state
 	.quad fetch
 
 	.quad qjump, commit
 
+	.quad lit, ret
+	.quad call, comma
 	.quad call, reset
 	.quad call, here
 	.quad fetch
@@ -899,10 +900,11 @@ colon:
 
 semicolon:
 	.quad call, apply
+	.quad call, tail
 	.quad lit, -1
 	.quad call, state
 	.quad store
-	.quad ret
+	.quad jump, commit
 
 tick: /* -- 0 | xt */
 	.quad call, word
