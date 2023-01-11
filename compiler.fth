@@ -119,3 +119,22 @@
 : postpone hidden postpone ' lit call postpone , postpone , ; hidden immediate
 
 : literal ( x -- ) lit lit postpone , postpone , ; immediate
+
+: interpret word? 'buffer b@
+  if
+    find dup
+    if
+      cell + dup cell + b@ f-immediate and
+      if @ execute interpret tail then
+      @ dup code-start code-end within not
+      if lit call postpone , then
+      postpone , interpret tail
+    then
+    drop 'buffer string number
+    if
+      drop reset state @ not
+      if last @ @ last ! then
+      -1 state ! 'buffer string type char ? emit tail
+    then
+    postpone literal interpret tail
+  then ;
