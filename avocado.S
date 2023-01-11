@@ -431,6 +431,18 @@ string: /* addr1 -- addr2 u */
 	.quad bfetch
 	.quad ret
 
+flush:
+	.quad lit, STDOUT
+	.quad lit, output
+	.quad call, string
+	.quad lit, SYS_WRITE
+	.quad syscall
+	.quad drop
+	.quad lit, 0
+	.quad lit, output
+	.quad bstore
+	.quad ret
+
 bye:
 	.quad call, flush
 	.quad lit, 0
@@ -454,18 +466,6 @@ accept:
 	.quad lit, input+1
 	.quad call, mark
 	.quad store
-	.quad ret
-
-flush:
-	.quad lit, STDOUT
-	.quad lit, output
-	.quad call, string
-	.quad lit, SYS_WRITE
-	.quad syscall
-	.quad drop
-	.quad lit, 0
-	.quad lit, output
-	.quad bstore
 	.quad ret
 
 keyq: /* -- bool */
@@ -1094,10 +1094,10 @@ DEFINE head_less,        uless,       "u<"
 DEFINE head_uless,       within,      "within"
 DEFINE head_within,      aligned,     "aligned"
 DEFINE head_aligned,     string,      "string"
-DEFINE head_string,      bye,         "bye"
+DEFINE head_string,      flush,       "flush"
+DEFINE head_flush,       bye,         "bye"
 DEFINE head_bye,         accept,      "accept"
-DEFINE head_accept,      flush,       "flush"
-DEFINE head_flush,       keyq,        "key?"
+DEFINE head_accept,      keyq,        "key?"
 DEFINE head_keyq,        key,         "key"
 DEFINE head_key,         advance,     "advance"
 DEFINE head_advance,     emit,        "emit"

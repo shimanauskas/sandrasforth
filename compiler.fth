@@ -18,12 +18,12 @@
 
 : string ( addr1 -- addr2 u ) dup push 1+ pop b@ ;
 
+: flush stdout 'output string sys-write syscall drop 0 'output b! ;
+
 : bye flush 0 dup dup sys-exit syscall ( We never return. )
 
 : accept stdin [ 'input 1+ ] literal 255 sys-read syscall dup ?jump ' bye ,
   'input b! [ 'input 1+ ] literal mark ! ;
-
-: flush stdout 'output string sys-write syscall drop 0 'output b! ;
 
 : key? ( -- bool ) mark @ 'input string + u< ;
 : key  ( -- char ) mark @ b@ ;
