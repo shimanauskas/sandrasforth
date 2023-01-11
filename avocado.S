@@ -294,6 +294,14 @@ sys_exit: /* -- x */
 	.quad lit, SYS_EXIT
 	.quad jump, literal
 
+code_start: /* -- addr */
+	.quad lit, START
+	.quad jump, literal
+
+code_end: /* -- addr */
+	.quad lit, end
+	.quad jump, literal
+
 tickinput: /* -- addr */
 	.quad lit, input
 	.quad jump, literal
@@ -1061,7 +1069,9 @@ DEFINE head_f_hidden,    f_immediate, "f-immediate", F_IMMEDIATE
 DEFINE head_f_immediate, sys_read,    "sys-read",    F_IMMEDIATE
 DEFINE head_sys_read,    sys_write,   "sys-write",   F_IMMEDIATE
 DEFINE head_sys_write,   sys_exit,    "sys-exit",    F_IMMEDIATE
-DEFINE head_sys_exit,    tickinput,   "'input",      F_IMMEDIATE
+DEFINE head_sys_exit,    code_start,  "code-start",  F_IMMEDIATE
+DEFINE head_code_start,  code_end,    "code-end",    F_IMMEDIATE
+DEFINE head_code_end,    tickinput,   "'input",      F_IMMEDIATE
 DEFINE head_tickinput,   tickoutput,  "'output",     F_IMMEDIATE
 DEFINE head_tickoutput,  tickbuffer,  "'buffer",     F_IMMEDIATE
 DEFINE head_tickbuffer,  tickcode,    "'code",       F_IMMEDIATE
