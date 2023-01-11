@@ -86,11 +86,7 @@
   until ;
 
 : bmove ( addr1 addr2 u -- )
-  begin
-    dup
-  if
-    push over b@ over b! push 1+ pop 1+ pop 1-
-  repeat
+  begin dup if push over b@ over b! push 1+ pop 1+ pop 1- repeat
   nip nip drop ;
 
 : collision top @ head @ u< not
