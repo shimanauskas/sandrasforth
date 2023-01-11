@@ -327,7 +327,7 @@ mark: /* -- addr */
 	.quad ret
 
 state: /* -- addr */
-	.quad var, -1
+	.quad var, 0
 	.quad ret
 
 here: /* -- addr */
@@ -876,6 +876,7 @@ reset:
 apply:
 	.quad call, state
 	.quad fetch
+	.quad not
 
 	.quad qjump, commit
 
@@ -901,7 +902,7 @@ colon:
 	.quad fetch
 	.quad call, last
 	.quad store
-	.quad lit, 0
+	.quad lit, -1
 	.quad call, state
 	.quad store
 	.quad ret
@@ -909,7 +910,7 @@ colon:
 semicolon:
 	.quad call, apply
 	.quad call, tail
-	.quad lit, -1
+	.quad lit, 0
 	.quad call, state
 	.quad store
 	.quad jump, commit
@@ -995,7 +996,6 @@ interpret:
 	.quad call, reset
 	.quad call, state
 	.quad fetch
-	.quad not
 
 	.quad qjump, 1f
 
@@ -1006,7 +1006,7 @@ interpret:
 	.quad store
 
 1:
-	.quad lit, -1
+	.quad lit, 0
 	.quad call, state
 	.quad store
 	.quad lit, buffer
