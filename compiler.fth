@@ -42,7 +42,7 @@
 : word? skip 0 'buffer b! key?
   if
     begin
-      key dup char ! u< not 'buffer b@ f-length u< and
+      key dup char ! u< not 'buffer b@ 63 u< and
     if
       accumulate advance key? not [ over ] until accept
     repeat
@@ -78,7 +78,7 @@
   begin
     @ dup 0= over
     if
-      over nfa + b@ [ f-immediate not ] literal and 'buffer b@ =
+      over nfa + b@ 127 and 'buffer b@ =
       if
         drop dup [ nfa 1+ ] literal + 'buffer string same?
       then
@@ -120,7 +120,7 @@
   if
     find dup
     if
-      cell + dup cell + b@ f-immediate and
+      cell + dup cell + b@ 128 and
       if @ execute interpret tail then
       @ dup code-start code-end within not
       if lit call postpone , then

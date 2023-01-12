@@ -1,5 +1,5 @@
-: immediate last @ nfa + dup b@ f-immediate xor over b! drop ; immediate
-: hidden    last @ nfa + dup b@ f-hidden    xor over b! drop ; immediate
+: immediate last @ nfa + dup b@ 128 xor over b! drop ; immediate
+: hidden    last @ nfa + dup b@  64 xor over b! drop ; immediate
 
 : [ commit 0 state ! ; immediate
 : ] apply -1 state ! ; immediate
