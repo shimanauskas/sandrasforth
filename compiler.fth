@@ -67,11 +67,7 @@
   push 1+ pop 1- natural push negate pop ;
 
 : same? ( addr1 addr2 u -- bool )
-  begin
-    dup push push over b@ over b@ = pop and
-  if
-    push 1+ pop 1+ pop 1-
-  repeat
+  begin dup push push over b@ over b@ = pop and if push 1+ pop 1+ pop 1- repeat
   pop nip nip 0= ;
 
 : find ( -- 0 | addr ) last
@@ -79,9 +75,7 @@
     @ dup 0= over
     if
       over nfa + b@ 127 and 'buffer b@ =
-      if
-        drop dup [ nfa 1+ ] literal + 'buffer string same?
-      then
+      if drop dup [ nfa 1+ ] literal + 'buffer string same? then
     then
   until ;
 
