@@ -20,14 +20,14 @@
 
 #ifdef __linux__
 	#define START     _start
-	#define SYS_READ  0
-	#define SYS_WRITE 1
-	#define SYS_EXIT  60
+	#define SYS_read  0
+	#define SYS_write 1
+	#define SYS_exit  60
 #elif __APPLE__
 	#define START      start
-	#define SYS_READ  0x2000003
-	#define SYS_WRITE 0x2000004
-	#define SYS_EXIT  0x2000001
+	#define SYS_read  0x2000003
+	#define SYS_write 0x2000004
+	#define SYS_exit  0x2000001
 #else
 	#error Unsupported platform.
 #endif
@@ -269,15 +269,15 @@ nfa: /* -- u */
 	.quad jump, literal
 
 sys_read: /* -- x */
-	.quad lit, SYS_READ
+	.quad lit, SYS_read
 	.quad jump, literal
 
 sys_write: /* -- x */
-	.quad lit, SYS_WRITE
+	.quad lit, SYS_write
 	.quad jump, literal
 
 sys_exit: /* -- x */
-	.quad lit, SYS_EXIT
+	.quad lit, SYS_exit
 	.quad jump, literal
 
 code_start: /* -- addr */
@@ -421,7 +421,7 @@ flush:
 	.quad lit, STDOUT
 	.quad lit, output
 	.quad call, string
-	.quad lit, SYS_WRITE
+	.quad lit, SYS_write
 	.quad syscall
 	.quad drop
 	.quad lit, 0
@@ -434,14 +434,14 @@ bye:
 	.quad lit, 0
 	.quad dup
 	.quad dup
-	.quad lit, SYS_EXIT
+	.quad lit, SYS_exit
 	.quad syscall
 
 accept:
 	.quad lit, STDIN
 	.quad lit, input+1
 	.quad lit, 0xFF
-	.quad lit, SYS_READ
+	.quad lit, SYS_read
 	.quad syscall
 	.quad dup
 
