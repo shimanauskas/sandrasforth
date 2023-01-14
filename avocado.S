@@ -979,22 +979,6 @@ interpret:
 	.quad qjump, 0f
 
 	.quad drop
-	.quad call, reset
-	.quad call, state
-	.quad fetch
-
-	.quad qjump, 1f
-
-	.quad call, last
-	.quad fetch
-	.quad fetch
-	.quad call, last
-	.quad store
-
-1:
-	.quad lit, 0
-	.quad call, state
-	.quad store
 	.quad lit, buffer
 	.quad call, string
 	.quad call, type

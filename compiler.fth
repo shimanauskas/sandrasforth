@@ -122,9 +122,7 @@
     then
     drop 'buffer string number
     if
-      drop reset state @
-      if last @ @ last ! then
-      0 state ! 'buffer string type char ? emit tail
+      drop 'buffer string type char ? emit tail
     then
     postpone literal interpret tail
   then ;
