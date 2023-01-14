@@ -988,7 +988,6 @@ interpret:
 	.quad ret
 
 main:
-	.quad call, accept
 	.quad call, interpret
 	.quad call, flush
 	.quad jump, main
