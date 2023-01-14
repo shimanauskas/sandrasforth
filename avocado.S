@@ -32,9 +32,6 @@
 	#error Unsupported platform.
 #endif
 
-#define STDIN  0
-#define STDOUT 1
-
 #define CELL 8
 #define NFA  CELL*2
 
@@ -418,7 +415,7 @@ string: /* addr1 -- addr2 u */
 	.quad ret
 
 flush:
-	.quad lit, STDOUT
+	.quad lit, 1
 	.quad lit, output
 	.quad call, string
 	.quad lit, SYS_write
@@ -438,7 +435,7 @@ bye:
 	.quad syscall
 
 accept:
-	.quad lit, STDIN
+	.quad lit, 0
 	.quad lit, input+1
 	.quad lit, 0xFF
 	.quad lit, SYS_read

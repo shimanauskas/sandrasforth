@@ -1,6 +1,3 @@
-0 constant stdin
-1 constant stdout
-
 : bool ( x -- bool ) if -1 tail then 0 ;
 
 : 0= ( x -- bool ) bool not ;
@@ -18,11 +15,11 @@
 
 : string ( addr1 -- addr2 u ) dup push 1+ pop b@ ;
 
-: flush stdout 'output string sys-write syscall drop 0 'output b! ;
+: flush 1 'output string sys-write syscall drop 0 'output b! ;
 
 : bye flush 0 dup dup sys-exit syscall ( We never return. )
 
-: accept stdin [ 'input 1+ ] literal 255 sys-read syscall dup ' bye until
+: accept 0 [ 'input 1+ ] literal 255 sys-read syscall dup ' bye until
   'input b! [ 'input 1+ ] literal mark ! ;
 
 : key? ( -- bool ) mark @ 'input string + u< ;
