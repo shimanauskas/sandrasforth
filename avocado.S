@@ -852,13 +852,6 @@ commit:
 	.quad store
 	.quad ret
 
-reset:
-	.quad call, here
-	.quad fetch
-	.quad call, top
-	.quad store
-	.quad ret
-
 apply:
 	.quad call, state
 	.quad fetch
@@ -868,9 +861,11 @@ apply:
 
 	.quad lit, ret
 	.quad call, comma
-	.quad call, reset
 	.quad call, here
 	.quad fetch
+	.quad dup
+	.quad call, top
+	.quad store
 	.quad execute
 	.quad ret
 
@@ -1085,8 +1080,7 @@ DEFINE head_save,       comma,      ",",          IMMEDIATE
 DEFINE head_comma,      link,       "link"
 DEFINE head_link,       tail,       "tail",       IMMEDIATE
 DEFINE head_tail,       commit,     "commit"
-DEFINE head_commit,     reset,      "reset"
-DEFINE head_reset,      apply,      "apply"
+DEFINE head_commit,     apply,      "apply"
 DEFINE head_apply,      colon,      ":",          IMMEDIATE
 DEFINE head_colon,      semicolon,  ";",          IMMEDIATE
 DEFINE head_semicolon,  tick,       "'",          IMMEDIATE
