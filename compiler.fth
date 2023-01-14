@@ -124,3 +124,5 @@
     if drop 'buffer string type char ? emit tail then
     postpone literal interpret tail
   then ;
+
+: main interpret flush main ; immediate main
