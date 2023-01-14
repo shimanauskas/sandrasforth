@@ -121,8 +121,6 @@
       postpone , interpret tail
     then
     drop 'buffer string number
-    if
-      drop 'buffer string type char ? emit tail
-    then
+    if drop 'buffer string type char ? emit tail then
     postpone literal interpret tail
   then ;
