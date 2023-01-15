@@ -19,7 +19,7 @@
 : char word [ 'buffer 1+ ] literal b@ postpone literal ; immediate
 
 : ( begin word? 'buffer b@ 1 =
-  [ 'buffer 1+ ] literal b@ char ) = and until ; immediate
+  [ 'buffer 1+ ] literal b@ 41 = and until ; immediate
 
 : " ( -- addr ) begin skip key? until 0 'buffer b!
   begin
