@@ -19,6 +19,13 @@
 : ( begin word? 'buffer b@ 1 = [ 'buffer 1+ ] literal b@ 41 = and until ;
   immediate
 
+: lshift ( x1 u -- x2 ) begin dup if push 2* pop 1- repeat drop ;
+: rshift ( x1 u -- x2 ) begin dup if push 2/ pop 1- repeat drop ;
+
+: cells ( n1 -- n2 ) cell * ;
+
+: space 32 emit ;
+
 : char ( -- char ) word [ 'buffer 1+ ] literal b@ postpone literal ; immediate
 
 : " ( -- addr ) begin skip key? until 0 'buffer b!
@@ -44,10 +51,3 @@
 : bina  2 base ! ; immediate
 : deci 10 base ! ; immediate
 : hexa 16 base ! ; immediate
-
-: lshift ( x1 u -- x2 ) begin dup if push 2* pop 1- repeat drop ;
-: rshift ( x1 u -- x2 ) begin dup if push 2/ pop 1- repeat drop ;
-
-: space 32 emit ;
-
-: cells ( n1 -- n2 ) cell * ;
