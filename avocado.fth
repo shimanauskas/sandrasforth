@@ -16,10 +16,10 @@
 : constant postpone : postpone literal lit call postpone ,
   ' literal literal postpone , postpone ; postpone immediate ; immediate
 
-: char word [ 'buffer 1+ ] literal b@ postpone literal ; immediate
-
 : ( begin word? 'buffer b@ 1 =
   [ 'buffer 1+ ] literal b@ 41 = and until ; immediate
+
+: char ( -- char ) word [ 'buffer 1+ ] literal b@ postpone literal ; immediate
 
 : " ( -- addr ) begin skip key? until 0 'buffer b!
   begin
