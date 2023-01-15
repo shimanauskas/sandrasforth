@@ -406,6 +406,60 @@ string: /* addr1 -- addr2 u */
 	.quad bfetch
 	.quad ret
 
+bmove: /* addr1 addr2 u -- */
+	.quad dup
+
+	.quad qjump, 0f
+
+	.quad push
+	.quad over
+	.quad bfetch
+	.quad over
+	.quad bstore
+	.quad push
+	.quad inc
+	.quad pop
+	.quad inc
+	.quad pop
+	.quad dec
+
+	.quad jump, bmove
+0:
+
+	.quad nip
+	.quad nip
+	.quad drop
+	.quad ret
+
+sameq: /* addr1 addr2 u -- bool */
+	.quad dup
+	.quad push
+	.quad push
+	.quad over
+	.quad bfetch
+	.quad over
+	.quad bfetch
+	.quad call, equals
+	.quad pop
+	.quad and
+
+	.quad qjump, 0f
+
+	.quad push
+	.quad inc
+	.quad pop
+	.quad inc
+	.quad pop
+	.quad dec
+
+	.quad jump, sameq
+0:
+
+	.quad pop
+	.quad nip
+	.quad nip
+	.quad jump, zequals
+
 flush:
 	.quad lit, 1
 	.quad lit, output
@@ -664,35 +718,6 @@ number: /* addr u1 -- n u2 */
 	.quad pop
 	.quad ret
 
-sameq: /* addr1 addr2 u -- bool */
-	.quad dup
-	.quad push
-	.quad push
-	.quad over
-	.quad bfetch
-	.quad over
-	.quad bfetch
-	.quad call, equals
-	.quad pop
-	.quad and
-
-	.quad qjump, 0f
-
-	.quad push
-	.quad inc
-	.quad pop
-	.quad inc
-	.quad pop
-	.quad dec
-
-	.quad jump, sameq
-0:
-
-	.quad pop
-	.quad nip
-	.quad nip
-	.quad jump, zequals
-
 find: /* -- 0 | addr */
 	.quad call, last
 
@@ -727,31 +752,6 @@ find: /* -- 0 | addr */
 1:
 	.quad qjump, 0b
 
-	.quad ret
-
-bmove: /* addr1 addr2 u -- */
-	.quad dup
-
-	.quad qjump, 0f
-
-	.quad push
-	.quad over
-	.quad bfetch
-	.quad over
-	.quad bstore
-	.quad push
-	.quad inc
-	.quad pop
-	.quad inc
-	.quad pop
-	.quad dec
-
-	.quad jump, bmove
-0:
-
-	.quad nip
-	.quad nip
-	.quad drop
 	.quad ret
 
 collision:
@@ -1042,7 +1042,9 @@ DEFINE head_less,       uless,      "u<"
 DEFINE head_uless,      within,     "within"
 DEFINE head_within,     aligned,    "aligned"
 DEFINE head_aligned,    string,     "string"
-DEFINE head_string,     flush,      "flush"
+DEFINE head_string,     bmove,      "bmove"
+DEFINE head_bmove,      sameq,      "same?"
+DEFINE head_sameq,      flush,      "flush"
 DEFINE head_flush,      bye,        "bye"
 DEFINE head_bye,        accept,     "accept"
 DEFINE head_accept,     keyq,       "key?"
@@ -1057,10 +1059,8 @@ DEFINE head_wordq,      word,       "word"
 DEFINE head_word,       digitq,     "digit?"
 DEFINE head_digitq,     natural,    "natural"
 DEFINE head_natural,    number,     "number"
-DEFINE head_number,     sameq,      "same?"
-DEFINE head_sameq,      find,       "find"
-DEFINE head_find,       bmove,      "bmove"
-DEFINE head_bmove,      collision,  "collision"
+DEFINE head_number,     find,       "find"
+DEFINE head_find,       collision,  "collision"
 DEFINE head_collision,  save,       "save"
 DEFINE head_save,       comma,      ",",          IMMEDIATE
 DEFINE head_comma,      link,       "link"

@@ -15,6 +15,14 @@
 
 : string ( addr1 -- addr2 u ) dup push 1+ pop b@ ;
 
+: bmove ( addr1 addr2 u -- )
+  begin dup if push over b@ over b! push 1+ pop 1+ pop 1- repeat
+  nip nip drop ;
+
+: same? ( addr1 addr2 u -- bool )
+  begin dup push push over b@ over b@ = pop and if push 1+ pop 1+ pop 1- repeat
+  pop nip nip 0= ;
+
 : flush 1 'output string sys-write syscall drop 0 'output b! ;
 
 : bye flush 0 dup dup sys-exit syscall ( We never return. )
@@ -63,10 +71,6 @@
 : number ( addr u1 -- u2 u3 ) over b@ char - = ' natural until
   push 1+ pop 1- natural push negate pop ;
 
-: same? ( addr1 addr2 u -- bool )
-  begin dup push push over b@ over b@ = pop and if push 1+ pop 1+ pop 1- repeat
-  pop nip nip 0= ;
-
 : find ( -- 0 | addr ) last
   begin
     @ dup 0= over
@@ -75,10 +79,6 @@
       if drop dup [ nfa 1+ ] literal + 'buffer string same? then
     then
   until ;
-
-: bmove ( addr1 addr2 u -- )
-  begin dup if push over b@ over b! push 1+ pop 1+ pop 1- repeat
-  nip nip drop ;
 
 : collision top @ head @ u< not
   if [ last @ nfa + ] literal string type bye tail then ;
