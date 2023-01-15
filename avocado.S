@@ -297,14 +297,6 @@ tickbuffer: /* -- addr */
 	.quad lit, buffer
 	.quad jump, literal
 
-tickcode: /* -- addr */
-	.quad lit, code
-	.quad jump, literal
-
-tickvocab: /* -- addr */
-	.quad lit, vocab
-	.quad jump, literal
-
 mark: /* -- addr */
 	.quad var, input+1
 	.quad ret
@@ -1032,10 +1024,8 @@ DEFINE head_code_start, code_end,   "code-end",   IMMEDIATE
 DEFINE head_code_end,   tickinput,  "'input",     IMMEDIATE
 DEFINE head_tickinput,  tickoutput, "'output",    IMMEDIATE
 DEFINE head_tickoutput, tickbuffer, "'buffer",    IMMEDIATE
-DEFINE head_tickbuffer, tickcode,   "'code",      IMMEDIATE
-DEFINE head_tickcode,   tickvocab,  "'vocab",     IMMEDIATE
 
-DEFINE head_tickvocab,  mark,       "mark"
+DEFINE head_tickbuffer, mark,       "mark"
 DEFINE head_mark,       state,      "state"
 DEFINE head_state,      here,       "here"
 DEFINE head_here,       top,        "top"
