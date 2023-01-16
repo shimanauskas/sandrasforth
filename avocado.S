@@ -205,7 +205,7 @@ sub: /* n1|u1 n2|u2 -- n3|u3 */
 mul: /* n1 n2 -- n3 */
 	movq %rax, %rcx
 	DROP
-	mulq %rcx
+	imulq %rcx
 	NEXT
 
 ummul: /* u1 u2 -- ud */
