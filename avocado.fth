@@ -28,7 +28,7 @@
 
 : char ( -- char ) word [ 'buffer 1+ ] literal b@ postpone literal ; immediate
 
-: " ( -- addr ) begin skip key? until 0 'buffer b!
+: " ( -- addr ) skip 0 'buffer b!
   begin
     key dup char " xor 'buffer b@ 255 u< and
   if

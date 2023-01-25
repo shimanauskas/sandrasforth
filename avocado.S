@@ -577,17 +577,19 @@ skip:
 	.quad call, accept
 
 0:
-	.quad call, keyq
 	.quad call, key
 	.quad lit, '!'
 	.quad call, uless
+	.quad call, key
+	.quad lit, 10
+	.quad xor
 	.quad and
 
 	.quad qjump, 0f
 
 	.quad call, advance
 
-	.quad jump, 0b
+	.quad jump, skip
 0:
 
 	.quad ret
@@ -597,7 +599,9 @@ wordq:
 	.quad lit, 0
 	.quad lit, buffer
 	.quad bstore
-	.quad call, keyq
+	.quad call, key
+	.quad lit, 10
+	.quad xor
 
 	.quad qjump, 1f
 
@@ -978,6 +982,8 @@ interpret:
 
 main:
 	.quad call, interpret
+	.quad call, apply
+	.quad call, advance
 	.quad call, flush
 	.quad jump, main
 
@@ -1073,7 +1079,7 @@ DEFINE head_semicolon,  tick,       "'",          IMMEDIATE
 DEFINE head_tick,       postpone,   "postpone",   IMMEDIATE
 DEFINE head_postpone,   literal,    "literal",    IMMEDIATE
 DEFINE head_literal,    interpret,  "interpret"
-DEFINE head_interpret,  main,       "main",       IMMEDIATE
+DEFINE head_interpret,  main,       "main"
 
 .bss
 

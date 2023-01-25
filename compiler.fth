@@ -42,9 +42,14 @@
 
 : accumulate ( char -- ) 'buffer string dup 1+ 'buffer b! + b! ;
 
-: skip key? not if accept then begin key? key char ! u< and if advance repeat ;
+: skip
+  begin
+    key? not if accept then key char ! u< key 10 xor and
+  if
+    advance
+  repeat ;
 
-: word? skip 0 'buffer b! key?
+: word? skip 0 'buffer b! key 10 xor
   if
     begin
       key dup char ! u< not 'buffer b@ 63 u< and
@@ -122,4 +127,4 @@
     postpone literal interpret tail
   then ;
 
-: main interpret flush main ; immediate main
+: main interpret apply advance flush main ; main
