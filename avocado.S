@@ -640,8 +640,14 @@ word:
 	.quad call, wordq
 	.quad lit, buffer
 	.quad bfetch
+	.quad call, zequals
 
-	.quad qjump, word
+	.quad qjump, 0f
+
+	.quad call, advance
+
+	.quad jump, word
+0:
 
 	.quad ret
 

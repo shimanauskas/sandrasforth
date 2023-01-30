@@ -16,7 +16,7 @@
 : constant postpone : postpone literal lit call postpone ,
   ' literal literal postpone , postpone ; postpone immediate ; immediate
 
-: ( begin word? 'buffer b@ 1 = [ 'buffer 1+ ] literal b@ 41 = and until ;
+: ( begin word 'buffer b@ 1 = [ 'buffer 1+ ] literal b@ 41 = and until ;
   immediate
 
 : lshift ( x1 u -- x2 ) begin dup if push 2* pop 1- repeat drop ;

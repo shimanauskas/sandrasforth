@@ -59,7 +59,7 @@
     drop
   then ;
 
-: word begin word? 'buffer b@ until ;
+: word begin word? 'buffer b@ 0= if advance repeat ;
 
 : digit? ( char -- u bool ) char 0 - 9 over <
   if [ char A char 0 - 10 - ] literal - dup 10 < or then
