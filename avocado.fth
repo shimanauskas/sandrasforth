@@ -40,7 +40,7 @@
 : hold ( char -- ) 'buffer @ 1- dup 'buffer ! b! ;
 
 : digit ( u -- char ) dup 10 u<
-  if char 0 + tail then [ char A 10 - ] literal + ;
+  if char 0 + ret then [ char A 10 - ] literal + ;
 
 : u. ( u -- ) [ 'buffer 256 + ] literal 'buffer !
   begin 0 base @ um/mod push digit hold pop dup 0= until drop

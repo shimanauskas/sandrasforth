@@ -259,43 +259,53 @@ end:
 
 cell: /* -- u */
 	.quad lit, CELL
-	.quad jump, literal
+	.quad call, literal
+	.quad ret
 
 nfa: /* -- u */
 	.quad lit, NFA
-	.quad jump, literal
+	.quad call, literal
+	.quad ret
 
 sys_read: /* -- x */
 	.quad lit, SYS_read
-	.quad jump, literal
+	.quad call, literal
+	.quad ret
 
 sys_write: /* -- x */
 	.quad lit, SYS_write
-	.quad jump, literal
+	.quad call, literal
+	.quad ret
 
 sys_exit: /* -- x */
 	.quad lit, SYS_exit
-	.quad jump, literal
+	.quad call, literal
+	.quad ret
 
 code_start: /* -- addr */
 	.quad lit, START
-	.quad jump, literal
+	.quad call, literal
+	.quad ret
 
 code_end: /* -- addr */
 	.quad lit, end
-	.quad jump, literal
+	.quad call, literal
+	.quad ret
 
 tickinput: /* -- addr */
 	.quad lit, input
-	.quad jump, literal
+	.quad call, literal
+	.quad ret
 
 tickoutput: /* -- addr */
 	.quad lit, output
-	.quad jump, literal
+	.quad call, literal
+	.quad ret
 
 tickbuffer: /* -- addr */
 	.quad lit, buffer
-	.quad jump, literal
+	.quad call, literal
+	.quad ret
 
 mark: /* -- addr */
 	.quad var, input+1
@@ -342,12 +352,14 @@ zequals: /* x -- bool */
 
 equals: /* x1 x2 -- bool */
 	.quad xor
-	.quad jump, zequals
+	.quad call, zequals
+	.quad ret
 
 zless: /* n - bool */
 	.quad lit, 1<<(CELL*8-1)
 	.quad and
-	.quad jump, bool
+	.quad call, bool
+	.quad ret
 
 less: /* n1 n2 -- bool */
 	.quad over
@@ -358,11 +370,13 @@ less: /* n1 n2 -- bool */
 	.quad qjump, 0f
 
 	.quad drop
-	.quad jump, zless
+	.quad call, zless
+	.quad ret
 
 0:
 	.quad sub
-	.quad jump, zless
+	.quad call, zless
+	.quad ret
 
 uless: /* u1 u2 -- bool */
 	.quad over
@@ -373,11 +387,13 @@ uless: /* u1 u2 -- bool */
 	.quad qjump, 0f
 
 	.quad nip
-	.quad jump, zless
+	.quad call, zless
+	.quad ret
 
 0:
 	.quad sub
-	.quad jump, zless
+	.quad call, zless
+	.quad ret
 
 within: /* u1 u2 u3 -- bool */
 	.quad push
@@ -458,7 +474,8 @@ sameq: /* addr1 addr2 u -- bool */
 	.quad pop
 	.quad nip
 	.quad nip
-	.quad jump, zequals
+	.quad call, zequals
+	.quad ret
 
 flush:
 	.quad lit, 1
@@ -503,7 +520,8 @@ keyq: /* -- bool */
 	.quad lit, input
 	.quad call, string
 	.quad add
-	.quad jump, uless
+	.quad call, uless
+	.quad ret
 
 key: /* -- char */
 	.quad call, mark
@@ -671,7 +689,8 @@ digitq: /* char -- u bool */
 	.quad dup
 	.quad call, base
 	.quad fetch
-	.quad jump, uless
+	.quad call, uless
+	.quad ret
 
 natural: /* addr u1 -- u2 u3 */
 	.quad push
@@ -777,7 +796,7 @@ collision:
 	.quad lit, head_collision+NFA
 	.quad call, string
 	.quad call, type
-	.quad jump, bye
+	.quad call, bye
 
 0:
 	.quad ret
@@ -798,7 +817,8 @@ save:
 	.quad store
 	.quad call, collision
 	.quad pop
-	.quad jump, bmove
+	.quad call, bmove
+	.quad ret
 
 comma: /* x -- */
 	.quad call, top
@@ -809,7 +829,8 @@ comma: /* x -- */
 	.quad call, top
 	.quad store
 	.quad store
-	.quad jump, collision
+	.quad call, collision
+	.quad ret
 
 link: /* x -- */
 	.quad call, head
@@ -820,29 +841,8 @@ link: /* x -- */
 	.quad call, head
 	.quad store
 	.quad store
-	.quad jump, collision
-
-tail:
-	.quad lit, jump
-	.quad call, top
-	.quad fetch
-	.quad lit, CELL*2
-	.quad sub
-	.quad dup
-	.quad fetch
-	.quad lit, call
-	.quad call, equals
-
-	.quad qjump, 0f
-
-	.quad store
+	.quad call, collision
 	.quad ret
-
-0:
-	.quad nip
-	.quad drop
-	.quad lit, ret
-	.quad jump, comma
 
 commit:
 	.quad call, top
@@ -888,12 +888,13 @@ colon:
 	.quad ret
 
 semicolon:
-	.quad call, apply
-	.quad call, tail
+	.quad lit, ret
+	.quad call, comma
+	.quad call, commit
 	.quad lit, 0
 	.quad call, state
 	.quad store
-	.quad jump, commit
+	.quad ret
 
 tick: /* -- 0 | xt */
 	.quad call, word
@@ -913,12 +914,14 @@ postpone:
 	.quad call, tick
 	.quad lit, call
 	.quad call, comma
-	.quad jump, comma
+	.quad call, comma
+	.quad ret
 
 literal: /* x -- */
 	.quad lit, lit
 	.quad call, comma
-	.quad jump, comma
+	.quad call, comma
+	.quad ret
 
 interpret:
 	.quad call, wordq
@@ -977,7 +980,8 @@ interpret:
 	.quad call, string
 	.quad call, type
 	.quad lit, '?'
-	.quad jump, emit
+	.quad call, emit
+	.quad ret
 
 0:
 	.quad call, literal
@@ -1076,8 +1080,7 @@ DEFINE head_find,       collision,  "collision"
 DEFINE head_collision,  save,       "save"
 DEFINE head_save,       comma,      ",",          IMMEDIATE
 DEFINE head_comma,      link,       "link"
-DEFINE head_link,       tail,       "tail",       IMMEDIATE
-DEFINE head_tail,       commit,     "commit"
+DEFINE head_link,       commit,     "commit"
 DEFINE head_commit,     apply,      "apply"
 DEFINE head_apply,      colon,      ":",          IMMEDIATE
 DEFINE head_colon,      semicolon,  ";",          IMMEDIATE

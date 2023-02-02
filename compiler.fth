@@ -1,4 +1,4 @@
-: bool ( x -- bool ) if -1 tail then 0 ;
+: bool ( x -- bool ) if -1 ret then 0 ;
 
 : 0= ( x -- bool ) bool not ;
 
@@ -6,8 +6,8 @@
 
 : 0< ( n -- bool ) [ 1 8 cells 1- lshift ] literal and bool ;
 
-:  < ( n1 n2 -- bool ) over over xor 0< if drop 0< tail then - 0< ;
-: u< ( u1 u2 -- bool ) over over xor 0< if nip  0< tail then - 0< ;
+:  < ( n1 n2 -- bool ) over over xor 0< if drop 0< ret then - 0< ;
+: u< ( u1 u2 -- bool ) over over xor 0< if nip  0< ret then - 0< ;
 
 : whithin ( u1 u2 u3 -- bool ) push over push u< not pop pop u< and ;
 
@@ -86,16 +86,13 @@
   until ;
 
 : collision top @ head @ u< not
-  if [ last @ nfa + ] literal string type bye tail then ;
+  if [ last @ nfa + ] literal string type bye then ;
 
 : save 'buffer head @ over b@ 1+ dup push aligned - dup head ! collision pop
   bmove ;
 
 : ,    ( x -- ) top  @ dup cell + top  ! ! collision ; immediate
 : link ( x -- ) head @ cell - dup head ! ! collision ;
-
-: tail hidden lit jump top @ [ 2 cells ] literal - dup @ lit call =
-  if ! tail then nip drop lit ret postpone , ; hidden immediate
 
 : commit top @ here ! ;
 
@@ -104,7 +101,7 @@
 
 : : apply word save here @ link last @ link head @ last ! -1 state ! ; immediate
 
-: ; hidden apply postpone tail 0 state ! commit ; hidden immediate
+: ; hidden lit ret postpone , commit 0 state ! ; hidden immediate
 
 : ' ( -- 0 | xt ) word find dup if cell + @ then ; immediate
 
@@ -117,14 +114,14 @@
     find dup
     if
       cell + dup cell + b@ 128 and
-      if @ execute interpret tail then
+      if @ execute jump ' interpret , then
       @ dup code-start code-end within not
       if lit call postpone , then
-      postpone , interpret tail
+      postpone , jump ' interpret ,
     then
     drop 'buffer string number
-    if drop 'buffer string type char ? emit tail then
-    postpone literal interpret tail
+    if drop 'buffer string type char ? emit ret then
+    postpone literal jump ' interpret ,
   then ;
 
-: main interpret apply advance flush main ; main
+: main interpret apply advance flush jump ' main , [ main ]
