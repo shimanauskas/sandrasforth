@@ -259,52 +259,42 @@ end:
 
 cell: /* -- u */
 	.quad lit, CELL
-	.quad call, literal
 	.quad ret
 
 nfa: /* -- u */
 	.quad lit, NFA
-	.quad call, literal
 	.quad ret
 
 sys_read: /* -- x */
 	.quad lit, SYS_read
-	.quad call, literal
 	.quad ret
 
 sys_write: /* -- x */
 	.quad lit, SYS_write
-	.quad call, literal
 	.quad ret
 
 sys_exit: /* -- x */
 	.quad lit, SYS_exit
-	.quad call, literal
 	.quad ret
 
 code_start: /* -- addr */
 	.quad lit, START
-	.quad call, literal
 	.quad ret
 
 code_end: /* -- addr */
 	.quad lit, end
-	.quad call, literal
 	.quad ret
 
 tickinput: /* -- addr */
 	.quad lit, input
-	.quad call, literal
 	.quad ret
 
 tickoutput: /* -- addr */
 	.quad lit, output
-	.quad call, literal
 	.quad ret
 
 tickbuffer: /* -- addr */
 	.quad lit, buffer
-	.quad call, literal
 	.quad ret
 
 mark: /* -- addr */
@@ -1030,16 +1020,16 @@ DEFINE head_store,      bfetch,     "b@"
 DEFINE head_bfetch,     bstore,     "b!"
 DEFINE head_bstore,     syscall,    "syscall"
 
-DEFINE head_syscall,    cell,       "cell",       IMMEDIATE
-DEFINE head_cell,       nfa,        "nfa",        IMMEDIATE
-DEFINE head_nfa,        sys_read,   "sys-read",   IMMEDIATE
-DEFINE head_sys_read,   sys_write,  "sys-write",  IMMEDIATE
-DEFINE head_sys_write,  sys_exit,   "sys-exit",   IMMEDIATE
-DEFINE head_sys_exit,   code_start, "code-start", IMMEDIATE
-DEFINE head_code_start, code_end,   "code-end",   IMMEDIATE
-DEFINE head_code_end,   tickinput,  "'input",     IMMEDIATE
-DEFINE head_tickinput,  tickoutput, "'output",    IMMEDIATE
-DEFINE head_tickoutput, tickbuffer, "'buffer",    IMMEDIATE
+DEFINE head_syscall,    cell,       "cell"
+DEFINE head_cell,       nfa,        "nfa"
+DEFINE head_nfa,        sys_read,   "sys-read"
+DEFINE head_sys_read,   sys_write,  "sys-write"
+DEFINE head_sys_write,  sys_exit,   "sys-exit"
+DEFINE head_sys_exit,   code_start, "code-start"
+DEFINE head_code_start, code_end,   "code-end"
+DEFINE head_code_end,   tickinput,  "'input"
+DEFINE head_tickinput,  tickoutput, "'output"
+DEFINE head_tickoutput, tickbuffer, "'buffer"
 
 DEFINE head_tickbuffer, mark,       "mark"
 DEFINE head_mark,       state,      "state"
