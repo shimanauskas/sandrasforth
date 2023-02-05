@@ -35,4 +35,4 @@ Clean:
 
 Upon a word not found, Avocado outputs it, followed by a question mark. Continue from where the error occured.
 
-When threaded-code (growing upwards) and definition heads (growing downwards) collide, the word `collision` will be printed and Avocado will exit.
+When Avocado runs out of statically allocated memory, the word `collision` will be printed and Avocado will exit.

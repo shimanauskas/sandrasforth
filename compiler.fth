@@ -85,21 +85,21 @@
     then
   until ;
 
-: collision top @ head @ u< not
+: collision top @ 'guard u< not
   if [ last @ nfa + ] literal string type bye then ;
 
-: save 'buffer head @ over b@ 1+ dup push aligned - dup head ! collision pop
-  bmove ;
+: save 'buffer top @ over b@ 1+ dup aligned top @ + top ! collision
+  bmove commit ;
 
 : ,    ( x -- ) top  @ dup cell + top  ! ! collision ; immediate
-: link ( x -- ) head @ cell - dup head ! ! collision ;
 
 : commit top @ here ! ;
 
 : apply state @ not ' commit until
   lit ret postpone , here @ dup top ! execute ;
 
-: : apply word save here @ link last @ link head @ last ! -1 state ! ; immediate
+: : apply last @ top @ last ! postpone , top @ push 0 postpone ,
+  word save top @ pop ! -1 state ! ; immediate
 
 : ; hidden lit ret postpone , commit 0 state ! ; hidden immediate
 

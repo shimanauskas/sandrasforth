@@ -297,6 +297,10 @@ tickbuffer: /* -- addr */
 	.quad lit, buffer
 	.quad ret
 
+tickguard: /* -- addr */
+	.quad lit, guard
+	.quad ret
+
 mark: /* -- addr */
 	.quad var, input+1
 	.quad ret
@@ -311,10 +315,6 @@ here: /* -- addr */
 
 top: /* -- addr */
 	.quad var, code
-	.quad ret
-
-head: /* -- addr */
-	.quad var, vocab
 	.quad ret
 
 last: /* -- addr */
@@ -776,8 +776,7 @@ find: /* -- 0 | addr */
 collision:
 	.quad call, top
 	.quad fetch
-	.quad call, head
-	.quad fetch
+	.quad call, tickguard
 	.quad call, uless
 	.quad not
 
@@ -793,21 +792,21 @@ collision:
 
 save:
 	.quad lit, buffer
-	.quad call, head
+	.quad call, top
 	.quad fetch
 	.quad over
 	.quad bfetch
 	.quad inc
 	.quad dup
-	.quad push
 	.quad call, aligned
-	.quad sub
-	.quad dup
-	.quad call, head
+	.quad call, top
+	.quad fetch
+	.quad add
+	.quad call, top
 	.quad store
 	.quad call, collision
-	.quad pop
 	.quad call, bmove
+	.quad call, commit
 	.quad ret
 
 comma: /* x -- */
@@ -817,18 +816,6 @@ comma: /* x -- */
 	.quad lit, CELL
 	.quad add
 	.quad call, top
-	.quad store
-	.quad store
-	.quad call, collision
-	.quad ret
-
-link: /* x -- */
-	.quad call, head
-	.quad fetch
-	.quad lit, CELL
-	.quad sub
-	.quad dup
-	.quad call, head
 	.quad store
 	.quad store
 	.quad call, collision
@@ -860,17 +847,23 @@ apply:
 
 colon:
 	.quad call, apply
+	.quad call, last
+	.quad fetch
+	.quad call, top
+	.quad fetch
+	.quad call, last
+	.quad store
+	.quad call, comma
+	.quad call, top
+	.quad fetch
+	.quad push
+	.quad lit, 0
+	.quad call, comma
 	.quad call, word
 	.quad call, save
-	.quad call, here
+	.quad call, top
 	.quad fetch
-	.quad call, link
-	.quad call, last
-	.quad fetch
-	.quad call, link
-	.quad call, head
-	.quad fetch
-	.quad call, last
+	.quad pop
 	.quad store
 	.quad lit, -1
 	.quad call, state
@@ -1030,13 +1023,13 @@ DEFINE head_code_start, code_end,   "code-end"
 DEFINE head_code_end,   tickinput,  "'input"
 DEFINE head_tickinput,  tickoutput, "'output"
 DEFINE head_tickoutput, tickbuffer, "'buffer"
+DEFINE head_tickbuffer, tickguard,  "'guard"
 
-DEFINE head_tickbuffer, mark,       "mark"
+DEFINE head_tickguard,  mark,       "mark"
 DEFINE head_mark,       state,      "state"
 DEFINE head_state,      here,       "here"
 DEFINE head_here,       top,        "top"
-DEFINE head_top,        head,       "head"
-DEFINE head_head,       last,       "last"
+DEFINE head_top,        last,       "last"
 DEFINE head_last,       base,       "base"
 
 DEFINE head_base,       bool,       "bool"
@@ -1069,8 +1062,7 @@ DEFINE head_number,     find,       "find"
 DEFINE head_find,       collision,  "collision"
 DEFINE head_collision,  save,       "save"
 DEFINE head_save,       comma,      ",",          IMMEDIATE
-DEFINE head_comma,      link,       "link"
-DEFINE head_link,       commit,     "commit"
+DEFINE head_comma,      commit,     "commit"
 DEFINE head_commit,     apply,      "apply"
 DEFINE head_apply,      colon,      ":",          IMMEDIATE
 DEFINE head_colon,      semicolon,  ";",          IMMEDIATE
@@ -1093,7 +1085,7 @@ buffer:
 
 code:
 	.skip 0x3000
-vocab:
+guard:
 
 	.skip 0x100
 dstack:

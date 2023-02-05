@@ -34,7 +34,7 @@
     accumulate advance key? not [ over ] until accept
   repeat
   char " = if advance then
-  save head @ ; immediate
+  top @ save ; immediate
 
 : hold ( char -- ) 'buffer @ 1- dup 'buffer ! b! ;
 
