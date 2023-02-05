@@ -91,7 +91,7 @@
 : save 'buffer top @ over b@ 1+ dup aligned top @ + top ! collision
   bmove commit ;
 
-: ,    ( x -- ) top  @ dup cell + top  ! ! collision ; immediate
+: , ( x -- ) top  @ dup cell + top  ! ! collision ; immediate
 
 : commit top @ here ! ;
 
