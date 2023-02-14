@@ -611,9 +611,17 @@ wordq:
 	.quad lit, 10
 	.quad xor
 
-	.quad qjump, 1f
+	.quad qjump, 2f
 
 0:
+	.quad call, keyq
+	.quad not
+
+	.quad qjump, 1f
+
+	.quad call, accept
+
+1:
 	.quad call, key
 	.quad dup
 	.quad lit, '!'
@@ -629,19 +637,13 @@ wordq:
 
 	.quad call, accumulate
 	.quad call, advance
-	.quad call, keyq
-	.quad not
-
-	.quad qjump, 0b
-
-	.quad call, accept
 
 	.quad jump, 0b
 0:
 
 	.quad drop
 
-1:
+2:
 	.quad ret
 
 word:

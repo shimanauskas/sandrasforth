@@ -52,9 +52,9 @@
 : word? skip 0 'buffer b! key 10 xor
   if
     begin
-      key dup char ! u< not 'buffer b@ 63 u< and
+      key? not if accept then key dup char ! u< not 'buffer b@ 63 u< and
     if
-      accumulate advance key? not [ over ] until accept
+      accumulate advance
     repeat
     drop
   then ;

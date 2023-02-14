@@ -29,9 +29,9 @@
 
 : " ( -- addr ) skip 0 'buffer b!
   begin
-    key dup char " xor 'buffer b@ 255 u< and
+    key? not if accept then key dup char " xor 'buffer b@ 255 u< and
   if
-    accumulate advance key? not [ over ] until accept
+    accumulate advance
   repeat
   char " = if advance then
   top @ save ; immediate
