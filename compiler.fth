@@ -27,8 +27,8 @@
 
 : bye flush 0 dup dup sys-exit syscall ( We never return. )
 
-: accept 0 [ 'input 1+ ] literal 255 sys-read syscall dup ' bye until
-  'input b! [ 'input 1+ ] literal mark ! ;
+: accept 0 [ 'input 1+ ] literal 255 sys-read syscall dup
+  if 'input b! [ 'input 1+ ] literal mark ! ret then bye
 
 : key? ( -- bool ) mark @ 'input string + u< ;
 : key  ( -- char ) mark @ b@ ;
@@ -36,7 +36,7 @@
 : advance mark @ 1+ mark ! ;
 
 : emit ( char -- ) 'output string + b!
-  'output b@ 1+ dup 'output b! 255 xor ' flush until ;
+  'output b@ 1+ dup 'output b! 255 xor if ret then flush ;
 
 : type ( addr u -- ) begin dup if push dup b@ emit 1+ pop 1- repeat nip drop ;
 
@@ -73,8 +73,8 @@
   repeat
   drop nip pop ;
 
-: number ( addr u1 -- n u2 ) over b@ char - = ' natural until
-  push 1+ pop 1- natural push negate pop ;
+: number ( addr u1 -- n u2 ) over b@ char - =
+  if push 1+ pop 1- natural push negate pop ret then natural ;
 
 : find ( -- 0 | addr ) last
   begin
@@ -95,8 +95,8 @@
 
 : commit top @ here ! ;
 
-: apply state @ not ' commit until
-  lit ret postpone , here @ dup top ! execute ;
+: apply state @ not
+  if lit ret postpone , here @ dup top ! execute ret then commit ;
 
 : : apply last @ top @ last ! postpone , top @ push 0 postpone ,
   word save top @ pop ! -1 state ! ; immediate

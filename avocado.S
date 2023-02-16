@@ -495,7 +495,7 @@ accept:
 	.quad syscall
 	.quad dup
 
-	.quad qjump, bye
+	.quad qjump, 0f
 
 	.quad lit, input
 	.quad bstore
@@ -503,6 +503,9 @@ accept:
 	.quad call, mark
 	.quad store
 	.quad ret
+
+0:
+	.quad call, bye
 
 keyq: /* -- bool */
 	.quad call, mark
@@ -541,8 +544,12 @@ emit: /* char -- */
 	.quad lit, 0xFF
 	.quad xor
 
-	.quad qjump, flush
+	.quad qjump, 0f
 
+	.quad ret
+
+0:
+	.quad call, flush
 	.quad ret
 
 type: /* addr u -- */
@@ -727,7 +734,7 @@ number: /* addr u1 -- n u2 */
 	.quad lit, '-'
 	.quad call, equals
 
-	.quad qjump, natural
+	.quad qjump, 0f
 
 	.quad push
 	.quad inc
@@ -739,6 +746,9 @@ number: /* addr u1 -- n u2 */
 	.quad pop
 	.quad ret
 
+0:
+	.quad call, natural
+	.quad ret
 find: /* -- 0 | addr */
 	.quad call, last
 
@@ -835,7 +845,7 @@ apply:
 	.quad fetch
 	.quad not
 
-	.quad qjump, commit
+	.quad qjump, 0f
 
 	.quad lit, ret
 	.quad call, comma
@@ -847,6 +857,9 @@ apply:
 	.quad execute
 	.quad ret
 
+0:
+	.quad call, commit
+	.quad ret
 colon:
 	.quad call, apply
 	.quad call, last
