@@ -843,10 +843,13 @@ commit:
 apply:
 	.quad call, state
 	.quad fetch
-	.quad not
 
 	.quad qjump, 0f
 
+	.quad call, commit
+	.quad ret
+
+0:
 	.quad lit, ret
 	.quad call, comma
 	.quad call, here
@@ -857,9 +860,6 @@ apply:
 	.quad execute
 	.quad ret
 
-0:
-	.quad call, commit
-	.quad ret
 colon:
 	.quad call, apply
 	.quad call, last
