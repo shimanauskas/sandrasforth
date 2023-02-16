@@ -1,5 +1,3 @@
-.PHONY: run clean
-
 avocado: avocado.S
 	$(CC) -o avocado -nostdlib -static avocado.S
 
