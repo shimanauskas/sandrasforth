@@ -124,4 +124,4 @@
     postpone literal jump ' interpret ,
   then ;
 
-: main interpret apply advance flush jump ' main , [ main ]
+: main begin interpret apply advance flush again [ main ]
