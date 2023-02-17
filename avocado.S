@@ -732,10 +732,14 @@ number: /* addr u1 -- n u2 */
 	.quad over
 	.quad bfetch
 	.quad lit, '-'
-	.quad call, equals
+	.quad xor
 
 	.quad qjump, 0f
 
+	.quad call, natural
+	.quad ret
+
+0:
 	.quad push
 	.quad inc
 	.quad pop
@@ -746,9 +750,6 @@ number: /* addr u1 -- n u2 */
 	.quad pop
 	.quad ret
 
-0:
-	.quad call, natural
-	.quad ret
 find: /* -- 0 | addr */
 	.quad call, last
 

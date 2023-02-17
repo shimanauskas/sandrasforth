@@ -73,8 +73,8 @@
   repeat
   drop nip pop ;
 
-: number ( addr u1 -- n u2 ) over b@ char - =
-  if push 1+ pop 1- natural push negate pop ret then natural ;
+: number ( addr u1 -- n u2 ) over b@ char - xor
+  if natural ret then push 1+ pop 1- natural push negate pop ;
 
 : find ( -- 0 | addr ) last
   begin
