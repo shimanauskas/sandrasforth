@@ -8,6 +8,8 @@ Since .text and .data are not mixed, CPU caches stay clean.
 
 For further efficiency, Avocado has buffered I/O.
 
+There is no prompt.
+
 ## Prerequisites
 
 * `make`
