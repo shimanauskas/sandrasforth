@@ -11,6 +11,7 @@
 
 : repeat push lit jump postpone , postpone , top @ pop ! ; immediate
 : until lit ?jump postpone , postpone , ; immediate
+: again lit  jump postpone , postpone , ; immediate
 
 : variable postpone : lit var postpone , 0 postpone , postpone ; ; immediate
 : constant postpone : postpone literal postpone ; ; immediate
