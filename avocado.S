@@ -257,74 +257,125 @@ end:
 
 .data
 
+DEFINE 0,             call,     "call"
+DEFINE head_call,     jump,     "jump"
+DEFINE head_jump,     qjump,    "?jump"
+DEFINE head_qjump,    execute,  "execute"
+DEFINE head_execute,  ret,      "ret"
+DEFINE head_ret,      lit,      "lit"
+DEFINE head_lit,      var,      "var"
+DEFINE head_var,      dup,      "dup"
+DEFINE head_dup,      nip,      "nip"
+DEFINE head_nip,      drop,     "drop"
+DEFINE head_drop,     over,     "over"
+DEFINE head_over,     push,     "push"
+DEFINE head_push,     pop,      "pop"
+DEFINE head_pop,      not,      "not"
+DEFINE head_not,      twomul,   "2*"
+DEFINE head_twomul,   twodiv,   "2/"
+DEFINE head_twodiv,   and,      "and"
+DEFINE head_and,      or,       "or"
+DEFINE head_or,       xor,      "xor"
+DEFINE head_xor,      negate,   "negate"
+DEFINE head_negate,   inc,      "1+"
+DEFINE head_inc,      dec,      "1-"
+DEFINE head_dec,      add,      "+"
+DEFINE head_add,      sub,      "-"
+DEFINE head_sub,      mul,      "*"
+DEFINE head_mul,      ummul,    "um*"
+DEFINE head_ummul,    umdivmod, "um/mod"
+DEFINE head_umdivmod, fetch,    "@"
+DEFINE head_fetch,    store,    "!"
+DEFINE head_store,    bfetch,   "b@"
+DEFINE head_bfetch,   bstore,   "b!"
+DEFINE head_bstore,   syscall,  "syscall"
+
+DEFINE head_syscall, cell, "cell"
 cell: /* -- u */
 	.quad lit, CELL
 	.quad ret
 
+DEFINE head_cell, nfa, "nfa"
 nfa: /* -- u */
 	.quad lit, NFA
 	.quad ret
 
+DEFINE head_nfa, sys_read, "sys-read"
 sys_read: /* -- x */
 	.quad lit, SYS_read
 	.quad ret
 
+DEFINE head_sys_read, sys_write, "sys-write"
 sys_write: /* -- x */
 	.quad lit, SYS_write
 	.quad ret
 
+DEFINE head_sys_write, sys_exit, "sys-exit"
 sys_exit: /* -- x */
 	.quad lit, SYS_exit
 	.quad ret
 
+DEFINE head_sys_exit, code_start, "code-start"
 code_start: /* -- addr */
 	.quad lit, START
 	.quad ret
 
+DEFINE head_code_start, code_end, "code-end"
 code_end: /* -- addr */
 	.quad lit, end
 	.quad ret
 
+DEFINE head_code_end, tickinput, "'input"
 tickinput: /* -- addr */
 	.quad lit, input
 	.quad ret
 
+DEFINE head_tickinput, tickoutput, "'output"
 tickoutput: /* -- addr */
 	.quad lit, output
 	.quad ret
 
+DEFINE head_tickoutput, tickbuffer, "'buffer"
 tickbuffer: /* -- addr */
 	.quad lit, buffer
 	.quad ret
 
+DEFINE head_tickbuffer, tickguard, "'guard"
 tickguard: /* -- addr */
 	.quad lit, guard
 	.quad ret
 
+DEFINE head_tickguard, mark, "mark"
 mark: /* -- addr */
 	.quad var, input+1
 	.quad ret
 
+DEFINE head_mark, state, "state"
 state: /* -- addr */
 	.quad var, 0
 	.quad ret
 
+DEFINE head_state, here, "here"
 here: /* -- addr */
 	.quad var, code
 	.quad ret
 
+DEFINE head_here, top, "top"
 top: /* -- addr */
 	.quad var, code
 	.quad ret
 
+DEFINE head_top, last, "last"
 last: /* -- addr */
 	.quad var, head_main
 	.quad ret
 
+DEFINE head_last, base, "base"
 base: /* -- addr */
 	.quad var, 10
 	.quad ret
 
+DEFINE head_base, bool, "bool"
 bool: /* x -- bool */
 	.quad qjump, 0f
 
@@ -335,22 +386,26 @@ bool: /* x -- bool */
 	.quad lit, 0
 	.quad ret
 
+DEFINE head_bool, zequals, "0="
 zequals: /* x -- bool */
 	.quad call, bool
 	.quad not
 	.quad ret
 
+DEFINE head_zequals, equals, "="
 equals: /* x1 x2 -- bool */
 	.quad xor
 	.quad call, zequals
 	.quad ret
 
+DEFINE head_equals, zless, "0<"
 zless: /* n - bool */
 	.quad lit, 1<<(CELL*8-1)
 	.quad and
 	.quad call, bool
 	.quad ret
 
+DEFINE head_zless, less, "<"
 less: /* n1 n2 -- bool */
 	.quad over
 	.quad over
@@ -368,6 +423,7 @@ less: /* n1 n2 -- bool */
 	.quad call, zless
 	.quad ret
 
+DEFINE head_less, uless, "u<"
 uless: /* u1 u2 -- bool */
 	.quad over
 	.quad over
@@ -385,6 +441,7 @@ uless: /* u1 u2 -- bool */
 	.quad call, zless
 	.quad ret
 
+DEFINE head_uless, within, "within"
 within: /* u1 u2 u3 -- bool */
 	.quad push
 	.quad over
@@ -397,6 +454,7 @@ within: /* u1 u2 u3 -- bool */
 	.quad and
 	.quad ret
 
+DEFINE head_within, aligned, "aligned"
 aligned: /* x1 -- x2 */
 	.quad lit, CELL-1
 	.quad add
@@ -404,6 +462,7 @@ aligned: /* x1 -- x2 */
 	.quad and
 	.quad ret
 
+DEFINE head_aligned, string, "string"
 string: /* addr1 -- addr2 u */
 	.quad dup
 	.quad push
@@ -412,6 +471,7 @@ string: /* addr1 -- addr2 u */
 	.quad bfetch
 	.quad ret
 
+DEFINE head_string, bmove, "bmove"
 bmove: /* addr1 addr2 u -- */
 	.quad dup
 
@@ -437,6 +497,7 @@ bmove: /* addr1 addr2 u -- */
 	.quad drop
 	.quad ret
 
+DEFINE head_bmove, sameq, "same?"
 sameq: /* addr1 addr2 u -- bool */
 	.quad dup
 	.quad push
@@ -467,6 +528,7 @@ sameq: /* addr1 addr2 u -- bool */
 	.quad call, zequals
 	.quad ret
 
+DEFINE head_sameq, flush, "flush"
 flush:
 	.quad lit, 1
 	.quad lit, output
@@ -479,6 +541,7 @@ flush:
 	.quad bstore
 	.quad ret
 
+DEFINE head_flush, bye, "bye"
 bye:
 	.quad call, flush
 	.quad lit, 0
@@ -487,6 +550,7 @@ bye:
 	.quad lit, SYS_exit
 	.quad syscall
 
+DEFINE head_bye, accept, "accept"
 accept:
 	.quad lit, 0
 	.quad lit, input+1
@@ -507,6 +571,7 @@ accept:
 0:
 	.quad call, bye
 
+DEFINE head_accept, keyq, "key?"
 keyq: /* -- bool */
 	.quad call, mark
 	.quad fetch
@@ -516,12 +581,14 @@ keyq: /* -- bool */
 	.quad call, uless
 	.quad ret
 
+DEFINE head_keyq, key, "key"
 key: /* -- char */
 	.quad call, mark
 	.quad fetch
 	.quad bfetch
 	.quad ret
 
+DEFINE head_key, advance, "advance"
 advance:
 	.quad call, mark
 	.quad fetch
@@ -530,6 +597,7 @@ advance:
 	.quad store
 	.quad ret
 
+DEFINE head_advance, emit, "emit"
 emit: /* char -- */
 	.quad lit, output
 	.quad call, string
@@ -552,6 +620,7 @@ emit: /* char -- */
 	.quad call, flush
 	.quad ret
 
+DEFINE head_emit, type, "type"
 type: /* addr u -- */
 	.quad dup
 
@@ -572,6 +641,7 @@ type: /* addr u -- */
 	.quad drop
 	.quad ret
 
+DEFINE head_type, accumulate, "accumulate"
 accumulate: /* char -- */
 	.quad lit, buffer
 	.quad call, string
@@ -583,6 +653,7 @@ accumulate: /* char -- */
 	.quad bstore
 	.quad ret
 
+DEFINE head_accumulate, skip, "skip"
 skip:
 	.quad call, keyq
 	.quad not
@@ -609,6 +680,7 @@ skip:
 
 	.quad ret
 
+DEFINE head_skip, wordq, "word?"
 wordq:
 	.quad call, skip
 	.quad lit, 0
@@ -653,6 +725,7 @@ wordq:
 2:
 	.quad ret
 
+DEFINE head_wordq, word, "word"
 word:
 	.quad call, wordq
 	.quad lit, buffer
@@ -668,6 +741,7 @@ word:
 
 	.quad ret
 
+DEFINE head_word, digitq, "digit?"
 digitq: /* char -- u bool */
 	.quad lit, '0'
 	.quad sub
@@ -691,6 +765,7 @@ digitq: /* char -- u bool */
 	.quad call, uless
 	.quad ret
 
+DEFINE head_digitq, natural, "natural"
 natural: /* addr u1 -- u2 u3 */
 	.quad push
 	.quad lit, 0
@@ -728,6 +803,7 @@ natural: /* addr u1 -- u2 u3 */
 	.quad pop
 	.quad ret
 
+DEFINE head_natural, number, "number"
 number: /* addr u1 -- n u2 */
 	.quad over
 	.quad bfetch
@@ -750,6 +826,7 @@ number: /* addr u1 -- n u2 */
 	.quad pop
 	.quad ret
 
+DEFINE head_number, find, "find"
 find: /* -- 0 | addr */
 	.quad call, last
 
@@ -786,6 +863,7 @@ find: /* -- 0 | addr */
 
 	.quad ret
 
+DEFINE head_find, collision, "collision"
 collision:
 	.quad call, top
 	.quad fetch
@@ -803,6 +881,7 @@ collision:
 0:
 	.quad ret
 
+DEFINE head_collision, save, "save"
 save:
 	.quad lit, buffer
 	.quad call, top
@@ -822,6 +901,7 @@ save:
 	.quad call, commit
 	.quad ret
 
+DEFINE head_save, comma, ",", IMMEDIATE
 comma: /* x -- */
 	.quad call, top
 	.quad fetch
@@ -834,6 +914,7 @@ comma: /* x -- */
 	.quad call, collision
 	.quad ret
 
+DEFINE head_comma, commit, "commit"
 commit:
 	.quad call, top
 	.quad fetch
@@ -841,6 +922,7 @@ commit:
 	.quad store
 	.quad ret
 
+DEFINE head_commit, apply, "apply"
 apply:
 	.quad call, state
 	.quad fetch
@@ -861,6 +943,7 @@ apply:
 	.quad execute
 	.quad ret
 
+DEFINE head_apply, colon, ":", IMMEDIATE
 colon:
 	.quad call, apply
 	.quad call, last
@@ -886,6 +969,7 @@ colon:
 	.quad store
 	.quad ret
 
+DEFINE head_colon, semicolon, ";", IMMEDIATE
 semicolon:
 	.quad lit, ret
 	.quad call, comma
@@ -895,6 +979,7 @@ semicolon:
 	.quad store
 	.quad ret
 
+DEFINE head_semicolon, tick, "'", IMMEDIATE
 tick: /* -- 0 | xt */
 	.quad call, word
 	.quad call, find
@@ -909,6 +994,7 @@ tick: /* -- 0 | xt */
 0:
 	.quad ret
 
+DEFINE head_tick, postpone, "postpone", IMMEDIATE
 postpone:
 	.quad call, tick
 	.quad lit, call
@@ -916,12 +1002,14 @@ postpone:
 	.quad call, comma
 	.quad ret
 
+DEFINE head_postpone, literal, "literal", IMMEDIATE
 literal: /* x -- */
 	.quad lit, lit
 	.quad call, comma
 	.quad call, comma
 	.quad ret
 
+DEFINE head_literal, interpret, "interpret"
 interpret:
 	.quad call, wordq
 	.quad lit, buffer
@@ -989,104 +1077,13 @@ interpret:
 2:
 	.quad ret
 
+DEFINE head_interpret, main, "main"
 main:
 	.quad call, interpret
 	.quad call, apply
 	.quad call, advance
 	.quad call, flush
 	.quad jump, main
-
-DEFINE 0,               call,       "call"
-DEFINE head_call,       jump,       "jump"
-DEFINE head_jump,       qjump,      "?jump"
-DEFINE head_qjump,      execute,    "execute"
-DEFINE head_execute,    ret,        "ret"
-DEFINE head_ret,        lit,        "lit"
-DEFINE head_lit,        var,        "var"
-DEFINE head_var,        dup,        "dup"
-DEFINE head_dup,        nip,        "nip"
-DEFINE head_nip,        drop,       "drop"
-DEFINE head_drop,       over,       "over"
-DEFINE head_over,       push,       "push"
-DEFINE head_push,       pop,        "pop"
-DEFINE head_pop,        not,        "not"
-DEFINE head_not,        twomul,     "2*"
-DEFINE head_twomul,     twodiv,     "2/"
-DEFINE head_twodiv,     and,        "and"
-DEFINE head_and,        or,         "or"
-DEFINE head_or,         xor,        "xor"
-DEFINE head_xor,        negate,     "negate"
-DEFINE head_negate,     inc,        "1+"
-DEFINE head_inc,        dec,        "1-"
-DEFINE head_dec,        add,        "+"
-DEFINE head_add,        sub,        "-"
-DEFINE head_sub,        mul,        "*"
-DEFINE head_mul,        ummul,      "um*"
-DEFINE head_ummul,      umdivmod,   "um/mod"
-DEFINE head_umdivmod,   fetch,      "@"
-DEFINE head_fetch,      store,      "!"
-DEFINE head_store,      bfetch,     "b@"
-DEFINE head_bfetch,     bstore,     "b!"
-DEFINE head_bstore,     syscall,    "syscall"
-
-DEFINE head_syscall,    cell,       "cell"
-DEFINE head_cell,       nfa,        "nfa"
-DEFINE head_nfa,        sys_read,   "sys-read"
-DEFINE head_sys_read,   sys_write,  "sys-write"
-DEFINE head_sys_write,  sys_exit,   "sys-exit"
-DEFINE head_sys_exit,   code_start, "code-start"
-DEFINE head_code_start, code_end,   "code-end"
-DEFINE head_code_end,   tickinput,  "'input"
-DEFINE head_tickinput,  tickoutput, "'output"
-DEFINE head_tickoutput, tickbuffer, "'buffer"
-DEFINE head_tickbuffer, tickguard,  "'guard"
-
-DEFINE head_tickguard,  mark,       "mark"
-DEFINE head_mark,       state,      "state"
-DEFINE head_state,      here,       "here"
-DEFINE head_here,       top,        "top"
-DEFINE head_top,        last,       "last"
-DEFINE head_last,       base,       "base"
-
-DEFINE head_base,       bool,       "bool"
-DEFINE head_bool,       zequals,    "0="
-DEFINE head_zequals,    equals,     "="
-DEFINE head_equals,     zless,      "0<"
-DEFINE head_zless,      less,       "<"
-DEFINE head_less,       uless,      "u<"
-DEFINE head_uless,      within,     "within"
-DEFINE head_within,     aligned,    "aligned"
-DEFINE head_aligned,    string,     "string"
-DEFINE head_string,     bmove,      "bmove"
-DEFINE head_bmove,      sameq,      "same?"
-DEFINE head_sameq,      flush,      "flush"
-DEFINE head_flush,      bye,        "bye"
-DEFINE head_bye,        accept,     "accept"
-DEFINE head_accept,     keyq,       "key?"
-DEFINE head_keyq,       key,        "key"
-DEFINE head_key,        advance,    "advance"
-DEFINE head_advance,    emit,       "emit"
-DEFINE head_emit,       type,       "type"
-DEFINE head_type,       accumulate, "accumulate"
-DEFINE head_accumulate, skip,       "skip"
-DEFINE head_skip,       wordq,      "word?"
-DEFINE head_wordq,      word,       "word"
-DEFINE head_word,       digitq,     "digit?"
-DEFINE head_digitq,     natural,    "natural"
-DEFINE head_natural,    number,     "number"
-DEFINE head_number,     find,       "find"
-DEFINE head_find,       collision,  "collision"
-DEFINE head_collision,  save,       "save"
-DEFINE head_save,       comma,      ",",          IMMEDIATE
-DEFINE head_comma,      commit,     "commit"
-DEFINE head_commit,     apply,      "apply"
-DEFINE head_apply,      colon,      ":",          IMMEDIATE
-DEFINE head_colon,      semicolon,  ";",          IMMEDIATE
-DEFINE head_semicolon,  tick,       "'",          IMMEDIATE
-DEFINE head_tick,       postpone,   "postpone",   IMMEDIATE
-DEFINE head_postpone,   literal,    "literal",    IMMEDIATE
-DEFINE head_literal,    interpret,  "interpret"
-DEFINE head_interpret,  main,       "main"
 
 .bss
 
