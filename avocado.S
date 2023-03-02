@@ -357,12 +357,12 @@ state: /* -- addr */
 
 DEFINE head_state, here, "here"
 here: /* -- addr */
-	.quad var, code
+	.quad var, vocabulary
 	.quad ret
 
 DEFINE head_here, top, "top"
 top: /* -- addr */
-	.quad var, code
+	.quad var, vocabulary
 	.quad ret
 
 DEFINE head_top, last, "last"
@@ -1096,7 +1096,7 @@ output:
 buffer:
 	.skip 0x100
 
-code:
+vocabulary:
 	.skip 0x3000
 guard:
 
