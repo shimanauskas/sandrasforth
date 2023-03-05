@@ -98,10 +98,13 @@
 : apply state @
   if commit ret then lit ret postpone , here @ dup top ! execute ;
 
-: : apply last @ top @ last ! postpone , top @ push 0 postpone ,
-  word save top @ pop ! -1 state ! ; immediate
+: [ commit 0 state ! ; immediate
+: ] apply -1 state ! ; immediate
 
-: ; hidden lit ret postpone , commit 0 state ! ; hidden immediate
+: : postpone ] last @ top @ last ! postpone , top @ push 0 postpone ,
+  word save top @ pop ! ; immediate
+
+: ; hidden lit ret postpone , postpone [ ; hidden immediate
 
 : ' ( -- 0 | xt ) word find dup if cell + @ then ; immediate
 

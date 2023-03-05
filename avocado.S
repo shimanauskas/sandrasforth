@@ -943,9 +943,25 @@ apply:
 	.quad execute
 	.quad ret
 
-DEFINE head_apply, colon, ":", IMMEDIATE
-colon:
+DEFINE head_apply, lbracket, "[", IMMEDIATE
+lbracket:
+	.quad call, commit
+	.quad lit, 0
+	.quad call, state
+	.quad store
+	.quad ret
+
+DEFINE head_lbracket, rbracket, "]", IMMEDIATE
+rbracket:
 	.quad call, apply
+	.quad lit, -1
+	.quad call, state
+	.quad store
+	.quad ret
+
+DEFINE head_rbracket, colon, ":", IMMEDIATE
+colon:
+	.quad call, rbracket
 	.quad call, last
 	.quad fetch
 	.quad call, top
@@ -964,19 +980,13 @@ colon:
 	.quad fetch
 	.quad pop
 	.quad store
-	.quad lit, -1
-	.quad call, state
-	.quad store
 	.quad ret
 
 DEFINE head_colon, semicolon, ";", IMMEDIATE
 semicolon:
 	.quad lit, ret
 	.quad call, comma
-	.quad call, commit
-	.quad lit, 0
-	.quad call, state
-	.quad store
+	.quad call, lbracket
 	.quad ret
 
 DEFINE head_semicolon, tick, "'", IMMEDIATE
