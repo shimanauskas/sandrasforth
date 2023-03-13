@@ -27,7 +27,7 @@
 
 : bye flush 0 dup dup sys-exit syscall ( We never return. )
 
-: accept 0 [ 'input 1+ ] literal 255 sys-read syscall dup
+: read 0 [ 'input 1+ ] literal 255 sys-read syscall dup
   if 'input b! [ 'input 1+ ] literal mark ! ret then bye
 
 : key? ( -- bool ) mark @ 'input string + u< ;
@@ -43,16 +43,12 @@
 : accumulate ( char -- ) 'buffer string dup 1+ 'buffer b! + b! ;
 
 : skip
-  begin
-    key? not if accept then key char ! u< key 10 xor and
-  if
-    advance
-  repeat ;
+  begin key? not if read then key char ! u< key 10 xor and if advance repeat ;
 
 : word? skip 0 'buffer b! key 10 xor
   if
     begin
-      key? not if accept then key dup char ! u< not 'buffer b@ 63 u< and
+      key? not if read then key dup char ! u< not 'buffer b@ 63 u< and
     if
       accumulate advance
     repeat

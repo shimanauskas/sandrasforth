@@ -550,8 +550,8 @@ bye:
 	.quad lit, SYS_exit
 	.quad syscall
 
-DEFINE head_bye, accept, "accept"
-accept:
+DEFINE head_bye, read, "read"
+read:
 	.quad lit, 0
 	.quad lit, input+1
 	.quad lit, 0xFF
@@ -571,7 +571,7 @@ accept:
 0:
 	.quad call, bye
 
-DEFINE head_accept, keyq, "key?"
+DEFINE head_read, keyq, "key?"
 keyq: /* -- bool */
 	.quad call, mark
 	.quad fetch
@@ -660,7 +660,7 @@ skip:
 
 	.quad qjump, 0f
 
-	.quad call, accept
+	.quad call, read
 
 0:
 	.quad call, key
@@ -698,7 +698,7 @@ wordq:
 
 	.quad qjump, 1f
 
-	.quad call, accept
+	.quad call, read
 
 1:
 	.quad call, key

@@ -27,7 +27,7 @@
 
 : " ( -- addr ) skip 0 'buffer b!
   begin
-    key? not if accept then key dup char " xor 'buffer b@ 255 u< and
+    key? not if read then key dup char " xor 'buffer b@ 255 u< and
   if
     accumulate advance
   repeat
