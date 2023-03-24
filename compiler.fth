@@ -23,9 +23,9 @@
   begin dup push push over b@ over b@ = pop and if push 1+ pop 1+ pop 1- repeat
   pop nip nip 0= ;
 
-: flush 1 'output string sys-write syscall drop 0 'output b! ;
+: write 1 'output string sys-write syscall drop 0 'output b! ;
 
-: bye flush 0 dup dup sys-exit syscall ( We never return. )
+: bye write 0 dup dup sys-exit syscall ( We never return. )
 
 : read 0 [ 'input 1+ ] literal 255 sys-read syscall dup
   if 'input b! [ 'input 1+ ] literal mark ! ret then bye
@@ -36,7 +36,7 @@
 : advance mark @ 1+ mark ! ;
 
 : emit ( char -- ) 'output string + b!
-  'output b@ 1+ dup 'output b! 255 xor if ret then flush ;
+  'output b@ 1+ dup 'output b! 255 xor if ret then write ;
 
 : type ( addr u -- ) begin dup if push dup b@ emit 1+ pop 1- repeat nip drop ;
 
@@ -123,4 +123,4 @@
     postpone literal jump ' interpret ,
   then ;
 
-: main begin interpret apply advance flush again [ main ]
+: main begin interpret apply advance write again [ main ]

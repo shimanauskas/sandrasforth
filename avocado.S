@@ -528,8 +528,8 @@ sameq: /* addr1 addr2 u -- bool */
 	.quad call, zequals
 	.quad ret
 
-DEFINE head_sameq, flush, "flush"
-flush:
+DEFINE head_sameq, write, "write"
+write:
 	.quad lit, 1
 	.quad lit, output
 	.quad call, string
@@ -541,9 +541,9 @@ flush:
 	.quad bstore
 	.quad ret
 
-DEFINE head_flush, bye, "bye"
+DEFINE head_write, bye, "bye"
 bye:
-	.quad call, flush
+	.quad call, write
 	.quad lit, 0
 	.quad dup
 	.quad dup
@@ -617,7 +617,7 @@ emit: /* char -- */
 	.quad ret
 
 0:
-	.quad call, flush
+	.quad call, write
 	.quad ret
 
 DEFINE head_emit, type, "type"
@@ -1092,7 +1092,7 @@ main:
 	.quad call, interpret
 	.quad call, apply
 	.quad call, advance
-	.quad call, flush
+	.quad call, write
 	.quad jump, main
 
 .bss
