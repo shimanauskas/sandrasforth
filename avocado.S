@@ -153,7 +153,7 @@ pop: /* -- x */
 	popq %rax
 	NEXT
 
-not: /* x1 -- x2 */
+invert: /* x1 -- x2 */
 	notq %rax
 	NEXT
 
@@ -270,8 +270,8 @@ DEFINE head_nip,      drop,     "drop"
 DEFINE head_drop,     over,     "over"
 DEFINE head_over,     push,     "push"
 DEFINE head_push,     pop,      "pop"
-DEFINE head_pop,      not,      "not"
-DEFINE head_not,      twomul,   "2*"
+DEFINE head_pop,      invert,   "invert"
+DEFINE head_invert,   twomul,   "2*"
 DEFINE head_twomul,   twodiv,   "2/"
 DEFINE head_twodiv,   and,      "and"
 DEFINE head_and,      or,       "or"
@@ -389,7 +389,7 @@ bool: /* x -- bool */
 DEFINE head_bool, zequals, "0="
 zequals: /* x -- bool */
 	.quad call, bool
-	.quad not
+	.quad invert
 	.quad ret
 
 DEFINE head_zequals, equals, "="
@@ -447,7 +447,7 @@ within: /* u1 u2 u3 -- bool */
 	.quad over
 	.quad push
 	.quad call, uless
-	.quad not
+	.quad invert
 	.quad pop
 	.quad pop
 	.quad call, uless
@@ -656,7 +656,7 @@ accumulate: /* char -- */
 DEFINE head_accumulate, skip, "skip"
 skip:
 	.quad call, keyq
-	.quad not
+	.quad invert
 
 	.quad qjump, 0f
 
@@ -694,7 +694,7 @@ wordq:
 
 0:
 	.quad call, keyq
-	.quad not
+	.quad invert
 
 	.quad qjump, 1f
 
@@ -705,7 +705,7 @@ wordq:
 	.quad dup
 	.quad lit, '!'
 	.quad call, uless
-	.quad not
+	.quad invert
 	.quad lit, buffer
 	.quad bfetch
 	.quad lit, 0x3F
@@ -869,7 +869,7 @@ collision:
 	.quad fetch
 	.quad call, tickguard
 	.quad call, uless
-	.quad not
+	.quad invert
 
 	.quad qjump, 0f
 
@@ -1053,7 +1053,7 @@ interpret:
 	.quad lit, START
 	.quad lit, end
 	.quad call, within
-	.quad not
+	.quad invert
 
 	.quad qjump, 0f
 

@@ -1,6 +1,6 @@
 : bool ( x -- bool ) if -1 ret then 0 ;
 
-: 0= ( x -- bool ) bool not ;
+: 0= ( x -- bool ) bool invert ;
 
 :  = ( x1 x2 -- bool ) xor 0= ;
 
@@ -9,9 +9,9 @@
 :  < ( n1 n2 -- bool ) over over xor 0< if drop 0< ret then - 0< ;
 : u< ( u1 u2 -- bool ) over over xor 0< if nip  0< ret then - 0< ;
 
-: whithin ( u1 u2 u3 -- bool ) push over push u< not pop pop u< and ;
+: whithin ( u1 u2 u3 -- bool ) push over push u< invert pop pop u< and ;
 
-: aligned ( x1 -- x2 ) [ cell 1- ] literal + [ cell 1- not ] literal and ;
+: aligned ( x1 -- x2 ) [ cell 1- ] literal + [ cell 1- invert ] literal and ;
 
 : string ( addr1 -- addr2 u ) dup push 1+ pop b@ ;
 
@@ -43,12 +43,16 @@
 : accumulate ( char -- ) 'buffer string dup 1+ 'buffer b! + b! ;
 
 : skip
-  begin key? not if read then key char ! u< key 10 xor and if advance repeat ;
+  begin
+    key? invert if read then key char ! u< key 10 xor and
+  if
+    advance
+  repeat ;
 
 : word? skip 0 'buffer b! key 10 xor
   if
     begin
-      key? not if read then key dup char ! u< not 'buffer b@ 63 u< and
+      key? invert if read then key dup char ! u< invert 'buffer b@ 63 u< and
     if
       accumulate advance
     repeat
@@ -81,7 +85,7 @@
     then
   until ;
 
-: collision top @ 'guard u< not
+: collision top @ 'guard u< invert
   if [ last @ nfa + ] literal string type bye then ;
 
 : save 'buffer top @ over b@ 1+ dup aligned top @ + top ! collision
@@ -114,7 +118,7 @@
     if
       cell + dup cell + b@ 128 and
       if @ execute jump ' interpret , then
-      @ dup code-start code-end within not
+      @ dup code-start code-end within invert
       if lit call postpone , then
       postpone , jump ' interpret ,
     then
