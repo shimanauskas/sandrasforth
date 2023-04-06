@@ -365,12 +365,12 @@ top: /* -- addr */
 	.quad var, vocabulary
 	.quad ret
 
-DEFINE head_top, last, "last"
-last: /* -- addr */
+DEFINE head_top, latest, "latest"
+latest: /* -- addr */
 	.quad var, head_main
 	.quad ret
 
-DEFINE head_last, base, "base"
+DEFINE head_latest, base, "base"
 base: /* -- addr */
 	.quad var, 10
 	.quad ret
@@ -828,7 +828,7 @@ number: /* addr u1 -- n u2 */
 
 DEFINE head_number, find, "find"
 find: /* -- 0 | addr */
-	.quad call, last
+	.quad call, latest
 
 0:
 	.quad fetch
@@ -962,11 +962,11 @@ rbracket:
 DEFINE head_rbracket, colon, ":", IMMEDIATE
 colon:
 	.quad call, rbracket
-	.quad call, last
+	.quad call, latest
 	.quad fetch
 	.quad call, top
 	.quad fetch
-	.quad call, last
+	.quad call, latest
 	.quad store
 	.quad call, comma
 	.quad call, top

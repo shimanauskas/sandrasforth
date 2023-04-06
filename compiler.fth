@@ -76,7 +76,7 @@
 : number ( addr u1 -- n u2 ) over b@ char - xor
   if natural ret then push 1+ pop 1- natural push negate pop ;
 
-: find ( -- 0 | addr ) last
+: find ( -- 0 | addr ) latest
   begin
     @ dup 0= over
     if
@@ -86,7 +86,7 @@
   until ;
 
 : collision top @ 'guard u< invert
-  if [ last @ nfa + ] literal string type bye then ;
+  if [ latest @ nfa + ] literal string type bye then ;
 
 : save 'buffer top @ over b@ 1+ dup aligned top @ + top ! collision
   bmove commit ;
@@ -101,7 +101,7 @@
 : [ commit 0 state ! ; immediate
 : ] apply -1 state ! ; immediate
 
-: : postpone ] last @ top @ last ! postpone , top @ push 0 postpone ,
+: : postpone ] latest @ top @ latest ! postpone , top @ push 0 postpone ,
   word save top @ pop ! ; immediate
 
 : ; hidden lit ret postpone , postpone [ ; hidden immediate
