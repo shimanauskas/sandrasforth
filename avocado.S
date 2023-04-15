@@ -1,5 +1,5 @@
 /* rax - top-of-stack, syscall number.
-   rbx - threaded code pointer.
+   rbx - working register.
    rcx - temporary, syscall scratch.
    rdx - temporary, syscall argument.
 
@@ -13,7 +13,7 @@
    r10 - unused, syscall argument.
    r11 - unused, syscall scratch.
 
-   r12 - unused.
+   r12 - threaded code pointer.
    r13 - unused.
    r14 - unused.
    r15 - unused. */
@@ -61,7 +61,8 @@
 .endm
 
 .macro NEXT
-	addq $(CELL), %rbx
+	movq (%r12), %rbx
+	addq $(CELL), %r12
 	jmp *(%rbx)
 .endm
 
@@ -76,6 +77,12 @@ head_\body:
 .balign CELL
 .endm
 
+.macro DEFCODE previous, body, name
+DEFINE \previous, \body, \name
+\body:
+	.quad code_\body
+.endm
+
 .text
 
 .global START
@@ -83,132 +90,130 @@ head_\body:
 START:
 	leaq dstack(%rip), %rbp
 	movq $-1, %rax
-	leaq main(%rip), %rbx
-	jmpq *(%rbx)
+	leaq main(%rip), %r12
+	NEXT
 
-call:
+code_docolon:
+	pushq %r12
 	addq $(CELL), %rbx
-	pushq %rbx
-	movq (%rbx), %rbx
-	jmpq *(%rbx)
+	movq %rbx, %r12
+	NEXT
 
-jump:
-	addq $(CELL), %rbx
-	movq (%rbx), %rbx
-	jmpq *(%rbx)
+code_jump:
+	movq (%r12), %r12
+	NEXT
 
-qjump: /* x -- */
+code_qjump: /* x -- */
 	testq %rax, %rax
 	DROP
-	leaq CELL*2(%rbx), %rbx
-	cmovzq -CELL(%rbx), %rbx
-	jmpq *(%rbx)
+	jz code_jump
+	addq $(CELL), %r12
+	NEXT
 
-execute: /* addr -- */
-	pushq %rbx
+code_execute: /* addr -- */
 	movq %rax, %rbx
 	DROP
-	jmpq *(%rbx)
+	jmp *(%rbx)
 
-ret:
-	popq %rbx
+code_ret:
+	popq %r12
 	NEXT
 
-lit: /* -- x */
+code_lit: /* -- x */
 	DUP
-	addq $(CELL), %rbx
-	movq (%rbx), %rax
+	movq (%r12), %rax
+	addq $(CELL), %r12
 	NEXT
 
-var: /* -- addr */
+code_var: /* -- addr */
 	DUP
-	addq $(CELL), %rbx
-	movq %rbx, %rax
+	movq %r12, %rax
+	addq $(CELL), %r12
 	NEXT
 
-dup: /* x -- x x */
+code_dup: /* x -- x x */
 	DUP
 	NEXT
 
-nip: /* x1 x2 -- x2 */
+code_nip: /* x1 x2 -- x2 */
 	NIP
 	NEXT
 
-drop: /* x -- */
+code_drop: /* x -- */
 	DROP
 	NEXT
 
-over: /* x1 x2 -- x1 x2 x1 */
+code_over: /* x1 x2 -- x1 x2 x1 */
 	DUP
 	movq CELL(%rbp), %rax
 	NEXT
 
-push: /* x -- */
+code_push: /* x -- */
 	pushq %rax
 	DROP
 	NEXT
 
-pop: /* -- x */
+code_pop: /* -- x */
 	DUP
 	popq %rax
 	NEXT
 
-invert: /* x1 -- x2 */
+code_invert: /* x1 -- x2 */
 	notq %rax
 	NEXT
 
-twomul: /* x1 -- x2 */
+code_twomul: /* x1 -- x2 */
 	shlq %rax
 	NEXT
 
-twodiv: /* x1 -- x2 */
+code_twodiv: /* x1 -- x2 */
 	shrq %rax
 	NEXT
 
-and: /* x1 x2 -- x3 */
+code_and: /* x1 x2 -- x3 */
 	andq (%rbp), %rax
 	NIP
 	NEXT
 
-or: /* x1 x2 -- x3 */
+code_or: /* x1 x2 -- x3 */
 	orq (%rbp), %rax
 	NIP
 	NEXT
 
-xor: /* x1 x2 -- x3 */
+code_xor: /* x1 x2 -- x3 */
 	xorq (%rbp), %rax
 	NIP
 	NEXT
 
-negate: /* n1 -- n2 */
+code_negate: /* n1 -- n2 */
 	negq %rax
 	NEXT
 
-inc: /* n1 -- n2 */
+code_inc: /* n1 -- n2 */
 	incq %rax
 	NEXT
 
-dec: /* n1 -- n2 */
+code_dec: /* n1 -- n2 */
 	decq %rax
 	NEXT
 
-add: /* n1|u1 n2|u2 -- n3|u3 */
+code_add: /* n1|u1 n2|u2 -- n3|u3 */
 	addq %rax, (%rbp)
 	DROP
 	NEXT
 
-sub: /* n1|u1 n2|u2 -- n3|u3 */
+code_sub: /* n1|u1 n2|u2 -- n3|u3 */
 	subq %rax, (%rbp)
 	DROP
 	NEXT
 
-mul: /* n1 n2 -- n3 */
+code_mul: /* n1 n2 -- n3 */
 	movq %rax, %rcx
 	DROP
 	imulq %rcx
 	NEXT
 
-ummul: /* u1 u2 -- ud */
+code_ummul: /* u1 u2 -- ud */
 	movq %rax, %rcx
 	DROP
 	mulq %rcx
@@ -216,7 +221,7 @@ ummul: /* u1 u2 -- ud */
 	movq %rdx, %rax
 	NEXT
 
-umdivmod: /* ud u1 -- u2 u3 */
+code_umdivmod: /* ud u1 -- u2 u3 */
 	movq %rax, %rcx
 	movq (%rbp), %rdx
 	NIP
@@ -225,27 +230,27 @@ umdivmod: /* ud u1 -- u2 u3 */
 	movq %rdx, (%rbp)
 	NEXT
 
-fetch: /* addr -- x */
+code_fetch: /* addr -- x */
 	movq (%rax), %rax
 	NEXT
 
-store: /* x addr -- */
+code_store: /* x addr -- */
 	movq (%rbp), %rdx
 	movq %rdx, (%rax)
 	TWODROP
 	NEXT
 
-bfetch: /* addr -- byte */
+code_bfetch: /* addr -- byte */
 	movzbq (%rax), %rax
 	NEXT
 
-bstore: /* byte addr -- */
+code_bstore: /* byte addr -- */
 	movb (%rbp), %dl
 	movb %dl, (%rax)
 	TWODROP
 	NEXT
 
-syscall: /* x1 x2 x3 x4 -- x5 */
+code_syscall: /* x1 x2 x3 x4 -- x5 */
 	movq (%rbp), %rdx
 	movq CELL(%rbp), %rsi
 	movq CELL*2(%rbp), %rdi
@@ -257,126 +262,126 @@ end:
 
 .data
 
-DEFINE 0,             call,     "call"
-DEFINE head_call,     jump,     "jump"
-DEFINE head_jump,     qjump,    "?jump"
-DEFINE head_qjump,    execute,  "execute"
-DEFINE head_execute,  ret,      "ret"
-DEFINE head_ret,      lit,      "lit"
-DEFINE head_lit,      var,      "var"
-DEFINE head_var,      dup,      "dup"
-DEFINE head_dup,      nip,      "nip"
-DEFINE head_nip,      drop,     "drop"
-DEFINE head_drop,     over,     "over"
-DEFINE head_over,     push,     "push"
-DEFINE head_push,     pop,      "pop"
-DEFINE head_pop,      invert,   "invert"
-DEFINE head_invert,   twomul,   "2*"
-DEFINE head_twomul,   twodiv,   "2/"
-DEFINE head_twodiv,   and,      "and"
-DEFINE head_and,      or,       "or"
-DEFINE head_or,       xor,      "xor"
-DEFINE head_xor,      negate,   "negate"
-DEFINE head_negate,   inc,      "1+"
-DEFINE head_inc,      dec,      "1-"
-DEFINE head_dec,      add,      "+"
-DEFINE head_add,      sub,      "-"
-DEFINE head_sub,      mul,      "*"
-DEFINE head_mul,      ummul,    "um*"
-DEFINE head_ummul,    umdivmod, "um/mod"
-DEFINE head_umdivmod, fetch,    "@"
-DEFINE head_fetch,    store,    "!"
-DEFINE head_store,    bfetch,   "b@"
-DEFINE head_bfetch,   bstore,   "b!"
-DEFINE head_bstore,   syscall,  "syscall"
+DEFCODE 0,             docolon,  "docolon"
+DEFCODE head_docolon,  jump,     "jump"
+DEFCODE head_jump,     qjump,    "?jump"
+DEFCODE head_qjump,    execute,  "execute"
+DEFCODE head_execute,  ret,      "ret"
+DEFCODE head_ret,      lit,      "lit"
+DEFCODE head_lit,      var,      "var"
+DEFCODE head_var,      dup,      "dup"
+DEFCODE head_dup,      nip,      "nip"
+DEFCODE head_nip,      drop,     "drop"
+DEFCODE head_drop,     over,     "over"
+DEFCODE head_over,     push,     "push"
+DEFCODE head_push,     pop,      "pop"
+DEFCODE head_pop,      invert,   "invert"
+DEFCODE head_invert,   twomul,   "2*"
+DEFCODE head_twomul,   twodiv,   "2/"
+DEFCODE head_twodiv,   and,      "and"
+DEFCODE head_and,      or,       "or"
+DEFCODE head_or,       xor,      "xor"
+DEFCODE head_xor,      negate,   "negate"
+DEFCODE head_negate,   inc,      "1+"
+DEFCODE head_inc,      dec,      "1-"
+DEFCODE head_dec,      add,      "+"
+DEFCODE head_add,      sub,      "-"
+DEFCODE head_sub,      mul,      "*"
+DEFCODE head_mul,      ummul,    "um*"
+DEFCODE head_ummul,    umdivmod, "um/mod"
+DEFCODE head_umdivmod, fetch,    "@"
+DEFCODE head_fetch,    store,    "!"
+DEFCODE head_store,    bfetch,   "b@"
+DEFCODE head_bfetch,   bstore,   "b!"
+DEFCODE head_bstore,   syscall,  "syscall"
 
 DEFINE head_syscall, cell, "cell"
 cell: /* -- u */
+	.quad code_docolon
 	.quad lit, CELL
 	.quad ret
 
 DEFINE head_cell, nfa, "nfa"
 nfa: /* -- u */
+	.quad code_docolon
 	.quad lit, NFA
 	.quad ret
 
 DEFINE head_nfa, sys_read, "sys-read"
 sys_read: /* -- x */
+	.quad code_docolon
 	.quad lit, SYS_read
 	.quad ret
 
 DEFINE head_sys_read, sys_write, "sys-write"
 sys_write: /* -- x */
+	.quad code_docolon
 	.quad lit, SYS_write
 	.quad ret
 
 DEFINE head_sys_write, sys_exit, "sys-exit"
 sys_exit: /* -- x */
+	.quad code_docolon
 	.quad lit, SYS_exit
 	.quad ret
 
-DEFINE head_sys_exit, code_start, "code-start"
-code_start: /* -- addr */
-	.quad lit, START
-	.quad ret
-
-DEFINE head_code_start, code_end, "code-end"
-code_end: /* -- addr */
-	.quad lit, end
-	.quad ret
-
-DEFINE head_code_end, tickinput, "'input"
+DEFINE head_sys_exit, tickinput, "'input"
 tickinput: /* -- addr */
+	.quad code_docolon
 	.quad lit, input
 	.quad ret
 
 DEFINE head_tickinput, tickoutput, "'output"
 tickoutput: /* -- addr */
+	.quad code_docolon
 	.quad lit, output
 	.quad ret
 
 DEFINE head_tickoutput, tickbuffer, "'buffer"
 tickbuffer: /* -- addr */
+	.quad code_docolon
 	.quad lit, buffer
 	.quad ret
 
 DEFINE head_tickbuffer, tickguard, "'guard"
 tickguard: /* -- addr */
+	.quad code_docolon
 	.quad lit, guard
 	.quad ret
 
 DEFINE head_tickguard, mark, "mark"
 mark: /* -- addr */
+	.quad code_docolon
 	.quad var, input+1
 	.quad ret
 
 DEFINE head_mark, state, "state"
 state: /* -- addr */
+	.quad code_docolon
 	.quad var, 0
 	.quad ret
 
 DEFINE head_state, here, "here"
 here: /* -- addr */
+	.quad code_docolon
 	.quad var, vocabulary
 	.quad ret
 
-DEFINE head_here, top, "top"
-top: /* -- addr */
-	.quad var, vocabulary
-	.quad ret
-
-DEFINE head_top, latest, "latest"
+DEFINE head_here, latest, "latest"
 latest: /* -- addr */
+	.quad code_docolon
 	.quad var, head_main
 	.quad ret
 
 DEFINE head_latest, base, "base"
 base: /* -- addr */
+	.quad code_docolon
 	.quad var, 10
 	.quad ret
 
 DEFINE head_base, bool, "bool"
 bool: /* x -- bool */
+	.quad code_docolon
 	.quad qjump, 0f
 
 	.quad lit, -1
@@ -388,74 +393,81 @@ bool: /* x -- bool */
 
 DEFINE head_bool, zequals, "0="
 zequals: /* x -- bool */
-	.quad call, bool
+	.quad code_docolon
+	.quad bool
 	.quad invert
 	.quad ret
 
 DEFINE head_zequals, equals, "="
 equals: /* x1 x2 -- bool */
+	.quad code_docolon
 	.quad xor
-	.quad call, zequals
+	.quad zequals
 	.quad ret
 
 DEFINE head_equals, zless, "0<"
 zless: /* n - bool */
+	.quad code_docolon
 	.quad lit, 1<<(CELL*8-1)
 	.quad and
-	.quad call, bool
+	.quad bool
 	.quad ret
 
 DEFINE head_zless, less, "<"
 less: /* n1 n2 -- bool */
+	.quad code_docolon
 	.quad over
 	.quad over
 	.quad xor
-	.quad call, zless
+	.quad zless
 
 	.quad qjump, 0f
 
 	.quad drop
-	.quad call, zless
+	.quad zless
 	.quad ret
 
 0:
 	.quad sub
-	.quad call, zless
+	.quad zless
 	.quad ret
 
 DEFINE head_less, uless, "u<"
 uless: /* u1 u2 -- bool */
+	.quad code_docolon
 	.quad over
 	.quad over
 	.quad xor
-	.quad call, zless
+	.quad zless
 
 	.quad qjump, 0f
 
 	.quad nip
-	.quad call, zless
+	.quad zless
 	.quad ret
 
 0:
 	.quad sub
-	.quad call, zless
+	.quad zless
 	.quad ret
 
 DEFINE head_uless, within, "within"
 within: /* u1 u2 u3 -- bool */
+	.quad code_docolon
 	.quad push
 	.quad over
 	.quad push
-	.quad call, uless
+	.quad uless
 	.quad invert
 	.quad pop
 	.quad pop
-	.quad call, uless
+	.quad uless
 	.quad and
 	.quad ret
 
 DEFINE head_within, aligned, "aligned"
 aligned: /* x1 -- x2 */
+	.quad code_docolon
 	.quad lit, CELL-1
 	.quad add
 	.quad lit, ~(CELL-1)
@@ -464,6 +476,7 @@ aligned: /* x1 -- x2 */
 
 DEFINE head_aligned, string, "string"
 string: /* addr1 -- addr2 u */
+	.quad code_docolon
 	.quad dup
 	.quad push
 	.quad inc
@@ -473,6 +486,9 @@ string: /* addr1 -- addr2 u */
 
 DEFINE head_string, bmove, "bmove"
 bmove: /* addr1 addr2 u -- */
+	.quad code_docolon
+
+0:
 	.quad dup
 
 	.quad qjump, 0f
@@ -489,7 +505,7 @@ bmove: /* addr1 addr2 u -- */
 	.quad pop
 	.quad dec
 
-	.quad jump, bmove
+	.quad jump, 0b
 0:
 
 	.quad nip
@@ -499,6 +515,9 @@ bmove: /* addr1 addr2 u -- */
 
 DEFINE head_bmove, sameq, "same?"
 sameq: /* addr1 addr2 u -- bool */
+	.quad code_docolon
+
+0:
 	.quad dup
 	.quad push
 	.quad push
@@ -506,7 +525,7 @@ sameq: /* addr1 addr2 u -- bool */
 	.quad bfetch
 	.quad over
 	.quad bfetch
-	.quad call, equals
+	.quad equals
 	.quad pop
 	.quad and
 
@@ -519,20 +538,21 @@ sameq: /* addr1 addr2 u -- bool */
 	.quad pop
 	.quad dec
 
-	.quad jump, sameq
+	.quad jump, 0b
 0:
 
 	.quad pop
 	.quad nip
 	.quad nip
-	.quad call, zequals
+	.quad zequals
 	.quad ret
 
 DEFINE head_sameq, write, "write"
 write:
+	.quad code_docolon
 	.quad lit, 1
 	.quad lit, output
-	.quad call, string
+	.quad string
 	.quad lit, SYS_write
 	.quad syscall
 	.quad drop
@@ -543,7 +563,8 @@ write:
 
 DEFINE head_write, bye, "bye"
 bye:
-	.quad call, write
+	.quad code_docolon
+	.quad write
 	.quad lit, 0
 	.quad dup
 	.quad dup
@@ -552,6 +573,7 @@ bye:
 
 DEFINE head_bye, read, "read"
 read:
+	.quad code_docolon
 	.quad lit, 0
 	.quad lit, input+1
 	.quad lit, 0xFF
@@ -564,43 +586,47 @@ read:
 	.quad lit, input
 	.quad bstore
 	.quad lit, input+1
-	.quad call, mark
+	.quad mark
 	.quad store
 	.quad ret
 
 0:
-	.quad call, bye
+	.quad bye
 
 DEFINE head_read, keyq, "key?"
 keyq: /* -- bool */
-	.quad call, mark
+	.quad code_docolon
+	.quad mark
 	.quad fetch
 	.quad lit, input
-	.quad call, string
+	.quad string
 	.quad add
-	.quad call, uless
+	.quad uless
 	.quad ret
 
 DEFINE head_keyq, key, "key"
 key: /* -- char */
-	.quad call, mark
+	.quad code_docolon
+	.quad mark
 	.quad fetch
 	.quad bfetch
 	.quad ret
 
 DEFINE head_key, advance, "advance"
 advance:
-	.quad call, mark
+	.quad code_docolon
+	.quad mark
 	.quad fetch
 	.quad inc
-	.quad call, mark
+	.quad mark
 	.quad store
 	.quad ret
 
 DEFINE head_advance, emit, "emit"
 emit: /* char -- */
+	.quad code_docolon
 	.quad lit, output
-	.quad call, string
+	.quad string
 	.quad add
 	.quad bstore
 	.quad lit, output
@@ -617,11 +643,14 @@ emit: /* char -- */
 	.quad ret
 
 0:
-	.quad call, write
+	.quad write
 	.quad ret
 
 DEFINE head_emit, type, "type"
 type: /* addr u -- */
+	.quad code_docolon
+
+0:
 	.quad dup
 
 	.quad qjump, 0f
@@ -629,12 +658,12 @@ type: /* addr u -- */
 	.quad push
 	.quad dup
 	.quad bfetch
-	.quad call, emit
+	.quad emit
 	.quad inc
 	.quad pop
 	.quad dec
 
-	.quad jump, type
+	.quad jump, 0b
 0:
 
 	.quad nip
@@ -643,8 +672,9 @@ type: /* addr u -- */
 
 DEFINE head_type, accumulate, "accumulate"
 accumulate: /* char -- */
+	.quad code_docolon
 	.quad lit, buffer
-	.quad call, string
+	.quad string
 	.quad dup
 	.quad inc
 	.quad lit, buffer
@@ -655,67 +685,71 @@ accumulate: /* char -- */
 
 DEFINE head_accumulate, skip, "skip"
 skip:
-	.quad call, keyq
-	.quad invert
-
-	.quad qjump, 0f
-
-	.quad call, read
+	.quad code_docolon
 
 0:
-	.quad call, key
+	.quad keyq
+	.quad invert
+
+	.quad qjump, 1f
+
+	.quad read
+
+1:
+	.quad key
 	.quad lit, '!'
-	.quad call, uless
-	.quad call, key
+	.quad uless
+	.quad key
 	.quad lit, 10
 	.quad xor
 	.quad and
 
 	.quad qjump, 0f
 
-	.quad call, advance
+	.quad advance
 
-	.quad jump, skip
+	.quad jump, 0b
 0:
 
 	.quad ret
 
 DEFINE head_skip, wordq, "word?"
 wordq:
-	.quad call, skip
+	.quad code_docolon
+	.quad skip
 	.quad lit, 0
 	.quad lit, buffer
 	.quad bstore
-	.quad call, key
+	.quad key
 	.quad lit, 10
 	.quad xor
 
 	.quad qjump, 2f
 
 0:
-	.quad call, keyq
+	.quad keyq
 	.quad invert
 
 	.quad qjump, 1f
 
-	.quad call, read
+	.quad read
 
 1:
-	.quad call, key
+	.quad key
 	.quad dup
 	.quad lit, '!'
-	.quad call, uless
+	.quad uless
 	.quad invert
 	.quad lit, buffer
 	.quad bfetch
 	.quad lit, 0x3F
-	.quad call, uless
+	.quad uless
 	.quad and
 
 	.quad qjump, 0f
 
-	.quad call, accumulate
-	.quad call, advance
+	.quad accumulate
+	.quad advance
 
 	.quad jump, 0b
 0:
@@ -727,27 +761,31 @@ wordq:
 
 DEFINE head_wordq, word, "word"
 word:
-	.quad call, wordq
+	.quad code_docolon
+
+0:
+	.quad wordq
 	.quad lit, buffer
 	.quad bfetch
-	.quad call, zequals
+	.quad zequals
 
 	.quad qjump, 0f
 
-	.quad call, advance
+	.quad advance
 
-	.quad jump, word
+	.quad jump, 0b
 0:
 
 	.quad ret
 
 DEFINE head_word, digitq, "digit?"
 digitq: /* char -- u bool */
+	.quad code_docolon
 	.quad lit, '0'
 	.quad sub
 	.quad lit, 9
 	.quad over
-	.quad call, less
+	.quad less
 
 	.quad qjump, 0f
 
@@ -755,18 +793,19 @@ digitq: /* char -- u bool */
 	.quad sub
 	.quad dup
 	.quad lit, 10
-	.quad call, less
+	.quad less
 	.quad or
 
 0:
 	.quad dup
-	.quad call, base
+	.quad base
 	.quad fetch
-	.quad call, uless
+	.quad uless
 	.quad ret
 
 DEFINE head_digitq, natural, "natural"
 natural: /* addr u1 -- u2 u3 */
+	.quad code_docolon
 	.quad push
 	.quad lit, 0
 	.quad pop
@@ -775,7 +814,7 @@ natural: /* addr u1 -- u2 u3 */
 	.quad push
 	.quad over
 	.quad bfetch
-	.quad call, digitq
+	.quad digitq
 	.quad pop
 	.quad dup
 	.quad push
@@ -784,7 +823,7 @@ natural: /* addr u1 -- u2 u3 */
 	.quad qjump, 0f
 
 	.quad push
-	.quad call, base
+	.quad base
 	.quad fetch
 	.quad mul
 	.quad pop
@@ -805,6 +844,7 @@ natural: /* addr u1 -- u2 u3 */
 
 DEFINE head_natural, number, "number"
 number: /* addr u1 -- n u2 */
+	.quad code_docolon
 	.quad over
 	.quad bfetch
 	.quad lit, '-'
@@ -812,7 +852,7 @@ number: /* addr u1 -- n u2 */
 
 	.quad qjump, 0f
 
-	.quad call, natural
+	.quad natural
 	.quad ret
 
 0:
@@ -820,7 +860,7 @@ number: /* addr u1 -- n u2 */
 	.quad inc
 	.quad pop
 	.quad dec
-	.quad call, natural
+	.quad natural
 	.quad push
 	.quad negate
 	.quad pop
@@ -828,12 +868,13 @@ number: /* addr u1 -- n u2 */
 
 DEFINE head_number, find, "find"
 find: /* -- 0 | addr */
-	.quad call, latest
+	.quad code_docolon
+	.quad latest
 
 0:
 	.quad fetch
 	.quad dup
-	.quad call, zequals
+	.quad zequals
 	.quad over
 
 	.quad qjump, 1f
@@ -846,7 +887,7 @@ find: /* -- 0 | addr */
 	.quad and
 	.quad lit, buffer
 	.quad bfetch
-	.quad call, equals
+	.quad equals
 
 	.quad qjump, 1f
 
@@ -855,8 +896,8 @@ find: /* -- 0 | addr */
 	.quad lit, NFA+1
 	.quad add
 	.quad lit, buffer
-	.quad call, string
-	.quad call, sameq
+	.quad string
+	.quad sameq
 
 1:
 	.quad qjump, 0b
@@ -865,134 +906,112 @@ find: /* -- 0 | addr */
 
 DEFINE head_find, collision, "collision"
 collision:
-	.quad call, top
+	.quad code_docolon
+	.quad here
 	.quad fetch
-	.quad call, tickguard
-	.quad call, uless
+	.quad tickguard
+	.quad uless
 	.quad invert
 
 	.quad qjump, 0f
 
 	.quad lit, head_collision+NFA
-	.quad call, string
-	.quad call, type
-	.quad call, bye
+	.quad string
+	.quad type
+	.quad bye
 
 0:
 	.quad ret
 
 DEFINE head_collision, save, "save"
 save:
+	.quad code_docolon
 	.quad lit, buffer
-	.quad call, top
+	.quad here
 	.quad fetch
 	.quad over
 	.quad bfetch
 	.quad inc
 	.quad dup
-	.quad call, aligned
-	.quad call, top
+	.quad aligned
+	.quad here
 	.quad fetch
 	.quad add
-	.quad call, top
+	.quad here
 	.quad store
-	.quad call, collision
-	.quad call, bmove
-	.quad call, commit
+	.quad collision
+	.quad bmove
 	.quad ret
 
 DEFINE head_save, comma, ",", IMMEDIATE
 comma: /* x -- */
-	.quad call, top
+	.quad code_docolon
+	.quad here
 	.quad fetch
 	.quad dup
 	.quad lit, CELL
 	.quad add
-	.quad call, top
+	.quad here
 	.quad store
 	.quad store
-	.quad call, collision
+	.quad collision
 	.quad ret
 
-DEFINE head_comma, commit, "commit"
-commit:
-	.quad call, top
-	.quad fetch
-	.quad call, here
-	.quad store
-	.quad ret
-
-DEFINE head_commit, apply, "apply"
-apply:
-	.quad call, state
-	.quad fetch
-
-	.quad qjump, 0f
-
-	.quad call, commit
-	.quad ret
-
-0:
-	.quad lit, ret
-	.quad call, comma
-	.quad call, here
-	.quad fetch
-	.quad dup
-	.quad call, top
-	.quad store
-	.quad execute
-	.quad ret
-
-DEFINE head_apply, lbracket, "[", IMMEDIATE
+DEFINE head_comma, lbracket, "[", IMMEDIATE
 lbracket:
-	.quad call, commit
+	.quad code_docolon
 	.quad lit, 0
-	.quad call, state
+	.quad state
 	.quad store
 	.quad ret
 
 DEFINE head_lbracket, rbracket, "]", IMMEDIATE
 rbracket:
-	.quad call, apply
+	.quad code_docolon
 	.quad lit, -1
-	.quad call, state
+	.quad state
 	.quad store
 	.quad ret
 
 DEFINE head_rbracket, colon, ":", IMMEDIATE
 colon:
-	.quad call, rbracket
-	.quad call, latest
+	.quad code_docolon
+	.quad rbracket
+	.quad latest
 	.quad fetch
-	.quad call, top
+	.quad here
 	.quad fetch
-	.quad call, latest
+	.quad latest
 	.quad store
-	.quad call, comma
-	.quad call, top
+	.quad comma
+	.quad here
 	.quad fetch
 	.quad push
 	.quad lit, 0
-	.quad call, comma
-	.quad call, word
-	.quad call, save
-	.quad call, top
+	.quad comma
+	.quad word
+	.quad save
+	.quad here
 	.quad fetch
 	.quad pop
 	.quad store
+	.quad lit, code_docolon
+	.quad comma
 	.quad ret
 
 DEFINE head_colon, semicolon, ";", IMMEDIATE
 semicolon:
+	.quad code_docolon
 	.quad lit, ret
-	.quad call, comma
-	.quad call, lbracket
+	.quad comma
+	.quad lbracket
 	.quad ret
 
 DEFINE head_semicolon, tick, "'", IMMEDIATE
 tick: /* -- 0 | xt */
-	.quad call, word
-	.quad call, find
+	.quad code_docolon
+	.quad word
+	.quad find
 	.quad dup
 
 	.quad qjump, 0f
@@ -1006,31 +1025,34 @@ tick: /* -- 0 | xt */
 
 DEFINE head_tick, postpone, "postpone", IMMEDIATE
 postpone:
-	.quad call, tick
-	.quad lit, call
-	.quad call, comma
-	.quad call, comma
+	.quad code_docolon
+	.quad tick
+	.quad comma
 	.quad ret
 
 DEFINE head_postpone, literal, "literal", IMMEDIATE
 literal: /* x -- */
+	.quad code_docolon
 	.quad lit, lit
-	.quad call, comma
-	.quad call, comma
+	.quad comma
+	.quad comma
 	.quad ret
 
 DEFINE head_literal, interpret, "interpret"
 interpret:
-	.quad call, wordq
+	.quad code_docolon
+
+0:
+	.quad wordq
 	.quad lit, buffer
 	.quad bfetch
 
-	.quad qjump, 2f
+	.quad qjump, 3f
 
-	.quad call, find
+	.quad find
 	.quad dup
 
-	.quad qjump, 1f
+	.quad qjump, 2f
 
 	.quad lit, CELL
 	.quad add
@@ -1040,59 +1062,57 @@ interpret:
 	.quad bfetch
 	.quad lit, IMMEDIATE
 	.quad and
+	.quad state
+	.quad fetch
+	.quad invert
+	.quad or
 
-	.quad qjump, 0f
+	.quad qjump, 1f
 
 	.quad fetch
 	.quad execute
-	.quad jump, interpret
-
-0:
-	.quad fetch
-	.quad dup
-	.quad lit, START
-	.quad lit, end
-	.quad call, within
-	.quad invert
-
-	.quad qjump, 0f
-
-	.quad lit, call
-	.quad call, comma
-
-0:
-	.quad call, comma
-	.quad jump, interpret
+	.quad jump, 0b
 
 1:
-	.quad drop
-	.quad lit, buffer
-	.quad call, string
-	.quad call, number
-
-	.quad qjump, 0f
-
-	.quad drop
-	.quad lit, buffer
-	.quad call, string
-	.quad call, type
-	.quad lit, '?'
-	.quad call, emit
-	.quad ret
-
-0:
-	.quad call, literal
-	.quad jump, interpret
+	.quad fetch
+	.quad comma
+	.quad jump, 0b
 
 2:
+	.quad drop
+	.quad lit, buffer
+	.quad string
+	.quad number
+
+	.quad qjump, 1f
+
+	.quad drop
+	.quad lit, buffer
+	.quad string
+	.quad type
+	.quad lit, '?'
+	.quad emit
+	.quad ret
+
+1:
+
+	.quad state
+	.quad fetch
+
+	.quad qjump, 0b
+
+	.quad literal
+
+	.quad jump, 0b
+
+3:
 	.quad ret
 
 DEFINE head_interpret, main, "main"
 main:
-	.quad call, interpret
-	.quad call, apply
-	.quad call, advance
-	.quad call, write
+	.quad interpret
+	.quad advance
+	.quad write
 	.quad jump, main
 
 .bss

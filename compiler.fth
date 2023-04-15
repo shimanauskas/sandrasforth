@@ -44,7 +44,7 @@
 
 : skip
   begin
-    key? invert if read then key char ! u< key 10 xor and
+    key? invert if read then key [char] ! u< key 10 xor and
   if
     advance
   repeat ;
@@ -52,7 +52,7 @@
 : word? skip 0 'buffer b! key 10 xor
   if
     begin
-      key? invert if read then key dup char ! u< invert 'buffer b@ 63 u< and
+      key? invert if read then key dup [char] ! u< invert 'buffer b@ 63 u< and
     if
       accumulate advance
     repeat
@@ -61,7 +61,7 @@
 
 : word begin word? 'buffer b@ 0= if advance repeat ;
 
-: digit? ( char -- u bool ) char 0 - 9 over <
+: digit? ( char -- u bool ) [char] 0 - 9 over <
   if [ char A char 0 - 10 - ] literal - dup 10 < or then
   dup base @ u< ;
 
@@ -73,7 +73,7 @@
   repeat
   drop nip pop ;
 
-: number ( addr u1 -- n u2 ) over b@ char - xor
+: number ( addr u1 -- n u2 ) over b@ [char] - xor
   if natural ret then push 1+ pop 1- natural push negate pop ;
 
 : find ( -- 0 | addr ) latest
@@ -85,30 +85,25 @@
     then
   until ;
 
-: collision top @ 'guard u< invert
+: collision here @ 'guard u< invert
   if [ latest @ nfa + ] literal string type bye then ;
 
-: save 'buffer top @ over b@ 1+ dup aligned top @ + top ! collision
-  bmove commit ;
+: save 'buffer here @ over b@ 1+ dup aligned here @ + here ! collision
+  bmove ;
 
-: , ( x -- ) top  @ dup cell + top  ! ! collision ; immediate
+: , ( x -- ) here @ dup cell + here ! ! collision ; immediate
 
-: commit top @ here ! ;
+: [  0 state ! ; immediate
+: ] -1 state ! ; immediate
 
-: apply state @
-  if commit ret then lit ret postpone , here @ dup top ! execute ;
-
-: [ commit 0 state ! ; immediate
-: ] apply -1 state ! ; immediate
-
-: : postpone ] latest @ top @ latest ! postpone , top @ push 0 postpone ,
-  word save top @ pop ! ; immediate
+: : postpone ] latest @ here @ latest ! postpone , here @ push 0 postpone ,
+  word save here @ pop ! lit ' docolon [ @ ] , postpone , ; immediate
 
 : ; hidden lit ret postpone , postpone [ ; hidden immediate
 
 : ' ( -- 0 | xt ) word find dup if cell + @ then ; immediate
 
-: postpone hidden postpone ' lit call postpone , postpone , ; hidden immediate
+: postpone hidden postpone ' postpone , ; hidden immediate
 
 : literal ( x -- ) lit lit postpone , postpone , ; immediate
 
@@ -116,15 +111,14 @@
   if
     find dup
     if
-      cell + dup cell + b@ 128 and
-      if @ execute jump ' interpret , then
-      @ dup code-start code-end within invert
-      if lit call postpone , then
-      postpone , jump ' interpret ,
+      cell + dup cell + b@ 128 and state @ invert or
+      if @ execute jump ' interpret [ cell + ] , then
+      @ postpone , jump ' interpret [ cell + ] ,
     then
     drop 'buffer string number
-    if drop 'buffer string type char ? emit ret then
-    postpone literal jump ' interpret ,
+    if drop 'buffer string type [char] ? emit ret then
+    state @ ?jump ' interpret [ cell + ] ,
+    postpone literal jump ' interpret [ cell + ] ,
   then ;
 
-: main begin interpret apply advance write again [ main ]
+: main begin interpret advance write again ; main

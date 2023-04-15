@@ -2,7 +2,7 @@
 
 A Forth for Linux and macOS on x86-64.
 
-Avocado is written mostly in (direct-)threaded code. There is no limit on the amount of primitives, however, each primitive should be kept small.
+Avocado is written mostly in (indirect-)threaded code. There is no limit on the amount of primitives, however, each primitive should be kept small.
 
 Since .text and .data are not mixed, CPU caches stay clean.
 
@@ -35,6 +35,6 @@ Clean:
 
 ## Errors
 
-Upon a word not found, Avocado outputs it, followed by a question mark. Continue from where the error occured.
+Upon a word not found, Avocado outputs it, followed by a question mark.
 
 When Avocado runs out of statically allocated memory, the word `collision` will be printed and Avocado will exit.

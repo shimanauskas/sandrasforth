@@ -1,12 +1,12 @@
 : immediate latest @ nfa + dup b@ 128 xor over b! drop ; immediate
 : hidden    latest @ nfa + dup b@  64 xor over b! drop ; immediate
 
-: begin top @ ; immediate
+: begin here @ ; immediate
 
-: if lit ?jump postpone , top @ 0 postpone , ; immediate
-: then push top @ pop ! ; immediate
+: if lit ?jump postpone , here @ 0 postpone , ; immediate
+: then push here @ pop ! ; immediate
 
-: repeat push lit jump postpone , postpone , top @ pop ! ; immediate
+: repeat push lit jump postpone , postpone , here @ pop ! ; immediate
 : until lit ?jump postpone , postpone , ; immediate
 : again lit  jump postpone , postpone , ; immediate
 
@@ -23,27 +23,28 @@
 
 : space 32 emit ;
 
-: char ( -- char ) word [ 'buffer 1+ ] literal b@ postpone literal ; immediate
+:  char  ( -- char ) word [ 'buffer 1+ ] literal b@ ;
+: [char] ( -- char ) char postpone literal ; immediate
 
 : " ( -- addr ) skip 0 'buffer b!
   begin
-    key? invert if read then key dup char " xor 'buffer b@ 255 u< and
+    key? invert if read then key dup [char] " xor 'buffer b@ 255 u< and
   if
     accumulate advance
   repeat
-  char " = if advance then
-  top @ save ; immediate
+  [char] " = if advance then
+  here @ save ; immediate
 
 : hold ( char -- ) 'buffer @ 1- dup 'buffer ! b! ;
 
 : digit ( u -- char ) dup 10 u<
-  if char 0 + ret then [ char A 10 - ] literal + ;
+  if [char] 0 + ret then [ char A 10 - ] literal + ;
 
 : u. ( u -- ) [ 'buffer 256 + ] literal 'buffer !
   begin 0 base @ um/mod push digit hold pop dup 0= until drop
   'buffer @ [ 'buffer 256 + ] literal over - type ;
 
-: . ( n -- ) dup 0< if char - emit negate then u. ;
+: . ( n -- ) dup 0< if [char] - emit negate then u. ;
 
 : bina  2 base ! ; immediate
 : deci 10 base ! ; immediate
