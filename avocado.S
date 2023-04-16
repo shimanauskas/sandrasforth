@@ -75,11 +75,11 @@ head_\body:
 	.ascii "\name"
 1:
 .balign CELL
+\body:
 .endm
 
 .macro DEFCODE previous, body, name
 DEFINE \previous, \body, \name
-\body:
 	.quad code_\body
 .endm
 
@@ -295,92 +295,77 @@ DEFCODE head_store,    bfetch,   "b@"
 DEFCODE head_bfetch,   bstore,   "b!"
 DEFCODE head_bstore,   syscall,  "syscall"
 
-DEFINE head_syscall, cell, "cell"
-cell: /* -- u */
+DEFINE head_syscall, cell, "cell" /* -- u */
 	.quad code_docolon
 	.quad lit, CELL
 	.quad ret
 
-DEFINE head_cell, nfa, "nfa"
-nfa: /* -- u */
+DEFINE head_cell, nfa, "nfa" /* -- u */
 	.quad code_docolon
 	.quad lit, NFA
 	.quad ret
 
-DEFINE head_nfa, sys_read, "sys-read"
-sys_read: /* -- x */
+DEFINE head_nfa, sys_read, "sys-read" /* -- x */
 	.quad code_docolon
 	.quad lit, SYS_read
 	.quad ret
 
-DEFINE head_sys_read, sys_write, "sys-write"
-sys_write: /* -- x */
+DEFINE head_sys_read, sys_write, "sys-write" /* -- x */
 	.quad code_docolon
 	.quad lit, SYS_write
 	.quad ret
 
-DEFINE head_sys_write, sys_exit, "sys-exit"
-sys_exit: /* -- x */
+DEFINE head_sys_write, sys_exit, "sys-exit" /* -- x */
 	.quad code_docolon
 	.quad lit, SYS_exit
 	.quad ret
 
-DEFINE head_sys_exit, tickinput, "'input"
-tickinput: /* -- addr */
+DEFINE head_sys_exit, tickinput, "'input" /* -- addr */
 	.quad code_docolon
 	.quad lit, input
 	.quad ret
 
-DEFINE head_tickinput, tickoutput, "'output"
-tickoutput: /* -- addr */
+DEFINE head_tickinput, tickoutput, "'output" /* -- addr */
 	.quad code_docolon
 	.quad lit, output
 	.quad ret
 
-DEFINE head_tickoutput, tickbuffer, "'buffer"
-tickbuffer: /* -- addr */
+DEFINE head_tickoutput, tickbuffer, "'buffer" /* -- addr */
 	.quad code_docolon
 	.quad lit, buffer
 	.quad ret
 
-DEFINE head_tickbuffer, tickguard, "'guard"
-tickguard: /* -- addr */
+DEFINE head_tickbuffer, tickguard, "'guard" /* -- addr */
 	.quad code_docolon
 	.quad lit, guard
 	.quad ret
 
-DEFINE head_tickguard, mark, "mark"
-mark: /* -- addr */
+DEFINE head_tickguard, mark, "mark" /* -- addr */
 	.quad code_docolon
 	.quad var, input+1
 	.quad ret
 
-DEFINE head_mark, state, "state"
-state: /* -- addr */
+DEFINE head_mark, state, "state" /* -- addr */
 	.quad code_docolon
 	.quad var, 0
 	.quad ret
 
-DEFINE head_state, here, "here"
-here: /* -- addr */
+DEFINE head_state, here, "here" /* -- addr */
 	.quad code_docolon
 	.quad var, vocabulary
 	.quad ret
 
-DEFINE head_here, latest, "latest"
-latest: /* -- addr */
+DEFINE head_here, latest, "latest" /* -- addr */
 	.quad code_docolon
 	.quad var, head_main
 	.quad ret
 
-DEFINE head_latest, base, "base"
-base: /* -- addr */
+DEFINE head_latest, base, "base" /* -- addr */
 	.quad code_docolon
 	.quad var, 10
 	.quad ret
 
-DEFINE head_base, bool, "bool"
-bool: /* x -- bool */
+DEFINE head_base, bool, "bool" /* x -- bool */
 	.quad code_docolon
 	.quad qjump, 0f
 
@@ -391,30 +376,26 @@ bool: /* x -- bool */
 	.quad lit, 0
 	.quad ret
 
-DEFINE head_bool, zequals, "0="
-zequals: /* x -- bool */
+DEFINE head_bool, zequals, "0=" /* x -- bool */
 	.quad code_docolon
 	.quad bool
 	.quad invert
 	.quad ret
 
-DEFINE head_zequals, equals, "="
-equals: /* x1 x2 -- bool */
+DEFINE head_zequals, equals, "=" /* x1 x2 -- bool */
 	.quad code_docolon
 	.quad xor
 	.quad zequals
 	.quad ret
 
-DEFINE head_equals, zless, "0<"
-zless: /* n - bool */
+DEFINE head_equals, zless, "0<" /* n - bool */
 	.quad code_docolon
 	.quad lit, 1<<(CELL*8-1)
 	.quad and
 	.quad bool
 	.quad ret
 
-DEFINE head_zless, less, "<"
-less: /* n1 n2 -- bool */
+DEFINE head_zless, less, "<" /* n1 n2 -- bool */
 	.quad code_docolon
 	.quad over
 	.quad over
@@ -432,8 +413,7 @@ less: /* n1 n2 -- bool */
 	.quad zless
 	.quad ret
 
-DEFINE head_less, uless, "u<"
-uless: /* u1 u2 -- bool */
+DEFINE head_less, uless, "u<" /* u1 u2 -- bool */
 	.quad code_docolon
 	.quad over
 	.quad over
@@ -451,8 +431,7 @@ uless: /* u1 u2 -- bool */
 	.quad zless
 	.quad ret
 
-DEFINE head_uless, within, "within"
-within: /* u1 u2 u3 -- bool */
+DEFINE head_uless, within, "within" /* u1 u2 u3 -- bool */
 	.quad code_docolon
 	.quad push
 	.quad over
@@ -465,8 +444,7 @@ within: /* u1 u2 u3 -- bool */
 	.quad and
 	.quad ret
 
-DEFINE head_within, aligned, "aligned"
-aligned: /* x1 -- x2 */
+DEFINE head_within, aligned, "aligned" /* x1 -- x2 */
 	.quad code_docolon
 	.quad lit, CELL-1
 	.quad add
@@ -474,8 +452,7 @@ aligned: /* x1 -- x2 */
 	.quad and
 	.quad ret
 
-DEFINE head_aligned, string, "string"
-string: /* addr1 -- addr2 u */
+DEFINE head_aligned, string, "string" /* addr1 -- addr2 u */
 	.quad code_docolon
 	.quad dup
 	.quad push
@@ -484,8 +461,7 @@ string: /* addr1 -- addr2 u */
 	.quad bfetch
 	.quad ret
 
-DEFINE head_string, bmove, "bmove"
-bmove: /* addr1 addr2 u -- */
+DEFINE head_string, bmove, "bmove" /* addr1 addr2 u -- */
 	.quad code_docolon
 
 0:
@@ -513,8 +489,7 @@ bmove: /* addr1 addr2 u -- */
 	.quad drop
 	.quad ret
 
-DEFINE head_bmove, sameq, "same?"
-sameq: /* addr1 addr2 u -- bool */
+DEFINE head_bmove, sameq, "same?" /* addr1 addr2 u -- bool */
 	.quad code_docolon
 
 0:
@@ -548,7 +523,6 @@ sameq: /* addr1 addr2 u -- bool */
 	.quad ret
 
 DEFINE head_sameq, write, "write"
-write:
 	.quad code_docolon
 	.quad lit, 1
 	.quad lit, output
@@ -562,7 +536,6 @@ write:
 	.quad ret
 
 DEFINE head_write, bye, "bye"
-bye:
 	.quad code_docolon
 	.quad write
 	.quad lit, 0
@@ -572,7 +545,6 @@ bye:
 	.quad syscall
 
 DEFINE head_bye, read, "read"
-read:
 	.quad code_docolon
 	.quad lit, 0
 	.quad lit, input+1
@@ -593,8 +565,7 @@ read:
 0:
 	.quad bye
 
-DEFINE head_read, keyq, "key?"
-keyq: /* -- bool */
+DEFINE head_read, keyq, "key?" /* -- bool */
 	.quad code_docolon
 	.quad mark
 	.quad fetch
@@ -604,8 +575,7 @@ keyq: /* -- bool */
 	.quad uless
 	.quad ret
 
-DEFINE head_keyq, key, "key"
-key: /* -- char */
+DEFINE head_keyq, key, "key" /* -- char */
 	.quad code_docolon
 	.quad mark
 	.quad fetch
@@ -613,7 +583,6 @@ key: /* -- char */
 	.quad ret
 
 DEFINE head_key, advance, "advance"
-advance:
 	.quad code_docolon
 	.quad mark
 	.quad fetch
@@ -622,8 +591,7 @@ advance:
 	.quad store
 	.quad ret
 
-DEFINE head_advance, emit, "emit"
-emit: /* char -- */
+DEFINE head_advance, emit, "emit" /* char -- */
 	.quad code_docolon
 	.quad lit, output
 	.quad string
@@ -646,8 +614,7 @@ emit: /* char -- */
 	.quad write
 	.quad ret
 
-DEFINE head_emit, type, "type"
-type: /* addr u -- */
+DEFINE head_emit, type, "type" /* addr u -- */
 	.quad code_docolon
 
 0:
@@ -670,8 +637,7 @@ type: /* addr u -- */
 	.quad drop
 	.quad ret
 
-DEFINE head_type, accumulate, "accumulate"
-accumulate: /* char -- */
+DEFINE head_type, accumulate, "accumulate" /* char -- */
 	.quad code_docolon
 	.quad lit, buffer
 	.quad string
@@ -684,7 +650,6 @@ accumulate: /* char -- */
 	.quad ret
 
 DEFINE head_accumulate, skip, "skip"
-skip:
 	.quad code_docolon
 
 0:
@@ -714,7 +679,6 @@ skip:
 	.quad ret
 
 DEFINE head_skip, wordq, "word?"
-wordq:
 	.quad code_docolon
 	.quad skip
 	.quad lit, 0
@@ -760,7 +724,6 @@ wordq:
 	.quad ret
 
 DEFINE head_wordq, word, "word"
-word:
 	.quad code_docolon
 
 0:
@@ -778,8 +741,7 @@ word:
 
 	.quad ret
 
-DEFINE head_word, digitq, "digit?"
-digitq: /* char -- u bool */
+DEFINE head_word, digitq, "digit?" /* char -- u bool */
 	.quad code_docolon
 	.quad lit, '0'
 	.quad sub
@@ -803,8 +765,7 @@ digitq: /* char -- u bool */
 	.quad uless
 	.quad ret
 
-DEFINE head_digitq, natural, "natural"
-natural: /* addr u1 -- u2 u3 */
+DEFINE head_digitq, natural, "natural" /* addr u1 -- u2 u3 */
 	.quad code_docolon
 	.quad push
 	.quad lit, 0
@@ -842,8 +803,7 @@ natural: /* addr u1 -- u2 u3 */
 	.quad pop
 	.quad ret
 
-DEFINE head_natural, number, "number"
-number: /* addr u1 -- n u2 */
+DEFINE head_natural, number, "number" /* addr u1 -- n u2 */
 	.quad code_docolon
 	.quad over
 	.quad bfetch
@@ -866,8 +826,7 @@ number: /* addr u1 -- n u2 */
 	.quad pop
 	.quad ret
 
-DEFINE head_number, find, "find"
-find: /* -- 0 | addr */
+DEFINE head_number, find, "find" /* -- 0 | addr */
 	.quad code_docolon
 	.quad latest
 
@@ -905,7 +864,6 @@ find: /* -- 0 | addr */
 	.quad ret
 
 DEFINE head_find, collision, "collision"
-collision:
 	.quad code_docolon
 	.quad here
 	.quad fetch
@@ -924,7 +882,6 @@ collision:
 	.quad ret
 
 DEFINE head_collision, save, "save"
-save:
 	.quad code_docolon
 	.quad lit, buffer
 	.quad here
@@ -943,8 +900,7 @@ save:
 	.quad bmove
 	.quad ret
 
-DEFINE head_save, comma, ",", IMMEDIATE
-comma: /* x -- */
+DEFINE head_save, comma, ",", IMMEDIATE /* x -- */
 	.quad code_docolon
 	.quad here
 	.quad fetch
@@ -958,7 +914,6 @@ comma: /* x -- */
 	.quad ret
 
 DEFINE head_comma, lbracket, "[", IMMEDIATE
-lbracket:
 	.quad code_docolon
 	.quad lit, 0
 	.quad state
@@ -966,7 +921,6 @@ lbracket:
 	.quad ret
 
 DEFINE head_lbracket, rbracket, "]", IMMEDIATE
-rbracket:
 	.quad code_docolon
 	.quad lit, -1
 	.quad state
@@ -974,7 +928,6 @@ rbracket:
 	.quad ret
 
 DEFINE head_rbracket, colon, ":", IMMEDIATE
-colon:
 	.quad code_docolon
 	.quad rbracket
 	.quad latest
@@ -1000,15 +953,13 @@ colon:
 	.quad ret
 
 DEFINE head_colon, semicolon, ";", IMMEDIATE
-semicolon:
 	.quad code_docolon
 	.quad lit, ret
 	.quad comma
 	.quad lbracket
 	.quad ret
 
-DEFINE head_semicolon, tick, "'", IMMEDIATE
-tick: /* -- 0 | xt */
+DEFINE head_semicolon, tick, "'", IMMEDIATE /* -- 0 | xt */
 	.quad code_docolon
 	.quad word
 	.quad find
@@ -1024,14 +975,12 @@ tick: /* -- 0 | xt */
 	.quad ret
 
 DEFINE head_tick, postpone, "postpone", IMMEDIATE
-postpone:
 	.quad code_docolon
 	.quad tick
 	.quad comma
 	.quad ret
 
-DEFINE head_postpone, literal, "literal", IMMEDIATE
-literal: /* x -- */
+DEFINE head_postpone, literal, "literal", IMMEDIATE /* x -- */
 	.quad code_docolon
 	.quad lit, lit
 	.quad comma
@@ -1039,7 +988,6 @@ literal: /* x -- */
 	.quad ret
 
 DEFINE head_literal, interpret, "interpret"
-interpret:
 	.quad code_docolon
 
 0:
@@ -1109,7 +1057,6 @@ interpret:
 	.quad ret
 
 DEFINE head_interpret, main, "main"
-main:
 	.quad interpret
 	.quad advance
 	.quad write
