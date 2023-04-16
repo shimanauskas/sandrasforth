@@ -79,7 +79,7 @@ head_\body:
 .endm
 
 .macro DEFCODE previous, body, name
-DEFINE \previous, \body, \name
+DEFINE \previous, \body, "\name"
 	.quad code_\body
 .endm
 
