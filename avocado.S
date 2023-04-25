@@ -332,11 +332,7 @@ DEFWORD head_tickoutput, tickbuffer, "'buffer" /* -- addr */
 	.quad lit, buffer
 	.quad ret
 
-DEFWORD head_tickbuffer, tickguard, "'guard" /* -- addr */
-	.quad lit, guard
-	.quad ret
-
-DEFWORD head_tickguard, mark, "mark" /* -- addr */
+DEFWORD head_tickbuffer, mark, "mark" /* -- addr */
 	.quad var, input+1
 	.quad ret
 
@@ -822,24 +818,7 @@ DEFWORD head_number, find, "find" /* -- 0 | addr */
 
 	.quad ret
 
-DEFWORD head_find, collision, "collision"
-	.quad here
-	.quad fetch
-	.quad tickguard
-	.quad uless
-	.quad invert
-
-	.quad qjump, 0f
-
-	.quad lit, head_collision+NFA
-	.quad string
-	.quad type
-	.quad bye
-
-0:
-	.quad ret
-
-DEFWORD head_collision, save, "save"
+DEFWORD head_find, save, "save"
 	.quad lit, buffer
 	.quad here
 	.quad fetch
@@ -853,7 +832,6 @@ DEFWORD head_collision, save, "save"
 	.quad add
 	.quad here
 	.quad store
-	.quad collision
 	.quad bmove
 	.quad ret
 
@@ -866,7 +844,6 @@ DEFWORD head_save, comma, ",", IMMEDIATE /* x -- */
 	.quad here
 	.quad store
 	.quad store
-	.quad collision
 	.quad ret
 
 DEFWORD head_comma, lbracket, "[", IMMEDIATE
@@ -1020,9 +997,8 @@ output:
 buffer:
 	.skip 0x100
 
-vocabulary:
-	.skip 0x3000
-guard:
-
 	.skip 0x100
 dstack:
+
+vocabulary:
+	.skip 0x3000

@@ -85,13 +85,9 @@
     then
   until ;
 
-: collision here @ 'guard u< invert
-  if [ latest @ nfa + ] literal string type bye then ;
+: save 'buffer here @ over b@ 1+ dup aligned here @ + here ! bmove ;
 
-: save 'buffer here @ over b@ 1+ dup aligned here @ + here ! collision
-  bmove ;
-
-: , ( x -- ) here @ dup cell + here ! ! collision ; immediate
+: , ( x -- ) here @ dup cell + here ! ! ; immediate
 
 : [  0 state ! ; immediate
 : ] -1 state ! ; immediate

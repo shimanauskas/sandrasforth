@@ -37,4 +37,4 @@ Clean:
 
 Upon a word not found, Avocado outputs it, followed by a question mark.
 
-When Avocado runs out of statically allocated memory, the word `collision` will be printed and Avocado will exit.
+If Avocado crashes while defining a word, it most likely ran out of statically allocated memory.
