@@ -31,7 +31,7 @@
   if 'input b! [ 'input 1+ ] literal mark ! ret then bye
 
 : key? ( -- bool ) mark @ 'input string + u< ;
-: key  ( -- char ) mark @ b@ ;
+: key  ( -- char ) mark @ b@ dup 10 = if drop 32 then ;
 
 : advance mark @ 1+ mark ! ;
 
@@ -44,22 +44,18 @@
 
 : skip
   begin
-    key? invert if read then key [char] ! u< key 10 xor and
+    key? invert if read then key [char] ! u<
   if
     advance
   repeat ;
 
-: word? skip 0 'buffer b! key 10 xor
+: word skip 0 'buffer b!
+  begin
+    key? invert if read then key dup [char] ! u< invert 'buffer b@ 63 u< and
   if
-    begin
-      key? invert if read then key dup [char] ! u< invert 'buffer b@ 63 u< and
-    if
-      accumulate advance
-    repeat
-    drop
-  then ;
-
-: word begin word? 'buffer b@ 0= if advance repeat ;
+    accumulate advance
+  repeat
+  drop ;
 
 : digit? ( char -- u bool ) [char] 0 - 9 over <
   if [ char A char 0 - 10 - ] literal - dup 10 < or then
@@ -103,18 +99,18 @@
 
 : literal ( x -- ) lit lit postpone , postpone , ; immediate
 
-: interpret word? 'buffer b@
-  if
-    find dup
+: interpret
+  begin
+    word find dup
     if
       cell + dup cell + b@ 128 and state @ invert or
-      if @ execute jump ' interpret [ cell + ] , then
-      @ postpone , jump ' interpret [ cell + ] ,
+      if @ execute ret then
+      @ postpone , ret
     then
     drop 'buffer string number
     if drop 'buffer string type [char] ? emit ret then
-    state @ ?jump ' interpret [ cell + ] ,
-    postpone literal jump ' interpret [ cell + ] ,
-  then ;
+    state @
+  until
+  postpone literal ;
 
-: main begin interpret advance write again ; main
+: main begin interpret write again ; main

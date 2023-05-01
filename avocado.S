@@ -549,6 +549,16 @@ DEFWORD head_keyq, key, "key" /* -- char */
 	.quad mark
 	.quad fetch
 	.quad bfetch
+	.quad dup
+	.quad lit, '\n'
+	.quad equals
+
+	.quad qjump, 0f
+
+	.quad drop
+	.quad lit, ' '
+
+0:
 	.quad ret
 
 DEFWORD head_key, advance, "advance"
@@ -626,10 +636,6 @@ DEFWORD head_accumulate, skip, "skip"
 	.quad key
 	.quad lit, '!'
 	.quad uless
-	.quad key
-	.quad lit, 10
-	.quad xor
-	.quad and
 
 	.quad qjump, 0f
 
@@ -640,16 +646,11 @@ DEFWORD head_accumulate, skip, "skip"
 
 	.quad ret
 
-DEFWORD head_skip, wordq, "word?"
+DEFWORD head_skip, word, "word"
 	.quad skip
 	.quad lit, 0
 	.quad lit, buffer
 	.quad bstore
-	.quad key
-	.quad lit, 10
-	.quad xor
-
-	.quad qjump, 2f
 
 0:
 	.quad keyq
@@ -680,24 +681,6 @@ DEFWORD head_skip, wordq, "word?"
 0:
 
 	.quad drop
-
-2:
-	.quad ret
-
-DEFWORD head_wordq, word, "word"
-0:
-	.quad wordq
-	.quad lit, buffer
-	.quad bfetch
-	.quad zequals
-
-	.quad qjump, 0f
-
-	.quad advance
-
-	.quad jump, 0b
-0:
-
 	.quad ret
 
 DEFWORD head_word, digitq, "digit?" /* char -- u bool */
@@ -915,12 +898,7 @@ DEFWORD head_postpone, literal, "literal", IMMEDIATE /* x -- */
 
 DEFWORD head_literal, interpret, "interpret"
 0:
-	.quad wordq
-	.quad lit, buffer
-	.quad bfetch
-
-	.quad qjump, 3f
-
+	.quad word
 	.quad find
 	.quad dup
 
@@ -943,12 +921,12 @@ DEFWORD head_literal, interpret, "interpret"
 
 	.quad fetch
 	.quad execute
-	.quad jump, 0b
+	.quad ret
 
 1:
 	.quad fetch
 	.quad comma
-	.quad jump, 0b
+	.quad ret
 
 2:
 	.quad drop
@@ -967,22 +945,16 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad ret
 
 1:
-
 	.quad state
 	.quad fetch
 
 	.quad qjump, 0b
 
 	.quad literal
-
-	.quad jump, 0b
-
-3:
 	.quad ret
 
 DEFINE head_interpret, main, "main"
 	.quad interpret
-	.quad advance
 	.quad write
 	.quad jump, main
 
