@@ -13,8 +13,7 @@
 : variable postpone : lit var postpone , 0 postpone , postpone ; ; immediate
 : constant postpone : postpone literal postpone ; ; immediate
 
-: ( begin word 'buffer b@ 1 = [ 'buffer 1+ ] literal b@ 41 = and until ;
-  immediate
+: ( 41 parse advance ; immediate
 
 : lshift ( x1 u -- x2 ) begin dup if push 2* pop 1- repeat drop ;
 : rshift ( x1 u -- x2 ) begin dup if push 2/ pop 1- repeat drop ;
@@ -26,14 +25,7 @@
 :  char  ( -- char ) word [ 'buffer 1+ ] literal b@ ;
 : [char] ( -- char ) char postpone literal ; immediate
 
-: " ( -- addr ) skip 0 'buffer b!
-  begin
-    key? invert if read then key dup [char] " xor 'buffer b@ 255 u< and
-  if
-    accumulate advance
-  repeat
-  [char] " = if advance then
-  here @ save ; immediate
+: " ( -- addr ) [char] " parse advance here @ save ; immediate
 
 : hold ( char -- ) 'buffer @ 1- dup 'buffer ! b! ;
 

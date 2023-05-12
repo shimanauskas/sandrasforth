@@ -623,7 +623,7 @@ DEFWORD head_type, accumulate, "accumulate" /* char -- */
 	.quad bstore
 	.quad ret
 
-DEFWORD head_accumulate, skip, "skip"
+DEFWORD head_accumulate, parse, "parse"
 0:
 	.quad keyq
 	.quad invert
@@ -634,8 +634,8 @@ DEFWORD head_accumulate, skip, "skip"
 
 1:
 	.quad key
-	.quad lit, '!'
-	.quad uless
+	.quad lit, ' '
+	.quad equals
 
 	.quad qjump, 0f
 
@@ -644,10 +644,6 @@ DEFWORD head_accumulate, skip, "skip"
 	.quad jump, 0b
 0:
 
-	.quad ret
-
-DEFWORD head_skip, word, "word"
-	.quad skip
 	.quad lit, 0
 	.quad lit, buffer
 	.quad bstore
@@ -662,18 +658,13 @@ DEFWORD head_skip, word, "word"
 
 1:
 	.quad key
-	.quad dup
-	.quad lit, '!'
-	.quad uless
+	.quad over
+	.quad equals
 	.quad invert
-	.quad lit, buffer
-	.quad bfetch
-	.quad lit, 0x3F
-	.quad uless
-	.quad and
 
 	.quad qjump, 0f
 
+	.quad key
 	.quad accumulate
 	.quad advance
 
@@ -681,6 +672,24 @@ DEFWORD head_skip, word, "word"
 0:
 
 	.quad drop
+	.quad ret
+
+DEFWORD head_parse, word, "word"
+	.quad lit, ' '
+	.quad parse
+	.quad tickbuffer
+	.quad bfetch
+	.quad lit, 0x3F
+	.quad uless
+	.quad invert
+
+	.quad qjump, 0f
+
+	.quad lit, 0x3F
+	.quad tickbuffer
+	.quad bstore
+
+0:
 	.quad ret
 
 DEFWORD head_word, digitq, "digit?" /* char -- u bool */

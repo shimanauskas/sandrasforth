@@ -42,20 +42,17 @@
 
 : accumulate ( char -- ) 'buffer string dup 1+ 'buffer b! + b! ;
 
-: skip
+: parse ( char -- )
+  begin key? invert if read then key 32 = if advance repeat
+  0 'buffer b!
   begin
-    key? invert if read then key [char] ! u<
+    key? invert if read then key over = invert
   if
-    advance
-  repeat ;
-
-: word skip 0 'buffer b!
-  begin
-    key? invert if read then key dup [char] ! u< invert 'buffer b@ 63 u< and
-  if
-    accumulate advance
+    key accumulate advance
   repeat
   drop ;
+
+: word 32 parse 'buffer b@ 63 u< invert if 63 'buffer b! then ;
 
 : digit? ( char -- u bool ) [char] 0 - 9 over <
   if [ char A char 0 - 10 - ] literal - dup 10 < or then
