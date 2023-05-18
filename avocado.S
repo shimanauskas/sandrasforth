@@ -906,12 +906,11 @@ DEFWORD head_postpone, literal, "literal", IMMEDIATE /* x -- */
 	.quad ret
 
 DEFWORD head_literal, interpret, "interpret"
-0:
 	.quad word
 	.quad find
 	.quad dup
 
-	.quad qjump, 2f
+	.quad qjump, 1f
 
 	.quad lit, CELL
 	.quad add
@@ -926,24 +925,24 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad invert
 	.quad or
 
-	.quad qjump, 1f
+	.quad qjump, 0f
 
 	.quad fetch
 	.quad execute
 	.quad ret
 
-1:
+0:
 	.quad fetch
 	.quad comma
 	.quad ret
 
-2:
+1:
 	.quad drop
 	.quad lit, buffer
 	.quad string
 	.quad number
 
-	.quad qjump, 1f
+	.quad qjump, 0f
 
 	.quad drop
 	.quad lit, buffer
@@ -953,13 +952,15 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad emit
 	.quad ret
 
-1:
+0:
 	.quad state
 	.quad fetch
 
-	.quad qjump, 0b
+	.quad qjump, 0f
 
 	.quad literal
+
+0:
 	.quad ret
 
 DEFINE head_interpret, main, "main"

@@ -96,18 +96,13 @@
 
 : literal ( x -- ) lit lit postpone , postpone , ; immediate
 
-: interpret
-  begin
-    word find dup
-    if
-      cell + dup cell + b@ 128 and state @ invert or
-      if @ execute ret then
-      @ postpone , ret
-    then
-    drop 'buffer string number
-    if drop 'buffer string type [char] ? emit ret then
-    state @
-  until
-  postpone literal ;
+: interpret word find dup
+  if
+    cell + dup cell + b@ 128 and state @ invert or
+    if @ execute ret then
+    @ postpone , ret
+  then
+  drop 'buffer string number if drop 'buffer string type [char] ? emit ret then
+  state @ if postpone literal then ;
 
 : main begin interpret write again ; main
