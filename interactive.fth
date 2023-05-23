@@ -1,1 +1,1 @@
-: words latest begin @ dup if dup nfa + string 63 and type space repeat drop ;
+: words latest begin @ dup if dup nfa + count 63 and type space repeat drop ;

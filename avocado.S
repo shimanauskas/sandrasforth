@@ -431,7 +431,7 @@ DEFWORD head_within, aligned, "aligned" /* x1 -- x2 */
 	.quad and
 	.quad ret
 
-DEFWORD head_aligned, string, "string" /* addr1 -- addr2 u */
+DEFWORD head_aligned, count, "count" /* addr1 -- addr2 u */
 	.quad dup
 	.quad push
 	.quad inc
@@ -439,7 +439,7 @@ DEFWORD head_aligned, string, "string" /* addr1 -- addr2 u */
 	.quad bfetch
 	.quad ret
 
-DEFWORD head_string, bmove, "bmove" /* addr1 addr2 u -- */
+DEFWORD head_count, bmove, "bmove" /* addr1 addr2 u -- */
 0:
 	.quad dup
 
@@ -499,7 +499,7 @@ DEFWORD head_bmove, sameq, "same?" /* addr1 addr2 u -- bool */
 DEFWORD head_sameq, write, "write"
 	.quad lit, 1
 	.quad lit, output
-	.quad string
+	.quad count
 	.quad lit, SYS_write
 	.quad syscall
 	.quad drop
@@ -540,7 +540,7 @@ DEFWORD head_read, keyq, "key?" /* -- bool */
 	.quad mark
 	.quad fetch
 	.quad lit, input
-	.quad string
+	.quad count
 	.quad add
 	.quad uless
 	.quad ret
@@ -571,7 +571,7 @@ DEFWORD head_key, advance, "advance"
 
 DEFWORD head_advance, emit, "emit" /* char -- */
 	.quad lit, output
-	.quad string
+	.quad count
 	.quad add
 	.quad bstore
 	.quad lit, output
@@ -614,7 +614,7 @@ DEFWORD head_emit, type, "type" /* addr u -- */
 
 DEFWORD head_type, accumulate, "accumulate" /* char -- */
 	.quad lit, buffer
-	.quad string
+	.quad count
 	.quad dup
 	.quad inc
 	.quad lit, buffer
@@ -802,7 +802,7 @@ DEFWORD head_number, find, "find" /* -- 0 | addr */
 	.quad lit, NFA+1
 	.quad add
 	.quad lit, buffer
-	.quad string
+	.quad count
 	.quad sameq
 
 1:
@@ -939,14 +939,14 @@ DEFWORD head_literal, interpret, "interpret"
 1:
 	.quad drop
 	.quad lit, buffer
-	.quad string
+	.quad count
 	.quad number
 
 	.quad qjump, 0f
 
 	.quad drop
 	.quad lit, buffer
-	.quad string
+	.quad count
 	.quad type
 	.quad lit, '?'
 	.quad emit
