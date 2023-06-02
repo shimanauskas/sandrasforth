@@ -105,4 +105,4 @@
   drop 'buffer count number if drop 'buffer count type [char] ? emit ret then
   state @ if postpone literal then ;
 
-: main begin interpret write again ; main
+: main begin interpret write again [ main
