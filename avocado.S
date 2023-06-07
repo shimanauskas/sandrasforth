@@ -32,9 +32,7 @@
 	#error Unsupported platform.
 #endif
 
-#define CELL 8
-#define NFA  CELL*2
-
+#define CELL      8
 #define IMMEDIATE 0x80
 
 .macro DUP /* x -- x x */
@@ -69,7 +67,6 @@
 .macro DEFINE previous, body, name, mask=0
 head_\body:
 	.quad \previous
-	.quad \body
 	.byte (1f-0f)|\mask
 0:
 	.ascii "\name"
@@ -304,11 +301,7 @@ DEFWORD head_syscall, cell, "cell" /* -- u */
 	.quad lit, CELL
 	.quad ret
 
-DEFWORD head_cell, nfa, "nfa" /* -- u */
-	.quad lit, NFA
-	.quad ret
-
-DEFWORD head_nfa, sys_read, "sys-read" /* -- x */
+DEFWORD head_cell, sys_read, "sys-read" /* -- x */
 	.quad lit, SYS_read
 	.quad ret
 
@@ -786,7 +779,7 @@ DEFWORD head_number, find, "find" /* -- 0 | addr */
 	.quad qjump, 1f
 
 	.quad over
-	.quad lit, NFA
+	.quad lit, CELL
 	.quad add
 	.quad bfetch
 	.quad lit, ~IMMEDIATE
@@ -799,7 +792,7 @@ DEFWORD head_number, find, "find" /* -- 0 | addr */
 
 	.quad drop
 	.quad dup
-	.quad lit, NFA+1
+	.quad lit, CELL+1
 	.quad add
 	.quad lit, buffer
 	.quad count
@@ -827,7 +820,17 @@ DEFWORD head_find, save, "save"
 	.quad bmove
 	.quad ret
 
-DEFWORD head_save, comma, ",", IMMEDIATE /* x -- */
+DEFWORD head_save, cfa, "cfa"
+	.quad lit, CELL
+	.quad add
+	.quad count
+	.quad lit, 0x3F
+	.quad and
+	.quad add
+	.quad aligned
+	.quad ret
+
+DEFWORD head_cfa, comma, ",", IMMEDIATE /* addr -- */
 	.quad here
 	.quad fetch
 	.quad dup
@@ -859,17 +862,8 @@ DEFWORD head_rbracket, colon, ":", IMMEDIATE
 	.quad latest
 	.quad store
 	.quad comma
-	.quad here
-	.quad fetch
-	.quad push
-	.quad lit, 0
-	.quad comma
 	.quad word
 	.quad save
-	.quad here
-	.quad fetch
-	.quad pop
-	.quad store
 	.quad lit, code_docolon
 	.quad comma
 	.quad ret
@@ -887,9 +881,7 @@ DEFWORD head_semicolon, tick, "'", IMMEDIATE /* -- 0 | xt */
 
 	.quad qjump, 0f
 
-	.quad lit, CELL
-	.quad add
-	.quad fetch
+	.quad cfa
 
 0:
 	.quad ret
@@ -912,8 +904,6 @@ DEFWORD head_literal, interpret, "interpret"
 
 	.quad qjump, 1f
 
-	.quad lit, CELL
-	.quad add
 	.quad dup
 	.quad lit, CELL
 	.quad add
@@ -927,12 +917,12 @@ DEFWORD head_literal, interpret, "interpret"
 
 	.quad qjump, 0f
 
-	.quad fetch
+	.quad cfa
 	.quad execute
 	.quad ret
 
 0:
-	.quad fetch
+	.quad cfa
 	.quad comma
 	.quad ret
 

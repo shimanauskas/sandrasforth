@@ -73,24 +73,26 @@
   begin
     @ dup 0= over
     if
-      over nfa + b@ 127 and 'buffer b@ =
-      if drop dup [ nfa 1+ ] literal + 'buffer count same? then
+      over cell + b@ 127 and 'buffer b@ =
+      if drop dup [ cell 1+ ] literal + 'buffer count same? then
     then
   until ;
 
 : save 'buffer here @ over b@ 1+ dup aligned here @ + here ! bmove ;
+
+: cfa ( addr -- ) cell + count 63 and + aligned ;
 
 : , ( x -- ) here @ dup cell + here ! ! ; immediate
 
 : [  0 state ! ; immediate
 : ] -1 state ! ; immediate
 
-: : postpone ] latest @ here @ latest ! postpone , here @ push 0 postpone ,
-  word save here @ pop ! lit ' docolon [ @ ] , postpone , ; immediate
+: : postpone ] latest @ here @ latest ! postpone , word save
+  lit ' docolon [ @ ] , postpone , ; immediate
 
 : ; hidden lit ret postpone , postpone [ ; hidden immediate
 
-: ' ( -- 0 | xt ) word find dup if cell + @ then ; immediate
+: ' ( -- 0 | xt ) word find dup if cfa then ; immediate
 
 : postpone hidden postpone ' postpone , ; hidden immediate
 
@@ -98,9 +100,9 @@
 
 : interpret word find dup
   if
-    cell + dup cell + b@ 128 and state @ invert or
-    if @ execute ret then
-    @ postpone , ret
+    dup cell + b@ 128 and state @ invert or
+    if cfa execute ret then
+    cfa postpone , ret
   then
   drop 'buffer count number if drop 'buffer count type [char] ? emit ret then
   state @ if postpone literal then ;

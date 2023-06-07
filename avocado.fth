@@ -1,5 +1,5 @@
-: immediate latest @ nfa + dup b@ 128 xor over b! drop ; immediate
-: hidden    latest @ nfa + dup b@  64 xor over b! drop ; immediate
+: immediate latest @ cell + dup b@ 128 xor over b! drop ; immediate
+: hidden    latest @ cell + dup b@  64 xor over b! drop ; immediate
 
 : begin here @ ; immediate
 
