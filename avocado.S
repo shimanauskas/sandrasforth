@@ -491,13 +491,13 @@ DEFWORD head_bmove, sameq, "same?" /* addr1 addr2 u -- bool */
 
 DEFWORD head_sameq, write, "write"
 	.quad lit, 1
-	.quad lit, output
+	.quad tickoutput
 	.quad count
-	.quad lit, SYS_write
+	.quad sys_write
 	.quad syscall
 	.quad drop
 	.quad lit, 0
-	.quad lit, output
+	.quad tickoutput
 	.quad bstore
 	.quad ret
 
@@ -506,20 +506,20 @@ DEFWORD head_write, bye, "bye"
 	.quad lit, 0
 	.quad dup
 	.quad dup
-	.quad lit, SYS_exit
+	.quad sys_exit
 	.quad syscall
 
 DEFWORD head_bye, read, "read"
 	.quad lit, 0
 	.quad lit, input+1
 	.quad lit, 0xFF
-	.quad lit, SYS_read
+	.quad sys_read
 	.quad syscall
 	.quad dup
 
 	.quad qjump, 0f
 
-	.quad lit, input
+	.quad tickinput
 	.quad bstore
 	.quad lit, input+1
 	.quad mark
@@ -532,7 +532,7 @@ DEFWORD head_bye, read, "read"
 DEFWORD head_read, keyq, "key?" /* -- bool */
 	.quad mark
 	.quad fetch
-	.quad lit, input
+	.quad tickinput
 	.quad count
 	.quad add
 	.quad uless
@@ -563,15 +563,15 @@ DEFWORD head_key, advance, "advance"
 	.quad ret
 
 DEFWORD head_advance, emit, "emit" /* char -- */
-	.quad lit, output
+	.quad tickoutput
 	.quad count
 	.quad add
 	.quad bstore
-	.quad lit, output
+	.quad tickoutput
 	.quad bfetch
 	.quad inc
 	.quad dup
-	.quad lit, output
+	.quad tickoutput
 	.quad bstore
 	.quad lit, 0xFF
 	.quad xor
@@ -606,11 +606,11 @@ DEFWORD head_emit, type, "type" /* addr u -- */
 	.quad ret
 
 DEFWORD head_type, accumulate, "accumulate" /* char -- */
-	.quad lit, buffer
+	.quad tickbuffer
 	.quad count
 	.quad dup
 	.quad inc
-	.quad lit, buffer
+	.quad tickbuffer
 	.quad bstore
 	.quad add
 	.quad bstore
@@ -638,7 +638,7 @@ DEFWORD head_accumulate, parse, "parse"
 0:
 
 	.quad lit, 0
-	.quad lit, buffer
+	.quad tickbuffer
 	.quad bstore
 
 0:
@@ -779,12 +779,12 @@ DEFWORD head_number, find, "find" /* -- 0 | addr */
 	.quad qjump, 1f
 
 	.quad over
-	.quad lit, CELL
+	.quad cell
 	.quad add
 	.quad bfetch
 	.quad lit, ~IMMEDIATE
 	.quad and
-	.quad lit, buffer
+	.quad tickbuffer
 	.quad bfetch
 	.quad equals
 
@@ -794,7 +794,7 @@ DEFWORD head_number, find, "find" /* -- 0 | addr */
 	.quad dup
 	.quad lit, CELL+1
 	.quad add
-	.quad lit, buffer
+	.quad tickbuffer
 	.quad count
 	.quad sameq
 
@@ -804,7 +804,7 @@ DEFWORD head_number, find, "find" /* -- 0 | addr */
 	.quad ret
 
 DEFWORD head_find, save, "save"
-	.quad lit, buffer
+	.quad tickbuffer
 	.quad here
 	.quad fetch
 	.quad over
@@ -821,7 +821,7 @@ DEFWORD head_find, save, "save"
 	.quad ret
 
 DEFWORD head_save, cfa, "cfa"
-	.quad lit, CELL
+	.quad cell
 	.quad add
 	.quad count
 	.quad lit, 0x3F
@@ -834,7 +834,7 @@ DEFWORD head_cfa, comma, ",", IMMEDIATE /* addr -- */
 	.quad here
 	.quad fetch
 	.quad dup
-	.quad lit, CELL
+	.quad cell
 	.quad add
 	.quad here
 	.quad store
@@ -905,7 +905,7 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad qjump, 1f
 
 	.quad dup
-	.quad lit, CELL
+	.quad cell
 	.quad add
 	.quad bfetch
 	.quad lit, IMMEDIATE
@@ -928,14 +928,14 @@ DEFWORD head_literal, interpret, "interpret"
 
 1:
 	.quad drop
-	.quad lit, buffer
+	.quad tickbuffer
 	.quad count
 	.quad number
 
 	.quad qjump, 0f
 
 	.quad drop
-	.quad lit, buffer
+	.quad tickbuffer
 	.quad count
 	.quad type
 	.quad lit, '?'
