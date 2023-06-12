@@ -80,7 +80,7 @@
 
 : save 'buffer here @ over b@ 1+ dup aligned here @ + here ! bmove ;
 
-: cfa ( addr -- ) cell + count 63 and + aligned ;
+: cfa ( addr1 -- addr2 ) cell + count 63 and + aligned ;
 
 : , ( x -- ) here @ dup cell + here ! ! ; immediate
 

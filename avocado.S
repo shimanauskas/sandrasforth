@@ -820,7 +820,7 @@ DEFWORD head_find, save, "save"
 	.quad bmove
 	.quad ret
 
-DEFWORD head_save, cfa, "cfa"
+DEFWORD head_save, cfa, "cfa" /* addr1 -- addr2 */
 	.quad cell
 	.quad add
 	.quad count
