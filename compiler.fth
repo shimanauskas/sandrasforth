@@ -13,38 +13,38 @@
 
 : aligned ( x1 -- x2 ) [ cell 1- ] literal + [ cell 1- invert ] literal and ;
 
-: count ( addr1 -- addr2 u ) dup push 1+ pop b@ ;
+: count ( addr1 -- addr2 u ) dup push 1+ pop c@ ;
 
-: bmove ( addr1 addr2 u -- )
-  begin dup if push over b@ over b! push 1+ pop 1+ pop 1- repeat
+: cmove ( addr1 addr2 u -- )
+  begin dup if push over c@ over c! push 1+ pop 1+ pop 1- repeat
   nip nip drop ;
 
 : same? ( addr1 addr2 u -- bool )
-  begin dup push push over b@ over b@ = pop and if push 1+ pop 1+ pop 1- repeat
+  begin dup push push over c@ over c@ = pop and if push 1+ pop 1+ pop 1- repeat
   pop nip nip 0= ;
 
-: write 1 'output count sys-write syscall drop 0 'output b! ;
+: write 1 'output count sys-write syscall drop 0 'output c! ;
 
 : bye write 0 dup dup sys-exit syscall ( We never return. )
 
 : read 0 [ 'input 1+ ] literal 255 sys-read syscall dup
-  if 'input b! [ 'input 1+ ] literal mark ! ret then bye
+  if 'input c! [ 'input 1+ ] literal mark ! ret then bye
 
 : key? ( -- bool ) mark @ 'input count + u< ;
-: key  ( -- char ) mark @ b@ dup 10 = if drop 32 then ;
+: key  ( -- char ) mark @ c@ dup 10 = if drop 32 then ;
 
 : advance mark @ 1+ mark ! ;
 
-: emit ( char -- ) 'output count + b!
-  'output b@ 1+ dup 'output b! 255 xor if ret then write ;
+: emit ( char -- ) 'output count + c!
+  'output c@ 1+ dup 'output c! 255 xor if ret then write ;
 
-: type ( addr u -- ) begin dup if push dup b@ emit 1+ pop 1- repeat nip drop ;
+: type ( addr u -- ) begin dup if push dup c@ emit 1+ pop 1- repeat nip drop ;
 
-: accumulate ( char -- ) 'buffer count dup 1+ 'buffer b! + b! ;
+: accumulate ( char -- ) 'buffer count dup 1+ 'buffer c! + c! ;
 
 : parse ( char -- )
   begin key? invert if read then key 32 = if advance repeat
-  0 'buffer b!
+  0 'buffer c!
   begin
     key? invert if read then key over = invert
   if
@@ -52,7 +52,7 @@
   repeat
   drop ;
 
-: word 32 parse 'buffer b@ 63 u< invert if 63 'buffer b! then ;
+: word 32 parse 'buffer c@ 63 u< invert if 63 'buffer c! then ;
 
 : digit? ( char -- u bool ) [char] 0 - 9 over <
   if [ char A char 0 - 10 - ] literal - dup 10 < or then
@@ -60,25 +60,25 @@
 
 : natural ( addr u1 -- u2 u3 ) push 0 pop
   begin
-    push over b@ digit? pop dup push and
+    push over c@ digit? pop dup push and
   if
     push base @ * pop + push 1+ pop pop 1- 
   repeat
   drop nip pop ;
 
-: number ( addr u1 -- n u2 ) over b@ [char] - xor
+: number ( addr u1 -- n u2 ) over c@ [char] - xor
   if natural ret then push 1+ pop 1- natural push negate pop ;
 
 : find ( -- 0 | addr ) latest
   begin
     @ dup 0= over
     if
-      over cell + b@ 127 and 'buffer b@ =
+      over cell + c@ 127 and 'buffer c@ =
       if drop dup [ cell 1+ ] literal + 'buffer count same? then
     then
   until ;
 
-: save 'buffer here @ over b@ 1+ dup aligned here @ + here ! bmove ;
+: save 'buffer here @ over c@ 1+ dup aligned here @ + here ! cmove ;
 
 : cfa ( addr1 -- addr2 ) cell + count 63 and + aligned ;
 
@@ -100,7 +100,7 @@
 
 : interpret word find dup
   if
-    dup cell + b@ 128 and state @ invert or
+    dup cell + c@ 128 and state @ invert or
     if cfa execute ret then
     cfa postpone , ret
   then

@@ -1,5 +1,5 @@
-: immediate latest @ cell + dup b@ 128 xor over b! drop ; immediate
-: hidden    latest @ cell + dup b@  64 xor over b! drop ; immediate
+: immediate latest @ cell + dup c@ 128 xor over c! drop ; immediate
+: hidden    latest @ cell + dup c@  64 xor over c! drop ; immediate
 
 : begin here @ ; immediate
 
@@ -22,12 +22,12 @@
 
 : space 32 emit ;
 
-:  char  ( -- char ) word [ 'buffer 1+ ] literal b@ ;
+:  char  ( -- char ) word [ 'buffer 1+ ] literal c@ ;
 : [char] ( -- char ) char postpone literal ; immediate
 
 : " ( -- addr ) [char] " parse advance here @ save ; immediate
 
-: hold ( char -- ) 'buffer @ 1- dup 'buffer ! b! ;
+: hold ( char -- ) 'buffer @ 1- dup 'buffer ! c! ;
 
 : digit ( u -- char ) dup 10 u<
   if [char] 0 + ret then [ char A 10 - ] literal + ;
