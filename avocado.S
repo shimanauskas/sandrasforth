@@ -349,10 +349,13 @@ DEFWORD head_base, bool, "bool" /* x -- bool */
 	.quad qjump, 0f
 
 	.quad lit, -1
-	.quad ret
 
+	.quad jump, 1f
 0:
+
 	.quad lit, 0
+
+1:
 	.quad ret
 
 DEFWORD head_bool, zequals, "0=" /* x -- bool */
@@ -381,11 +384,14 @@ DEFWORD head_zless, less, "<" /* n1 n2 -- bool */
 
 	.quad drop
 	.quad zless
-	.quad ret
 
+	.quad jump, 1f
 0:
+
 	.quad sub
 	.quad zless
+
+1:
 	.quad ret
 
 DEFWORD head_less, uless, "u<" /* u1 u2 -- bool */
@@ -398,11 +404,14 @@ DEFWORD head_less, uless, "u<" /* u1 u2 -- bool */
 
 	.quad nip
 	.quad zless
-	.quad ret
 
+	.quad jump, 1f
 0:
+
 	.quad sub
 	.quad zless
+
+1:
 	.quad ret
 
 DEFWORD head_uless, within, "within" /* u1 u2 u3 -- bool */
@@ -516,18 +525,19 @@ DEFWORD head_bye, read, "read"
 	.quad sys_read
 	.quad syscall
 	.quad dup
+	.quad zequals
 
 	.quad qjump, 0f
 
+	.quad bye
+
+0:
 	.quad tickinput
 	.quad cstore
 	.quad lit, input+1
 	.quad mark
 	.quad store
 	.quad ret
-
-0:
-	.quad bye
 
 DEFWORD head_read, keyq, "key?" /* -- bool */
 	.quad mark
@@ -574,14 +584,13 @@ DEFWORD head_advance, emit, "emit" /* char -- */
 	.quad tickoutput
 	.quad cstore
 	.quad lit, 0xFF
-	.quad xor
+	.quad equals
 
 	.quad qjump, 0f
 
-	.quad ret
+	.quad write
 
 0:
-	.quad write
 	.quad ret
 
 DEFWORD head_emit, type, "type" /* addr u -- */
@@ -749,14 +758,10 @@ DEFWORD head_natural, number, "number" /* addr u1 -- n u2 */
 	.quad over
 	.quad cfetch
 	.quad lit, '-'
-	.quad xor
+	.quad equals
 
 	.quad qjump, 0f
 
-	.quad natural
-	.quad ret
-
-0:
 	.quad push
 	.quad inc
 	.quad pop
@@ -765,6 +770,13 @@ DEFWORD head_natural, number, "number" /* addr u1 -- n u2 */
 	.quad push
 	.quad negate
 	.quad pop
+
+	.quad jump, 1f
+0:
+
+	.quad natural
+
+1:
 	.quad ret
 
 DEFWORD head_number, find, "find" /* -- 0 | addr */
@@ -902,7 +914,7 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad find
 	.quad dup
 
-	.quad qjump, 1f
+	.quad qjump, 2f
 
 	.quad dup
 	.quad cell
@@ -919,14 +931,18 @@ DEFWORD head_literal, interpret, "interpret"
 
 	.quad cfa
 	.quad execute
-	.quad ret
 
+	.quad jump, 1f
 0:
+
 	.quad cfa
 	.quad comma
-	.quad ret
 
 1:
+
+	.quad jump, 3f
+2:
+
 	.quad drop
 	.quad tickbuffer
 	.quad count
@@ -940,17 +956,18 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad type
 	.quad lit, '?'
 	.quad emit
-	.quad ret
 
+	.quad jump, 3f
 0:
+
 	.quad state
 	.quad fetch
 
-	.quad qjump, 0f
+	.quad qjump, 3f
 
 	.quad literal
 
-0:
+3:
 	.quad ret
 
 DEFINE head_interpret, main, "main"

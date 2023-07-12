@@ -6,6 +6,9 @@
 : if lit ?jump postpone , here @ 0 postpone , ; immediate
 : then push here @ pop ! ; immediate
 
+: else lit jump postpone , here @ push 0 postpone , postpone then pop ;
+  immediate
+
 : repeat push lit jump postpone , postpone , here @ pop ! ; immediate
 : until lit ?jump postpone , postpone , ; immediate
 : again lit  jump postpone , postpone , ; immediate
@@ -30,7 +33,7 @@
 : hold ( char -- ) 'buffer @ 1- dup 'buffer ! c! ;
 
 : digit ( u -- char ) dup 10 u<
-  if [char] 0 + ret then [ char A 10 - ] literal + ;
+  if [char] 0 + else [ char A 10 - ] literal + then ;
 
 : u. ( u -- ) [ 'buffer 256 + ] literal 'buffer !
   begin 0 base @ um/mod push digit hold pop dup 0= until drop

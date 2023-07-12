@@ -1,4 +1,4 @@
-: bool ( x -- bool ) if -1 ret then 0 ;
+: bool ( x -- bool ) if -1 else 0 then ;
 
 : 0= ( x -- bool ) bool invert ;
 
@@ -6,8 +6,8 @@
 
 : 0< ( n -- bool ) [ 1 8 cells 1- lshift ] literal and bool ;
 
-:  < ( n1 n2 -- bool ) over over xor 0< if drop 0< ret then - 0< ;
-: u< ( u1 u2 -- bool ) over over xor 0< if nip  0< ret then - 0< ;
+:  < ( n1 n2 -- bool ) over over xor 0< if drop 0< else - 0< then ;
+: u< ( u1 u2 -- bool ) over over xor 0< if nip  0< else - 0< then ;
 
 : whithin ( u1 u2 u3 -- bool ) push over push u< invert pop pop u< and ;
 
@@ -27,8 +27,8 @@
 
 : bye write 0 dup dup sys-exit syscall ( We never return. )
 
-: read 0 [ 'input 1+ ] literal 255 sys-read syscall dup
-  if 'input c! [ 'input 1+ ] literal mark ! ret then bye
+: read 0 [ 'input 1+ ] literal 255 sys-read syscall dup 0=
+  if bye then 'input c! [ 'input 1+ ] literal mark ! ;
 
 : key? ( -- bool ) mark @ 'input count + u< ;
 : key  ( -- char ) mark @ c@ dup 10 = if drop 32 then ;
@@ -36,7 +36,7 @@
 : advance mark @ 1+ mark ! ;
 
 : emit ( char -- ) 'output count + c!
-  'output c@ 1+ dup 'output c! 255 xor if ret then write ;
+  'output c@ 1+ dup 'output c! 255 = if write then ;
 
 : type ( addr u -- ) begin dup if push dup c@ emit 1+ pop 1- repeat nip drop ;
 
@@ -66,8 +66,8 @@
   repeat
   drop nip pop ;
 
-: number ( addr u1 -- n u2 ) over c@ [char] - xor
-  if natural ret then push 1+ pop 1- natural push negate pop ;
+: number ( addr u1 -- n u2 ) over c@ [char] - =
+  if push 1+ pop 1- natural push negate pop else natural then ;
 
 : find ( -- 0 | addr ) latest
   begin
@@ -101,10 +101,18 @@
 : interpret word find dup
   if
     dup cell + c@ 128 and state @ invert or
-    if cfa execute ret then
-    cfa postpone , ret
-  then
-  drop 'buffer count number if drop 'buffer count type [char] ? emit ret then
-  state @ if postpone literal then ;
+    if
+      cfa execute
+    else
+      cfa postpone ,
+    then
+  else
+    drop 'buffer count number
+    if
+      drop 'buffer count type [char] ? emit
+    else
+      state @ if postpone literal then
+    then
+  then ;
 
 : main begin interpret write again [ main
