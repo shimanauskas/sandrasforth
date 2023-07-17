@@ -98,21 +98,23 @@
 
 : literal ( x -- ) lit lit postpone , postpone , ; immediate
 
-: interpret word find dup
-  if
-    dup cell + c@ 128 and state @ invert or
+: interpret
+  begin
+    word find dup
     if
-      cfa execute
+      dup cell + c@ 128 and state @ invert or
+      if
+        cfa execute
+      else
+        cfa postpone ,
+      then
     else
-      cfa postpone ,
+      drop 'buffer count number
+      if
+        drop 'buffer count type [char] ? emit
+      else
+        state @ if postpone literal then
+      then
     then
-  else
-    drop 'buffer count number
-    if
-      drop 'buffer count type [char] ? emit
-    else
-      state @ if postpone literal then
-    then
-  then ;
-
-: main begin interpret write again [ main
+    write
+  again [ interpret

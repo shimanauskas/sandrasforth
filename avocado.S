@@ -92,7 +92,7 @@ DEFINE \previous, \body, "\name", \mask
 START:
 	leaq dstack(%rip), %rbp
 	movq $-1, %rax
-	leaq main(%rip), %r12
+	leaq interpret(%rip), %r12
 	NEXT
 
 code_docolon:
@@ -338,7 +338,7 @@ DEFWORD head_state, here, "here" /* -- addr */
 	.quad ret
 
 DEFWORD head_here, latest, "latest" /* -- addr */
-	.quad var, head_main
+	.quad var, head_interpret
 	.quad ret
 
 DEFWORD head_latest, base, "base" /* -- addr */
@@ -909,7 +909,7 @@ DEFWORD head_postpone, literal, "literal", IMMEDIATE /* x -- */
 	.quad comma
 	.quad ret
 
-DEFWORD head_literal, interpret, "interpret"
+DEFINE head_literal, interpret, "interpret"
 	.quad word
 	.quad find
 	.quad dup
@@ -968,12 +968,8 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad literal
 
 3:
-	.quad ret
-
-DEFINE head_interpret, main, "main"
-	.quad interpret
 	.quad write
-	.quad jump, main
+	.quad jump, interpret
 
 .bss
 
