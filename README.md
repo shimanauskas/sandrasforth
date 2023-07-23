@@ -37,4 +37,6 @@ Clean:
 
 Upon a word not found, Avocado outputs it, followed by a question mark.
 
+Avocado will compile a definition without the words not found.
+
 If Avocado crashes while defining a word, it most likely ran out of statically allocated memory.
