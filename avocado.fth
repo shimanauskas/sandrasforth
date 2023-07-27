@@ -28,7 +28,11 @@
 :  char  ( -- char ) word [ 'buffer 1+ ] literal c@ ;
 : [char] ( -- char ) char postpone literal ; immediate
 
-: " ( -- addr ) [char] " parse advance here @ save ; immediate
+:  " ( -- addr ) [char] " parse advance here @ save ;
+: c" ( -- addr ) lit jump postpone , here @ push 0 postpone ,
+   " here @ pop ! postpone literal ; immediate
+: s" ( -- addr u ) postpone c" ' count literal postpone , ; immediate
+: ."               postpone s" ' type  literal postpone , ; immediate
 
 : hold ( char -- ) 'buffer @ 1- dup 'buffer ! c! ;
 
