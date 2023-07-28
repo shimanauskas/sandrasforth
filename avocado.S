@@ -842,7 +842,7 @@ DEFWORD head_save, cfa, "cfa" /* addr1 -- addr2 */
 	.quad aligned
 	.quad ret
 
-DEFWORD head_cfa, comma, "," /* addr -- */
+DEFWORD head_cfa, comma, "," /* x -- */
 	.quad here
 	.quad fetch
 	.quad dup
