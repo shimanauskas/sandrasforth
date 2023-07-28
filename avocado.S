@@ -842,7 +842,7 @@ DEFWORD head_save, cfa, "cfa" /* addr1 -- addr2 */
 	.quad aligned
 	.quad ret
 
-DEFWORD head_cfa, comma, ",", IMMEDIATE /* addr -- */
+DEFWORD head_cfa, comma, "," /* addr -- */
 	.quad here
 	.quad fetch
 	.quad dup
@@ -886,7 +886,7 @@ DEFWORD head_colon, semicolon, ";", IMMEDIATE
 	.quad lbracket
 	.quad ret
 
-DEFWORD head_semicolon, tick, "'", IMMEDIATE /* -- 0 | xt */
+DEFWORD head_semicolon, tick, "'" /* -- 0 | xt */
 	.quad word
 	.quad find
 	.quad dup

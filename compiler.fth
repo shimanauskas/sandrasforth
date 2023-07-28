@@ -82,21 +82,21 @@
 
 : cfa ( addr1 -- addr2 ) cell + count 63 and + aligned ;
 
-: , ( x -- ) here @ dup cell + here ! ! ; immediate
+: , ( x -- ) here @ dup cell + here ! ! ;
 
 : [  0 state ! ; immediate
 : ] -1 state ! ; immediate
 
-: : postpone ] latest @ here @ latest ! postpone , word save
-  lit ' docolon [ @ ] , postpone , ; immediate
+: : postpone ] latest @ here @ latest ! , word save [ ' docolon @ ] literal , ;
+  immediate
 
-: ; hidden lit ret postpone , postpone [ ; hidden immediate
+: ; hidden lit ret , postpone [ ; hidden immediate
 
-: ' ( -- 0 | xt ) word find dup if cfa then ; immediate
+: ' ( -- 0 | xt ) word find dup if cfa then ;
 
-: postpone hidden postpone ' postpone , ; hidden immediate
+: postpone ' , ; immediate
 
-: literal ( x -- ) lit lit postpone , postpone , ; immediate
+: literal ( x -- ) lit lit , , ; immediate
 
 : interpret
   begin
@@ -106,7 +106,7 @@
       if
         cfa execute
       else
-        cfa postpone ,
+        cfa ,
       then
     else
       drop 'buffer count number
