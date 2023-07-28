@@ -898,12 +898,7 @@ DEFWORD head_semicolon, tick, "'" /* -- 0 | xt */
 0:
 	.quad ret
 
-DEFWORD head_tick, postpone, "postpone", IMMEDIATE
-	.quad tick
-	.quad comma
-	.quad ret
-
-DEFWORD head_postpone, literal, "literal", IMMEDIATE /* x -- */
+DEFWORD head_tick, literal, "literal", IMMEDIATE /* x -- */
 	.quad lit, lit
 	.quad comma
 	.quad comma

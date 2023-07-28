@@ -94,8 +94,6 @@
 
 : ' ( -- 0 | xt ) word find dup if cfa then ;
 
-: postpone ' , ; immediate
-
 : literal ( x -- ) lit lit , , ; immediate
 
 : interpret

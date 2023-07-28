@@ -1,6 +1,8 @@
 : immediate latest @ cell + dup c@ 128 xor over c! drop ; immediate
 : hidden    latest @ cell + dup c@  64 xor over c! drop ; immediate
 
+: postpone ' , ; immediate
+
 : begin here @ ; immediate
 
 : if lit ?jump , here @ 0 , ; immediate
