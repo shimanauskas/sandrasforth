@@ -25,7 +25,7 @@
 
 : write 1 'output count sys-write syscall drop 0 'output c! ;
 
-: bye write 0 dup dup sys-exit syscall [ reveal ( We never return. )
+: bye write 0 dup dup sys-exit syscall [ reveal
 
 : read 0 [ 'input 1+ ] literal 255 sys-read syscall dup 0=
   if bye then 'input c! [ 'input 1+ ] literal mark ! ;
