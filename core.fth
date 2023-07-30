@@ -4,17 +4,17 @@
 
 : begin here @ ; immediate
 
-: if lit ?jump , here @ 0 , ; immediate
+: if [ ' ?jump ] literal , here @ 0 , ; immediate
 : then push here @ pop ! ; immediate
 
-: else lit jump , here @ push 0 , postpone then pop ; immediate
+: else [ ' jump ] literal , here @ push 0 , postpone then pop ; immediate
 
-: repeat push lit  jump , , here @ pop ! ; immediate
-: until       lit ?jump , ,              ; immediate
-: again       lit  jump , ,              ; immediate
+: repeat push [ '  jump ] literal , , here @ pop ! ; immediate
+: until       [ ' ?jump ] literal , ,              ; immediate
+: again       [ '  jump ] literal , ,              ; immediate
 
-: variable : lit var , 0 ,    postpone ; ; immediate
-: constant : postpone literal postpone ; ; immediate
+: variable : [ ' var ] literal , 0 , postpone ; ; immediate
+: constant : postpone  literal       postpone ; ; immediate
 
 : ( 41 parse advance ; immediate
 
@@ -29,8 +29,8 @@
 : [char] ( -- char ) char postpone literal ; immediate
 
 :  " ( -- addr ) [char] " parse advance here @ save ;
-: c" ( -- addr ) lit jump , here @ push 0 , " here @ pop ! postpone literal ;
-  immediate
+: c" ( -- addr ) [ ' jump ] literal , here @ push 0 ,
+   " here @ pop ! postpone literal ; immediate
 : s" ( -- addr u ) postpone c" [ ' count ] literal , ; immediate
 : ."               postpone s" [ ' type  ] literal , ; immediate
 
