@@ -861,13 +861,13 @@ DEFWORD head_comma, lbracket, "[", IMMEDIATE
 	.quad store
 	.quad ret
 
-DEFWORD head_lbracket, rbracket, "]", IMMEDIATE
+DEFWORD head_lbracket, rbracket, "]"
 	.quad lit, -1
 	.quad state
 	.quad store
 	.quad ret
 
-DEFWORD head_rbracket, colon, ":", IMMEDIATE
+DEFWORD head_rbracket, colon, ":"
 	.quad rbracket
 	.quad here
 	.quad fetch

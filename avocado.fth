@@ -85,10 +85,9 @@
 : , ( x -- ) here @ dup cell + here ! ! ;
 
 : [  0 state ! ; immediate
-: ] -1 state ! ; immediate
+: ] -1 state ! ;
 
-: : postpone ] here @ current ! latest @ ,
-  word save [ ' docolon @ ] literal , ; immediate
+: : ] here @ current ! latest @ , word save [ ' docolon @ ] literal , ;
 
 : reveal current @ latest ! ;
 
