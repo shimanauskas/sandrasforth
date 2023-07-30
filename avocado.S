@@ -683,13 +683,13 @@ DEFWORD head_parse, word, "word"
 	.quad parse
 	.quad tickbuffer
 	.quad cfetch
-	.quad lit, 0x7F
+	.quad lit, IMMEDIATE-1
 	.quad uless
 	.quad invert
 
 	.quad qjump, 0f
 
-	.quad lit, 0x7F
+	.quad lit, IMMEDIATE-1
 	.quad tickbuffer
 	.quad cstore
 
@@ -796,7 +796,7 @@ DEFWORD head_number, find, "find" /* -- 0 | addr */
 	.quad cell
 	.quad add
 	.quad cfetch
-	.quad lit, ~IMMEDIATE
+	.quad lit, IMMEDIATE-1
 	.quad and
 	.quad tickbuffer
 	.quad cfetch
@@ -838,7 +838,7 @@ DEFWORD head_save, cfa, "cfa" /* addr1 -- addr2 */
 	.quad cell
 	.quad add
 	.quad count
-	.quad lit, 0x7F
+	.quad lit, IMMEDIATE-1
 	.quad and
 	.quad add
 	.quad aligned
