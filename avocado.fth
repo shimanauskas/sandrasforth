@@ -80,7 +80,7 @@
 
 : save 'buffer here @ over c@ 1+ dup aligned here @ + here ! cmove ;
 
-: cfa ( addr1 -- addr2 ) cell + count 127 and + aligned ;
+: >code ( addr1 -- addr2 ) cell + count 127 and + aligned ;
 
 : , ( x -- ) here @ dup cell + here ! ! ;
 
@@ -93,7 +93,7 @@
 
 : ; lit ret , reveal postpone [ ; immediate
 
-: ' ( -- 0 | xt ) word find dup if cfa then ;
+: ' ( -- 0 | xt ) word find dup if >code then ;
 
 : literal ( x -- ) lit lit , , ; immediate
 
@@ -103,9 +103,9 @@
     if
       dup cell + c@ 128 and state @ invert or
       if
-        cfa execute
+        >code execute
       else
-        cfa ,
+        >code ,
       then
     else
       drop 'buffer count number

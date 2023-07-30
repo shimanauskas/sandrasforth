@@ -834,7 +834,7 @@ DEFWORD head_find, save, "save"
 	.quad cmove
 	.quad ret
 
-DEFWORD head_save, cfa, "cfa" /* addr1 -- addr2 */
+DEFWORD head_save, tocode, ">code" /* addr1 -- addr2 */
 	.quad cell
 	.quad add
 	.quad count
@@ -844,7 +844,7 @@ DEFWORD head_save, cfa, "cfa" /* addr1 -- addr2 */
 	.quad aligned
 	.quad ret
 
-DEFWORD head_cfa, comma, "," /* x -- */
+DEFWORD head_tocode, comma, "," /* x -- */
 	.quad here
 	.quad fetch
 	.quad dup
@@ -903,7 +903,7 @@ DEFWORD head_semicolon, tick, "'" /* -- 0 | xt */
 
 	.quad qjump, 0f
 
-	.quad cfa
+	.quad tocode
 
 0:
 	.quad ret
@@ -934,13 +934,13 @@ DEFINE head_literal, interpret, "interpret"
 
 	.quad qjump, 0f
 
-	.quad cfa
+	.quad tocode
 	.quad execute
 
 	.quad jump, 1f
 0:
 
-	.quad cfa
+	.quad tocode
 	.quad comma
 
 1:
