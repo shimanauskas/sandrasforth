@@ -4,7 +4,7 @@
 
 :  = ( x1 x2 -- bool ) xor 0= ;
 
-: 0< ( n -- bool ) [ 1 8 cells 1- lshift ] literal and bool ;
+: 0< ( n -- bool ) [ 1 cell 8 * 1- lshift ] literal and bool ;
 
 :  < ( n1 n2 -- bool ) over over xor 0< if drop 0< else - 0< then ;
 : u< ( u1 u2 -- bool ) over over xor 0< if nip  0< else - 0< then ;
