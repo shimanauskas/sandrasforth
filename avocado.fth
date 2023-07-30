@@ -25,7 +25,7 @@
 
 : write 1 'output count sys-write syscall drop 0 'output c! ;
 
-: bye write 0 dup dup sys-exit syscall ( We never return. )
+: bye write 0 dup dup sys-exit syscall [ reveal ( We never return. )
 
 : read 0 [ 'input 1+ ] literal 255 sys-read syscall dup 0=
   if bye then 'input c! [ 'input 1+ ] literal mark ! ;
@@ -52,7 +52,7 @@
   repeat
   drop ;
 
-: word 32 parse 'buffer c@ 63 u< invert if 63 'buffer c! then ;
+: word 32 parse 'buffer c@ 127 u< invert if 127 'buffer c! then ;
 
 : digit? ( char -- u bool ) [char] 0 - 9 over <
   if [ char A char 0 - 10 - ] literal - dup 10 < or then
@@ -80,17 +80,19 @@
 
 : save 'buffer here @ over c@ 1+ dup aligned here @ + here ! cmove ;
 
-: cfa ( addr1 -- addr2 ) cell + count 63 and + aligned ;
+: cfa ( addr1 -- addr2 ) cell + count 127 and + aligned ;
 
 : , ( x -- ) here @ dup cell + here ! ! ;
 
 : [  0 state ! ; immediate
 : ] -1 state ! ; immediate
 
-: : postpone ] latest @ here @ latest ! , word save [ ' docolon @ ] literal , ;
-  immediate
+: : postpone ] here @ current ! latest @ ,
+  word save [ ' docolon @ ] literal , ; immediate
 
-: ; hidden lit ret , postpone [ ; hidden immediate
+: reveal current @ latest ! ;
+
+: ; lit ret , reveal postpone [ ; immediate
 
 : ' ( -- 0 | xt ) word find dup if cfa then ;
 
@@ -115,4 +117,4 @@
       then
     then
     write
-  again [ interpret
+  again [ reveal interpret

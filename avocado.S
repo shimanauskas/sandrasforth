@@ -341,7 +341,11 @@ DEFWORD head_here, latest, "latest" /* -- addr */
 	.quad var, head_interpret
 	.quad ret
 
-DEFWORD head_latest, base, "base" /* -- addr */
+DEFWORD head_latest, current, "current" /* -- addr */
+	.quad var, head_interpret
+	.quad ret
+
+DEFWORD head_current, base, "base" /* -- addr */
 	.quad var, 10
 	.quad ret
 
@@ -681,13 +685,13 @@ DEFWORD head_parse, word, "word"
 	.quad parse
 	.quad tickbuffer
 	.quad cfetch
-	.quad lit, 0x3F
+	.quad lit, 0x7F
 	.quad uless
 	.quad invert
 
 	.quad qjump, 0f
 
-	.quad lit, 0x3F
+	.quad lit, 0x7F
 	.quad tickbuffer
 	.quad cstore
 
@@ -836,7 +840,7 @@ DEFWORD head_save, cfa, "cfa" /* addr1 -- addr2 */
 	.quad cell
 	.quad add
 	.quad count
-	.quad lit, 0x3F
+	.quad lit, 0x7F
 	.quad and
 	.quad add
 	.quad aligned
@@ -867,12 +871,12 @@ DEFWORD head_lbracket, rbracket, "]", IMMEDIATE
 
 DEFWORD head_rbracket, colon, ":", IMMEDIATE
 	.quad rbracket
-	.quad latest
-	.quad fetch
 	.quad here
 	.quad fetch
-	.quad latest
+	.quad current
 	.quad store
+	.quad latest
+	.quad fetch
 	.quad comma
 	.quad word
 	.quad save
@@ -880,9 +884,17 @@ DEFWORD head_rbracket, colon, ":", IMMEDIATE
 	.quad comma
 	.quad ret
 
-DEFWORD head_colon, semicolon, ";", IMMEDIATE
+DEFWORD head_colon, reveal, "reveal"
+	.quad current
+	.quad fetch
+	.quad latest
+	.quad store
+	.quad ret
+
+DEFWORD head_reveal, semicolon, ";", IMMEDIATE
 	.quad lit, ret
 	.quad comma
+	.quad reveal
 	.quad lbracket
 	.quad ret
 
