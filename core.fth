@@ -1,4 +1,4 @@
-: immediate latest @ cell + dup c@ 128 xor over c! drop ; immediate
+: immediate latest @ cell + dup c@ 128 xor over c! drop ;
 
 : postpone ' , ; immediate
 
