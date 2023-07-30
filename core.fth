@@ -13,8 +13,8 @@
 : until       lit ?jump , ,              ; immediate
 : again       lit  jump , ,              ; immediate
 
-: variable postpone : lit var , 0 ,    postpone ; ; immediate
-: constant postpone : postpone literal postpone ; ; immediate
+: variable : lit var , 0 ,    postpone ; ; immediate
+: constant : postpone literal postpone ; ; immediate
 
 : ( 41 parse advance ; immediate
 
