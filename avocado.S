@@ -260,8 +260,6 @@ code_syscall: /* x1 x2 x3 x4 -- x5 */
 	syscall
 	NEXT
 
-end:
-
 .data
 
 DEFCODE 0,             docolon,  "docolon"
