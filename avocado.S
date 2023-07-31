@@ -101,14 +101,14 @@ code_docolon:
 	movq %rbx, %r12
 	NEXT
 
-code_jump:
+code_branch:
 	movq (%r12), %r12
 	NEXT
 
-code_qjump: /* x -- */
+code_zbranch: /* x -- */
 	testq %rax, %rax
 	DROP
-	jz code_jump
+	jz code_branch
 	addq $(CELL), %r12
 	NEXT
 
@@ -263,9 +263,9 @@ code_syscall: /* x1 x2 x3 x4 -- x5 */
 .data
 
 DEFCODE 0,             docolon,  "docolon"
-DEFCODE head_docolon,  jump,     "jump"
-DEFCODE head_jump,     qjump,    "?jump"
-DEFCODE head_qjump,    execute,  "execute"
+DEFCODE head_docolon,  branch,   "branch"
+DEFCODE head_branch,   zbranch,  "0branch"
+DEFCODE head_zbranch,  execute,  "execute"
 DEFCODE head_execute,  exit,     "exit"
 DEFCODE head_exit,     lit,      "lit"
 DEFCODE head_lit,      var,      "var"
@@ -352,11 +352,11 @@ DEFWORD head_current, base, "base" /* -- addr */
 	.quad exit
 
 DEFWORD head_base, bool, "bool" /* x -- bool */
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad lit, -1
 
-	.quad jump, 1f
+	.quad branch, 1f
 0:
 
 	.quad lit, 0
@@ -386,12 +386,12 @@ DEFWORD head_zless, less, "<" /* n1 n2 -- bool */
 	.quad xor
 	.quad zless
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad drop
 	.quad zless
 
-	.quad jump, 1f
+	.quad branch, 1f
 0:
 
 	.quad sub
@@ -406,12 +406,12 @@ DEFWORD head_less, uless, "u<" /* u1 u2 -- bool */
 	.quad xor
 	.quad zless
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad nip
 	.quad zless
 
-	.quad jump, 1f
+	.quad branch, 1f
 0:
 
 	.quad sub
@@ -451,7 +451,7 @@ DEFWORD head_count, cmove, "cmove" /* addr1 addr2 u -- */
 0:
 	.quad dup
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad push
 	.quad over
@@ -465,7 +465,7 @@ DEFWORD head_count, cmove, "cmove" /* addr1 addr2 u -- */
 	.quad pop
 	.quad dec
 
-	.quad jump, 0b
+	.quad branch, 0b
 0:
 
 	.quad nip
@@ -486,7 +486,7 @@ DEFWORD head_cmove, sameq, "same?" /* addr1 addr2 u -- bool */
 	.quad pop
 	.quad and
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad push
 	.quad inc
@@ -495,7 +495,7 @@ DEFWORD head_cmove, sameq, "same?" /* addr1 addr2 u -- bool */
 	.quad pop
 	.quad dec
 
-	.quad jump, 0b
+	.quad branch, 0b
 0:
 
 	.quad pop
@@ -533,7 +533,7 @@ DEFWORD head_bye, read, "read"
 	.quad dup
 	.quad zequals
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad bye
 
@@ -562,7 +562,7 @@ DEFWORD head_keyq, key, "key" /* -- char */
 	.quad lit, '\n'
 	.quad equals
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad drop
 	.quad lit, ' '
@@ -592,7 +592,7 @@ DEFWORD head_advance, emit, "emit" /* char -- */
 	.quad lit, 0xFF
 	.quad equals
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad write
 
@@ -603,7 +603,7 @@ DEFWORD head_emit, type, "type" /* addr u -- */
 0:
 	.quad dup
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad push
 	.quad dup
@@ -613,7 +613,7 @@ DEFWORD head_emit, type, "type" /* addr u -- */
 	.quad pop
 	.quad dec
 
-	.quad jump, 0b
+	.quad branch, 0b
 0:
 
 	.quad nip
@@ -636,7 +636,7 @@ DEFWORD head_accumulate, parse, "parse"
 	.quad keyq
 	.quad invert
 
-	.quad qjump, 1f
+	.quad zbranch, 1f
 
 	.quad read
 
@@ -645,11 +645,11 @@ DEFWORD head_accumulate, parse, "parse"
 	.quad lit, ' '
 	.quad equals
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad advance
 
-	.quad jump, 0b
+	.quad branch, 0b
 0:
 
 	.quad lit, 0
@@ -660,7 +660,7 @@ DEFWORD head_accumulate, parse, "parse"
 	.quad keyq
 	.quad invert
 
-	.quad qjump, 1f
+	.quad zbranch, 1f
 
 	.quad read
 
@@ -670,13 +670,13 @@ DEFWORD head_accumulate, parse, "parse"
 	.quad equals
 	.quad invert
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad key
 	.quad accumulate
 	.quad advance
 
-	.quad jump, 0b
+	.quad branch, 0b
 0:
 
 	.quad drop
@@ -691,7 +691,7 @@ DEFWORD head_parse, word, "word"
 	.quad uless
 	.quad invert
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad lit, IMMEDIATE-1
 	.quad tickbuffer
@@ -707,7 +707,7 @@ DEFWORD head_word, digitq, "digit?" /* char -- u bool */
 	.quad over
 	.quad less
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad lit, 'A'-'0'-10
 	.quad sub
@@ -738,7 +738,7 @@ DEFWORD head_digitq, natural, "natural" /* addr u1 -- u2 u3 */
 	.quad push
 	.quad and
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad push
 	.quad base
@@ -752,7 +752,7 @@ DEFWORD head_digitq, natural, "natural" /* addr u1 -- u2 u3 */
 	.quad pop
 	.quad dec
 
-	.quad jump, 0b
+	.quad branch, 0b
 0:
 
 	.quad drop
@@ -766,7 +766,7 @@ DEFWORD head_natural, number, "number" /* addr u1 -- n u2 */
 	.quad lit, '-'
 	.quad equals
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad push
 	.quad inc
@@ -777,7 +777,7 @@ DEFWORD head_natural, number, "number" /* addr u1 -- n u2 */
 	.quad negate
 	.quad pop
 
-	.quad jump, 1f
+	.quad branch, 1f
 0:
 
 	.quad natural
@@ -794,7 +794,7 @@ DEFWORD head_number, find, "find" /* -- 0 | addr */
 	.quad zequals
 	.quad over
 
-	.quad qjump, 1f
+	.quad zbranch, 1f
 
 	.quad over
 	.quad cell
@@ -806,7 +806,7 @@ DEFWORD head_number, find, "find" /* -- 0 | addr */
 	.quad cfetch
 	.quad equals
 
-	.quad qjump, 1f
+	.quad zbranch, 1f
 
 	.quad drop
 	.quad dup
@@ -817,7 +817,7 @@ DEFWORD head_number, find, "find" /* -- 0 | addr */
 	.quad sameq
 
 1:
-	.quad qjump, 0b
+	.quad zbranch, 0b
 
 	.quad exit
 
@@ -905,7 +905,7 @@ DEFWORD head_semicolon, tick, "'" /* -- 0 | xt */
 	.quad find
 	.quad dup
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad tocode
 
@@ -923,7 +923,7 @@ DEFINE head_literal, interpret, "interpret"
 	.quad find
 	.quad dup
 
-	.quad qjump, 2f
+	.quad zbranch, 2f
 
 	.quad dup
 	.quad cell
@@ -936,12 +936,12 @@ DEFINE head_literal, interpret, "interpret"
 	.quad invert
 	.quad or
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad tocode
 	.quad execute
 
-	.quad jump, 1f
+	.quad branch, 1f
 0:
 
 	.quad tocode
@@ -949,7 +949,7 @@ DEFINE head_literal, interpret, "interpret"
 
 1:
 
-	.quad jump, 3f
+	.quad branch, 3f
 2:
 
 	.quad drop
@@ -957,7 +957,7 @@ DEFINE head_literal, interpret, "interpret"
 	.quad count
 	.quad number
 
-	.quad qjump, 0f
+	.quad zbranch, 0f
 
 	.quad drop
 	.quad tickbuffer
@@ -966,19 +966,19 @@ DEFINE head_literal, interpret, "interpret"
 	.quad lit, '?'
 	.quad emit
 
-	.quad jump, 3f
+	.quad branch, 3f
 0:
 
 	.quad state
 	.quad fetch
 
-	.quad qjump, 3f
+	.quad zbranch, 3f
 
 	.quad literal
 
 3:
 	.quad write
-	.quad jump, interpret
+	.quad branch, interpret
 
 .bss
 
