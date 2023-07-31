@@ -262,7 +262,7 @@ code_syscall: /* x1 x2 x3 x4 -- x5 */
 
 .data
 
-DEFCODE 0,             docolon,  "docolon"
+DEFCODE 0,             docolon,  "do:"
 DEFCODE head_docolon,  branch,   "branch"
 DEFCODE head_branch,   zbranch,  "0branch"
 DEFCODE head_zbranch,  execute,  "execute"
