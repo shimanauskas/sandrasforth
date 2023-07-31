@@ -117,7 +117,7 @@ code_execute: /* addr -- */
 	DROP
 	jmp *(%rbx)
 
-code_ret:
+code_exit:
 	popq %r12
 	NEXT
 
@@ -266,8 +266,8 @@ DEFCODE 0,             docolon,  "docolon"
 DEFCODE head_docolon,  jump,     "jump"
 DEFCODE head_jump,     qjump,    "?jump"
 DEFCODE head_qjump,    execute,  "execute"
-DEFCODE head_execute,  ret,      "ret"
-DEFCODE head_ret,      lit,      "lit"
+DEFCODE head_execute,  exit,     "exit"
+DEFCODE head_exit,     lit,      "lit"
 DEFCODE head_lit,      var,      "var"
 DEFCODE head_var,      dup,      "dup"
 DEFCODE head_dup,      nip,      "nip"
@@ -297,59 +297,59 @@ DEFCODE head_cstore,   syscall,  "syscall"
 
 DEFWORD head_syscall, cell, "cell" /* -- u */
 	.quad lit, CELL
-	.quad ret
+	.quad exit
 
 DEFWORD head_cell, immediate_flag, "immediate-flag" /* -- x */
 	.quad lit, IMMEDIATE
-	.quad ret
+	.quad exit
 
 DEFWORD head_immediate_flag, sys_read, "sys-read" /* -- x */
 	.quad lit, SYS_read
-	.quad ret
+	.quad exit
 
 DEFWORD head_sys_read, sys_write, "sys-write" /* -- x */
 	.quad lit, SYS_write
-	.quad ret
+	.quad exit
 
 DEFWORD head_sys_write, sys_exit, "sys-exit" /* -- x */
 	.quad lit, SYS_exit
-	.quad ret
+	.quad exit
 
 DEFWORD head_sys_exit, tickinput, "'input" /* -- addr */
 	.quad lit, input
-	.quad ret
+	.quad exit
 
 DEFWORD head_tickinput, tickoutput, "'output" /* -- addr */
 	.quad lit, output
-	.quad ret
+	.quad exit
 
 DEFWORD head_tickoutput, tickbuffer, "'buffer" /* -- addr */
 	.quad lit, buffer
-	.quad ret
+	.quad exit
 
 DEFWORD head_tickbuffer, mark, "mark" /* -- addr */
 	.quad var, input+1
-	.quad ret
+	.quad exit
 
 DEFWORD head_mark, state, "state" /* -- addr */
 	.quad var, 0
-	.quad ret
+	.quad exit
 
 DEFWORD head_state, here, "here" /* -- addr */
 	.quad var, vocabulary
-	.quad ret
+	.quad exit
 
 DEFWORD head_here, latest, "latest" /* -- addr */
 	.quad var, head_interpret
-	.quad ret
+	.quad exit
 
 DEFWORD head_latest, current, "current" /* -- addr */
 	.quad var, head_interpret
-	.quad ret
+	.quad exit
 
 DEFWORD head_current, base, "base" /* -- addr */
 	.quad var, 10
-	.quad ret
+	.quad exit
 
 DEFWORD head_base, bool, "bool" /* x -- bool */
 	.quad qjump, 0f
@@ -362,23 +362,23 @@ DEFWORD head_base, bool, "bool" /* x -- bool */
 	.quad lit, 0
 
 1:
-	.quad ret
+	.quad exit
 
 DEFWORD head_bool, zequals, "0=" /* x -- bool */
 	.quad bool
 	.quad invert
-	.quad ret
+	.quad exit
 
 DEFWORD head_zequals, equals, "=" /* x1 x2 -- bool */
 	.quad xor
 	.quad zequals
-	.quad ret
+	.quad exit
 
 DEFWORD head_equals, zless, "0<" /* n - bool */
 	.quad lit, 1<<(CELL*8-1)
 	.quad and
 	.quad bool
-	.quad ret
+	.quad exit
 
 DEFWORD head_zless, less, "<" /* n1 n2 -- bool */
 	.quad over
@@ -398,7 +398,7 @@ DEFWORD head_zless, less, "<" /* n1 n2 -- bool */
 	.quad zless
 
 1:
-	.quad ret
+	.quad exit
 
 DEFWORD head_less, uless, "u<" /* u1 u2 -- bool */
 	.quad over
@@ -418,7 +418,7 @@ DEFWORD head_less, uless, "u<" /* u1 u2 -- bool */
 	.quad zless
 
 1:
-	.quad ret
+	.quad exit
 
 DEFWORD head_uless, within, "within" /* u1 u2 u3 -- bool */
 	.quad push
@@ -430,14 +430,14 @@ DEFWORD head_uless, within, "within" /* u1 u2 u3 -- bool */
 	.quad pop
 	.quad uless
 	.quad and
-	.quad ret
+	.quad exit
 
 DEFWORD head_within, aligned, "aligned" /* x1 -- x2 */
 	.quad lit, CELL-1
 	.quad add
 	.quad lit, ~(CELL-1)
 	.quad and
-	.quad ret
+	.quad exit
 
 DEFWORD head_aligned, count, "count" /* addr1 -- addr2 u */
 	.quad dup
@@ -445,7 +445,7 @@ DEFWORD head_aligned, count, "count" /* addr1 -- addr2 u */
 	.quad inc
 	.quad pop
 	.quad cfetch
-	.quad ret
+	.quad exit
 
 DEFWORD head_count, cmove, "cmove" /* addr1 addr2 u -- */
 0:
@@ -471,7 +471,7 @@ DEFWORD head_count, cmove, "cmove" /* addr1 addr2 u -- */
 	.quad nip
 	.quad nip
 	.quad drop
-	.quad ret
+	.quad exit
 
 DEFWORD head_cmove, sameq, "same?" /* addr1 addr2 u -- bool */
 0:
@@ -502,7 +502,7 @@ DEFWORD head_cmove, sameq, "same?" /* addr1 addr2 u -- bool */
 	.quad nip
 	.quad nip
 	.quad zequals
-	.quad ret
+	.quad exit
 
 DEFWORD head_sameq, write, "write"
 	.quad lit, 1
@@ -514,7 +514,7 @@ DEFWORD head_sameq, write, "write"
 	.quad lit, 0
 	.quad tickoutput
 	.quad cstore
-	.quad ret
+	.quad exit
 
 DEFWORD head_write, bye, "bye"
 	.quad write
@@ -543,7 +543,7 @@ DEFWORD head_bye, read, "read"
 	.quad lit, input+1
 	.quad mark
 	.quad store
-	.quad ret
+	.quad exit
 
 DEFWORD head_read, keyq, "key?" /* -- bool */
 	.quad mark
@@ -552,7 +552,7 @@ DEFWORD head_read, keyq, "key?" /* -- bool */
 	.quad count
 	.quad add
 	.quad uless
-	.quad ret
+	.quad exit
 
 DEFWORD head_keyq, key, "key" /* -- char */
 	.quad mark
@@ -568,7 +568,7 @@ DEFWORD head_keyq, key, "key" /* -- char */
 	.quad lit, ' '
 
 0:
-	.quad ret
+	.quad exit
 
 DEFWORD head_key, advance, "advance"
 	.quad mark
@@ -576,7 +576,7 @@ DEFWORD head_key, advance, "advance"
 	.quad inc
 	.quad mark
 	.quad store
-	.quad ret
+	.quad exit
 
 DEFWORD head_advance, emit, "emit" /* char -- */
 	.quad tickoutput
@@ -597,7 +597,7 @@ DEFWORD head_advance, emit, "emit" /* char -- */
 	.quad write
 
 0:
-	.quad ret
+	.quad exit
 
 DEFWORD head_emit, type, "type" /* addr u -- */
 0:
@@ -618,7 +618,7 @@ DEFWORD head_emit, type, "type" /* addr u -- */
 
 	.quad nip
 	.quad drop
-	.quad ret
+	.quad exit
 
 DEFWORD head_type, accumulate, "accumulate" /* char -- */
 	.quad tickbuffer
@@ -629,7 +629,7 @@ DEFWORD head_type, accumulate, "accumulate" /* char -- */
 	.quad cstore
 	.quad add
 	.quad cstore
-	.quad ret
+	.quad exit
 
 DEFWORD head_accumulate, parse, "parse"
 0:
@@ -680,7 +680,7 @@ DEFWORD head_accumulate, parse, "parse"
 0:
 
 	.quad drop
-	.quad ret
+	.quad exit
 
 DEFWORD head_parse, word, "word"
 	.quad lit, ' '
@@ -698,7 +698,7 @@ DEFWORD head_parse, word, "word"
 	.quad cstore
 
 0:
-	.quad ret
+	.quad exit
 
 DEFWORD head_word, digitq, "digit?" /* char -- u bool */
 	.quad lit, '0'
@@ -721,7 +721,7 @@ DEFWORD head_word, digitq, "digit?" /* char -- u bool */
 	.quad base
 	.quad fetch
 	.quad uless
-	.quad ret
+	.quad exit
 
 DEFWORD head_digitq, natural, "natural" /* addr u1 -- u2 u3 */
 	.quad push
@@ -758,7 +758,7 @@ DEFWORD head_digitq, natural, "natural" /* addr u1 -- u2 u3 */
 	.quad drop
 	.quad nip
 	.quad pop
-	.quad ret
+	.quad exit
 
 DEFWORD head_natural, number, "number" /* addr u1 -- n u2 */
 	.quad over
@@ -783,7 +783,7 @@ DEFWORD head_natural, number, "number" /* addr u1 -- n u2 */
 	.quad natural
 
 1:
-	.quad ret
+	.quad exit
 
 DEFWORD head_number, find, "find" /* -- 0 | addr */
 	.quad latest
@@ -819,7 +819,7 @@ DEFWORD head_number, find, "find" /* -- 0 | addr */
 1:
 	.quad qjump, 0b
 
-	.quad ret
+	.quad exit
 
 DEFWORD head_find, save, "save"
 	.quad tickbuffer
@@ -836,7 +836,7 @@ DEFWORD head_find, save, "save"
 	.quad here
 	.quad store
 	.quad cmove
-	.quad ret
+	.quad exit
 
 DEFWORD head_save, tocode, ">code" /* addr1 -- addr2 */
 	.quad cell
@@ -846,7 +846,7 @@ DEFWORD head_save, tocode, ">code" /* addr1 -- addr2 */
 	.quad and
 	.quad add
 	.quad aligned
-	.quad ret
+	.quad exit
 
 DEFWORD head_tocode, comma, "," /* x -- */
 	.quad here
@@ -857,19 +857,19 @@ DEFWORD head_tocode, comma, "," /* x -- */
 	.quad here
 	.quad store
 	.quad store
-	.quad ret
+	.quad exit
 
 DEFWORD head_comma, lbracket, "[", IMMEDIATE
 	.quad lit, 0
 	.quad state
 	.quad store
-	.quad ret
+	.quad exit
 
 DEFWORD head_lbracket, rbracket, "]"
 	.quad lit, -1
 	.quad state
 	.quad store
-	.quad ret
+	.quad exit
 
 DEFWORD head_rbracket, colon, ":"
 	.quad rbracket
@@ -884,21 +884,21 @@ DEFWORD head_rbracket, colon, ":"
 	.quad save
 	.quad lit, code_docolon
 	.quad comma
-	.quad ret
+	.quad exit
 
 DEFWORD head_colon, reveal, "reveal"
 	.quad current
 	.quad fetch
 	.quad latest
 	.quad store
-	.quad ret
+	.quad exit
 
 DEFWORD head_reveal, semicolon, ";", IMMEDIATE
-	.quad lit, ret
+	.quad lit, exit
 	.quad comma
 	.quad reveal
 	.quad lbracket
-	.quad ret
+	.quad exit
 
 DEFWORD head_semicolon, tick, "'" /* -- 0 | xt */
 	.quad word
@@ -910,13 +910,13 @@ DEFWORD head_semicolon, tick, "'" /* -- 0 | xt */
 	.quad tocode
 
 0:
-	.quad ret
+	.quad exit
 
 DEFWORD head_tick, literal, "literal", IMMEDIATE /* x -- */
 	.quad lit, lit
 	.quad comma
 	.quad comma
-	.quad ret
+	.quad exit
 
 DEFINE head_literal, interpret, "interpret"
 	.quad word
