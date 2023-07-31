@@ -299,7 +299,11 @@ DEFWORD head_syscall, cell, "cell" /* -- u */
 	.quad lit, CELL
 	.quad ret
 
-DEFWORD head_cell, sys_read, "sys-read" /* -- x */
+DEFWORD head_cell, immediate_flag, "immediate-flag" /* -- x */
+	.quad lit, IMMEDIATE
+	.quad ret
+
+DEFWORD head_immediate_flag, sys_read, "sys-read" /* -- x */
 	.quad lit, SYS_read
 	.quad ret
 
@@ -925,7 +929,7 @@ DEFINE head_literal, interpret, "interpret"
 	.quad cell
 	.quad add
 	.quad cfetch
-	.quad lit, IMMEDIATE
+	.quad immediate_flag
 	.quad and
 	.quad state
 	.quad fetch
