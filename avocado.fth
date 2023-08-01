@@ -28,9 +28,17 @@
 : bye write 0 dup dup sys-exit syscall [ reveal
 
 : read 0 [ 'input 1+ ] literal 255 sys-read syscall dup 0=
-  if bye then 'input c! [ 'input 1+ ] literal mark ! ;
+  if bye then 'input c! [ 'input 1+ ] literal in ! ;
 
-: key? ( -- bool ) mark @ 'input count + u< ;
+: refill 0 'line c!
+  begin
+    'input count + in @ = if read then
+    in @ c@ in @ 1+ in ! dup 'line count dup 1+ 'line c! + c!
+    10 = 'line c@ 255 = or
+  until
+  [ 'line 1+ ] literal mark ! ;
+
+: key? ( -- bool ) mark @ 'line count + u< ;
 : key  ( -- char ) mark @ c@ dup 10 = if drop 32 then ;
 
 : advance mark @ 1+ mark ! ;
@@ -42,11 +50,10 @@
 
 : accumulate ( char -- ) 'buffer count dup 1+ 'buffer c! + c! ;
 
-: parse ( char -- )
-  begin key? invert if read then key 32 = if advance repeat
-  0 'buffer c!
+: parse ( char -- ) 0 'buffer c!
+  begin key? invert if drop exit then key 32 = if advance repeat
   begin
-    key? invert if read then key over = invert
+    key? invert if refill then key over = invert
   if
     key accumulate advance
   repeat
@@ -101,21 +108,28 @@
 
 : interpret
   begin
-    word find dup
+    word 'buffer c@
     if
-      dup cell + c@ immediate-flag and state @ invert or
+      find dup
       if
-        >code execute
+        dup cell + c@ immediate-flag and state @ invert or
+        if
+          >code execute
+        else
+          >code ,
+        then
       else
-        >code ,
+        drop 'buffer count number
+        if
+          drop 'buffer count type [char] ? emit
+        else
+          state @ if postpone literal then
+        then
       then
+      write
     else
-      drop 'buffer count number
-      if
-        drop 'buffer count type [char] ? emit
-      else
-        state @ if postpone literal then
-      then
+      exit
     then
-    write
-  again [ reveal interpret
+  again [ reveal
+
+: main begin refill interpret again [ reveal main

@@ -92,7 +92,7 @@ DEFINE \previous, \body, "\name", \mask
 START:
 	leaq dstack(%rip), %rbp
 	movq $-1, %rax
-	leaq interpret(%rip), %r12
+	leaq main(%rip), %r12
 	NEXT
 
 code_docolon:
@@ -319,7 +319,11 @@ DEFWORD head_sys_exit, tickinput, "'input" /* -- addr */
 	.quad lit, input
 	.quad exit
 
-DEFWORD head_tickinput, tickoutput, "'output" /* -- addr */
+DEFWORD head_tickinput, tickline, "'line" /* -- addr */
+	.quad lit, line
+	.quad exit
+
+DEFWORD head_tickline, tickoutput, "'output" /* -- addr */
 	.quad lit, output
 	.quad exit
 
@@ -327,8 +331,12 @@ DEFWORD head_tickoutput, tickbuffer, "'buffer" /* -- addr */
 	.quad lit, buffer
 	.quad exit
 
-DEFWORD head_tickbuffer, mark, "mark" /* -- addr */
+DEFWORD head_tickbuffer, in, "in" /* -- addr */
 	.quad var, input+1
+	.quad exit
+
+DEFWORD head_in, mark, "mark" /* -- addr */
+	.quad var, line+1
 	.quad exit
 
 DEFWORD head_mark, state, "state" /* -- addr */
@@ -340,11 +348,11 @@ DEFWORD head_state, here, "here" /* -- addr */
 	.quad exit
 
 DEFWORD head_here, latest, "latest" /* -- addr */
-	.quad var, head_interpret
+	.quad var, head_main
 	.quad exit
 
 DEFWORD head_latest, current, "current" /* -- addr */
-	.quad var, head_interpret
+	.quad var, head_main
 	.quad exit
 
 DEFWORD head_current, base, "base" /* -- addr */
@@ -541,14 +549,64 @@ DEFWORD head_bye, read, "read"
 	.quad tickinput
 	.quad cstore
 	.quad lit, input+1
+	.quad in
+	.quad store
+	.quad exit
+
+DEFWORD head_read, refill, "refill"
+	.quad lit, 0
+	.quad tickline
+	.quad cstore
+
+0:
+	.quad tickinput
+	.quad count
+	.quad add
+	.quad in
+	.quad fetch
+	.quad equals
+
+	.quad zbranch, 1f
+
+	.quad read
+
+1:
+	.quad in
+	.quad fetch
+	.quad cfetch
+	.quad in
+	.quad fetch
+	.quad inc
+	.quad in
+	.quad store
+	.quad dup
+	.quad tickline
+	.quad count
+	.quad dup
+	.quad inc
+	.quad tickline
+	.quad cstore
+	.quad add
+	.quad cstore
+	.quad lit, '\n'
+	.quad equals
+	.quad tickline
+	.quad cfetch
+	.quad lit, 0xFF
+	.quad equals
+	.quad or
+
+	.quad zbranch, 0b
+
+	.quad lit, line+1
 	.quad mark
 	.quad store
 	.quad exit
 
-DEFWORD head_read, keyq, "key?" /* -- bool */
+DEFWORD head_refill, keyq, "key?" /* -- bool */
 	.quad mark
 	.quad fetch
-	.quad tickinput
+	.quad tickline
 	.quad count
 	.quad add
 	.quad uless
@@ -632,13 +690,18 @@ DEFWORD head_type, accumulate, "accumulate" /* char -- */
 	.quad exit
 
 DEFWORD head_accumulate, parse, "parse"
+	.quad lit, 0
+	.quad tickbuffer
+	.quad cstore
+
 0:
 	.quad keyq
 	.quad invert
 
 	.quad zbranch, 1f
 
-	.quad read
+	.quad drop
+	.quad exit
 
 1:
 	.quad key
@@ -652,17 +715,12 @@ DEFWORD head_accumulate, parse, "parse"
 	.quad branch, 0b
 0:
 
-	.quad lit, 0
-	.quad tickbuffer
-	.quad cstore
-
-0:
 	.quad keyq
 	.quad invert
 
 	.quad zbranch, 1f
 
-	.quad read
+	.quad refill
 
 1:
 	.quad key
@@ -918,12 +976,18 @@ DEFWORD head_tick, literal, "literal", IMMEDIATE /* x -- */
 	.quad comma
 	.quad exit
 
-DEFINE head_literal, interpret, "interpret"
+DEFWORD head_literal, interpret, "interpret"
+0:
 	.quad word
+	.quad tickbuffer
+	.quad cfetch
+
+	.quad zbranch, 4f
+
 	.quad find
 	.quad dup
 
-	.quad zbranch, 2f
+	.quad zbranch, 3f
 
 	.quad dup
 	.quad cell
@@ -936,28 +1000,28 @@ DEFINE head_literal, interpret, "interpret"
 	.quad invert
 	.quad or
 
-	.quad zbranch, 0f
+	.quad zbranch, 1f
 
 	.quad tocode
 	.quad execute
 
-	.quad branch, 1f
-0:
+	.quad branch, 2f
+1:
 
 	.quad tocode
 	.quad comma
 
-1:
-
-	.quad branch, 3f
 2:
+
+	.quad branch, 2f
+3:
 
 	.quad drop
 	.quad tickbuffer
 	.quad count
 	.quad number
 
-	.quad zbranch, 0f
+	.quad zbranch, 1f
 
 	.quad drop
 	.quad tickbuffer
@@ -966,23 +1030,38 @@ DEFINE head_literal, interpret, "interpret"
 	.quad lit, '?'
 	.quad emit
 
-	.quad branch, 3f
-0:
+	.quad branch, 2f
+1:
 
 	.quad state
 	.quad fetch
 
-	.quad zbranch, 3f
+	.quad zbranch, 2f
 
 	.quad literal
 
-3:
+2:
 	.quad write
-	.quad branch, interpret
+
+	.quad branch, 1f
+4:
+
+	.quad exit
+
+1:
+	.quad branch, 0b
+
+DEFINE head_interpret, main, "main"
+	.quad refill
+	.quad interpret
+	.quad branch, main
 
 .bss
 
 input:
+	.skip 0x100
+
+line:
 	.skip 0x100
 
 output:
