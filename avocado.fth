@@ -58,8 +58,8 @@
   repeat
   drop ;
 
-: word 32 parse 'buffer c@ [ immediate-flag 1- ] literal u< invert
-  if [ immediate-flag 1- ] literal 'buffer c! then ;
+: word 32 parse 'buffer c@ [ f-immediate 1- ] literal u< invert
+  if [ f-immediate 1- ] literal 'buffer c! then ;
 
 : digit? ( char -- u bool ) [char] 0 - 9 over <
   if [ char A char 0 - 10 - ] literal - dup 10 < or then
@@ -80,7 +80,7 @@
   begin
     @ dup 0= over
     if
-      over cell + c@ [ immediate-flag 1- ] literal and 'buffer c@ =
+      over cell + c@ [ f-immediate 1- ] literal and 'buffer c@ =
       if drop dup [ cell 1+ ] literal + 'buffer count same? then
     then
   until ;
@@ -88,7 +88,7 @@
 : save 'buffer here @ over c@ 1+ dup aligned here @ + here ! cmove ;
 
 : >code ( addr1 -- addr2 )
-  cell + count [ immediate-flag 1- ] literal and + aligned ;
+  cell + count [ f-immediate 1- ] literal and + aligned ;
 
 : , ( x -- ) here @ dup cell + here ! ! ;
 
@@ -111,7 +111,7 @@
     if
       find dup
       if
-        dup cell + c@ immediate-flag and state @ invert or
+        dup cell + c@ f-immediate and state @ invert or
         if
           >code execute
         else
