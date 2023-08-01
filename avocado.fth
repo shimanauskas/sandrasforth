@@ -60,6 +60,8 @@
 : word 32 parse 'buffer c@ [ f-immediate 1- ] literal u< invert
   if [ f-immediate 1- ] literal 'buffer c! then ;
 
+: save 'buffer here @ over c@ 1+ dup aligned here @ + here ! cmove ;
+
 : digit? ( char -- u bool ) [char] 0 - 9 over <
   if [ char A char 0 - 10 - ] literal - dup 10 < or then
   dup base @ u< ;
@@ -83,8 +85,6 @@
       if drop dup [ cell 1+ ] literal + 'buffer count same? then
     then
   until ;
-
-: save 'buffer here @ over c@ 1+ dup aligned here @ + here ! cmove ;
 
 : >code ( addr1 -- addr2 )
   cell + count [ f-immediate 1- ] literal and + aligned ;

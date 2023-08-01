@@ -758,7 +758,24 @@ DEFWORD head_parse, word, "word"
 0:
 	.quad exit
 
-DEFWORD head_word, digitq, "digit?" /* char -- u bool */
+DEFWORD head_word, save, "save"
+	.quad tickbuffer
+	.quad here
+	.quad fetch
+	.quad over
+	.quad cfetch
+	.quad inc
+	.quad dup
+	.quad aligned
+	.quad here
+	.quad fetch
+	.quad add
+	.quad here
+	.quad store
+	.quad cmove
+	.quad exit
+
+DEFWORD head_save, digitq, "digit?" /* char -- u bool */
 	.quad lit, '0'
 	.quad sub
 	.quad lit, 9
@@ -879,24 +896,7 @@ DEFWORD head_number, find, "find" /* -- 0 | addr */
 
 	.quad exit
 
-DEFWORD head_find, save, "save"
-	.quad tickbuffer
-	.quad here
-	.quad fetch
-	.quad over
-	.quad cfetch
-	.quad inc
-	.quad dup
-	.quad aligned
-	.quad here
-	.quad fetch
-	.quad add
-	.quad here
-	.quad store
-	.quad cmove
-	.quad exit
-
-DEFWORD head_save, tocode, ">code" /* addr1 -- addr2 */
+DEFWORD head_find, tocode, ">code" /* addr1 -- addr2 */
 	.quad cell
 	.quad add
 	.quad count
