@@ -111,11 +111,7 @@
       find dup
       if
         dup cell + c@ f-immediate and state @ invert or
-        if
-          >code execute
-        else
-          >code ,
-        then
+        if >code execute else >code , then
       else
         drop 'buffer count number
         if
