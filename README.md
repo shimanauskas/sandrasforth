@@ -15,11 +15,7 @@ For further efficiency, Avocado has buffered I/O.
 
 ## Usage
 
-Build:
-
-	make
-
-Run:
+Build and run:
 
 	make run
 
