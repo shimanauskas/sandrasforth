@@ -557,6 +557,9 @@ DEFWORD head_read, refill, "refill"
 	.quad lit, 0
 	.quad tickline
 	.quad cstore
+	.quad lit, line+1
+	.quad mark
+	.quad store
 
 0:
 	.quad tickinput
@@ -598,9 +601,6 @@ DEFWORD head_read, refill, "refill"
 
 	.quad zbranch, 0b
 
-	.quad lit, line+1
-	.quad mark
-	.quad store
 	.quad exit
 
 DEFWORD head_refill, keyq, "key?" /* -- bool */

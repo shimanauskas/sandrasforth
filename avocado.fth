@@ -30,13 +30,12 @@
 : read 0 [ 'input 1+ ] literal 255 sys-read syscall dup 0=
   if bye then 'input c! [ 'input 1+ ] literal in ! ;
 
-: refill 0 'line c!
+: refill 0 'line c! [ 'line 1+ ] literal mark !
   begin
     'input count + in @ = if read then
     in @ c@ in @ 1+ in ! dup 'line count dup 1+ 'line c! + c!
     10 = 'line c@ 255 = or
-  until
-  [ 'line 1+ ] literal mark ! ;
+  until ;
 
 : key? ( -- bool ) mark @ 'line count + u< ;
 : key  ( -- char ) mark @ c@ dup 10 = if drop 32 then ;
