@@ -16,8 +16,7 @@
 : count ( addr1 -- addr2 u ) dup push 1+ pop c@ ;
 
 : cmove ( addr1 addr2 u -- )
-  begin dup if push over c@ over c! push 1+ pop 1+ pop 1- repeat
-  nip nip drop ;
+  begin dup if push over c@ over c! push 1+ pop 1+ pop 1- repeat nip nip drop ;
 
 : same? ( addr1 addr2 u -- bool )
   begin dup push push over c@ over c@ = pop and if push 1+ pop 1+ pop 1- repeat
