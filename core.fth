@@ -21,8 +21,6 @@
 : lshift ( x1 u -- x2 ) begin dup if push 2* pop 1- repeat drop ;
 : rshift ( x1 u -- x2 ) begin dup if push 2/ pop 1- repeat drop ;
 
-: cells ( n1 -- n2 ) cell * ;
-
 : space 32 emit ;
 
 :  char  ( -- char ) word [ 'buffer 1+ ] literal c@ ;
