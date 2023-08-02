@@ -225,8 +225,8 @@ code_ummul: /* u1 u2 -- ud */
 
 code_divmod: /* n1 n2 -- n3 n4 */
 	movq %rax, %rcx
-	xorq %rdx, %rdx
 	movq (%rbp), %rax
+	cqo
 	idivq %rcx
 	movq %rdx, (%rbp)
 	NEXT
