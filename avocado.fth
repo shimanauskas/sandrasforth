@@ -122,8 +122,8 @@
       then
       write
     else
-      exit
+      ;
     then
-  again [ reveal
+  again
 
 : main begin refill interpret again [ reveal main
