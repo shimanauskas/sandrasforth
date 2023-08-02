@@ -98,7 +98,7 @@
 
 : reveal current @ latest ! ;
 
-: ; [ ' exit ] literal , reveal postpone [ ; immediate
+: ; ['] exit , reveal postpone [ ; immediate
 
 : ' ( -- 0 | xt ) word find dup if >code then ;
 

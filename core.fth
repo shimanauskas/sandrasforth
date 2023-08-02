@@ -2,19 +2,21 @@
 
 : postpone ' , ; immediate
 
+: ['] ' postpone literal ; immediate
+
 : begin here @ ; immediate
 
-: if [ ' 0branch ] literal , here @ 0 , ; immediate
+: if ['] 0branch , here @ 0 , ; immediate
 : then >r here @ r> ! ; immediate
 
-: else [ ' branch ] literal , here @ >r 0 , postpone then r> ; immediate
+: else ['] branch , here @ >r 0 , postpone then r> ; immediate
 
-: repeat >r [ '  branch ] literal , , here @ r> ! ; immediate
-: until     [ ' 0branch ] literal , ,             ; immediate
-: again     [ '  branch ] literal , ,             ; immediate
+: repeat >r [']  branch , , here @ r> ! ; immediate
+: until     ['] 0branch , ,             ; immediate
+: again     [']  branch , ,             ; immediate
 
-: variable : [ ' var ] literal , 0 , postpone ; ; immediate
-: constant : postpone  literal       postpone ; ; immediate
+: variable : ['] var , 0 ,    postpone ; ; immediate
+: constant : postpone literal postpone ; ; immediate
 
 : ( 41 parse advance ; immediate
 
@@ -27,10 +29,10 @@
 : [char] ( -- char ) char postpone literal ; immediate
 
 :  " ( -- addr ) [char] " parse advance here @ save ;
-: c" ( -- addr ) [ ' branch ] literal , here @ >r 0 ,
-   " here @ r> ! postpone literal ; immediate
-: s" ( -- addr u ) postpone c" [ ' count ] literal , ; immediate
-: ."               postpone s" [ ' type  ] literal , ; immediate
+: c" ( -- addr ) ['] branch , here @ >r 0 , " here @ r> ! postpone literal ;
+  immediate
+: s" ( -- addr u ) postpone c" ['] count , ; immediate
+: ."               postpone s" ['] type  , ; immediate
 
 : hold ( char -- ) 'buffer @ 1- dup 'buffer ! c! ;
 
