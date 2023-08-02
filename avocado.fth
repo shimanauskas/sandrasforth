@@ -94,7 +94,7 @@
 : [  0 state ! ; immediate
 : ] -1 state ! ;
 
-: : ] here @ current ! latest @ , word save [ ' do: @ ] literal , ;
+: : ] here @ current ! latest @ , word save [ ' enter @ ] literal , ;
 
 : reveal current @ latest ! ;
 

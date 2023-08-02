@@ -82,7 +82,7 @@ DEFINE \previous, \body, "\name"
 
 .macro DEFWORD previous, body, name, mask=0
 DEFINE \previous, \body, "\name", \mask
-	.quad code_docolon
+	.quad code_enter
 .endm
 
 .text
@@ -95,7 +95,7 @@ START:
 	leaq main(%rip), %r12
 	NEXT
 
-code_docolon:
+code_enter:
 	pushq %r12
 	addq $(CELL), %rbx
 	movq %rbx, %r12
@@ -262,8 +262,8 @@ code_syscall: /* x1 x2 x3 x4 -- x5 */
 
 .data
 
-DEFCODE 0,             docolon,  "do:"
-DEFCODE head_docolon,  branch,   "branch"
+DEFCODE 0,             enter,    "enter"
+DEFCODE head_enter,    branch,   "branch"
 DEFCODE head_branch,   zbranch,  "0branch"
 DEFCODE head_zbranch,  execute,  "execute"
 DEFCODE head_execute,  exit,     "exit"
@@ -940,7 +940,7 @@ DEFWORD head_rbracket, colon, ":"
 	.quad comma
 	.quad word
 	.quad save
-	.quad lit, code_docolon
+	.quad lit, code_enter
 	.quad comma
 	.quad exit
 
