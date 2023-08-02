@@ -1,4 +1,4 @@
-: immediate current @ cell + dup c@ f-immediate xor over c! drop ;
+: immediate current @ cell + dup c@ f-immediate or over c! drop ;
 
 : postpone ' , ; immediate
 
