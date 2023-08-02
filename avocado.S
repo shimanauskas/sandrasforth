@@ -359,7 +359,7 @@ DEFWORD head_current, base, "base" /* -- addr */
 	.quad var, 10
 	.quad exit
 
-DEFWORD head_base, bool, "bool" /* x -- bool */
+DEFWORD head_base, flag, "flag" /* x -- flag */
 	.quad zbranch, 0f
 
 	.quad lit, -1
@@ -372,23 +372,23 @@ DEFWORD head_base, bool, "bool" /* x -- bool */
 1:
 	.quad exit
 
-DEFWORD head_bool, zequals, "0=" /* x -- bool */
-	.quad bool
+DEFWORD head_flag, zequals, "0=" /* x -- flag */
+	.quad flag
 	.quad invert
 	.quad exit
 
-DEFWORD head_zequals, equals, "=" /* x1 x2 -- bool */
+DEFWORD head_zequals, equals, "=" /* x1 x2 -- flag */
 	.quad xor
 	.quad zequals
 	.quad exit
 
-DEFWORD head_equals, zless, "0<" /* n - bool */
+DEFWORD head_equals, zless, "0<" /* n - flag */
 	.quad lit, 1<<(CELL*8-1)
 	.quad and
-	.quad bool
+	.quad flag
 	.quad exit
 
-DEFWORD head_zless, less, "<" /* n1 n2 -- bool */
+DEFWORD head_zless, less, "<" /* n1 n2 -- flag */
 	.quad over
 	.quad over
 	.quad xor
@@ -408,7 +408,7 @@ DEFWORD head_zless, less, "<" /* n1 n2 -- bool */
 1:
 	.quad exit
 
-DEFWORD head_less, uless, "u<" /* u1 u2 -- bool */
+DEFWORD head_less, uless, "u<" /* u1 u2 -- flag */
 	.quad over
 	.quad over
 	.quad xor
@@ -428,7 +428,7 @@ DEFWORD head_less, uless, "u<" /* u1 u2 -- bool */
 1:
 	.quad exit
 
-DEFWORD head_uless, within, "within" /* u1 u2 u3 -- bool */
+DEFWORD head_uless, within, "within" /* u1 u2 u3 -- flag */
 	.quad push
 	.quad over
 	.quad push
@@ -481,7 +481,7 @@ DEFWORD head_count, cmove, "cmove" /* addr1 addr2 u -- */
 	.quad drop
 	.quad exit
 
-DEFWORD head_cmove, sameq, "same?" /* addr1 addr2 u -- bool */
+DEFWORD head_cmove, sameq, "same?" /* addr1 addr2 u -- flag */
 0:
 	.quad dup
 	.quad push
@@ -603,7 +603,7 @@ DEFWORD head_read, refill, "refill"
 
 	.quad exit
 
-DEFWORD head_refill, keyq, "key?" /* -- bool */
+DEFWORD head_refill, keyq, "key?" /* -- flag */
 	.quad mark
 	.quad fetch
 	.quad tickline
@@ -775,7 +775,7 @@ DEFWORD head_word, save, "save"
 	.quad cmove
 	.quad exit
 
-DEFWORD head_save, digitq, "digit?" /* char -- u bool */
+DEFWORD head_save, digitq, "digit?" /* char -- u flag */
 	.quad lit, '0'
 	.quad sub
 	.quad lit, 9

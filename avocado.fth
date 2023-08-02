@@ -1,15 +1,15 @@
-: bool ( x -- bool ) if -1 else 0 then ;
+: flag ( x -- flag ) if -1 else 0 then ;
 
-: 0= ( x -- bool ) bool invert ;
+: 0= ( x -- flag ) flag invert ;
 
-:  = ( x1 x2 -- bool ) xor 0= ;
+:  = ( x1 x2 -- flag ) xor 0= ;
 
-: 0< ( n -- bool ) [ 1 cell 8 * 1- lshift ] literal and bool ;
+: 0< ( n -- flag ) [ 1 cell 8 * 1- lshift ] literal and flag ;
 
-:  < ( n1 n2 -- bool ) over over xor 0< if drop 0< else - 0< then ;
-: u< ( u1 u2 -- bool ) over over xor 0< if nip  0< else - 0< then ;
+:  < ( n1 n2 -- flag ) over over xor 0< if drop 0< else - 0< then ;
+: u< ( u1 u2 -- flag ) over over xor 0< if nip  0< else - 0< then ;
 
-: whithin ( u1 u2 u3 -- bool ) push over push u< invert pop pop u< and ;
+: whithin ( u1 u2 u3 -- flag ) push over push u< invert pop pop u< and ;
 
 : aligned ( x1 -- x2 ) [ cell 1- ] literal + [ cell 1- invert ] literal and ;
 
@@ -18,7 +18,7 @@
 : cmove ( addr1 addr2 u -- )
   begin dup if push over c@ over c! push 1+ pop 1+ pop 1- repeat nip nip drop ;
 
-: same? ( addr1 addr2 u -- bool )
+: same? ( addr1 addr2 u -- flag )
   begin dup push push over c@ over c@ = pop and if push 1+ pop 1+ pop 1- repeat
   pop nip nip 0= ;
 
@@ -36,7 +36,7 @@
     10 = 'line c@ 255 = or
   until ;
 
-: key? ( -- bool ) mark @ 'line count + u< ;
+: key? ( -- flag ) mark @ 'line count + u< ;
 : key  ( -- char ) mark @ c@ dup 10 = if drop 32 then ;
 
 : advance mark @ 1+ mark ! ;
@@ -62,7 +62,7 @@
 
 : save 'buffer here @ over c@ 1+ dup aligned here @ + here ! cmove ;
 
-: digit? ( char -- u bool ) [char] 0 - 9 over <
+: digit? ( char -- u flag ) [char] 0 - 9 over <
   if [ char A char 0 - 10 - ] literal - dup 10 < or then
   dup base @ u< ;
 
