@@ -9,18 +9,18 @@
 :  < ( n1 n2 -- flag ) over over xor 0< if drop 0< else - 0< then ;
 : u< ( u1 u2 -- flag ) over over xor 0< if nip  0< else - 0< then ;
 
-: whithin ( u1 u2 u3 -- flag ) push over push u< invert pop pop u< and ;
+: whithin ( u1 u2 u3 -- flag ) >r over >r u< invert r> r> u< and ;
 
 : aligned ( x1 -- x2 ) [ cell 1- ] literal + [ cell 1- invert ] literal and ;
 
-: count ( addr1 -- addr2 u ) dup push 1+ pop c@ ;
+: count ( addr1 -- addr2 u ) dup >r 1+ r> c@ ;
 
 : cmove ( addr1 addr2 u -- )
-  begin dup if push over c@ over c! push 1+ pop 1+ pop 1- repeat nip nip drop ;
+  begin dup if >r over c@ over c! >r 1+ r> 1+ r> 1- repeat nip nip drop ;
 
 : same? ( addr1 addr2 u -- flag )
-  begin dup push push over c@ over c@ = pop and if push 1+ pop 1+ pop 1- repeat
-  pop nip nip 0= ;
+  begin dup >r >r over c@ over c@ = r> and if >r 1+ r> 1+ r> 1- repeat
+  r> nip nip 0= ;
 
 : write 1 'output count sys-write syscall drop 0 'output c! ;
 
@@ -44,7 +44,7 @@
 : emit ( char -- ) 'output count + c!
   'output c@ 1+ dup 'output c! 255 = if write then ;
 
-: type ( addr u -- ) begin dup if push dup c@ emit 1+ pop 1- repeat nip drop ;
+: type ( addr u -- ) begin dup if >r dup c@ emit 1+ r> 1- repeat nip drop ;
 
 : accumulate ( char -- ) 'buffer count dup 1+ 'buffer c! + c! ;
 
@@ -66,16 +66,16 @@
   if [ char A char 0 - 10 - ] literal - dup 10 < or then
   dup base @ u< ;
 
-: natural ( addr u1 -- u2 u3 ) push 0 pop
+: natural ( addr u1 -- u2 u3 ) >r 0 r>
   begin
-    push over c@ digit? pop dup push and
+    >r over c@ digit? r> dup >r and
   if
-    push base @ * pop + push 1+ pop pop 1- 
+    >r base @ * r> + >r 1+ r> r> 1-
   repeat
-  drop nip pop ;
+  drop nip r> ;
 
 : number ( addr u1 -- n u2 ) over c@ [char] - =
-  if push 1+ pop 1- natural push negate pop else natural then ;
+  if >r 1+ r> 1- natural >r negate r> else natural then ;
 
 : find ( -- 0 | addr ) latest
   begin

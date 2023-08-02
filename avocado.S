@@ -150,12 +150,12 @@ code_over: /* x1 x2 -- x1 x2 x1 */
 	movq CELL(%rbp), %rax
 	NEXT
 
-code_push: /* x -- */
+code_rpush: /* x -- */
 	pushq %rax
 	DROP
 	NEXT
 
-code_pop: /* -- x */
+code_rpull: /* -- x */
 	DUP
 	popq %rax
 	NEXT
@@ -273,9 +273,9 @@ DEFCODE head_var,      dup,      "dup"
 DEFCODE head_dup,      nip,      "nip"
 DEFCODE head_nip,      drop,     "drop"
 DEFCODE head_drop,     over,     "over"
-DEFCODE head_over,     push,     "push"
-DEFCODE head_push,     pop,      "pop"
-DEFCODE head_pop,      invert,   "invert"
+DEFCODE head_over,     rpush,    ">r"
+DEFCODE head_rpush,    rpull,    "r>"
+DEFCODE head_rpull,    invert,   "invert"
 DEFCODE head_invert,   twomul,   "2*"
 DEFCODE head_twomul,   twodiv,   "2/"
 DEFCODE head_twodiv,   and,      "and"
@@ -429,13 +429,13 @@ DEFWORD head_less, uless, "u<" /* u1 u2 -- flag */
 	.quad exit
 
 DEFWORD head_uless, within, "within" /* u1 u2 u3 -- flag */
-	.quad push
+	.quad rpush
 	.quad over
-	.quad push
+	.quad rpush
 	.quad uless
 	.quad invert
-	.quad pop
-	.quad pop
+	.quad rpull
+	.quad rpull
 	.quad uless
 	.quad and
 	.quad exit
@@ -449,9 +449,9 @@ DEFWORD head_within, aligned, "aligned" /* x1 -- x2 */
 
 DEFWORD head_aligned, count, "count" /* addr1 -- addr2 u */
 	.quad dup
-	.quad push
+	.quad rpush
 	.quad inc
-	.quad pop
+	.quad rpull
 	.quad cfetch
 	.quad exit
 
@@ -461,16 +461,16 @@ DEFWORD head_count, cmove, "cmove" /* addr1 addr2 u -- */
 
 	.quad zbranch, 0f
 
-	.quad push
+	.quad rpush
 	.quad over
 	.quad cfetch
 	.quad over
 	.quad cstore
-	.quad push
+	.quad rpush
 	.quad inc
-	.quad pop
+	.quad rpull
 	.quad inc
-	.quad pop
+	.quad rpull
 	.quad dec
 
 	.quad branch, 0b
@@ -484,29 +484,29 @@ DEFWORD head_count, cmove, "cmove" /* addr1 addr2 u -- */
 DEFWORD head_cmove, sameq, "same?" /* addr1 addr2 u -- flag */
 0:
 	.quad dup
-	.quad push
-	.quad push
+	.quad rpush
+	.quad rpush
 	.quad over
 	.quad cfetch
 	.quad over
 	.quad cfetch
 	.quad equals
-	.quad pop
+	.quad rpull
 	.quad and
 
 	.quad zbranch, 0f
 
-	.quad push
+	.quad rpush
 	.quad inc
-	.quad pop
+	.quad rpull
 	.quad inc
-	.quad pop
+	.quad rpull
 	.quad dec
 
 	.quad branch, 0b
 0:
 
-	.quad pop
+	.quad rpull
 	.quad nip
 	.quad nip
 	.quad zequals
@@ -663,12 +663,12 @@ DEFWORD head_emit, type, "type" /* addr u -- */
 
 	.quad zbranch, 0f
 
-	.quad push
+	.quad rpush
 	.quad dup
 	.quad cfetch
 	.quad emit
 	.quad inc
-	.quad pop
+	.quad rpull
 	.quad dec
 
 	.quad branch, 0b
@@ -799,32 +799,32 @@ DEFWORD head_save, digitq, "digit?" /* char -- u flag */
 	.quad exit
 
 DEFWORD head_digitq, natural, "natural" /* addr u1 -- u2 u3 */
-	.quad push
+	.quad rpush
 	.quad lit, 0
-	.quad pop
+	.quad rpull
 
 0:
-	.quad push
+	.quad rpush
 	.quad over
 	.quad cfetch
 	.quad digitq
-	.quad pop
+	.quad rpull
 	.quad dup
-	.quad push
+	.quad rpush
 	.quad and
 
 	.quad zbranch, 0f
 
-	.quad push
+	.quad rpush
 	.quad base
 	.quad fetch
 	.quad mul
-	.quad pop
+	.quad rpull
 	.quad add
-	.quad push
+	.quad rpush
 	.quad inc
-	.quad pop
-	.quad pop
+	.quad rpull
+	.quad rpull
 	.quad dec
 
 	.quad branch, 0b
@@ -832,7 +832,7 @@ DEFWORD head_digitq, natural, "natural" /* addr u1 -- u2 u3 */
 
 	.quad drop
 	.quad nip
-	.quad pop
+	.quad rpull
 	.quad exit
 
 DEFWORD head_natural, number, "number" /* addr u1 -- n u2 */
@@ -843,14 +843,14 @@ DEFWORD head_natural, number, "number" /* addr u1 -- n u2 */
 
 	.quad zbranch, 0f
 
-	.quad push
+	.quad rpush
 	.quad inc
-	.quad pop
+	.quad rpull
 	.quad dec
 	.quad natural
-	.quad push
+	.quad rpush
 	.quad negate
-	.quad pop
+	.quad rpull
 
 	.quad branch, 1f
 0:
