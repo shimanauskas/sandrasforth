@@ -328,27 +328,19 @@ DEFWORD head_sys_exit, tickinput, "'input" /* -- addr */
 	.quad lit, input
 	.quad exit
 
-DEFWORD head_tickinput, tickline, "'line" /* -- addr */
-	.quad lit, line
-	.quad exit
-
-DEFWORD head_tickline, tickoutput, "'output" /* -- addr */
-	.quad lit, output
-	.quad exit
-
-DEFWORD head_tickoutput, tickbuffer, "'buffer" /* -- addr */
+DEFWORD head_tickinput, tickbuffer, "'buffer" /* -- addr */
 	.quad lit, buffer
 	.quad exit
 
-DEFWORD head_tickbuffer, in, "in" /* -- addr */
+DEFWORD head_tickbuffer, rune, "rune" /* -- addr */
+	.quad var, 0
+	.quad exit
+
+DEFWORD head_rune, toin, ">in" /* -- addr */
 	.quad var, input+1
 	.quad exit
 
-DEFWORD head_in, mark, "mark" /* -- addr */
-	.quad var, line+1
-	.quad exit
-
-DEFWORD head_mark, state, "state" /* -- addr */
+DEFWORD head_toin, state, "state" /* -- addr */
 	.quad var, 0
 	.quad exit
 
@@ -449,7 +441,28 @@ DEFWORD head_uless, within, "within" /* u1 u2 u3 -- flag */
 	.quad and
 	.quad exit
 
-DEFWORD head_within, aligned, "aligned" /* x1 -- x2 */
+DEFWORD head_within, ccomma, "c," /* char -- */
+	.quad here
+	.quad fetch
+	.quad dup
+	.quad inc
+	.quad here
+	.quad store
+	.quad cstore
+	.quad exit
+
+DEFWORD head_ccomma, comma, "," /* x -- */
+	.quad here
+	.quad fetch
+	.quad dup
+	.quad cell
+	.quad add
+	.quad here
+	.quad store
+	.quad store
+	.quad exit
+
+DEFWORD head_comma, aligned, "aligned" /* x1 -- x2 */
 	.quad lit, CELL-1
 	.quad add
 	.quad lit, ~(CELL-1)
@@ -521,33 +534,19 @@ DEFWORD head_cmove, sameq, "same?" /* addr1 addr2 u -- flag */
 	.quad zequals
 	.quad exit
 
-DEFWORD head_sameq, write, "write"
-	.quad lit, 1
-	.quad tickoutput
-	.quad count
-	.quad sys_write
-	.quad syscall
-	.quad drop
-	.quad lit, 0
-	.quad tickoutput
-	.quad cstore
-	.quad exit
-
-DEFWORD head_write, bye, "bye"
-	.quad write
+DEFWORD head_sameq, bye, "bye"
 	.quad lit, 0
 	.quad dup
 	.quad dup
 	.quad sys_exit
 	.quad syscall
 
-DEFWORD head_bye, read, "read"
+DEFWORD head_bye, key, "key" /* -- char */
 	.quad lit, 0
-	.quad lit, input+1
-	.quad lit, 0xFF
+	.quad rune
+	.quad lit, 1
 	.quad sys_read
 	.quad syscall
-	.quad dup
 	.quad zequals
 
 	.quad zbranch, 0f
@@ -555,54 +554,54 @@ DEFWORD head_bye, read, "read"
 	.quad bye
 
 0:
-	.quad tickinput
-	.quad cstore
-	.quad lit, input+1
-	.quad in
-	.quad store
+	.quad rune
+	.quad cfetch
 	.quad exit
 
-DEFWORD head_read, refill, "refill"
-	.quad lit, 0
-	.quad tickline
+DEFWORD head_key, emit, "emit" /* char -- */
+	.quad rune
 	.quad cstore
-	.quad lit, line+1
-	.quad mark
+	.quad lit, 1
+	.quad rune
+	.quad lit, 1
+	.quad sys_write
+	.quad syscall
+	.quad drop
+	.quad exit
+
+DEFWORD head_emit, refill, "refill"
+	.quad lit, 0
+	.quad tickinput
+	.quad cstore
+	.quad lit, 0
+	.quad toin
 	.quad store
 
 0:
-	.quad tickinput
-	.quad count
-	.quad add
-	.quad in
-	.quad fetch
+	.quad key
+	.quad dup
+	.quad dup
+	.quad lit, '\n'
 	.quad equals
 
 	.quad zbranch, 1f
 
-	.quad read
+	.quad drop
+	.quad lit, ' '
 
 1:
-	.quad in
-	.quad fetch
-	.quad cfetch
-	.quad in
-	.quad fetch
-	.quad inc
-	.quad in
-	.quad store
-	.quad dup
-	.quad tickline
+	.quad tickinput
 	.quad count
-	.quad dup
-	.quad inc
-	.quad tickline
-	.quad cstore
 	.quad add
+	.quad cstore
+	.quad tickinput
+	.quad cfetch
+	.quad inc
+	.quad tickinput
 	.quad cstore
 	.quad lit, '\n'
 	.quad equals
-	.quad tickline
+	.quad tickinput
 	.quad cfetch
 	.quad lit, 0xFF
 	.quad equals
@@ -612,61 +611,7 @@ DEFWORD head_read, refill, "refill"
 
 	.quad exit
 
-DEFWORD head_refill, keyq, "key?" /* -- flag */
-	.quad mark
-	.quad fetch
-	.quad tickline
-	.quad count
-	.quad add
-	.quad uless
-	.quad exit
-
-DEFWORD head_keyq, key, "key" /* -- char */
-	.quad mark
-	.quad fetch
-	.quad cfetch
-	.quad dup
-	.quad lit, '\n'
-	.quad equals
-
-	.quad zbranch, 0f
-
-	.quad drop
-	.quad lit, ' '
-
-0:
-	.quad exit
-
-DEFWORD head_key, advance, "advance"
-	.quad mark
-	.quad fetch
-	.quad inc
-	.quad mark
-	.quad store
-	.quad exit
-
-DEFWORD head_advance, emit, "emit" /* char -- */
-	.quad tickoutput
-	.quad count
-	.quad add
-	.quad cstore
-	.quad tickoutput
-	.quad cfetch
-	.quad inc
-	.quad dup
-	.quad tickoutput
-	.quad cstore
-	.quad lit, 0xFF
-	.quad equals
-
-	.quad zbranch, 0f
-
-	.quad write
-
-0:
-	.quad exit
-
-DEFWORD head_emit, type, "type" /* addr u -- */
+DEFWORD head_refill, type, "type" /* addr u -- */
 0:
 	.quad dup
 
@@ -687,101 +632,95 @@ DEFWORD head_emit, type, "type" /* addr u -- */
 	.quad drop
 	.quad exit
 
-DEFWORD head_type, accumulate, "accumulate" /* char -- */
-	.quad tickbuffer
-	.quad count
+DEFWORD head_type, parse, "parse" /* char - addr u */
+	.quad rpush
+	.quad toin
+	.quad fetch
+
+0:
+	.quad dup
+	.quad tickinput
+	.quad cfetch
+	.quad equals
+
+	.quad zbranch, 1f
+
+	.quad rpull
+	.quad drop
+	.quad lit, input+1
+	.quad add
+	.quad lit, 0
+	.quad exit
+
+1:
+	.quad dup
+	.quad lit, input+1
+	.quad add
+	.quad cfetch
+	.quad lit, ' '
+	.quad equals
+
+	.quad zbranch, 0f
+
+	.quad inc
+	.quad dup
+	.quad toin
+	.quad store
+
+	.quad branch, 0b
+0:
+
+	.quad dup
+
+0:
+	.quad dup
+	.quad lit, input+1
+	.quad add
+	.quad cfetch
+	.quad rpull
+	.quad dup
+	.quad rpush
+	.quad equals
+	.quad invert
+
+	.quad zbranch, 0f
+
+	.quad inc
+
+	.quad branch, 0b
+0:
+
+	.quad rpull
+	.quad drop
 	.quad dup
 	.quad inc
-	.quad tickbuffer
-	.quad cstore
-	.quad add
-	.quad cstore
-	.quad exit
-
-DEFWORD head_accumulate, parse, "parse"
-	.quad lit, 0
-	.quad tickbuffer
-	.quad cstore
-
-0:
-	.quad keyq
-	.quad invert
-
-	.quad zbranch, 1f
-
-	.quad drop
-	.quad exit
-
-1:
-	.quad key
-	.quad lit, ' '
-	.quad equals
-
-	.quad zbranch, 0f
-
-	.quad advance
-
-	.quad branch, 0b
-0:
-
-	.quad keyq
-	.quad invert
-
-	.quad zbranch, 1f
-
-	.quad refill
-
-1:
-	.quad key
+	.quad toin
+	.quad store
 	.quad over
-	.quad equals
-	.quad invert
-
-	.quad zbranch, 0f
-
-	.quad key
-	.quad accumulate
-	.quad advance
-
-	.quad branch, 0b
-0:
-
-	.quad drop
+	.quad sub
+	.quad rpush
+	.quad lit, input+1
+	.quad add
+	.quad rpull
 	.quad exit
 
-DEFWORD head_parse, word, "word"
-	.quad lit, ' '
-	.quad parse
-	.quad tickbuffer
-	.quad cfetch
-	.quad lit, IMMEDIATE-1
-	.quad uless
-	.quad invert
-
-	.quad zbranch, 0f
-
-	.quad lit, IMMEDIATE-1
-	.quad tickbuffer
-	.quad cstore
-
-0:
-	.quad exit
-
-DEFWORD head_word, save, "save"
-	.quad tickbuffer
+DEFWORD head_parse, save, "save" /* addr u -- */
+	.quad dup
+	.quad ccomma
+	.quad dup
+	.quad rpush
+	.quad rpush
 	.quad here
 	.quad fetch
-	.quad over
-	.quad cfetch
-	.quad inc
-	.quad dup
+	.quad rpull
+	.quad cmove
+	.quad rpull
+	.quad here
+	.quad fetch
+	.quad add
 	.quad aligned
 	.quad here
-	.quad fetch
-	.quad add
-	.quad here
 	.quad store
-	.quad cmove
 	.quad exit
 
 DEFWORD head_save, digitq, "digit?" /* char -- u flag */
@@ -869,7 +808,9 @@ DEFWORD head_natural, number, "number" /* addr u1 -- n u2 */
 1:
 	.quad exit
 
-DEFWORD head_number, find, "find" /* -- 0 | addr */
+DEFWORD head_number, find, "find" /* addr1 u -- 0 | addr2 */
+	.quad rpush
+	.quad rpush
 	.quad latest
 
 0:
@@ -886,8 +827,13 @@ DEFWORD head_number, find, "find" /* -- 0 | addr */
 	.quad cfetch
 	.quad lit, IMMEDIATE-1
 	.quad and
-	.quad tickbuffer
-	.quad cfetch
+	.quad rpull
+	.quad rpull
+	.quad over
+	.quad over
+	.quad rpush
+	.quad rpush
+	.quad nip
 	.quad equals
 
 	.quad zbranch, 1f
@@ -896,13 +842,21 @@ DEFWORD head_number, find, "find" /* -- 0 | addr */
 	.quad dup
 	.quad lit, CELL+1
 	.quad add
-	.quad tickbuffer
-	.quad count
+	.quad rpull
+	.quad rpull
+	.quad over
+	.quad over
+	.quad rpush
+	.quad rpush
 	.quad sameq
 
 1:
 	.quad zbranch, 0b
 
+	.quad rpull
+	.quad rpull
+	.quad drop
+	.quad drop
 	.quad exit
 
 DEFWORD head_find, tocode, ">code" /* addr1 -- addr2 */
@@ -915,18 +869,7 @@ DEFWORD head_find, tocode, ">code" /* addr1 -- addr2 */
 	.quad aligned
 	.quad exit
 
-DEFWORD head_tocode, comma, "," /* x -- */
-	.quad here
-	.quad fetch
-	.quad dup
-	.quad cell
-	.quad add
-	.quad here
-	.quad store
-	.quad store
-	.quad exit
-
-DEFWORD head_comma, lbracket, "[", IMMEDIATE
+DEFWORD head_tocode, lbracket, "[", IMMEDIATE
 	.quad lit, 0
 	.quad state
 	.quad store
@@ -947,7 +890,8 @@ DEFWORD head_rbracket, colon, ":"
 	.quad latest
 	.quad fetch
 	.quad comma
-	.quad word
+	.quad lit, ' '
+	.quad parse
 	.quad save
 	.quad lit, code_enter
 	.quad comma
@@ -968,7 +912,8 @@ DEFWORD head_reveal, semicolon, ";", IMMEDIATE
 	.quad exit
 
 DEFWORD head_semicolon, tick, "'" /* -- 0 | xt */
-	.quad word
+	.quad lit, ' '
+	.quad parse
 	.quad find
 	.quad dup
 
@@ -987,17 +932,27 @@ DEFWORD head_tick, literal, "literal", IMMEDIATE /* x -- */
 
 DEFWORD head_literal, interpret, "interpret"
 0:
-	.quad word
-	.quad tickbuffer
-	.quad cfetch
+	.quad lit, ' '
+	.quad parse
+	.quad dup
+	.quad zequals
 
 	.quad zbranch, 4f
 
+	.quad drop
+	.quad drop
+	.quad exit
+
+4:
+	.quad over
+	.quad over
 	.quad find
 	.quad dup
 
 	.quad zbranch, 3f
 
+	.quad nip
+	.quad nip
 	.quad dup
 	.quad cell
 	.quad add
@@ -1014,6 +969,7 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad tocode
 	.quad execute
 
+
 	.quad branch, 2f
 1:
 
@@ -1026,15 +982,13 @@ DEFWORD head_literal, interpret, "interpret"
 3:
 
 	.quad drop
-	.quad tickbuffer
-	.quad count
+	.quad over
+	.quad over
 	.quad number
 
 	.quad zbranch, 1f
 
 	.quad drop
-	.quad tickbuffer
-	.quad count
 	.quad type
 	.quad lit, '?'
 	.quad emit
@@ -1042,6 +996,8 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad branch, 2f
 1:
 
+	.quad nip
+	.quad nip
 	.quad state
 	.quad fetch
 
@@ -1050,14 +1006,6 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad literal
 
 2:
-	.quad write
-
-	.quad branch, 1f
-4:
-
-	.quad exit
-
-1:
 	.quad branch, 0b
 
 DEFINE head_interpret, main, "main"
@@ -1068,12 +1016,6 @@ DEFINE head_interpret, main, "main"
 .bss
 
 input:
-	.skip 0x100
-
-line:
-	.skip 0x100
-
-output:
 	.skip 0x100
 
 buffer:

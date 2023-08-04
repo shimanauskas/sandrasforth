@@ -6,8 +6,6 @@ Avocado is written mostly in (indirect-)threaded code. There is no limit on the 
 
 Since .text and .data are not mixed, CPU caches stay clean.
 
-For further efficiency, Avocado has buffered I/O.
-
 ## Prerequisites
 
 * `make`

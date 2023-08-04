@@ -18,17 +18,17 @@
 : variable : ['] var , 0 ,    postpone ; ; immediate
 : constant : postpone literal postpone ; ; immediate
 
-: ( 41 parse advance ; immediate
+: ( 41 parse drop drop ; immediate
 
 : lshift ( x1 u -- x2 ) begin dup if >r 2* r> 1- repeat drop ;
 : rshift ( x1 u -- x2 ) begin dup if >r 2/ r> 1- repeat drop ;
 
 : space 32 emit ;
 
-:  char  ( -- char ) word [ 'buffer 1+ ] literal c@ ;
+:  char  ( -- char ) 32 parse drop c@ ;
 : [char] ( -- char ) char postpone literal ; immediate
 
-:  " ( -- addr ) [char] " parse advance here @ save ;
+:  " ( -- addr ) here @ [char] " parse save ;
 : c" ( -- addr ) ['] branch , here @ >r 0 , " here @ r> ! postpone literal ;
   immediate
 : s" ( -- addr u ) postpone c" ['] count , ; immediate

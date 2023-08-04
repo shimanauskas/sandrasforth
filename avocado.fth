@@ -11,6 +11,9 @@
 
 : whithin ( u1 u2 u3 -- flag ) >r over >r u< invert r> r> u< and ;
 
+: c, ( char -- ) here @ dup 1+     here ! c! ;
+:  , ( x -- )    here @ dup cell + here !  ! ;
+
 : aligned ( x1 -- x2 ) [ cell 1- ] literal + [ cell 1- invert ] literal and ;
 
 : count ( addr1 -- addr2 u ) dup >r 1+ r> c@ ;
@@ -22,45 +25,36 @@
   begin dup >r >r over c@ over c@ = r> and if >r 1+ r> 1+ r> 1- repeat
   r> nip nip 0= ;
 
-: write 1 'output count sys-write syscall drop 0 'output c! ;
+: bye 0 dup dup sys-exit syscall [ reveal
 
-: bye write 0 dup dup sys-exit syscall [ reveal
+: key  ( -- char ) 0 rune 1 sys-read syscall 0= if bye then rune c@ ;
 
-: read 0 [ 'input 1+ ] literal 255 sys-read syscall dup 0=
-  if bye then 'input c! [ 'input 1+ ] literal in ! ;
+: emit ( char -- ) rune c! 1 rune 1 sys-write syscall drop ;
 
-: refill 0 'line c! [ 'line 1+ ] literal mark !
+: refill 0 'input c! 0 >in !
   begin
-    'input count + in @ = if read then
-    in @ c@ in @ 1+ in ! dup 'line count dup 1+ 'line c! + c!
-    10 = 'line c@ 255 = or
+    key dup dup 10 = if drop 32 then
+    'input count + c! 'input c@ 1+ 'input c! 10 = 'input c@ 255 = or
   until ;
-
-: key? ( -- flag ) mark @ 'line count + u< ;
-: key  ( -- char ) mark @ c@ dup 10 = if drop 32 then ;
-
-: advance mark @ 1+ mark ! ;
-
-: emit ( char -- ) 'output count + c!
-  'output c@ 1+ dup 'output c! 255 = if write then ;
 
 : type ( addr u -- ) begin dup if >r dup c@ emit 1+ r> 1- repeat nip drop ;
 
-: accumulate ( char -- ) 'buffer count dup 1+ 'buffer c! + c! ;
-
-: parse ( char -- ) 0 'buffer c!
-  begin key? invert if drop exit then key 32 = if advance repeat
+: parse ( char -- addr u ) >r >in @
   begin
-    key? invert if refill then key over = invert
+    dup 'input c@ = if r> drop [ 'input 1+ ] literal + 0 exit then
+    dup [ 'input 1+ ] literal + c@ 32 =
   if
-    key accumulate advance
+    1+ dup >in !
   repeat
-  drop ;
+  dup
+  begin
+    dup [ 'input 1+ ] literal + c@ r> dup >r = invert
+  if
+    1+
+  repeat
+  r> drop dup 1+ >in ! over - >r [ 'input 1+ ] literal + r> ;
 
-: word 32 parse 'buffer c@ [ f-immediate 1- ] literal u< invert
-  if [ f-immediate 1- ] literal 'buffer c! then ;
-
-: save 'buffer here @ over c@ 1+ dup aligned here @ + here ! cmove ;
+: save dup c, dup >r >r here @ r> cmove r> here @ + aligned here ! ;
 
 : digit? ( char -- u flag ) [char] 0 - 9 over <
   if [ char A char 0 - 10 - ] literal - dup 10 < or then
@@ -77,53 +71,47 @@
 : number ( addr u1 -- n u2 ) over c@ [char] - =
   if >r 1+ r> 1- natural >r negate r> else natural then ;
 
-: find ( -- 0 | addr ) latest
+: find ( -- 0 | addr ) >r >r latest
   begin
     @ dup 0= over
     if
-      over cell + c@ [ f-immediate 1- ] literal and 'buffer c@ =
-      if drop dup [ cell 1+ ] literal + 'buffer count same? then
+      over cell + c@ [ f-immediate 1- ] literal and r> r> over over >r >r nip =
+      if drop dup [ cell 1+ ] literal + r> r> over over >r >r same? then
     then
-  until ;
+  until
+  r> r> drop drop ;
 
 : >code ( addr1 -- addr2 )
   cell + count [ f-immediate 1- ] literal and + aligned ;
 
-: , ( x -- ) here @ dup cell + here ! ! ;
-
 : [  0 state ! ; immediate
 : ] -1 state ! ;
 
-: : ] here @ current ! latest @ , word save [ ' enter @ ] literal , ;
+: : ] here @ current ! latest @ , 32 parse save [ ' enter @ ] literal , ;
 
 : reveal current @ latest ! ;
 
 : ; ['] exit , reveal postpone [ ; immediate
 
-: ' ( -- 0 | xt ) word find dup if >code then ;
+: ' ( -- 0 | xt ) 32 parse find dup if >code then ;
 
 : literal ( x -- ) lit lit , , ; immediate
 
 : interpret
   begin
-    word 'buffer c@
+    32 parse dup 0= if drop drop exit then
+    over over find dup
     if
-      find dup
-      if
-        dup cell + c@ f-immediate and state @ invert or
-        if >code execute else >code , then
-      else
-        drop 'buffer count number
-        if
-          drop 'buffer count type [char] ? emit
-        else
-          state @ if postpone literal then
-        then
-      then
-      write
+      nip nip dup cell + c@ f-immediate and state @ invert or
+      if >code execute else >code , then
     else
-      ;
+      drop over over number
+      if
+        drop type [char] ? emit
+      else
+        nip nip state @ if postpone literal then
+      then
     then
-  again
+  again [ reveal
 
 : main begin refill interpret again [ reveal main
