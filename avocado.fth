@@ -41,18 +41,12 @@
 
 : parse ( char -- addr u ) >r >in @
   begin
-    dup 'input c@ = if r> drop [ 'input 1+ ] literal + 0 exit then
-    dup [ 'input 1+ ] literal + c@ 32 =
-  if
-    1+ dup >in !
-  repeat
+    dup 'input c@ = if r> drop dup >in ! 'input + 0 exit then
+    1+ dup 'input + c@ 32 = invert
+  until
   dup
-  begin
-    dup [ 'input 1+ ] literal + c@ r> dup >r = invert
-  if
-    1+
-  repeat
-  r> drop dup 1+ >in ! over - >r [ 'input 1+ ] literal + r> ;
+  begin 1+ dup 'input + c@ r> dup >r = until
+  r> drop dup >in ! over - >r 'input + r> ;
 
 : save dup c, dup >r >r here @ r> cmove r> here @ + aligned here ! ;
 

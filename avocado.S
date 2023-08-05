@@ -647,59 +647,50 @@ DEFWORD head_type, parse, "parse" /* char - addr u */
 
 	.quad rpull
 	.quad drop
-	.quad lit, input+1
+	.quad dup
+	.quad toin
+	.quad store
+	.quad tickinput
 	.quad add
 	.quad lit, 0
 	.quad exit
 
 1:
+	.quad inc
 	.quad dup
-	.quad lit, input+1
+	.quad tickinput
 	.quad add
 	.quad cfetch
 	.quad lit, ' '
 	.quad equals
+	.quad invert
 
-	.quad zbranch, 0f
+	.quad zbranch, 0b
 
+	.quad dup
+
+0:
 	.quad inc
 	.quad dup
-	.quad toin
-	.quad store
-
-	.quad branch, 0b
-0:
-
-	.quad dup
-
-0:
-	.quad dup
-	.quad lit, input+1
+	.quad tickinput
 	.quad add
 	.quad cfetch
 	.quad rpull
 	.quad dup
 	.quad rpush
 	.quad equals
-	.quad invert
 
-	.quad zbranch, 0f
-
-	.quad inc
-
-	.quad branch, 0b
-0:
+	.quad zbranch, 0b
 
 	.quad rpull
 	.quad drop
 	.quad dup
-	.quad inc
 	.quad toin
 	.quad store
 	.quad over
 	.quad sub
 	.quad rpush
-	.quad lit, input+1
+	.quad tickinput
 	.quad add
 	.quad rpull
 	.quad exit
