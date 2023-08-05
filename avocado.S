@@ -333,7 +333,7 @@ DEFWORD head_tickinput, tickbuffer, "'buffer" /* -- addr */
 	.quad exit
 
 DEFWORD head_tickbuffer, toin, ">in" /* -- addr */
-	.quad var, input+1
+	.quad var, 0
 	.quad exit
 
 DEFWORD head_toin, state, "state" /* -- addr */
