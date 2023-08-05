@@ -27,9 +27,9 @@
 
 : bye 0 dup dup sys-exit syscall [ reveal
 
-: key  ( -- char ) 0 rune 1 sys-read syscall 0= if bye then rune c@ ;
+: key  ( -- char ) 0 here @ 1 sys-read syscall 0= if bye then here @ c@ ;
 
-: emit ( char -- ) rune c! 1 rune 1 sys-write syscall drop ;
+: emit ( char -- ) here @ c! 1 here @ 1 sys-write syscall drop ;
 
 : refill 0 'input c! 0 >in !
   begin

@@ -332,11 +332,7 @@ DEFWORD head_tickinput, tickbuffer, "'buffer" /* -- addr */
 	.quad lit, buffer
 	.quad exit
 
-DEFWORD head_tickbuffer, rune, "rune" /* -- addr */
-	.quad var, 0
-	.quad exit
-
-DEFWORD head_rune, toin, ">in" /* -- addr */
+DEFWORD head_tickbuffer, toin, ">in" /* -- addr */
 	.quad var, input+1
 	.quad exit
 
@@ -543,7 +539,8 @@ DEFWORD head_sameq, bye, "bye"
 
 DEFWORD head_bye, key, "key" /* -- char */
 	.quad lit, 0
-	.quad rune
+	.quad here
+	.quad fetch
 	.quad lit, 1
 	.quad sys_read
 	.quad syscall
@@ -554,15 +551,18 @@ DEFWORD head_bye, key, "key" /* -- char */
 	.quad bye
 
 0:
-	.quad rune
+	.quad here
+	.quad fetch
 	.quad cfetch
 	.quad exit
 
 DEFWORD head_key, emit, "emit" /* char -- */
-	.quad rune
+	.quad here
+	.quad fetch
 	.quad cstore
 	.quad lit, 1
-	.quad rune
+	.quad here
+	.quad fetch
 	.quad lit, 1
 	.quad sys_write
 	.quad syscall
