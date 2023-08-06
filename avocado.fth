@@ -65,7 +65,7 @@
 : number ( addr u1 -- n u2 ) over c@ [char] - =
   if >r 1+ r> 1- natural >r negate r> else natural then ;
 
-: find ( -- 0 | addr ) >r >r latest
+: find ( addr1 u -- 0 | addr2 ) >r >r latest
   begin
     @ dup 0= over
     if
