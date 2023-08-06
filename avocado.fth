@@ -93,19 +93,23 @@
 
 : interpret
   begin
-    32 parse dup 0= if drop drop exit then
-    over over find dup
+    32 parse dup
     if
-      nip nip dup cell + c@ f-immediate and state @ invert or
-      if >code execute else >code , then
-    else
-      drop over over number
+      over over find dup
       if
-        drop type [char] ? emit
+        nip nip dup cell + c@ f-immediate and state @ invert or
+        if >code execute else >code , then
       else
-        nip nip state @ if postpone literal then
+        drop over over number
+        if
+          drop type [char] ? emit
+        else
+          nip nip state @ if postpone literal then
+        then
       then
+    else
+      drop drop ;
     then
-  again [ reveal
+  again
 
 : main begin refill interpret again [ reveal main

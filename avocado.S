@@ -926,15 +926,9 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad lit, ' '
 	.quad parse
 	.quad dup
-	.quad zequals
 
 	.quad zbranch, 4f
 
-	.quad drop
-	.quad drop
-	.quad exit
-
-4:
 	.quad over
 	.quad over
 	.quad find
@@ -997,6 +991,15 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad literal
 
 2:
+
+	.quad branch, 1f
+4:
+
+	.quad drop
+	.quad drop
+	.quad exit
+
+1:
 	.quad branch, 0b
 
 DEFINE head_interpret, main, "main"
