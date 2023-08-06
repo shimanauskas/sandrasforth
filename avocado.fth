@@ -39,14 +39,23 @@
 
 : type ( addr u -- ) begin dup if >r dup c@ emit 1+ r> 1- repeat nip drop ;
 
-: parse ( char -- addr u ) >r >in @
+: parse ( char -- addr u ) >r >in @ dup
   begin
-    dup 'input c@ = if r> drop dup >in ! 'input + 0 exit then
-    1+ dup 'input + c@ 32 = invert
-  until
-  dup
-  begin 1+ dup 'input + c@ r> dup >r = until
-  r> drop dup >in ! over - >r 'input + r> ;
+    dup 'input c@ = over [ 'input 1+ ] literal + c@ r> dup >r = or invert
+  if
+    1+
+  repeat
+  r> drop dup 1+ >in ! over - >r [ 'input 1+ ] literal + r> ;
+
+: word ( char - addr ) >r >in @
+  begin
+    dup 'input c@ = invert over [ 'input 1+ ] literal + c@ r> dup >r = and
+  if
+    1+
+  repeat
+  >in ! r> parse dup dup [ f-immediate 1- ] literal u< invert
+  if drop [ f-immediate 1- ] literal then
+  'buffer c! >r [ 'buffer 1+ ] literal r> cmove 'buffer ;
 
 : save dup c, dup >r >r here @ r> cmove r> here @ + aligned here ! ;
 
@@ -65,15 +74,15 @@
 : number ( addr u1 -- n u2 ) over c@ [char] - =
   if >r 1+ r> 1- natural >r negate r> else natural then ;
 
-: find ( addr1 u -- 0 | addr2 ) >r >r latest
+: find ( addr1 u -- 0 | addr2 ) >r latest
   begin
     @ dup 0= over
     if
-      over cell + c@ [ f-immediate 1- ] literal and r> r> over over >r >r nip =
-      if drop dup [ cell 1+ ] literal + r> r> over over >r >r same? then
+      over cell + c@ [ f-immediate 1- ] literal and r> dup >r c@ =
+      if drop dup [ cell 1+ ] literal + r> dup >r count same? then
     then
   until
-  r> r> drop drop ;
+  r> drop ;
 
 : >code ( addr1 -- addr2 )
   cell + count [ f-immediate 1- ] literal and + aligned ;
@@ -81,26 +90,26 @@
 : [  0 state ! ; immediate
 : ] -1 state ! ;
 
-: : ] here @ current ! latest @ , 32 parse save [ ' enter @ ] literal , ;
+: : ] here @ current ! latest @ , 32 word count save [ ' enter @ ] literal , ;
 
 : reveal current @ latest ! ;
 
 : ; ['] exit , reveal postpone [ ; immediate
 
-: ' ( -- 0 | xt ) 32 parse find dup if >code then ;
+: ' ( -- 0 | xt ) 32 word find dup if >code then ;
 
 : literal ( x -- ) lit lit , , ; immediate
 
 : interpret
   begin
-    32 parse dup
+    32 word dup c@
     if
-      over over find dup
+      dup find dup
       if
-        nip nip dup cell + c@ f-immediate and state @ invert or
+        nip dup cell + c@ f-immediate and state @ invert or
         if >code execute else >code , then
       else
-        drop over over number
+        drop count over over number
         if
           drop type [char] ? emit
         else
@@ -108,7 +117,7 @@
         then
       then
     else
-      drop drop ;
+      drop ;
     then
   again
 

@@ -25,7 +25,7 @@
 
 : space 32 emit ;
 
-:  char  ( -- char ) 32 parse drop c@ ;
+:  char  ( -- char ) 32 word 1+ c@ ;
 : [char] ( -- char ) char postpone literal ; immediate
 
 :  " ( -- addr ) here @ [char] " parse save ;
