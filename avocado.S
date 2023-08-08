@@ -897,8 +897,7 @@ DEFWORD head_lbracket, rbracket, "]"
 	.quad store
 	.quad exit
 
-DEFWORD head_rbracket, colon, ":"
-	.quad rbracket
+DEFWORD head_rbracket, create, "create"
 	.quad here
 	.quad fetch
 	.quad current
@@ -912,6 +911,11 @@ DEFWORD head_rbracket, colon, ":"
 	.quad save
 	.quad lit, code_enter
 	.quad comma
+	.quad exit
+
+DEFWORD head_create, colon, ":"
+	.quad create
+	.quad rbracket
 	.quad exit
 
 DEFWORD head_colon, reveal, "reveal"

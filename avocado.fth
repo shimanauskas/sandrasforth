@@ -90,7 +90,10 @@
 : [  0 state ! ; immediate
 : ] -1 state ! ;
 
-: : ] here @ current ! latest @ , 32 word count save [ ' enter @ ] literal , ;
+: create here @ current ! latest @ ,
+  32 word count save [ ' enter @ ] literal , ;
+
+: : create ] ;
 
 : reveal current @ latest ! ;
 

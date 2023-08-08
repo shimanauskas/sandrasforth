@@ -18,6 +18,11 @@
 : variable : ['] var , 0 ,    postpone ; ; immediate
 : constant : postpone literal postpone ; ; immediate
 
+: does> ['] branch , r> , reveal ;
+
+: marker here @ latest @ create postpone literal postpone literal
+  does>  here ! latest ! ;
+
 : ( 41 parse drop drop ; immediate
 
 : lshift ( x1 u -- x2 ) begin dup if >r 2* r> 1- repeat drop ;

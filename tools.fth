@@ -6,6 +6,4 @@
   repeat
   drop ;
 
-: forget 32 word find dup if dup here ! @ latest ! else drop then ;
-
 : prompt begin ." # " refill interpret again [ reveal prompt
