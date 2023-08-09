@@ -33,9 +33,8 @@
 :  char  ( -- char ) 32 word 1+ c@ ;
 : [char] ( -- char ) char postpone literal ; immediate
 
-:  " ( -- addr ) here @ [char] " parse save ;
-: c" ( -- addr ) ['] branch , here @ >r 0 , " here @ r> ! postpone literal ;
-  immediate
+: c" ( -- addr ) ['] branch , here @ >r 0 , here @ [char] " parse save
+  here @ r> ! postpone literal ; immediate
 : s" ( -- addr u ) postpone c" ['] count , ; immediate
 : ."               postpone s" ['] type  , ; immediate
 
