@@ -41,7 +41,7 @@
 
 : parse ( char -- addr u ) >r >in @ dup
   begin
-    dup 'input c@ = over [ 'input 1+ ] literal + c@ r> dup >r = or invert
+    dup 'input c@ u< over [ 'input 1+ ] literal + c@ r> dup >r = invert and
   if
     1+
   repeat

@@ -642,7 +642,7 @@ DEFWORD head_type, parse, "parse" /* char - addr u */
 	.quad dup
 	.quad tickinput
 	.quad cfetch
-	.quad equals
+	.quad uless
 	.quad over
 	.quad lit, input+1
 	.quad add
@@ -651,8 +651,8 @@ DEFWORD head_type, parse, "parse" /* char - addr u */
 	.quad dup
 	.quad rpush
 	.quad equals
-	.quad or
 	.quad invert
+	.quad and
 
 	.quad zbranch, 0f
 
