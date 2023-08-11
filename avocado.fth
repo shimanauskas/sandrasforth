@@ -49,7 +49,7 @@
 
 : word ( char - addr ) >r >in @
   begin
-    dup 'input c@ = invert over [ 'input 1+ ] literal + c@ r> dup >r = and
+    dup 'input c@ u< over [ 'input 1+ ] literal + c@ r> dup >r = and
   if
     1+
   repeat

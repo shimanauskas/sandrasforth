@@ -684,8 +684,7 @@ DEFWORD head_parse, word, "word" /* char -- addr */
 	.quad dup
 	.quad tickinput
 	.quad cfetch
-	.quad equals
-	.quad invert
+	.quad uless
 	.quad over
 	.quad lit, input+1
 	.quad add
