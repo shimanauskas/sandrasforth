@@ -677,6 +677,7 @@ DEFWORD head_type, parse, "parse" /* char - addr u */
 
 DEFWORD head_parse, word, "word" /* char -- addr */
 	.quad rpush
+	.quad tickbuffer
 	.quad toin
 	.quad fetch
 
@@ -707,7 +708,6 @@ DEFWORD head_parse, word, "word" /* char -- addr */
 	.quad rpull
 	.quad parse
 	.quad dup
-	.quad dup
 	.quad lit, IMMEDIATE-1
 	.quad uless
 	.quad invert
@@ -718,13 +718,13 @@ DEFWORD head_parse, word, "word" /* char -- addr */
 	.quad lit, IMMEDIATE-1
 
 0:
-	.quad tickbuffer
-	.quad cstore
 	.quad rpush
-	.quad lit, buffer+1
+	.quad over
 	.quad rpull
+	.quad over
+	.quad cstore
+	.quad count
 	.quad cmove
-	.quad tickbuffer
 	.quad exit
 
 DEFWORD head_word, save, "save" /* addr u -- */

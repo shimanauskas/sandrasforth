@@ -47,15 +47,15 @@
   repeat
   r> drop dup 1+ >in ! over - >r [ 'input 1+ ] literal + r> ;
 
-: word ( char - addr ) >r >in @
+: word ( char - addr ) >r 'buffer >in @
   begin
     dup 'input c@ u< over [ 'input 1+ ] literal + c@ r> dup >r = and
   if
     1+
   repeat
-  >in ! r> parse dup dup [ f-immediate 1- ] literal u< invert
+  >in ! r> parse dup [ f-immediate 1- ] literal u< invert
   if drop [ f-immediate 1- ] literal then
-  'buffer c! >r [ 'buffer 1+ ] literal r> cmove 'buffer ;
+  >r over r> over c! count cmove ;
 
 : save dup c, dup >r >r here @ r> cmove r> here @ + aligned here ! ;
 
