@@ -57,7 +57,8 @@
   if drop [ f-immediate 1- ] literal then
   >r over r> over c! count cmove ;
 
-: save dup c, dup >r >r here @ r> cmove r> here @ + aligned here ! ;
+: save ( addr u -- )
+  dup c, dup >r >r here @ r> cmove r> here @ + aligned here ! ;
 
 : digit? ( char -- u flag ) [char] 0 - 9 over <
   if [ char A char 0 - 10 - ] literal - dup 10 < or then
