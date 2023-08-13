@@ -499,7 +499,7 @@ DEFWORD head_count, cmove, "cmove" /* addr1 addr2 u -- */
 	.quad drop
 	.quad exit
 
-DEFWORD head_cmove, sameq, "same?" /* addr1 addr2 u -- flag */
+DEFWORD head_cmove, sequals, "s=" /* addr1 addr2 u -- flag */
 0:
 	.quad dup
 	.quad rpush
@@ -530,7 +530,7 @@ DEFWORD head_cmove, sameq, "same?" /* addr1 addr2 u -- flag */
 	.quad zequals
 	.quad exit
 
-DEFWORD head_sameq, bye, "bye"
+DEFWORD head_sequals, bye, "bye"
 	.quad lit, 0
 	.quad dup
 	.quad dup
@@ -727,7 +727,7 @@ DEFWORD head_parse, word, "word" /* char -- addr */
 	.quad cmove
 	.quad exit
 
-DEFWORD head_word, save, "save" /* addr u -- */
+DEFWORD head_word, scomma, "s," /* addr u -- */
 	.quad dup
 	.quad ccomma
 	.quad dup
@@ -746,7 +746,7 @@ DEFWORD head_word, save, "save" /* addr u -- */
 	.quad store
 	.quad exit
 
-DEFWORD head_save, digitq, "digit?" /* char -- u flag */
+DEFWORD head_scomma, digitq, "digit?" /* char -- u flag */
 	.quad lit, '0'
 	.quad sub
 	.quad lit, 9
@@ -865,7 +865,7 @@ DEFWORD head_number, find, "find" /* addr1 -- 0 | addr2 */
 	.quad dup
 	.quad rpush
 	.quad count
-	.quad sameq
+	.quad sequals
 
 1:
 	.quad zbranch, 0b
@@ -907,7 +907,7 @@ DEFWORD head_rbracket, create, "create"
 	.quad lit, ' '
 	.quad word
 	.quad count
-	.quad save
+	.quad scomma
 	.quad lit, code_enter
 	.quad comma
 	.quad exit

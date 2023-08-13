@@ -21,7 +21,7 @@
 : cmove ( addr1 addr2 u -- )
   begin dup if >r over c@ over c! >r 1+ r> 1+ r> 1- repeat nip nip drop ;
 
-: same? ( addr1 addr2 u -- flag )
+: s= ( addr1 addr2 u -- flag )
   begin dup >r >r over c@ over c@ = r> and if >r 1+ r> 1+ r> 1- repeat
   r> nip nip 0= ;
 
@@ -57,7 +57,7 @@
   if drop [ f-immediate 1- ] literal then
   >r over r> over c! count cmove ;
 
-: save ( addr u -- )
+: s, ( addr u -- )
   dup c, dup >r >r here @ r> cmove r> here @ + aligned here ! ;
 
 : digit? ( char -- u flag ) [char] 0 - 9 over <
@@ -80,7 +80,7 @@
     @ dup 0= over
     if
       over cell + c@ [ f-immediate 1- ] literal and r> dup >r c@ =
-      if drop dup [ cell 1+ ] literal + r> dup >r count same? then
+      if drop dup [ cell 1+ ] literal + r> dup >r count s= then
     then
   until
   r> drop ;
@@ -91,8 +91,7 @@
 : [  0 state ! ; immediate
 : ] -1 state ! ;
 
-: create here @ current ! latest @ ,
-  32 word count save [ ' enter @ ] literal , ;
+: create here @ current ! latest @ , 32 word count s, [ ' enter @ ] literal , ;
 
 : : create ] ;
 
