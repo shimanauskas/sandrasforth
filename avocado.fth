@@ -91,9 +91,7 @@
 : [  0 state ! ; immediate
 : ] -1 state ! ;
 
-: create here @ current ! latest @ , 32 word count s, [ ' enter @ ] literal , ;
-
-: : create ] ;
+: : here @ current ! latest @ , 32 word count s, [ ' enter @ ] literal , ] ;
 
 : reveal current @ latest ! ;
 
