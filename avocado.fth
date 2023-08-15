@@ -21,6 +21,9 @@
 : cmove ( addr1 addr2 u -- )
   begin dup if >r over c@ over c! >r 1+ r> 1+ r> 1- repeat nip nip drop ;
 
+: s, ( addr u -- )
+  dup c, dup >r >r here @ r> cmove r> here @ + aligned here ! ;
+
 : s= ( addr1 addr2 u -- flag )
   begin dup >r >r over c@ over c@ = r> and if >r 1+ r> 1+ r> 1- repeat
   r> nip nip 0= ;
@@ -56,9 +59,6 @@
   >in ! r> parse dup [ f-immediate 1- ] literal u< invert
   if drop [ f-immediate 1- ] literal then
   >r over r> over c! count cmove ;
-
-: s, ( addr u -- )
-  dup c, dup >r >r here @ r> cmove r> here @ + aligned here ! ;
 
 : digit? ( char -- u flag ) [char] 0 - 9 over <
   if [ char A char 0 - 10 - ] literal - dup 10 < or then

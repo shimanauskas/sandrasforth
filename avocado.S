@@ -499,7 +499,26 @@ DEFWORD head_count, cmove, "cmove" /* addr1 addr2 u -- */
 	.quad drop
 	.quad exit
 
-DEFWORD head_cmove, sequals, "s=" /* addr1 addr2 u -- flag */
+DEFWORD head_cmove, scomma, "s," /* addr u -- */
+	.quad dup
+	.quad ccomma
+	.quad dup
+	.quad rpush
+	.quad rpush
+	.quad here
+	.quad fetch
+	.quad rpull
+	.quad cmove
+	.quad rpull
+	.quad here
+	.quad fetch
+	.quad add
+	.quad aligned
+	.quad here
+	.quad store
+	.quad exit
+
+DEFWORD head_scomma, sequals, "s=" /* addr1 addr2 u -- flag */
 0:
 	.quad dup
 	.quad rpush
@@ -727,26 +746,7 @@ DEFWORD head_parse, word, "word" /* char -- addr */
 	.quad cmove
 	.quad exit
 
-DEFWORD head_word, scomma, "s," /* addr u -- */
-	.quad dup
-	.quad ccomma
-	.quad dup
-	.quad rpush
-	.quad rpush
-	.quad here
-	.quad fetch
-	.quad rpull
-	.quad cmove
-	.quad rpull
-	.quad here
-	.quad fetch
-	.quad add
-	.quad aligned
-	.quad here
-	.quad store
-	.quad exit
-
-DEFWORD head_scomma, digitq, "digit?" /* char -- u flag */
+DEFWORD head_word, digitq, "digit?" /* char -- u flag */
 	.quad lit, '0'
 	.quad sub
 	.quad lit, 9
