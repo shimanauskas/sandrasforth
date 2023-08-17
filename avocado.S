@@ -308,7 +308,15 @@ DEFWORD head_syscall, cell, "cell" /* -- u */
 	.quad lit, CELL
 	.quad exit
 
-DEFWORD head_cell, f_immediate, "f-immediate" /* -- x */
+DEFWORD head_cell, lf, "lf" /* -- char */
+	.quad lit, '\n'
+	.quad exit
+
+DEFWORD head_lf, bl, "bl" /* -- char */
+	.quad lit, ' '
+	.quad exit
+
+DEFWORD head_bl, f_immediate, "f-immediate" /* -- x */
 	.quad lit, IMMEDIATE
 	.quad exit
 
@@ -600,13 +608,13 @@ DEFWORD head_emit, refill, "refill"
 	.quad key
 	.quad dup
 	.quad dup
-	.quad lit, '\n'
+	.quad lf
 	.quad equals
 
 	.quad zbranch, 1f
 
 	.quad drop
-	.quad lit, ' '
+	.quad bl
 
 1:
 	.quad tickinput
@@ -618,7 +626,7 @@ DEFWORD head_emit, refill, "refill"
 	.quad inc
 	.quad tickinput
 	.quad cstore
-	.quad lit, '\n'
+	.quad lf
 	.quad equals
 	.quad tickinput
 	.quad cfetch
@@ -904,7 +912,7 @@ DEFWORD head_rbracket, colon, ":"
 	.quad latest
 	.quad fetch
 	.quad comma
-	.quad lit, ' '
+	.quad bl
 	.quad word
 	.quad count
 	.quad scomma
@@ -928,7 +936,7 @@ DEFWORD head_reveal, semicolon, ";", IMMEDIATE
 	.quad exit
 
 DEFWORD head_semicolon, tick, "'" /* -- 0 | xt */
-	.quad lit, ' '
+	.quad bl
 	.quad word
 	.quad find
 	.quad dup
@@ -948,7 +956,7 @@ DEFWORD head_tick, literal, "literal", IMMEDIATE /* x -- */
 
 DEFWORD head_literal, interpret, "interpret"
 0:
-	.quad lit, ' '
+	.quad bl
 	.quad word
 	.quad dup
 	.quad cfetch

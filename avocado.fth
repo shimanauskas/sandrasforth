@@ -36,8 +36,8 @@
 
 : refill 0 'input c! 0 >in !
   begin
-    key dup dup 10 = if drop 32 then
-    'input count + c! 'input c@ 1+ 'input c! 10 = 'input c@ 255 = or
+    key dup dup lf = if drop bl then
+    'input count + c! 'input c@ 1+ 'input c! lf = 'input c@ 255 = or
   until ;
 
 : type ( addr u -- ) begin dup if >r dup c@ emit 1+ r> 1- repeat nip drop ;
@@ -91,19 +91,19 @@
 : [  0 state ! ; immediate
 : ] -1 state ! ;
 
-: : here @ current ! latest @ , 32 word count s, [ ' enter @ ] literal , ] ;
+: : here @ current ! latest @ , bl word count s, [ ' enter @ ] literal , ] ;
 
 : reveal current @ latest ! ;
 
 : ; ['] exit , reveal postpone [ ; immediate
 
-: ' ( -- 0 | xt ) 32 word find dup if >code then ;
+: ' ( -- 0 | xt ) bl word find dup if >code then ;
 
 : literal ( x -- ) lit lit , , ; immediate
 
 : interpret
   begin
-    32 word dup c@
+    bl word dup c@
     if
       dup find dup
       if

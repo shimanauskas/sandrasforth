@@ -23,9 +23,9 @@
 : lshift ( x1 u -- x2 ) begin dup if >r 2* r> 1- repeat drop ;
 : rshift ( x1 u -- x2 ) begin dup if >r 2/ r> 1- repeat drop ;
 
-: space 32 emit ;
+: space bl emit ;
 
-:  char  ( -- char ) 32 word 1+ c@ ;
+:  char  ( -- char ) bl word 1+ c@ ;
 : [char] ( -- char ) char postpone literal ; immediate
 
 : c" ( -- addr ) ['] branch , here @ >r 0 , here @ [char] " parse s,
