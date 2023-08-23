@@ -526,7 +526,18 @@ DEFWORD head_cmove, scomma, "s," /* addr u -- */
 	.quad store
 	.quad exit
 
-DEFWORD head_scomma, sequals, "s=" /* addr1 addr2 u -- flag */
+DEFWORD head_scomma, sequals, "s=" /* addr1 u1 addr2 u2 -- flag */
+	.quad rpush
+	.quad over
+	.quad rpush
+	.quad nip
+	.quad rpull
+	.quad rpull
+	.quad over
+	.quad equals
+
+	.quad zbranch, 1f
+
 0:
 	.quad dup
 	.quad rpush
@@ -555,6 +566,16 @@ DEFWORD head_scomma, sequals, "s=" /* addr1 addr2 u -- flag */
 	.quad nip
 	.quad nip
 	.quad zequals
+
+	.quad branch, 0f
+1:
+
+	.quad nip
+	.quad nip
+	.quad drop
+	.quad lit, 0
+
+0:
 	.quad exit
 
 DEFWORD head_sequals, bye, "bye"
@@ -840,46 +861,38 @@ DEFWORD head_natural, number, "number" /* addr u1 -- n u2 */
 	.quad exit
 
 DEFWORD head_number, find, "find" /* addr1 -- 0 | addr2 */
-	.quad rpush
 	.quad latest
+	.quad rpush
 
 0:
+	.quad rpull
 	.quad fetch
 	.quad dup
-	.quad zequals
-	.quad over
-
-	.quad zbranch, 1f
-
-	.quad over
-	.quad cell
-	.quad add
-	.quad cfetch
-	.quad lit, IMMEDIATE-1
-	.quad and
-	.quad rpull
-	.quad dup
 	.quad rpush
-	.quad cfetch
-	.quad equals
+	.quad zequals
+	.quad dup
+	.quad invert
 
 	.quad zbranch, 1f
 
 	.quad drop
 	.quad dup
-	.quad lit, CELL+1
-	.quad add
+	.quad count
 	.quad rpull
 	.quad dup
 	.quad rpush
+	.quad cell
+	.quad add
 	.quad count
+	.quad lit, IMMEDIATE-1
+	.quad and
 	.quad sequals
 
 1:
 	.quad zbranch, 0b
 
-	.quad rpull
 	.quad drop
+	.quad rpull
 	.quad exit
 
 DEFWORD head_find, tocode, ">code" /* addr1 -- addr2 */

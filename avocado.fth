@@ -24,9 +24,13 @@
 : s, ( addr u -- )
   dup c, dup >r >r here @ r> cmove r> here @ + aligned here ! ;
 
-: s= ( addr1 addr2 u -- flag )
-  begin dup >r >r over c@ over c@ = r> and if >r 1+ r> 1+ r> 1- repeat
-  r> nip nip 0= ;
+: s= ( addr1 u1 addr2 u2 -- flag ) >r over >r nip r> r> over =
+  if
+    begin dup >r >r over c@ over c@ = r> and if >r 1+ r> 1+ r> 1- repeat
+    r> nip nip 0=
+  else
+    nip nip drop 0
+  then ;
 
 : bye 0 dup dup sys-exit syscall [ reveal
 
@@ -75,15 +79,14 @@
 : number ( addr u1 -- n u2 ) over c@ [char] - =
   if >r 1+ r> 1- natural >r negate r> else natural then ;
 
-: find ( addr1 -- 0 | addr2 ) >r latest
+: find ( addr1 -- 0 | addr2 ) latest >r
   begin
-    @ dup 0= over
+    r> @ dup >r 0= dup invert
     if
-      over cell + c@ [ f-immediate 1- ] literal and r> dup >r c@ =
-      if drop dup [ cell 1+ ] literal + r> dup >r count s= then
+      drop dup count r> dup >r cell + count [ f-immediate 1- ] literal and s=
     then
   until
-  r> drop ;
+  drop r> ;
 
 : >code ( addr1 -- addr2 )
   cell + count [ f-immediate 1- ] literal and + aligned ;
