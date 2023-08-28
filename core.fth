@@ -42,7 +42,7 @@
   begin base @ /mod >r digit hold r> dup 0= until drop
   'buffer @ [ 'buffer 256 + ] literal over - type ;
 
-: . ( n -- ) dup 0< if [char] - emit negate then u. ;
+:  . ( n -- ) dup 0< if [char] - emit negate then u. ;
 
 : bina  2 base ! ; immediate
 : deci 10 base ! ; immediate
