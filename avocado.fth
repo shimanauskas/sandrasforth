@@ -79,17 +79,21 @@
 : number ( addr u1 -- n u2 ) over c@ [char] - =
   if >r 1+ r> 1- natural >r negate r> else natural then ;
 
-: find ( addr1 -- 0 | addr2 ) latest >r
+: >code ( addr1 -- addr2 )
+  cell + count [ f-immediate 1- ] literal and + aligned ;
+
+: find ( addr -- addr 0 | xt 1 | xt -1 ) dup latest >r
   begin
     r> @ dup >r 0= dup invert
     if
       drop dup count r> dup >r cell + count [ f-immediate 1- ] literal and s=
     then
   until
-  drop r> ;
-
-: >code ( addr1 -- addr2 )
-  cell + count [ f-immediate 1- ] literal and + aligned ;
+  drop r> dup
+  if
+    nip dup cell + c@ f-immediate and state @ invert or
+    if 1 else -1 then >r >code r>
+  then ;
 
 : [  0 state ! ; immediate
 : ] -1 state ! ;
@@ -100,7 +104,7 @@
 
 : ; ['] exit , reveal postpone [ ; immediate
 
-: ' ( -- 0 | xt ) bl word find dup if >code then ;
+: ' ( -- 0 | xt ) bl word find dup if drop else nip then ;
 
 : literal ( x -- ) lit lit , , ; immediate
 
@@ -108,10 +112,9 @@
   begin
     bl word dup c@
     if
-      dup find dup
+      find dup
       if
-        nip dup cell + c@ f-immediate and state @ invert or
-        if >code execute else >code , then
+        0< if , else execute then
       else
         drop count over over number
         if

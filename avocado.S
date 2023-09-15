@@ -860,7 +860,18 @@ DEFWORD head_natural, number, "number" /* addr u1 -- n u2 */
 1:
 	.quad exit
 
-DEFWORD head_number, find, "find" /* addr1 -- 0 | addr2 */
+DEFWORD head_number, tocode, ">code" /* addr1 -- addr2 */
+	.quad cell
+	.quad add
+	.quad count
+	.quad lit, IMMEDIATE-1
+	.quad and
+	.quad add
+	.quad aligned
+	.quad exit
+
+DEFWORD head_tocode, find, "find" /* addr -- addr 0 | xt 1 | xt -1 */
+	.quad dup
 	.quad latest
 	.quad rpush
 
@@ -893,19 +904,40 @@ DEFWORD head_number, find, "find" /* addr1 -- 0 | addr2 */
 
 	.quad drop
 	.quad rpull
-	.quad exit
+	.quad dup
 
-DEFWORD head_find, tocode, ">code" /* addr1 -- addr2 */
+	.quad zbranch, 0f
+
+	.quad nip
+	.quad dup
 	.quad cell
 	.quad add
-	.quad count
-	.quad lit, IMMEDIATE-1
+	.quad cfetch
+	.quad f_immediate
 	.quad and
-	.quad add
-	.quad aligned
+	.quad state
+	.quad fetch
+	.quad invert
+	.quad or
+
+	.quad zbranch, 1f
+
+	.quad lit, 1
+
+	.quad branch, 2f
+1:
+
+	.quad lit, -1
+
+2:
+	.quad rpush
+	.quad tocode
+	.quad rpull
+
+0:
 	.quad exit
 
-DEFWORD head_tocode, lbracket, "[", IMMEDIATE
+DEFWORD head_find, lbracket, "[", IMMEDIATE
 	.quad lit, 0
 	.quad state
 	.quad store
@@ -956,9 +988,14 @@ DEFWORD head_semicolon, tick, "'" /* -- 0 | xt */
 
 	.quad zbranch, 0f
 
-	.quad tocode
+	.quad drop
 
+	.quad branch, 1f
 0:
+
+	.quad nip
+
+1:
 	.quad exit
 
 DEFWORD head_tick, literal, "literal", IMMEDIATE /* x -- */
@@ -976,35 +1013,21 @@ DEFWORD head_literal, interpret, "interpret"
 
 	.quad zbranch, 4f
 
-	.quad dup
 	.quad find
 	.quad dup
 
 	.quad zbranch, 3f
 
-	.quad nip
-	.quad dup
-	.quad cell
-	.quad add
-	.quad cfetch
-	.quad f_immediate
-	.quad and
-	.quad state
-	.quad fetch
-	.quad invert
-	.quad or
+	.quad zless
 
 	.quad zbranch, 1f
 
-	.quad tocode
-	.quad execute
-
+	.quad comma
 
 	.quad branch, 2f
 1:
 
-	.quad tocode
-	.quad comma
+	.quad execute
 
 2:
 
