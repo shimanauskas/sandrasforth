@@ -1035,14 +1035,14 @@ DEFWORD head_literal, interpret, "interpret"
 3:
 
 	.quad drop
+	.quad dup
 	.quad count
-	.quad over
-	.quad over
 	.quad number
 
 	.quad zbranch, 1f
 
 	.quad drop
+	.quad count
 	.quad type
 	.quad lit, '?'
 	.quad emit
@@ -1050,7 +1050,6 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad branch, 2f
 1:
 
-	.quad nip
 	.quad nip
 	.quad state
 	.quad fetch

@@ -116,11 +116,11 @@
       if
         0< if , else execute then
       else
-        drop count over over number
+        drop dup count number
         if
-          drop type [char] ? emit
+          drop count type [char] ? emit
         else
-          nip nip state @ if postpone literal then
+          nip state @ if postpone literal then
         then
       then
     else
