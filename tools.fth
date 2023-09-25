@@ -6,7 +6,4 @@
   repeat
   drop ;
 
-: marker here @ : ['] lit , , ['] here , ['] ! ,
-  latest @ ['] lit , , ['] latest , ['] ! , postpone ; ;
-
 : prompt begin ." # " refill interpret again [ reveal prompt

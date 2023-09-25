@@ -15,6 +15,9 @@
 : until     ['] 0branch , ,             ; immediate
 : again     [']  branch , ,             ; immediate
 
+: marker here @ : ['] lit , , ['] here , ['] ! ,
+  latest @ ['] lit , , ['] latest , ['] ! , postpone ; ;
+
 : variable : ['] var , 0 ,    postpone ; ; immediate
 : constant : postpone literal postpone ; ; immediate
 
