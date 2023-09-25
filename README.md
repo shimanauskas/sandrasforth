@@ -11,20 +11,6 @@ Since .text and .data are not mixed, CPU caches stay clean.
 * `make`
 * `gcc` or `clang`
 
-## Usage
-
-Build and run:
-
-	make run
-
-Quit:
-
-	ctrl^d
-
-Clean:
-
-	make clean
-
 ## Errors
 
 Upon a word not found, Avocado outputs it, followed by a question mark.
