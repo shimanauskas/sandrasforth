@@ -68,16 +68,16 @@
   if [ char A char 0 - 10 - ] literal - dup 10 < or then
   dup base @ u< ;
 
-: natural ( addr u1 -- u2 u3 ) >r 0 r>
+: natural ( 0 addr u1 -- u2 addr2 u3 )
   begin
-    >r over c@ digit? r> dup >r and
+    dup >r >r dup >r c@ digit? r> over r> and
   if
-    >r base @ * r> + >r 1+ r> r> 1-
+    nip >r >r base @ * r> + r> 1+ r> 1-
   repeat
-  drop nip r> ;
+  nip nip r> ;
 
-: number ( addr u1 -- n u2 ) over c@ [char] - =
-  if >r 1+ r> 1- natural >r negate r> else natural then ;
+: number ( 0 addr1 u1 -- n addr2 u2 ) over c@ [char] - =
+  if >r 1+ r> 1- natural >r >r negate r> r> else natural then ;
 
 : >code ( addr1 -- addr2 )
   cell + count [ f-immediate 1- ] literal and + aligned ;
@@ -116,11 +116,11 @@
       if
         0< if , else execute then
       else
-        drop dup count number
+        drop 0 over count number
         if
-          drop count type [char] ? emit
+          drop drop count type [char] ? emit
         else
-          nip state @ if postpone literal then
+          drop nip state @ if postpone literal then
         then
       then
     else

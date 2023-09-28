@@ -798,44 +798,44 @@ DEFWORD head_word, digitq, "digit?" /* char -- u flag */
 	.quad uless
 	.quad exit
 
-DEFWORD head_digitq, natural, "natural" /* addr u1 -- u2 u3 */
-	.quad rpush
-	.quad lit, 0
-	.quad rpull
-
+DEFWORD head_digitq, natural, "natural" /* 0 addr1 u1 -- u2 addr2 u3 */
 0:
+	.quad dup
 	.quad rpush
-	.quad over
+	.quad rpush
+	.quad dup
+	.quad rpush
 	.quad cfetch
 	.quad digitq
 	.quad rpull
-	.quad dup
-	.quad rpush
+	.quad over
+	.quad rpull
 	.quad and
 
 	.quad zbranch, 0f
 
+	.quad nip
+	.quad rpush
 	.quad rpush
 	.quad base
 	.quad fetch
 	.quad mul
 	.quad rpull
 	.quad add
-	.quad rpush
-	.quad inc
 	.quad rpull
+	.quad inc
 	.quad rpull
 	.quad dec
 
 	.quad branch, 0b
 0:
 
-	.quad drop
+	.quad nip
 	.quad nip
 	.quad rpull
 	.quad exit
 
-DEFWORD head_natural, number, "number" /* addr u1 -- n u2 */
+DEFWORD head_natural, number, "number" /* 0 addr1 u1 -- n addr2 u2 */
 	.quad over
 	.quad cfetch
 	.quad lit, '-'
@@ -849,7 +849,9 @@ DEFWORD head_natural, number, "number" /* addr u1 -- n u2 */
 	.quad dec
 	.quad natural
 	.quad rpush
+	.quad rpush
 	.quad negate
+	.quad rpull
 	.quad rpull
 
 	.quad branch, 1f
@@ -1035,12 +1037,14 @@ DEFWORD head_literal, interpret, "interpret"
 3:
 
 	.quad drop
-	.quad dup
+	.quad lit, 0
+	.quad over
 	.quad count
 	.quad number
 
 	.quad zbranch, 1f
 
+	.quad drop
 	.quad drop
 	.quad count
 	.quad type
@@ -1050,6 +1054,7 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad branch, 2f
 1:
 
+	.quad drop
 	.quad nip
 	.quad state
 	.quad fetch
