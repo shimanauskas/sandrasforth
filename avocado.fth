@@ -64,20 +64,20 @@
   if drop [ f-immediate 1- ] literal then
   >r over r> over c! count cmove ;
 
-: digit? ( char -- u flag ) [char] 0 - 9 over <
+: c>number ( char -- u flag ) [char] 0 - 9 over <
   if [ char A char 0 - 10 - ] literal - dup 10 < or then
   dup base @ u< ;
 
-: natural ( 0 addr u1 -- u2 addr2 u3 )
+: u>number ( 0 addr u1 -- u2 addr2 u3 )
   begin
-    dup >r >r dup >r c@ digit? r> over r> and
+    dup >r >r dup >r c@ c>number r> over r> and
   if
     nip >r >r base @ * r> + r> 1+ r> 1-
   repeat
   nip nip r> ;
 
-: number ( 0 addr1 u1 -- n addr2 u2 ) over c@ [char] - =
-  if >r 1+ r> 1- natural >r >r negate r> r> else natural then ;
+: >number ( 0 addr1 u1 -- n addr2 u2 ) over c@ [char] - =
+  if >r 1+ r> 1- u>number >r >r negate r> r> else u>number then ;
 
 : >code ( addr1 -- addr2 )
   cell + count [ f-immediate 1- ] literal and + aligned ;
@@ -116,7 +116,7 @@
       if
         0< if , else execute then
       else
-        drop 0 over count number
+        drop 0 over count >number
         if
           drop drop count type [char] ? emit
         else

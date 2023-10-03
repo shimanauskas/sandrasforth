@@ -775,7 +775,7 @@ DEFWORD head_parse, word, "word" /* char -- addr */
 	.quad cmove
 	.quad exit
 
-DEFWORD head_word, digitq, "digit?" /* char -- u flag */
+DEFWORD head_word, ctonumber, "c>number" /* char -- u flag */
 	.quad lit, '0'
 	.quad sub
 	.quad lit, 9
@@ -798,7 +798,7 @@ DEFWORD head_word, digitq, "digit?" /* char -- u flag */
 	.quad uless
 	.quad exit
 
-DEFWORD head_digitq, natural, "natural" /* 0 addr1 u1 -- u2 addr2 u3 */
+DEFWORD head_ctonumber, utonumber, "u>number" /* 0 addr1 u1 -- u2 addr2 u3 */
 0:
 	.quad dup
 	.quad rpush
@@ -806,7 +806,7 @@ DEFWORD head_digitq, natural, "natural" /* 0 addr1 u1 -- u2 addr2 u3 */
 	.quad dup
 	.quad rpush
 	.quad cfetch
-	.quad digitq
+	.quad ctonumber
 	.quad rpull
 	.quad over
 	.quad rpull
@@ -835,7 +835,7 @@ DEFWORD head_digitq, natural, "natural" /* 0 addr1 u1 -- u2 addr2 u3 */
 	.quad rpull
 	.quad exit
 
-DEFWORD head_natural, number, "number" /* 0 addr1 u1 -- n addr2 u2 */
+DEFWORD head_utonumber, tonumber, ">number" /* 0 addr1 u1 -- n addr2 u2 */
 	.quad over
 	.quad cfetch
 	.quad lit, '-'
@@ -847,7 +847,7 @@ DEFWORD head_natural, number, "number" /* 0 addr1 u1 -- n addr2 u2 */
 	.quad inc
 	.quad rpull
 	.quad dec
-	.quad natural
+	.quad utonumber
 	.quad rpush
 	.quad rpush
 	.quad negate
@@ -857,12 +857,12 @@ DEFWORD head_natural, number, "number" /* 0 addr1 u1 -- n addr2 u2 */
 	.quad branch, 1f
 0:
 
-	.quad natural
+	.quad utonumber
 
 1:
 	.quad exit
 
-DEFWORD head_number, tocode, ">code" /* addr1 -- addr2 */
+DEFWORD head_tonumber, tocode, ">code" /* addr1 -- addr2 */
 	.quad cell
 	.quad add
 	.quad count
@@ -1040,7 +1040,7 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad lit, 0
 	.quad over
 	.quad count
-	.quad number
+	.quad tonumber
 
 	.quad zbranch, 1f
 
