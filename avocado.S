@@ -775,7 +775,7 @@ DEFWORD head_parse, word, "word" /* char -- addr */
 	.quad cmove
 	.quad exit
 
-DEFWORD head_word, ctonumber, "c>number" /* char -- u flag */
+DEFWORD head_word, ctonumber, "c>number" /* char -- n */
 	.quad lit, '0'
 	.quad sub
 	.quad lit, 9
@@ -792,10 +792,6 @@ DEFWORD head_word, ctonumber, "c>number" /* char -- u flag */
 	.quad or
 
 0:
-	.quad dup
-	.quad base
-	.quad fetch
-	.quad uless
 	.quad exit
 
 DEFWORD head_ctonumber, utonumber, "u>number" /* 0 addr1 u1 -- u2 addr2 u3 */
@@ -807,6 +803,10 @@ DEFWORD head_ctonumber, utonumber, "u>number" /* 0 addr1 u1 -- u2 addr2 u3 */
 	.quad rpush
 	.quad cfetch
 	.quad ctonumber
+	.quad dup
+	.quad base
+	.quad fetch
+	.quad uless
 	.quad rpull
 	.quad over
 	.quad rpull

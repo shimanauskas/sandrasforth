@@ -64,13 +64,12 @@
   if drop [ f-immediate 1- ] literal then
   >r over r> over c! count cmove ;
 
-: c>number ( char -- u flag ) [char] 0 - 9 over <
-  if [ char A char 0 - 10 - ] literal - dup 10 < or then
-  dup base @ u< ;
+: c>number ( char -- n ) [char] 0 - 9 over <
+  if [ char A char 0 - 10 - ] literal - dup 10 < or then ;
 
 : u>number ( 0 addr u1 -- u2 addr2 u3 )
   begin
-    dup >r >r dup >r c@ c>number r> over r> and
+    dup >r >r dup >r c@ c>number dup base @ u< r> over r> and
   if
     nip >r >r base @ * r> + r> 1+ r> 1-
   repeat
