@@ -474,10 +474,9 @@ DEFWORD head_comma, aligned, "aligned" /* x1 -- x2 */
 	.quad exit
 
 DEFWORD head_aligned, count, "count" /* addr1 -- addr2 u */
-	.quad dup
-	.quad rpush
 	.quad inc
-	.quad rpull
+	.quad dup
+	.quad dec
 	.quad cfetch
 	.quad exit
 

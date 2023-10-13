@@ -16,7 +16,7 @@
 
 : aligned ( x1 -- x2 ) [ cell 1- ] literal + [ cell 1- invert ] literal and ;
 
-: count ( addr1 -- addr2 u ) dup >r 1+ r> c@ ;
+: count ( addr1 -- addr2 u ) 1+ dup 1- c@ ;
 
 : cmove ( addr1 addr2 u -- )
   begin dup if >r over c@ over c! >r 1+ r> 1+ r> 1- repeat nip nip drop ;
