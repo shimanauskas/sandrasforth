@@ -802,18 +802,16 @@ DEFWORD head_ctonumber, utonumber, "u>number" /* 0 addr1 u1 -- u2 addr2 u3 */
 	.quad rpush
 	.quad cfetch
 	.quad ctonumber
-	.quad dup
+	.quad rpull
+	.quad over
 	.quad base
 	.quad fetch
 	.quad uless
-	.quad rpull
-	.quad over
 	.quad rpull
 	.quad and
 
 	.quad zbranch, 0f
 
-	.quad nip
 	.quad rpush
 	.quad rpush
 	.quad base
@@ -829,7 +827,6 @@ DEFWORD head_ctonumber, utonumber, "u>number" /* 0 addr1 u1 -- u2 addr2 u3 */
 	.quad branch, 0b
 0:
 
-	.quad nip
 	.quad nip
 	.quad rpull
 	.quad exit

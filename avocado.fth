@@ -69,11 +69,11 @@
 
 : u>number ( 0 addr u1 -- u2 addr2 u3 )
   begin
-    dup >r >r dup >r c@ c>number dup base @ u< r> over r> and
+    dup >r >r dup >r c@ c>number r> over base @ u< r> and
   if
-    nip >r >r base @ * r> + r> 1+ r> 1-
+    >r >r base @ * r> + r> 1+ r> 1-
   repeat
-  nip nip r> ;
+  nip r> ;
 
 : >number ( 0 addr1 u1 -- n addr2 u2 ) over c@ [char] - =
   if >r 1+ r> 1- u>number >r >r negate r> r> else u>number then ;
