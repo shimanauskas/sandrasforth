@@ -10,6 +10,7 @@ Since .text and .data are not mixed, CPU caches stay clean.
 
 * `make`
 * `gcc` or `clang`
+* `ffmpeg` to generate `demo.png`
 
 ## Errors
 
