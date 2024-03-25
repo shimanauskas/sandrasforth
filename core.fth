@@ -18,8 +18,8 @@
 : marker here @ : ['] lit , , ['] here , ['] ! ,
   latest @ ['] lit , , ['] latest , ['] ! , postpone ; ;
 
-: variable : ['] var , 0 ,    postpone ; ; immediate
-: constant : postpone literal postpone ; ; immediate
+: variable : ['] var , 0 ,    postpone ; ;
+: constant : postpone literal postpone ; ;
 
 : ( 41 parse drop drop ; immediate
 
