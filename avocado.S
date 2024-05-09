@@ -223,6 +223,14 @@ code_ummul: /* u1 u2 -- ud */
 	movq %rdx, %rax
 	NEXT
 
+code_div: /* n1 n2 -- n3 */
+	movq %rax, %rcx
+	movq (%rbp), %rax
+	cqo
+	idivq %rcx
+	NIP
+	NEXT
+
 code_divmod: /* n1 n2 -- n3 n4 */
 	movq %rax, %rcx
 	movq (%rbp), %rax
@@ -296,7 +304,8 @@ DEFCODE head_dec,      add,      "+"
 DEFCODE head_add,      sub,      "-"
 DEFCODE head_sub,      mul,      "*"
 DEFCODE head_mul,      ummul,    "um*"
-DEFCODE head_ummul,    divmod,   "/mod"
+DEFCODE head_ummul,    div,      "/"
+DEFCODE head_div,      divmod,   "/mod"
 DEFCODE head_divmod,   umdivmod, "um/mod"
 DEFCODE head_umdivmod, fetch,    "@"
 DEFCODE head_fetch,    store,    "!"
