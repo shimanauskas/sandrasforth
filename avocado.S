@@ -85,6 +85,20 @@ DEFINE \previous, \body, "\name", \mask
 	.quad code_enter
 .endm
 
+.macro DEFCONST previous, body, name, val
+DEFWORD \previous, \body, \name
+	.quad lit, \val
+	.quad exit
+.endm
+
+.macro DEFVAR previous, body, name, val
+var_\body:
+	.quad \val
+DEFWORD \previous, \body, "\name"
+	.quad lit, var_\body
+	.quad exit
+.endm
+
 .text
 
 .global START
@@ -124,12 +138,6 @@ code_exit:
 code_lit: /* -- x */
 	DUP
 	movq (%r12), %rax
-	addq $(CELL), %r12
-	NEXT
-
-code_var: /* -- addr */
-	DUP
-	movq %r12, %rax
 	addq $(CELL), %r12
 	NEXT
 
@@ -284,8 +292,7 @@ DEFCODE head_branch,   zbranch,  "0branch"
 DEFCODE head_zbranch,  execute,  "execute"
 DEFCODE head_execute,  exit,     "exit"
 DEFCODE head_exit,     lit,      "lit"
-DEFCODE head_lit,      var,      "var"
-DEFCODE head_var,      dup,      "dup"
+DEFCODE head_lit,      dup,      "dup"
 DEFCODE head_dup,      nip,      "nip"
 DEFCODE head_nip,      drop,     "drop"
 DEFCODE head_drop,     over,     "over"
@@ -313,65 +320,22 @@ DEFCODE head_store,    cfetch,   "c@"
 DEFCODE head_cfetch,   cstore,   "c!"
 DEFCODE head_cstore,   syscall,  "syscall"
 
-DEFWORD head_syscall, cell, "cell" /* -- u */
-	.quad lit, CELL
-	.quad exit
+DEFCONST head_syscall,     cell,        "cell",        CELL       /* -- u */
+DEFCONST head_cell,        lf,          "lf",          '\n'       /* -- char */
+DEFCONST head_lf,          bl,          "bl",          ' '        /* -- char */
+DEFCONST head_bl,          f_immediate, "f-immediate", IMMEDIATE  /* -- x */
+DEFCONST head_f_immediate, sys_read,    "sys-read",    SYS_read   /* -- x */
+DEFCONST head_sys_read,    sys_write,   "sys-write",   SYS_write  /* -- x */
+DEFCONST head_sys_write,   sys_exit,    "sys-exit",    SYS_exit   /* -- x */
+DEFCONST head_sys_exit,    tickinput,   "'input",      input      /* -- addr */
+DEFCONST head_tickinput,   tickbuffer,  "'buffer",     buffer     /* -- addr */
 
-DEFWORD head_cell, lf, "lf" /* -- char */
-	.quad lit, '\n'
-	.quad exit
-
-DEFWORD head_lf, bl, "bl" /* -- char */
-	.quad lit, ' '
-	.quad exit
-
-DEFWORD head_bl, f_immediate, "f-immediate" /* -- x */
-	.quad lit, IMMEDIATE
-	.quad exit
-
-DEFWORD head_f_immediate, sys_read, "sys-read" /* -- x */
-	.quad lit, SYS_read
-	.quad exit
-
-DEFWORD head_sys_read, sys_write, "sys-write" /* -- x */
-	.quad lit, SYS_write
-	.quad exit
-
-DEFWORD head_sys_write, sys_exit, "sys-exit" /* -- x */
-	.quad lit, SYS_exit
-	.quad exit
-
-DEFWORD head_sys_exit, tickinput, "'input" /* -- addr */
-	.quad lit, input
-	.quad exit
-
-DEFWORD head_tickinput, tickbuffer, "'buffer" /* -- addr */
-	.quad lit, buffer
-	.quad exit
-
-DEFWORD head_tickbuffer, toin, ">in" /* -- addr */
-	.quad var, 0
-	.quad exit
-
-DEFWORD head_toin, state, "state" /* -- addr */
-	.quad var, 0
-	.quad exit
-
-DEFWORD head_state, here, "here" /* -- addr */
-	.quad var, vocabulary
-	.quad exit
-
-DEFWORD head_here, latest, "latest" /* -- addr */
-	.quad var, head_main
-	.quad exit
-
-DEFWORD head_latest, current, "current" /* -- addr */
-	.quad var, head_main
-	.quad exit
-
-DEFWORD head_current, base, "base" /* -- addr */
-	.quad var, 10
-	.quad exit
+DEFVAR   head_tickbuffer,  toin,        ">in",         0          /* -- addr */
+DEFVAR   head_toin,        state,       "state",       0          /* -- addr */
+DEFVAR   head_state,       here,        "here",        vocabulary /* -- addr */
+DEFVAR   head_here,        latest,      "latest",      head_main  /* -- addr */
+DEFVAR   head_latest,      current,     "current",     head_main  /* -- addr */
+DEFVAR   head_current,     base,        "base",        10         /* -- addr */
 
 DEFWORD head_base, flag, "flag" /* x -- flag */
 	.quad zbranch, 0f

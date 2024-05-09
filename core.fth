@@ -18,8 +18,8 @@
 : marker here @ : ['] lit , , ['] here , ['] ! ,
   latest @ ['] lit , , ['] latest , ['] ! , postpone ; ;
 
-: variable : ['] var , 0 ,    postpone ; ;
 : constant : postpone literal postpone ; ;
+: variable 0 here @ ! here @ dup cell + here ! constant ;
 
 : ( 41 parse drop drop ; immediate
 
