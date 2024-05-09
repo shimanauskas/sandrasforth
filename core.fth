@@ -19,7 +19,7 @@
   latest @ ['] lit , , ['] latest , ['] ! , postpone ; ;
 
 : constant : postpone literal postpone ; ;
-: variable 0 here @ ! here @ dup cell + here ! constant ;
+: variable here @ 0 over ! dup cell + here ! constant ;
 
 : ( 41 parse drop drop ; immediate
 
