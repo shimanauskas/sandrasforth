@@ -86,7 +86,7 @@ DEFINE \previous, \body, "\name", \mask
 .endm
 
 .macro DEFCONST previous, body, name, val
-DEFWORD \previous, \body, \name
+DEFWORD \previous, \body, "\name"
 	.quad lit, \val
 	.quad exit
 .endm
