@@ -1,5 +1,7 @@
 : immediate current @ cell + dup c@ f-immediate or over c! drop ;
 
+: ( 41 parse nip drop ; immediate
+
 : postpone ' , ; immediate
 
 : ['] ' postpone literal ; immediate
@@ -20,8 +22,6 @@
 
 : constant : postpone literal postpone ; ;
 : variable here @ 0 over ! dup cell + here ! constant ;
-
-: ( 41 parse drop drop ; immediate
 
 : lshift ( x1 u -- x2 ) begin dup if >r 2* r> 1- repeat drop ;
 : rshift ( x1 u -- x2 ) begin dup if >r 2/ r> 1- repeat drop ;
