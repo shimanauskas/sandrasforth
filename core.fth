@@ -4,23 +4,24 @@
 
 : postpone ' , ; immediate
 
-: ['] ' postpone literal ; immediate
+: ['] ( -- xt ) ' postpone literal ; immediate
 
-: begin here @ ; immediate
+: begin ( -- addr ) here @ ; immediate
 
-: if ['] 0branch , here @ 0 , ; immediate
-: then >r here @ r> ! ; immediate
+: if ( -- addr ) ['] 0branch , here @ 0 , ; immediate
+: then ( addr -- ) >r here @ r> ! ; immediate
 
-: else ['] branch , here @ >r 0 , postpone then r> ; immediate
+: else ( addr1 -- addr2 )
+  ['] branch , here @ >r 0 , postpone then r> ; immediate
 
-: repeat >r [']  branch , , here @ r> ! ; immediate
-: until     ['] 0branch , ,             ; immediate
-: again     [']  branch , ,             ; immediate
+: repeat ( addr1 addr2 -- ) >r [']  branch , , here @ r> ! ; immediate
+: until  ( addr -- )           ['] 0branch , ,             ; immediate
+: again  ( addr -- )           [']  branch , ,             ; immediate
 
 : marker here @ : ['] lit , , ['] here , ['] ! ,
   latest @ ['] lit , , ['] latest , ['] ! , postpone ; ;
 
-: constant : postpone literal postpone ; ;
+: constant ( x -- ) : postpone literal postpone ; ;
 : variable here @ 0 over ! dup cell + here ! constant ;
 
 : lshift ( x1 u -- x2 ) begin dup if >r 2* r> 1- repeat drop ;
