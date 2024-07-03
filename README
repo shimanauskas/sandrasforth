@@ -1,8 +1,8 @@
-# Avocado
+# sandrasForth
 
 A public domain Forth for Linux and macOS on x86-64.
 
-Avocado is written mostly in (indirect-)threaded code. There is no limit on the
+It is written mostly in (indirect-)threaded code. There is no limit on the
 number of primitives, however, each primitive should be kept small.
 
 Since .text and .data are not mixed, CPU caches stay clean.
@@ -14,9 +14,9 @@ Since .text and .data are not mixed, CPU caches stay clean.
 
 ## Errors
 
-Upon a word not found, Avocado outputs it, followed by a question mark.
+Upon a word not found, the kernel outputs it, followed by a question mark.
 
-Avocado will compile a definition without the words not found.
+The kernel will compile a definition without the words not found.
 
-If Avocado crashes while defining a word, it most likely ran out of statically
-allocated memory.
+If the kernel crashes while defining a word, it most likely ran out of
+statically allocated memory.

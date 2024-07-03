@@ -1,8 +1,8 @@
-avocado: avocado.S
-	$(CC) -o avocado -nostdlib -static avocado.S
+kernel: kernel.S
+	$(CC) -o kernel -nostdlib -static kernel.S
 
-run: avocado
-	cat core.fth avocado.fth tools.fth - | ./avocado
+run: kernel
+	cat core.fth kernel.fth tools.fth - | ./kernel
 
 clean:
-	rm -f avocado
+	rm -f kernel
