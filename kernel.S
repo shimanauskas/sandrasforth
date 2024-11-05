@@ -45,7 +45,7 @@
 .endm
 
 .macro TWONIP /* x1 x2 x3-- x3 */
-	leaq CELL*2(%rbp), %rbp
+	leaq CELL * 2(%rbp), %rbp
 .endm
 
 .macro DROP /* x -- */
@@ -67,7 +67,7 @@
 .macro DEFINE previous, body, name, mask=0
 head_\body:
 	.quad \previous
-	.byte (1f-0f)|\mask
+	.byte (1f - 0f) | \mask
 0:
 	.ascii "\name"
 1:
@@ -279,8 +279,8 @@ code_cstore: /* char addr -- */
 code_syscall: /* x1 x2 x3 x4 -- x5 */
 	movq (%rbp), %rdx
 	movq CELL(%rbp), %rsi
-	movq CELL*2(%rbp), %rdi
-	leaq CELL*3(%rbp), %rbp
+	movq CELL * 2(%rbp), %rdi
+	leaq CELL * 3(%rbp), %rbp
 	syscall
 	NEXT
 
@@ -361,7 +361,7 @@ DEFWORD head_zequals, equals, "=" /* x1 x2 -- flag */
 	.quad exit
 
 DEFWORD head_equals, zless, "0<" /* n - flag */
-	.quad lit, 1<<(CELL*8-1)
+	.quad lit, 1 << (CELL * 8 - 1)
 	.quad and
 	.quad flag
 	.quad exit
@@ -440,9 +440,9 @@ DEFWORD head_ccomma, comma, "," /* x -- */
 	.quad exit
 
 DEFWORD head_comma, aligned, "aligned" /* x1 -- x2 */
-	.quad lit, CELL-1
+	.quad lit, CELL - 1
 	.quad add
-	.quad lit, ~(CELL-1)
+	.quad lit, ~(CELL - 1)
 	.quad and
 	.quad exit
 
@@ -664,7 +664,7 @@ DEFWORD head_type, parse, "parse" /* char - addr u */
 	.quad cfetch
 	.quad uless
 	.quad over
-	.quad lit, input+1
+	.quad lit, input + 1
 	.quad add
 	.quad cfetch
 	.quad rpull
@@ -690,7 +690,7 @@ DEFWORD head_type, parse, "parse" /* char - addr u */
 	.quad over
 	.quad sub
 	.quad rpush
-	.quad lit, input+1
+	.quad lit, input + 1
 	.quad add
 	.quad rpull
 	.quad exit
@@ -707,7 +707,7 @@ DEFWORD head_parse, word, "word" /* char -- addr */
 	.quad cfetch
 	.quad uless
 	.quad over
-	.quad lit, input+1
+	.quad lit, input + 1
 	.quad add
 	.quad cfetch
 	.quad rpull
@@ -728,14 +728,14 @@ DEFWORD head_parse, word, "word" /* char -- addr */
 	.quad rpull
 	.quad parse
 	.quad dup
-	.quad lit, IMMEDIATE-1
+	.quad lit, IMMEDIATE - 1
 	.quad uless
 	.quad invert
 
 	.quad zbranch, 0f
 
 	.quad drop
-	.quad lit, IMMEDIATE-1
+	.quad lit, IMMEDIATE - 1
 
 0:
 	.quad rpush
@@ -756,7 +756,7 @@ DEFWORD head_word, ctonumber, "c>number" /* char -- n */
 
 	.quad zbranch, 0f
 
-	.quad lit, 'A'-'0'-10
+	.quad lit, 'A' - '0' - 10
 	.quad sub
 	.quad dup
 	.quad lit, 10
@@ -835,7 +835,7 @@ DEFWORD head_tonumber, tocode, ">code" /* addr1 -- addr2 */
 	.quad cell
 	.quad add
 	.quad count
-	.quad lit, IMMEDIATE-1
+	.quad lit, IMMEDIATE - 1
 	.quad and
 	.quad add
 	.quad aligned
@@ -866,7 +866,7 @@ DEFWORD head_tocode, find, "find" /* addr -- addr 0 | xt 1 | xt -1 */
 	.quad cell
 	.quad add
 	.quad count
-	.quad lit, IMMEDIATE-1
+	.quad lit, IMMEDIATE - 1
 	.quad and
 	.quad sequals
 
