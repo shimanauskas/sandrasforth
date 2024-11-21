@@ -1010,10 +1010,10 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad over
 	.quad count
 	.quad tonumber
+	.quad nip
 
 	.quad zbranch, 1f
 
-	.quad drop
 	.quad drop
 	.quad count
 	.quad type
@@ -1023,7 +1023,6 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad branch, 2f
 1:
 
-	.quad drop
 	.quad nip
 	.quad state
 	.quad fetch

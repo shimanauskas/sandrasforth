@@ -115,11 +115,11 @@
       if
         0< if , else execute then
       else
-        drop 0 over count >number
+        drop 0 over count >number nip
         if
-          drop drop count type [char] ? emit
+          drop count type [char] ? emit
         else
-          drop nip state @ if postpone literal then
+          nip state @ if postpone literal then
         then
       then
     else
