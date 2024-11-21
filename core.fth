@@ -41,7 +41,7 @@
   if [char] 0 + else [ char A 10 - ] literal + then ;
 
 : u. ( u -- ) [ 'buffer 256 + ] literal 'buffer !
-  begin base @ /mod >r digit hold r> dup 0= until drop
+  begin 0 base @ um/mod >r digit hold r> dup 0= until drop
   'buffer @ [ 'buffer 256 + ] literal over - type ;
 
 :  . ( n -- ) dup 0< if [char] - emit negate then u. ;
