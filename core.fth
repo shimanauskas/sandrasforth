@@ -18,6 +18,8 @@
 : until  ( addr -- )           ['] 0branch , ,             ; immediate
 : again  ( addr -- )           [']  branch , ,             ; immediate
 
+: recurse current @ >code , ; immediate
+
 : marker here @ : ['] lit , , ['] here , ['] ! ,
   latest @ ['] lit , , ['] latest , ['] ! , postpone ; ;
 
@@ -35,14 +37,10 @@
 : s" ( -- addr u ) postpone c" ['] count , ; immediate
 : ."               postpone s" ['] type  , ; immediate
 
-: hold ( char -- ) 'buffer @ 1- dup 'buffer ! c! ;
-
 : digit ( u -- char ) dup 10 u<
   if [char] 0 + else [ char A 10 - ] literal + then ;
 
-: u. ( u -- ) [ 'buffer 256 + ] literal 'buffer !
-  begin 0 base @ um/mod >r digit hold r> dup 0= until drop
-  'buffer @ [ 'buffer 256 + ] literal over - type ;
+: u. ( u -- ) 0 base @ um/mod dup if recurse else drop then digit emit ;
 
 :  . ( n -- ) dup 0< if [char] - emit negate then u. ;
 
