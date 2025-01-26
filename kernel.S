@@ -218,16 +218,13 @@ code_sub: /* n1|u1 n2|u2 -- n3|u3 */
 	NEXT
 
 code_mul: /* n1 n2 -- n3 */
-	movq %rax, %rcx
-	DROP
-	imulq %rcx
+	imulq (%rbp)
+	NIP
 	NEXT
 
 code_ummul: /* u1 u2 -- ud */
-	movq %rax, %rcx
-	DROP
-	mulq %rcx
-	DUP
+	mulq (%rbp)
+	movq %rax, (%rbp)
 	movq %rdx, %rax
 	NEXT
 
