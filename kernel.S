@@ -340,8 +340,8 @@ DEFWORD head_base, flag, "flag" /* x -- flag */
 	.quad lit, -1
 
 	.quad branch, 1f
-0:
 
+0:
 	.quad lit, 0
 
 1:
@@ -375,8 +375,8 @@ DEFWORD head_zless, less, "<" /* n1 n2 -- flag */
 	.quad zless
 
 	.quad branch, 1f
-0:
 
+0:
 	.quad sub
 	.quad zless
 
@@ -395,8 +395,8 @@ DEFWORD head_less, uless, "u<" /* u1 u2 -- flag */
 	.quad zless
 
 	.quad branch, 1f
-0:
 
+0:
 	.quad sub
 	.quad zless
 
@@ -469,8 +469,8 @@ DEFWORD head_count, cmove, "cmove" /* addr1 addr2 u -- */
 	.quad dec
 
 	.quad branch, 0b
-0:
 
+0:
 	.quad nip
 	.quad nip
 	.quad drop
@@ -529,16 +529,16 @@ DEFWORD head_scomma, sequals, "s=" /* addr1 u1 addr2 u2 -- flag */
 	.quad dec
 
 	.quad branch, 0b
-0:
 
+0:
 	.quad rpull
 	.quad nip
 	.quad nip
 	.quad zequals
 
 	.quad branch, 0f
-1:
 
+1:
 	.quad nip
 	.quad nip
 	.quad drop
@@ -643,8 +643,8 @@ DEFWORD head_refill, type, "type" /* addr u -- */
 	.quad dec
 
 	.quad branch, 0b
-0:
 
+0:
 	.quad nip
 	.quad drop
 	.quad exit
@@ -676,8 +676,8 @@ DEFWORD head_type, parse, "parse" /* char - addr u */
 	.quad inc
 
 	.quad branch, 0b
-0:
 
+0:
 	.quad rpull
 	.quad drop
 	.quad dup
@@ -718,8 +718,8 @@ DEFWORD head_parse, word, "word" /* char -- addr */
 	.quad inc
 
 	.quad branch, 0b
-0:
 
+0:
 	.quad toin
 	.quad store
 	.quad rpull
@@ -795,8 +795,8 @@ DEFWORD head_ctonumber, utonumber, "u>number" /* 0 addr1 u1 -- u2 addr2 u3 */
 	.quad dec
 
 	.quad branch, 0b
-0:
 
+0:
 	.quad nip
 	.quad rpull
 	.quad exit
@@ -821,8 +821,8 @@ DEFWORD head_utonumber, tonumber, ">number" /* 0 addr1 u1 -- n addr2 u2 */
 	.quad rpull
 
 	.quad branch, 1f
-0:
 
+0:
 	.quad utonumber
 
 1:
@@ -893,8 +893,8 @@ DEFWORD head_tocode, find, "find" /* addr -- addr 0 | xt 1 | xt -1 */
 	.quad lit, 1
 
 	.quad branch, 2f
-1:
 
+1:
 	.quad lit, -1
 
 2:
@@ -959,8 +959,8 @@ DEFWORD head_semicolon, tick, "'" /* -- 0 | xt */
 	.quad drop
 
 	.quad branch, 1f
-0:
 
+0:
 	.quad nip
 
 1:
@@ -993,15 +993,14 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad comma
 
 	.quad branch, 2f
-1:
 
+1:
 	.quad execute
 
 2:
-
 	.quad branch, 2f
-3:
 
+3:
 	.quad drop
 	.quad lit, 0
 	.quad over
@@ -1018,8 +1017,8 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad emit
 
 	.quad branch, 2f
-1:
 
+1:
 	.quad nip
 	.quad state
 	.quad fetch
@@ -1029,10 +1028,9 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad literal
 
 2:
-
 	.quad branch, 0b
-4:
 
+4:
 	.quad drop
 	.quad exit
 
