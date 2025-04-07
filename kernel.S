@@ -1030,14 +1030,11 @@ DEFWORD head_literal, interpret, "interpret"
 
 2:
 
-	.quad branch, 1f
+	.quad branch, 0b
 4:
 
 	.quad drop
 	.quad exit
-
-1:
-	.quad branch, 0b
 
 DEFINE head_interpret, main, "main"
 	.quad refill

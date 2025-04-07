@@ -110,21 +110,19 @@
 : interpret
   begin
     bl word dup c@
+  if
+    find dup
     if
-      find dup
-      if
-        0< if , else execute then
-      else
-        drop 0 over count >number nip
-        if
-          drop count type [char] ? emit
-        else
-          nip state @ if postpone literal then
-        then
-      then
+      0< if , else execute then
     else
-      drop ;
+      drop 0 over count >number nip
+      if
+        drop count type [char] ? emit
+      else
+        nip state @ if postpone literal then
+      then
     then
-  again
+  repeat
+  drop ;
 
 : main begin refill interpret again [ reveal main
