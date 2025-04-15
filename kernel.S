@@ -1047,7 +1047,7 @@ input:
 buffer:
 	.skip 0x100
 
-	.skip 0x100
+	.skip 0x1000
 dstack:
 
 vocabulary:
