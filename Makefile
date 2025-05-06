@@ -1,8 +1,8 @@
-kernel: kernel.S
-	$(CC) -o kernel -nostdlib -static kernel.S
+sandrasforth: sandrasforth.S
+	$(CC) -o sandrasforth -nostdlib -static sandrasforth.S
 
-run: kernel
-	cat core.fth kernel.fth tools.fth - | ./kernel
+run: sandrasforth
+	cat core.fth sandrasforth.fth tools.fth - | ./sandrasforth
 
 clean:
-	rm -f kernel
+	rm -f sandrasforth
