@@ -14,9 +14,9 @@ Since .text and .data are not mixed, CPU caches stay clean.
 
 ## Errors
 
-Upon a word not found, the kernel outputs it, followed by a question mark.
+Upon a word not found, sandrasForth outputs it, followed by a question mark.
 
-The kernel will compile a definition without the words not found.
+sandrasForth will compile a definition without the words not found.
 
-If the kernel crashes while defining a word, it most likely ran out of
+If sandrasForth crashes while defining a word, it most likely ran out of
 statically allocated memory.
