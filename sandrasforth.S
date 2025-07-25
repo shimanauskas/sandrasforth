@@ -32,8 +32,8 @@
 	#error Unsupported platform.
 #endif
 
-#define CELL      8
-#define IMMEDIATE 0x80
+.set CELL,      8
+.set IMMEDIATE, 0x80
 
 .macro DUP /* x -- x x */
 	leaq -CELL(%rbp), %rbp
@@ -60,7 +60,7 @@
 
 .macro NEXT
 	movq (%r12), %rbx
-	addq $(CELL), %r12
+	addq $CELL, %r12
 	jmp *(%rbx)
 .endm
 
@@ -111,7 +111,7 @@ START:
 
 code_enter:
 	pushq %r12
-	addq $(CELL), %rbx
+	addq $CELL, %rbx
 	movq %rbx, %r12
 	NEXT
 
@@ -123,7 +123,7 @@ code_zbranch: /* x -- */
 	testq %rax, %rax
 	DROP
 	jz code_branch
-	addq $(CELL), %r12
+	addq $CELL, %r12
 	NEXT
 
 code_execute: /* addr -- */
@@ -138,7 +138,7 @@ code_exit:
 code_lit: /* -- x */
 	DUP
 	movq (%r12), %rax
-	addq $(CELL), %r12
+	addq $CELL, %r12
 	NEXT
 
 code_dup: /* x -- x x */
