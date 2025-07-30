@@ -44,7 +44,7 @@
 	leaq CELL(%rbp), %rbp
 .endm
 
-.macro TWONIP /* x1 x2 x3-- x3 */
+.macro TWONIP /* x1 x2 x3 -- x3 */
 	leaq CELL * 2(%rbp), %rbp
 .endm
 
