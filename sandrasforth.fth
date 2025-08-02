@@ -9,8 +9,6 @@
 :  < ( n1 n2 -- flag ) over over xor 0< if drop 0< else - 0< then ;
 : u< ( u1 u2 -- flag ) over over xor 0< if nip  0< else - 0< then ;
 
-: whithin ( u1 u2 u3 -- flag ) >r over >r u< invert r> r> u< and ;
-
 : c, ( char -- ) here @ dup 1+     here ! c! ;
 :  , ( x -- )    here @ dup cell + here !  ! ;
 

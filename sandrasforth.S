@@ -403,19 +403,7 @@ DEFWORD head_less, uless, "u<" # u1 u2 -- flag
 1:
 	.quad exit
 
-DEFWORD head_uless, within, "within" # u1 u2 u3 -- flag
-	.quad rpush
-	.quad over
-	.quad rpush
-	.quad uless
-	.quad invert
-	.quad rpull
-	.quad rpull
-	.quad uless
-	.quad and
-	.quad exit
-
-DEFWORD head_within, ccomma, "c," # char --
+DEFWORD head_uless, ccomma, "c," # char --
 	.quad here
 	.quad fetch
 	.quad dup
