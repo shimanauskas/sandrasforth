@@ -12,7 +12,7 @@
 : c, ( char -- ) here @ dup 1+     here ! c! ;
 :  , ( x -- )    here @ dup cell + here !  ! ;
 
-: aligned ( x1 -- x2 ) [ cell 1- ] literal + [ cell 1- invert ] literal and ;
+: aligned ( x1 -- x2 ) [ cell 1- ] literal + [ cell negate ] literal and ;
 
 : count ( addr1 -- addr2 u ) 1+ dup 1- c@ ;
 

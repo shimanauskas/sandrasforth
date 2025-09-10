@@ -427,7 +427,7 @@ DEFWORD head_ccomma, comma, "," # x --
 DEFWORD head_comma, aligned, "aligned" # x1 -- x2
 	.quad lit, CELL - 1
 	.quad add
-	.quad lit, ~(CELL - 1)
+	.quad lit, -CELL
 	.quad and
 	.quad exit
 
