@@ -327,12 +327,12 @@ DEFCONST head_sys_write,   sys_exit,    "sys-exit",    SYS_exit   # -- x
 DEFCONST head_sys_exit,    tickinput,   "'input",      input      # -- addr
 DEFCONST head_tickinput,   tickbuffer,  "'buffer",     buffer     # -- addr
 
-DEFVAR   head_tickbuffer,  toin,        ">in",         0          # -- addr
-DEFVAR   head_toin,        state,       "state",       0          # -- addr
-DEFVAR   head_state,       here,        "here",        vocabulary # -- addr
-DEFVAR   head_here,        latest,      "latest",      head_main  # -- addr
-DEFVAR   head_latest,      current,     "current",     head_main  # -- addr
-DEFVAR   head_current,     base,        "base",        10         # -- addr
+DEFVAR head_tickbuffer, toin,    ">in",     0          # -- addr
+DEFVAR head_toin,       state,   "state",   0          # -- addr
+DEFVAR head_state,      here,    "here",    vocabulary # -- addr
+DEFVAR head_here,       latest,  "latest",  head_main  # -- addr
+DEFVAR head_latest,     current, "current", head_main  # -- addr
+DEFVAR head_current,    base,    "base",    10         # -- addr
 
 DEFWORD head_base, flag, "flag" # x -- flag
 	.quad zbranch, 0f

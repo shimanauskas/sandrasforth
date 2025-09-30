@@ -8,7 +8,7 @@
 
 : begin ( -- addr ) here @ ; immediate
 
-: if ( -- addr ) ['] 0branch , here @ 0 , ; immediate
+: if   ( -- addr ) ['] 0branch , here @ 0 , ; immediate
 : then ( addr -- ) >r here @ r> ! ; immediate
 
 : else ( addr1 -- addr2 )
