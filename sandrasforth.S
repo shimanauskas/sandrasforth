@@ -180,6 +180,18 @@ code_twodiv: # x1 -- x2
 	shrq %rax
 	NEXT
 
+code_lshift: # x1 u -- x2
+	movb %al, %cl
+	DROP
+	shlq %cl, %rax
+	NEXT
+
+code_rshift: # x1 u -- x2
+	movb %al, %cl
+	DROP
+	shrq %cl, %rax
+	NEXT
+
 code_and: # x1 x2 -- x3
 	andq (%rbp), %rax
 	NIP
@@ -298,7 +310,9 @@ DEFCODE head_rpush,    rpull,    "r>"
 DEFCODE head_rpull,    invert,   "invert"
 DEFCODE head_invert,   twomul,   "2*"
 DEFCODE head_twomul,   twodiv,   "2/"
-DEFCODE head_twodiv,   and,      "and"
+DEFCODE head_twodiv,   lshift,   "lshift"
+DEFCODE head_lshift,   rshift,   "rshift"
+DEFCODE head_rshift,   and,      "and"
 DEFCODE head_and,      or,       "or"
 DEFCODE head_or,       xor,      "xor"
 DEFCODE head_xor,      negate,   "negate"
