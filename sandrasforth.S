@@ -713,7 +713,6 @@ DEFWORD head_type, parse, "parse" # char - addr u
 
 DEFWORD head_parse, word, "word" # char -- addr
 	.quad rpush
-	.quad tickbuffer
 	.quad toin
 	.quad fetch
 
@@ -741,6 +740,7 @@ DEFWORD head_parse, word, "word" # char -- addr
 0:
 	.quad toin
 	.quad store
+	.quad tickbuffer
 	.quad rpull
 	.quad parse
 	.quad lit, IMMEDIATE - 1

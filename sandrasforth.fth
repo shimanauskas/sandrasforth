@@ -54,13 +54,13 @@
   repeat
   r> drop dup 1+ >in ! over - >r [ 'input 1+ ] literal + r> ;
 
-: word ( char - addr ) >r 'buffer >in @
+: word ( char - addr ) >r >in @
   begin
     dup 'input c@ u< over [ 'input 1+ ] literal + c@ r> dup >r = and
   if
     1+
   repeat
-  >in ! r> parse [ f-immediate 1- ] literal min
+  >in ! 'buffer r> parse [ f-immediate 1- ] literal min
   >r over r> over c! count cmove ;
 
 : c>number ( char -- n ) [char] 0 - 9 over <
