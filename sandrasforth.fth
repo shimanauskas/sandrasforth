@@ -9,6 +9,8 @@
 :  < ( n1 n2 -- flag ) over over xor 0< if drop 0< else - 0< then ;
 : u< ( u1 u2 -- flag ) over over xor 0< if nip  0< else - 0< then ;
 
+: min ( n1 n2 -- n3 ) over over < if drop else nip then ;
+
 : c, ( char -- ) here @ dup 1+     here ! c! ;
 :  , ( x -- )    here @ dup cell + here !  ! ;
 
@@ -58,8 +60,7 @@
   if
     1+
   repeat
-  >in ! r> parse dup [ f-immediate 1- ] literal u< invert
-  if drop [ f-immediate 1- ] literal then
+  >in ! r> parse [ f-immediate 1- ] literal min
   >r over r> over c! count cmove ;
 
 : c>number ( char -- n ) [char] 0 - 9 over <

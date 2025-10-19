@@ -417,7 +417,24 @@ DEFWORD head_less, uless, "u<" # u1 u2 -- flag
 1:
 	.quad exit
 
-DEFWORD head_uless, ccomma, "c," # char --
+DEFWORD head_uless, min, "min" # n1 n2 -- n3
+	.quad over
+	.quad over
+	.quad less
+
+	.quad zbranch, 0f
+
+	.quad drop
+
+	.quad branch, 1f
+
+0:
+	.quad nip
+
+1:
+	.quad exit
+
+DEFWORD head_min, ccomma, "c," # char --
 	.quad here
 	.quad fetch
 	.quad dup
@@ -726,17 +743,8 @@ DEFWORD head_parse, word, "word" # char -- addr
 	.quad store
 	.quad rpull
 	.quad parse
-	.quad dup
 	.quad lit, IMMEDIATE - 1
-	.quad uless
-	.quad invert
-
-	.quad zbranch, 0f
-
-	.quad drop
-	.quad lit, IMMEDIATE - 1
-
-0:
+	.quad min
 	.quad rpush
 	.quad over
 	.quad rpull
