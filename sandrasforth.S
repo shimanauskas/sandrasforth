@@ -33,7 +33,7 @@
 #endif
 
 .set CELL,      8
-.set IMMEDIATE, 0x80
+.set IMMEDIATE, (1 << 7)
 
 .macro DUP # x -- x x
 	leaq -CELL(%rbp), %rbp
