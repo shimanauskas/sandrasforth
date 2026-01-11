@@ -10,7 +10,7 @@ Since .text and .data are not mixed, CPU caches stay clean.
 ## Requirements
 
 * make
-* gcc or clang
+* gcc
 
 ## Errors
 
