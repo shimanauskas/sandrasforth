@@ -18,19 +18,9 @@
 # r14 - unused.
 # r15 - unused.
 
-#ifdef __linux__
-	#define START     _start
-	#define SYS_read  0
-	#define SYS_write 1
-	#define SYS_exit  60
-#elif __APPLE__
-	#define START      start
-	#define SYS_read  0x2000003
-	#define SYS_write 0x2000004
-	#define SYS_exit  0x2000001
-#else
-	#error Unsupported platform.
-#endif
+#define SYS_read  0
+#define SYS_write 1
+#define SYS_exit  60
 
 .set CELL,      8
 .set IMMEDIATE, (1 << 7)
@@ -101,9 +91,9 @@ DEFWORD \previous, \body, "\name"
 
 .text
 
-.global START
+.global _start
 
-START:
+_start:
 	leaq dstack(%rip), %rbp
 	movq $-1, %rax
 	leaq main(%rip), %r12
