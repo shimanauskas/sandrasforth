@@ -25,6 +25,8 @@
 .set CELL,      8
 .set IMMEDIATE, (1 << 7)
 
+.set PREVIOUS, 0
+
 .macro DUP # x -- x x
 	leaq -CELL(%rbp), %rbp
 	movq %rax, (%rbp)
@@ -54,9 +56,10 @@
 	jmp *(%rbx)
 .endm
 
-.macro DEFINE previous, body, name, mask=0
+.macro DEFINE body, name, mask=0
 head_\body:
-	.quad \previous
+	.quad PREVIOUS
+	.set PREVIOUS, head_\body
 	.byte (1f - 0f) | \mask
 0:
 	.ascii "\name"
@@ -65,26 +68,26 @@ head_\body:
 \body:
 .endm
 
-.macro DEFCODE previous, body, name
-DEFINE \previous, \body, "\name"
+.macro DEFCODE body, name
+DEFINE \body, "\name"
 	.quad code_\body
 .endm
 
-.macro DEFWORD previous, body, name, mask=0
-DEFINE \previous, \body, "\name", \mask
+.macro DEFWORD body, name, mask=0
+DEFINE \body, "\name", \mask
 	.quad code_enter
 .endm
 
-.macro DEFCONST previous, body, name, val
-DEFWORD \previous, \body, "\name"
+.macro DEFCONST body, name, val
+DEFWORD \body, "\name"
 	.quad lit, \val
 	.quad exit
 .endm
 
-.macro DEFVAR previous, body, name, val
+.macro DEFVAR body, name, val
 var_\body:
 	.quad \val
-DEFWORD \previous, \body, "\name"
+DEFWORD \body, "\name"
 	.quad lit, var_\body
 	.quad exit
 .endm
@@ -285,60 +288,60 @@ code_syscall: # x1 x2 x3 x4 -- x5
 
 .data
 
-DEFCODE 0,             enter,    "enter"
-DEFCODE head_enter,    branch,   "branch"
-DEFCODE head_branch,   zbranch,  "0branch"
-DEFCODE head_zbranch,  execute,  "execute"
-DEFCODE head_execute,  exit,     "exit"
-DEFCODE head_exit,     lit,      "lit"
-DEFCODE head_lit,      dup,      "dup"
-DEFCODE head_dup,      nip,      "nip"
-DEFCODE head_nip,      drop,     "drop"
-DEFCODE head_drop,     over,     "over"
-DEFCODE head_over,     rpush,    ">r"
-DEFCODE head_rpush,    rpull,    "r>"
-DEFCODE head_rpull,    invert,   "invert"
-DEFCODE head_invert,   twomul,   "2*"
-DEFCODE head_twomul,   twodiv,   "2/"
-DEFCODE head_twodiv,   lshift,   "lshift"
-DEFCODE head_lshift,   rshift,   "rshift"
-DEFCODE head_rshift,   and,      "and"
-DEFCODE head_and,      or,       "or"
-DEFCODE head_or,       xor,      "xor"
-DEFCODE head_xor,      negate,   "negate"
-DEFCODE head_negate,   inc,      "1+"
-DEFCODE head_inc,      dec,      "1-"
-DEFCODE head_dec,      add,      "+"
-DEFCODE head_add,      sub,      "-"
-DEFCODE head_sub,      mul,      "*"
-DEFCODE head_mul,      ummul,    "um*"
-DEFCODE head_ummul,    div,      "/"
-DEFCODE head_div,      divmod,   "/mod"
-DEFCODE head_divmod,   umdivmod, "um/mod"
-DEFCODE head_umdivmod, fetch,    "@"
-DEFCODE head_fetch,    store,    "!"
-DEFCODE head_store,    cfetch,   "c@"
-DEFCODE head_cfetch,   cstore,   "c!"
-DEFCODE head_cstore,   syscall,  "syscall"
+DEFCODE enter,    "enter"
+DEFCODE branch,   "branch"
+DEFCODE zbranch,  "0branch"
+DEFCODE execute,  "execute"
+DEFCODE exit,     "exit"
+DEFCODE lit,      "lit"
+DEFCODE dup,      "dup"
+DEFCODE nip,      "nip"
+DEFCODE drop,     "drop"
+DEFCODE over,     "over"
+DEFCODE rpush,    ">r"
+DEFCODE rpull,    "r>"
+DEFCODE invert,   "invert"
+DEFCODE twomul,   "2*"
+DEFCODE twodiv,   "2/"
+DEFCODE lshift,   "lshift"
+DEFCODE rshift,   "rshift"
+DEFCODE and,      "and"
+DEFCODE or,       "or"
+DEFCODE xor,      "xor"
+DEFCODE negate,   "negate"
+DEFCODE inc,      "1+"
+DEFCODE dec,      "1-"
+DEFCODE add,      "+"
+DEFCODE sub,      "-"
+DEFCODE mul,      "*"
+DEFCODE ummul,    "um*"
+DEFCODE div,      "/"
+DEFCODE divmod,   "/mod"
+DEFCODE umdivmod, "um/mod"
+DEFCODE fetch,    "@"
+DEFCODE store,    "!"
+DEFCODE cfetch,   "c@"
+DEFCODE cstore,   "c!"
+DEFCODE syscall,  "syscall"
 
-DEFCONST head_syscall,     cell,        "cell",        CELL       # -- u
-DEFCONST head_cell,        lf,          "lf",          '\n'       # -- char
-DEFCONST head_lf,          bl,          "bl",          ' '        # -- char
-DEFCONST head_bl,          f_immediate, "f-immediate", IMMEDIATE  # -- x
-DEFCONST head_f_immediate, sys_read,    "sys-read",    SYS_read   # -- x
-DEFCONST head_sys_read,    sys_write,   "sys-write",   SYS_write  # -- x
-DEFCONST head_sys_write,   sys_exit,    "sys-exit",    SYS_exit   # -- x
-DEFCONST head_sys_exit,    tickinput,   "'input",      input      # -- addr
-DEFCONST head_tickinput,   tickbuffer,  "'buffer",     buffer     # -- addr
+DEFCONST cell,        "cell",        CELL       # -- u
+DEFCONST lf,          "lf",          '\n'       # -- char
+DEFCONST bl,          "bl",          ' '        # -- char
+DEFCONST f_immediate, "f-immediate", IMMEDIATE  # -- x
+DEFCONST sys_read,    "sys-read",    SYS_read   # -- x
+DEFCONST sys_write,   "sys-write",   SYS_write  # -- x
+DEFCONST sys_exit,    "sys-exit",    SYS_exit   # -- x
+DEFCONST tickinput,   "'input",      input      # -- addr
+DEFCONST tickbuffer,  "'buffer",     buffer     # -- addr
 
-DEFVAR head_tickbuffer, toin,    ">in",     0          # -- addr
-DEFVAR head_toin,       state,   "state",   0          # -- addr
-DEFVAR head_state,      here,    "here",    vocabulary # -- addr
-DEFVAR head_here,       latest,  "latest",  head_main  # -- addr
-DEFVAR head_latest,     current, "current", head_main  # -- addr
-DEFVAR head_current,    base,    "base",    10         # -- addr
+DEFVAR toin,    ">in",     0          # -- addr
+DEFVAR state,   "state",   0          # -- addr
+DEFVAR here,    "here",    vocabulary # -- addr
+DEFVAR latest,  "latest",  head_main  # -- addr
+DEFVAR current, "current", head_main  # -- addr
+DEFVAR base,    "base",    10         # -- addr
 
-DEFWORD head_base, flag, "flag" # x -- flag
+DEFWORD flag, "flag" # x -- flag
 	.quad zbranch, 0f
 
 	.quad lit, -1
@@ -351,23 +354,23 @@ DEFWORD head_base, flag, "flag" # x -- flag
 1:
 	.quad exit
 
-DEFWORD head_flag, zequals, "0=" # x -- flag
+DEFWORD zequals, "0=" # x -- flag
 	.quad flag
 	.quad invert
 	.quad exit
 
-DEFWORD head_zequals, equals, "=" # x1 x2 -- flag
+DEFWORD equals, "=" # x1 x2 -- flag
 	.quad xor
 	.quad zequals
 	.quad exit
 
-DEFWORD head_equals, zless, "0<" # n - flag
+DEFWORD zless, "0<" # n - flag
 	.quad lit, 1 << (CELL * 8 - 1)
 	.quad and
 	.quad flag
 	.quad exit
 
-DEFWORD head_zless, less, "<" # n1 n2 -- flag
+DEFWORD less, "<" # n1 n2 -- flag
 	.quad over
 	.quad over
 	.quad xor
@@ -387,7 +390,7 @@ DEFWORD head_zless, less, "<" # n1 n2 -- flag
 1:
 	.quad exit
 
-DEFWORD head_less, uless, "u<" # u1 u2 -- flag
+DEFWORD uless, "u<" # u1 u2 -- flag
 	.quad over
 	.quad over
 	.quad xor
@@ -407,7 +410,7 @@ DEFWORD head_less, uless, "u<" # u1 u2 -- flag
 1:
 	.quad exit
 
-DEFWORD head_uless, min, "min" # n1 n2 -- n3
+DEFWORD min, "min" # n1 n2 -- n3
 	.quad over
 	.quad over
 	.quad less
@@ -424,7 +427,7 @@ DEFWORD head_uless, min, "min" # n1 n2 -- n3
 1:
 	.quad exit
 
-DEFWORD head_min, ccomma, "c," # char --
+DEFWORD ccomma, "c," # char --
 	.quad here
 	.quad fetch
 	.quad dup
@@ -434,7 +437,7 @@ DEFWORD head_min, ccomma, "c," # char --
 	.quad cstore
 	.quad exit
 
-DEFWORD head_ccomma, comma, "," # x --
+DEFWORD comma, "," # x --
 	.quad here
 	.quad fetch
 	.quad dup
@@ -445,21 +448,21 @@ DEFWORD head_ccomma, comma, "," # x --
 	.quad store
 	.quad exit
 
-DEFWORD head_comma, aligned, "aligned" # x1 -- x2
+DEFWORD aligned, "aligned" # x1 -- x2
 	.quad lit, CELL - 1
 	.quad add
 	.quad lit, -CELL
 	.quad and
 	.quad exit
 
-DEFWORD head_aligned, count, "count" # addr1 -- addr2 u
+DEFWORD count, "count" # addr1 -- addr2 u
 	.quad inc
 	.quad dup
 	.quad dec
 	.quad cfetch
 	.quad exit
 
-DEFWORD head_count, cmove, "cmove" # addr1 addr2 u --
+DEFWORD cmove, "cmove" # addr1 addr2 u --
 0:
 	.quad dup
 
@@ -485,7 +488,7 @@ DEFWORD head_count, cmove, "cmove" # addr1 addr2 u --
 	.quad drop
 	.quad exit
 
-DEFWORD head_cmove, scomma, "s," # addr u --
+DEFWORD scomma, "s," # addr u --
 	.quad dup
 	.quad ccomma
 	.quad dup
@@ -504,7 +507,7 @@ DEFWORD head_cmove, scomma, "s," # addr u --
 	.quad store
 	.quad exit
 
-DEFWORD head_scomma, sequals, "s=" # addr1 u1 addr2 u2 -- flag
+DEFWORD sequals, "s=" # addr1 u1 addr2 u2 -- flag
 	.quad rpush
 	.quad over
 	.quad rpush
@@ -556,14 +559,14 @@ DEFWORD head_scomma, sequals, "s=" # addr1 u1 addr2 u2 -- flag
 0:
 	.quad exit
 
-DEFWORD head_sequals, bye, "bye"
+DEFWORD bye, "bye"
 	.quad lit, 0
 	.quad dup
 	.quad dup
 	.quad sys_exit
 	.quad syscall
 
-DEFWORD head_bye, key, "key" # -- char
+DEFWORD key, "key" # -- char
 	.quad lit, 0
 	.quad here
 	.quad fetch
@@ -582,7 +585,7 @@ DEFWORD head_bye, key, "key" # -- char
 	.quad cfetch
 	.quad exit
 
-DEFWORD head_key, emit, "emit" # char --
+DEFWORD emit, "emit" # char --
 	.quad here
 	.quad fetch
 	.quad cstore
@@ -595,7 +598,7 @@ DEFWORD head_key, emit, "emit" # char --
 	.quad drop
 	.quad exit
 
-DEFWORD head_emit, refill, "refill"
+DEFWORD refill, "refill"
 	.quad lit, 0
 	.quad tickinput
 	.quad cstore
@@ -637,7 +640,7 @@ DEFWORD head_emit, refill, "refill"
 
 	.quad exit
 
-DEFWORD head_refill, type, "type" # addr u --
+DEFWORD type, "type" # addr u --
 0:
 	.quad dup
 
@@ -658,7 +661,7 @@ DEFWORD head_refill, type, "type" # addr u --
 	.quad drop
 	.quad exit
 
-DEFWORD head_type, parse, "parse" # char - addr u
+DEFWORD parse, "parse" # char - addr u
 	.quad rpush
 	.quad toin
 	.quad fetch
@@ -701,7 +704,7 @@ DEFWORD head_type, parse, "parse" # char - addr u
 	.quad rpull
 	.quad exit
 
-DEFWORD head_parse, word, "word" # char -- addr
+DEFWORD word, "word" # char -- addr
 	.quad rpush
 	.quad toin
 	.quad fetch
@@ -744,7 +747,7 @@ DEFWORD head_parse, word, "word" # char -- addr
 	.quad cmove
 	.quad exit
 
-DEFWORD head_word, ctonumber, "c>number" # char -- n
+DEFWORD ctonumber, "c>number" # char -- n
 	.quad lit, '0'
 	.quad sub
 	.quad lit, 9
@@ -763,7 +766,7 @@ DEFWORD head_word, ctonumber, "c>number" # char -- n
 0:
 	.quad exit
 
-DEFWORD head_ctonumber, utonumber, "u>number" # 0 addr1 u1 -- u2 addr2 u3
+DEFWORD utonumber, "u>number" # 0 addr1 u1 -- u2 addr2 u3
 0:
 	.quad dup
 	.quad rpush
@@ -801,7 +804,7 @@ DEFWORD head_ctonumber, utonumber, "u>number" # 0 addr1 u1 -- u2 addr2 u3
 	.quad rpull
 	.quad exit
 
-DEFWORD head_utonumber, tonumber, ">number" # 0 addr1 u1 -- n addr2 u2
+DEFWORD tonumber, ">number" # 0 addr1 u1 -- n addr2 u2
 	.quad over
 	.quad cfetch
 	.quad lit, '-'
@@ -828,7 +831,7 @@ DEFWORD head_utonumber, tonumber, ">number" # 0 addr1 u1 -- n addr2 u2
 1:
 	.quad exit
 
-DEFWORD head_tonumber, tocode, ">code" # addr1 -- addr2
+DEFWORD tocode, ">code" # addr1 -- addr2
 	.quad cell
 	.quad add
 	.quad count
@@ -838,7 +841,7 @@ DEFWORD head_tonumber, tocode, ">code" # addr1 -- addr2
 	.quad aligned
 	.quad exit
 
-DEFWORD head_tocode, find, "find" # addr -- addr 0 | xt 1 | xt -1
+DEFWORD find, "find" # addr -- addr 0 | xt 1 | xt -1
 	.quad dup
 	.quad latest
 	.quad rpush
@@ -905,19 +908,19 @@ DEFWORD head_tocode, find, "find" # addr -- addr 0 | xt 1 | xt -1
 0:
 	.quad exit
 
-DEFWORD head_find, lbracket, "[", IMMEDIATE
+DEFWORD lbracket, "[", IMMEDIATE
 	.quad lit, 0
 	.quad state
 	.quad store
 	.quad exit
 
-DEFWORD head_lbracket, rbracket, "]"
+DEFWORD rbracket, "]"
 	.quad lit, -1
 	.quad state
 	.quad store
 	.quad exit
 
-DEFWORD head_rbracket, colon, ":"
+DEFWORD colon, ":"
 	.quad here
 	.quad fetch
 	.quad current
@@ -934,21 +937,21 @@ DEFWORD head_rbracket, colon, ":"
 	.quad rbracket
 	.quad exit
 
-DEFWORD head_colon, reveal, "reveal"
+DEFWORD reveal, "reveal"
 	.quad current
 	.quad fetch
 	.quad latest
 	.quad store
 	.quad exit
 
-DEFWORD head_reveal, semicolon, ";", IMMEDIATE
+DEFWORD semicolon, ";", IMMEDIATE
 	.quad lit, exit
 	.quad comma
 	.quad reveal
 	.quad lbracket
 	.quad exit
 
-DEFWORD head_semicolon, tick, "'" # -- 0 | xt
+DEFWORD tick, "'" # -- 0 | xt
 	.quad bl
 	.quad word
 	.quad find
@@ -966,13 +969,13 @@ DEFWORD head_semicolon, tick, "'" # -- 0 | xt
 1:
 	.quad exit
 
-DEFWORD head_tick, literal, "literal", IMMEDIATE # x --
+DEFWORD literal, "literal", IMMEDIATE # x --
 	.quad lit, lit
 	.quad comma
 	.quad comma
 	.quad exit
 
-DEFWORD head_literal, interpret, "interpret"
+DEFWORD interpret, "interpret"
 0:
 	.quad bl
 	.quad word
@@ -1034,7 +1037,7 @@ DEFWORD head_literal, interpret, "interpret"
 	.quad drop
 	.quad exit
 
-DEFINE head_interpret, main, "main"
+DEFINE main, "main"
 	.quad refill
 	.quad interpret
 	.quad branch, main
