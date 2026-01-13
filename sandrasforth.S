@@ -18,9 +18,9 @@
 # r14 - unused.
 # r15 - unused.
 
-#define SYS_read  0
-#define SYS_write 1
-#define SYS_exit  60
+.set SYS_read,  0
+.set SYS_write, 1
+.set SYS_exit,  60
 
 .set CELL,      8
 .set IMMEDIATE, (1 << 7)

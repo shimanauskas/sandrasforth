@@ -9,8 +9,8 @@ Since .text and .data are not mixed, CPU caches stay clean.
 
 ## Requirements
 
+* binutils
 * make
-* gcc
 
 ## Errors
 
