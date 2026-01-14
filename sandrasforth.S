@@ -286,8 +286,6 @@ code_syscall: # x1 x2 x3 x4 -- x5
 	syscall
 	NEXT
 
-.data
-
 DEFCODE enter,    "enter"
 DEFCODE branch,   "branch"
 DEFCODE zbranch,  "0branch"
@@ -333,6 +331,8 @@ DEFCONST sys_write,   "sys-write",   SYS_write  # -- x
 DEFCONST sys_exit,    "sys-exit",    SYS_exit   # -- x
 DEFCONST tickinput,   "'input",      input      # -- addr
 DEFCONST tickbuffer,  "'buffer",     buffer     # -- addr
+
+.data
 
 DEFVAR toin,    ">in",     0          # -- addr
 DEFVAR state,   "state",   0          # -- addr
