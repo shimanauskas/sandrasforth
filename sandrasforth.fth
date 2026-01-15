@@ -32,12 +32,6 @@
     nip nip drop 0
   then ;
 
-: bye 0 dup dup sys-exit syscall [ reveal
-
-: key  ( -- char ) 0 here @ 1 sys-read syscall 0= if bye then here @ c@ ;
-
-: emit ( char -- ) here @ c! 1 here @ 1 sys-write syscall drop ;
-
 : refill 0 'input c! 0 >in !
   begin
     key dup dup lf = if drop bl then

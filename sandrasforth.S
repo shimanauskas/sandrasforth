@@ -278,12 +278,35 @@ code_cstore: # char addr --
 	TWODROP
 	NEXT
 
-code_syscall: # x1 x2 x3 x4 -- x5
-	movq (%rbp), %rdx
-	movq CELL(%rbp), %rsi
-	movq CELL * 2(%rbp), %rdi
-	leaq CELL * 3(%rbp), %rbp
+code_bye:
+	movq $SYS_exit, %rax
+	xorq %rdi, %rdi
 	syscall
+
+code_key: # -- char
+	DUP
+	movq $SYS_read, %rax
+	movq $1, %rdx
+	pushq $0
+	movq %rsp, %rsi
+	xorq %rdi, %rdi
+	syscall
+	testq %rax, %rax
+
+	jz code_bye
+
+	popq %rax
+	NEXT
+
+code_emit: # char --
+	pushq %rax
+	movq $SYS_write, %rax
+	movq $1, %rdx
+	movq %rsp, %rsi
+	movq $1, %rdi
+	syscall
+	popq %rax
+	DROP
 	NEXT
 
 DEFCODE enter,    "enter"
@@ -320,15 +343,14 @@ DEFCODE fetch,    "@"
 DEFCODE store,    "!"
 DEFCODE cfetch,   "c@"
 DEFCODE cstore,   "c!"
-DEFCODE syscall,  "syscall"
+DEFCODE bye,      "bye"
+DEFCODE key,      "key"
+DEFCODE emit,     "emit"
 
 DEFCONST cell,        "cell",        CELL       # -- u
 DEFCONST lf,          "lf",          '\n'       # -- char
 DEFCONST bl,          "bl",          ' '        # -- char
 DEFCONST f_immediate, "f-immediate", IMMEDIATE  # -- x
-DEFCONST sys_read,    "sys-read",    SYS_read   # -- x
-DEFCONST sys_write,   "sys-write",   SYS_write  # -- x
-DEFCONST sys_exit,    "sys-exit",    SYS_exit   # -- x
 DEFCONST tickinput,   "'input",      input      # -- addr
 DEFCONST tickbuffer,  "'buffer",     buffer     # -- addr
 
@@ -557,45 +579,6 @@ DEFWORD sequals, "s=" # addr1 u1 addr2 u2 -- flag
 	.quad lit, 0
 
 0:
-	.quad exit
-
-DEFWORD bye, "bye"
-	.quad lit, 0
-	.quad dup
-	.quad dup
-	.quad sys_exit
-	.quad syscall
-
-DEFWORD key, "key" # -- char
-	.quad lit, 0
-	.quad here
-	.quad fetch
-	.quad lit, 1
-	.quad sys_read
-	.quad syscall
-	.quad zequals
-
-	.quad zbranch, 0f
-
-	.quad bye
-
-0:
-	.quad here
-	.quad fetch
-	.quad cfetch
-	.quad exit
-
-DEFWORD emit, "emit" # char --
-	.quad here
-	.quad fetch
-	.quad cstore
-	.quad lit, 1
-	.quad here
-	.quad fetch
-	.quad lit, 1
-	.quad sys_write
-	.quad syscall
-	.quad drop
 	.quad exit
 
 DEFWORD refill, "refill"
