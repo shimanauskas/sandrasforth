@@ -25,7 +25,7 @@
 .set CELL,      8
 .set IMMEDIATE, (1 << 7)
 
-.set PREVIOUS, 0
+.set LATEST, 0
 
 .macro DUP # x -- x x
 	leaq -CELL(%rbp), %rbp
@@ -58,8 +58,8 @@
 
 .macro DEFINE body, name, mask=0
 head_\body:
-	.quad PREVIOUS
-	.set PREVIOUS, head_\body
+	.quad LATEST
+	.set LATEST, head_\body
 	.byte (1f - 0f) | \mask
 0:
 	.ascii "\name"
