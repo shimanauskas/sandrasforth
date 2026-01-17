@@ -61,10 +61,14 @@ head_\body:
 	.quad LATEST
 	.set LATEST, head_\body
 	.byte (1f - 0f) | \mask
+
 0:
 	.ascii "\name"
+
 1:
+
 .balign CELL
+
 \body:
 .endm
 
@@ -87,6 +91,7 @@ DEFWORD \body, "\name"
 .macro DEFVAR body, name, val
 var_\body:
 	.quad \val
+
 DEFWORD \body, "\name"
 	.quad lit, var_\body
 	.quad exit
@@ -115,7 +120,9 @@ code_branch:
 code_zbranch: # x --
 	testq %rax, %rax
 	DROP
+
 	jz code_branch
+
 	addq $CELL, %r12
 	NEXT
 
