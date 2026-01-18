@@ -23,9 +23,8 @@
 .set SYS_exit,  60
 
 .set CELL,      8
+.set LATEST,    0
 .set IMMEDIATE, (1 << 7)
-
-.set LATEST, 0
 
 .macro DUP # x -- x x
 	leaq -CELL(%rbp), %rbp
