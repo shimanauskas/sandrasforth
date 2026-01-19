@@ -1,6 +1,6 @@
 # sandrasForth
 
-A public domain Forth for Linux on x86-64.
+A public-domain Forth for Linux on x86-64.
 
 It is written mostly in (indirect-)threaded code. There is no limit on the
 number of primitives, however, each primitive should be kept small.
