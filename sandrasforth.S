@@ -66,7 +66,7 @@ head_\body:
 
 1:
 
-.balign CELL
+.align CELL
 
 \body:
 .endm
