@@ -2,7 +2,7 @@
   begin
     @ dup
   if
-    dup cell + count [ f-immediate 1- ] literal and type bl emit
+    dup cell + count [ immediate-flag 1- ] literal and type bl emit
   repeat
   drop ;
 

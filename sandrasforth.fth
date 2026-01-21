@@ -54,7 +54,7 @@
   if
     1+
   repeat
-  >in ! 'buffer r> parse [ f-immediate 1- ] literal min
+  >in ! 'buffer r> parse [ immediate-flag 1- ] literal min
   >r over r> over c! count cmove ;
 
 : c>number ( char -- n ) [char] 0 - 9 over <
@@ -72,18 +72,19 @@
   if >r 1+ r> 1- u>number >r >r negate r> r> else u>number then ;
 
 : >code ( addr1 -- addr2 )
-  cell + count [ f-immediate 1- ] literal and + aligned ;
+  cell + count [ immediate-flag 1- ] literal and + aligned ;
 
 : find ( addr -- addr 0 | xt 1 | xt -1 ) dup latest >r
   begin
     r> @ dup >r 0= dup invert
     if
-      drop dup count r> dup >r cell + count [ f-immediate 1- ] literal and s=
+      drop dup count r> dup >r cell + count
+      [ immediate-flag 1- ] literal and s=
     then
   until
   drop r> dup
   if
-    nip dup cell + c@ f-immediate and state @ invert or
+    nip dup cell + c@ immediate-flag and state @ invert or
     if 1 else -1 then >r >code r>
   then ;
 

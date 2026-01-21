@@ -353,12 +353,12 @@ DEFCODE bye,      "bye"
 DEFCODE key,      "key"
 DEFCODE emit,     "emit"
 
-DEFCONST cell,        "cell",        CELL       # -- u
-DEFCONST lf,          "lf",          '\n'       # -- char
-DEFCONST bl,          "bl",          ' '        # -- char
-DEFCONST f_immediate, "f-immediate", IMMEDIATE  # -- x
-DEFCONST tickinput,   "'input",      input      # -- addr
-DEFCONST tickbuffer,  "'buffer",     buffer     # -- addr
+DEFCONST cell,           "cell",           CELL       # -- u
+DEFCONST lf,             "lf",             '\n'       # -- char
+DEFCONST bl,             "bl",             ' '        # -- char
+DEFCONST immediate_flag, "immediate-flag", IMMEDIATE  # -- x
+DEFCONST tickinput,      "'input",         input      # -- addr
+DEFCONST tickbuffer,     "'buffer",        buffer     # -- addr
 
 .data
 
@@ -873,7 +873,7 @@ DEFWORD find, "find" # addr -- addr 0 | xt 1 | xt -1
 	.quad cell
 	.quad add
 	.quad cfetch
-	.quad f_immediate
+	.quad immediate_flag
 	.quad and
 	.quad state
 	.quad fetch

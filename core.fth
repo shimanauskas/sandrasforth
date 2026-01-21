@@ -1,4 +1,4 @@
-: immediate current @ cell + dup c@ f-immediate or over c! drop ;
+: immediate current @ cell + dup c@ immediate-flag or over c! drop ;
 
 : ( 41 parse nip drop ; immediate
 
