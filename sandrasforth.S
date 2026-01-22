@@ -55,11 +55,11 @@
 	jmp *(%rbx)
 .endm
 
-.macro DEFINE body, name, mask=0
+.macro DEFINE body, name, flags=0
 head_\body:
 	.quad LATEST
 	.set LATEST, head_\body
-	.byte (1f - 0f) | \mask
+	.byte (1f - 0f) | \flags
 
 0:
 	.ascii "\name"
@@ -76,8 +76,8 @@ DEFINE \body, "\name"
 	.quad code_\body
 .endm
 
-.macro DEFWORD body, name, mask=0
-DEFINE \body, "\name", \mask
+.macro DEFWORD body, name, flags=0
+DEFINE \body, "\name", \flags
 	.quad code_enter
 .endm
 
