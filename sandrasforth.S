@@ -286,15 +286,15 @@ code_cstore: # char addr --
 
 code_bye:
 	movq $SYS_exit, %rax
-	xorq %rdi, %rdi
+	xorq %rdi, %rdi # Error code.
 	syscall
 
 code_key: # -- char
 	DUP
 	movq $SYS_read, %rax
-	movq $1, %rdx
+	movq $1, %rdx # Count.
 	pushq $0
-	movq %rsp, %rsi
+	movq %rsp, %rsi # Destination.
 	xorq %rdi, %rdi
 	syscall
 	testq %rax, %rax
@@ -307,8 +307,8 @@ code_key: # -- char
 code_emit: # char --
 	pushq %rax
 	movq $SYS_write, %rax
-	movq $1, %rdx
-	movq %rsp, %rsi
+	movq $1, %rdx # Count.
+	movq %rsp, %rsi # Source.
 	movq $1, %rdi
 	syscall
 	popq %rax
