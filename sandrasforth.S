@@ -22,6 +22,9 @@
 .set SYS_write, 1
 .set SYS_exit,  60
 
+.set STDIN, 0
+.set STDOUT, 1
+
 .set CELL,      8
 .set LATEST,    0
 .set IMMEDIATE, (1 << 7)
@@ -295,7 +298,7 @@ code_key: # -- char
 	movq $1, %rdx # Count.
 	pushq $0
 	movq %rsp, %rsi # Destination.
-	xorq %rdi, %rdi
+	movq $STDIN, %rdi
 	syscall
 	testq %rax, %rax
 
@@ -309,7 +312,7 @@ code_emit: # char --
 	movq $SYS_write, %rax
 	movq $1, %rdx # Count.
 	movq %rsp, %rsi # Source.
-	movq $1, %rdi
+	movq $STDOUT, %rdi
 	syscall
 	popq %rax
 	DROP
