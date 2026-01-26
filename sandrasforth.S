@@ -22,7 +22,7 @@
 .set SYS_write, 1
 .set SYS_exit,  60
 
-.set STDIN, 0
+.set STDIN,  0
 .set STDOUT, 1
 
 .set CELL,      8

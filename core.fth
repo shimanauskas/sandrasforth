@@ -20,8 +20,8 @@
 
 : recurse current @ >code , ; immediate
 
-: marker here @ : ['] lit , , ['] here , ['] ! ,
-  latest @ ['] lit , , ['] latest , ['] ! , postpone ; ;
+: marker here @ : ['] lit , , ['] here   , ['] ! ,
+         latest @ ['] lit , , ['] latest , ['] ! , postpone ; ;
 
 : constant ( x -- ) : postpone literal postpone ; ;
 : variable here @ 0 over ! dup cell + here ! constant ;
