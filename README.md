@@ -7,10 +7,27 @@ number of primitives, however, each primitive should be kept small.
 
 Since .text and .data are not mixed, CPU caches stay clean.
 
-## Requirements
+## How to run
 
-* binutils
-* make
+If you're on a Debian-based Linux distribution, first install `binutils` and
+`make` using these commands:
+
+	sudo apt update
+	sudo apt install binutils make
+
+Navigate to `sandrasforth` directory, then, to build, issue:
+
+	make
+
+Or, you can build and run in one go using:
+
+	make run
+
+You can exit sandrasForth by pressing Control + D, or:
+
+	bye
+
+If you choose the latter, press Enter an extra time to return to your shell.
 
 ## Errors
 
