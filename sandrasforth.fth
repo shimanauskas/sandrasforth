@@ -21,8 +21,8 @@
 : cmove ( addr1 addr2 u -- )
   begin dup if >r over c@ over c! >r 1+ r> 1+ r> 1- repeat nip nip drop ;
 
-: s, ( addr u -- )
-  dup c, dup >r >r here @ r> cmove r> here @ + aligned here ! ;
+: s, ( addr u -- ) dup c,
+  dup >r >r here @ r> cmove r> here @ + aligned here ! ;
 
 : s= ( addr1 u1 addr2 u2 -- flag ) >r over >r nip r> r> over =
   if
