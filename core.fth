@@ -37,7 +37,7 @@
 : digit ( u -- char ) dup 10 u<
   if [char] 0 + else [ char A 10 - ] literal + then ;
 
-: u. ( u -- ) 0 base @ um/mod dup if recurse else drop then digit emit ;
+: u. ( u -- ) 0 base @ um/mod ?dup if recurse then digit emit ;
 
 :  . ( n -- ) dup 0< if [char] - emit negate then u. ;
 

@@ -9,6 +9,8 @@
 :  < ( n1 n2 -- flag ) over over xor 0< if drop 0< else - 0< then ;
 : u< ( u1 u2 -- flag ) over over xor 0< if nip  0< else - 0< then ;
 
+: ?dup dup if dup then ;
+
 : min ( n1 n2 -- n3 ) over over < if drop else nip then ;
 
 : c, ( char -- ) here @ dup 1+     here ! c! ;
@@ -19,7 +21,7 @@
 : count ( addr1 -- addr2 u ) 1+ dup 1- c@ ;
 
 : cmove ( addr1 addr2 u -- )
-  begin dup if >r over c@ over c! >r 1+ r> 1+ r> 1- repeat nip nip drop ;
+  begin ?dup if >r over c@ over c! >r 1+ r> 1+ r> 1- repeat nip drop ;
 
 : s, ( addr u -- ) dup c,
   dup >r >r here @ r> cmove r> here @ + aligned here ! ;
@@ -38,7 +40,7 @@
     'input count + c! 'input c@ 1+ 'input c! lf = 'input c@ 255 = or
   until ;
 
-: type ( addr u -- ) begin dup if >r dup c@ emit 1+ r> 1- repeat nip drop ;
+: type ( addr u -- ) begin ?dup if >r dup c@ emit 1+ r> 1- repeat drop ;
 
 : parse ( char -- addr u ) >r >in @ dup
   begin
@@ -105,11 +107,11 @@
   begin
     bl word dup c@
   if
-    find dup
+    find ?dup
     if
       0< if , else execute then
     else
-      drop 0 over count >number nip
+      0 over count >number nip
       if
         drop count type [char] ? emit
       else

@@ -441,6 +441,16 @@ DEFWORD uless, "u<" # u1 u2 -- flag
 1:
 	.quad exit
 
+DEFWORD qdup, "?dup" # x -- 0 | x x
+	.quad dup
+
+	.quad zbranch, 0f
+
+	.quad dup
+
+0:
+	.quad exit
+
 DEFWORD min, "min" # n1 n2 -- n3
 	.quad over
 	.quad over
@@ -495,7 +505,7 @@ DEFWORD count, "count" # addr1 -- addr2 u
 
 DEFWORD cmove, "cmove" # addr1 addr2 u --
 0:
-	.quad dup
+	.quad qdup
 
 	.quad zbranch, 0f
 
@@ -514,7 +524,6 @@ DEFWORD cmove, "cmove" # addr1 addr2 u --
 	.quad branch, 0b
 
 0:
-	.quad nip
 	.quad nip
 	.quad drop
 	.quad exit
@@ -634,7 +643,7 @@ DEFWORD refill, "refill"
 
 DEFWORD type, "type" # addr u --
 0:
-	.quad dup
+	.quad qdup
 
 	.quad zbranch, 0f
 
@@ -649,7 +658,6 @@ DEFWORD type, "type" # addr u --
 	.quad branch, 0b
 
 0:
-	.quad nip
 	.quad drop
 	.quad exit
 
@@ -977,7 +985,7 @@ DEFWORD interpret, "interpret"
 	.quad zbranch, 4f
 
 	.quad find
-	.quad dup
+	.quad qdup
 
 	.quad zbranch, 3f
 
@@ -996,7 +1004,6 @@ DEFWORD interpret, "interpret"
 	.quad branch, 2f
 
 3:
-	.quad drop
 	.quad lit, 0
 	.quad over
 	.quad count
