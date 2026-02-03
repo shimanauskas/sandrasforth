@@ -401,9 +401,13 @@ DEFWORD zless, "0<" # n - flag
 	.quad flag
 	.quad exit
 
+DEFWORD twodup, "2dup" # x1 x2 -- x1 x2 x1 x2
+	.quad over
+	.quad over
+	.quad exit
+
 DEFWORD less, "<" # n1 n2 -- flag
-	.quad over
-	.quad over
+	.quad twodup
 	.quad xor
 	.quad zless
 
@@ -422,8 +426,7 @@ DEFWORD less, "<" # n1 n2 -- flag
 	.quad exit
 
 DEFWORD uless, "u<" # u1 u2 -- flag
-	.quad over
-	.quad over
+	.quad twodup
 	.quad xor
 	.quad zless
 
@@ -452,8 +455,7 @@ DEFWORD qdup, "?dup" # x -- 0 | x x
 	.quad exit
 
 DEFWORD min, "min" # n1 n2 -- n3
-	.quad over
-	.quad over
+	.quad twodup
 	.quad less
 
 	.quad zbranch, 0f
