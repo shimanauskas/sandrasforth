@@ -11,7 +11,7 @@
 :  < ( n1 n2 -- flag ) 2dup xor 0< if drop 0< else - 0< then ;
 : u< ( u1 u2 -- flag ) 2dup xor 0< if nip  0< else - 0< then ;
 
-: ?dup dup if dup then ;
+: ?dup ( x -- 0 | x x ) dup if dup then ;
 
 : min ( n1 n2 -- n3 ) 2dup < if drop else nip then ;
 
