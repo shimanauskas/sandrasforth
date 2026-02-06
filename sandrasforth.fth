@@ -1,3 +1,6 @@
+: 2dup ( x1 x2 -- x1 x2 x1 x2 ) over over ;
+: ?dup ( x -- 0 | x x ) dup if dup then ;
+
 : flag ( x -- flag ) if -1 else 0 then ;
 
 : 0= ( x -- flag ) flag invert ;
@@ -6,12 +9,8 @@
 
 : 0< ( n -- flag ) [ 1 cell 8 * 1- lshift ] literal and flag ;
 
-: 2dup ( x1 x2 -- x1 x2 x1 x2 ) over over ;
-
 :  < ( n1 n2 -- flag ) 2dup xor 0< if drop 0< else - 0< then ;
 : u< ( u1 u2 -- flag ) 2dup xor 0< if nip  0< else - 0< then ;
-
-: ?dup ( x -- 0 | x x ) dup if dup then ;
 
 : min ( n1 n2 -- n3 ) 2dup < if drop else nip then ;
 

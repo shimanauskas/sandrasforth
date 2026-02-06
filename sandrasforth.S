@@ -372,6 +372,21 @@ DEFVAR latest,  "latest",  head_main  # -- addr
 DEFVAR current, "current", head_main  # -- addr
 DEFVAR base,    "base",    10         # -- addr
 
+DEFWORD twodup, "2dup" # x1 x2 -- x1 x2 x1 x2
+	.quad over
+	.quad over
+	.quad exit
+
+DEFWORD qdup, "?dup" # x -- 0 | x x
+	.quad dup
+
+	.quad zbranch, 0f
+
+	.quad dup
+
+0:
+	.quad exit
+
 DEFWORD flag, "flag" # x -- flag
 	.quad zbranch, 0f
 
@@ -399,11 +414,6 @@ DEFWORD zless, "0<" # n - flag
 	.quad lit, 1 << (CELL * 8 - 1)
 	.quad and
 	.quad flag
-	.quad exit
-
-DEFWORD twodup, "2dup" # x1 x2 -- x1 x2 x1 x2
-	.quad over
-	.quad over
 	.quad exit
 
 DEFWORD less, "<" # n1 n2 -- flag
@@ -442,16 +452,6 @@ DEFWORD uless, "u<" # u1 u2 -- flag
 	.quad zless
 
 1:
-	.quad exit
-
-DEFWORD qdup, "?dup" # x -- 0 | x x
-	.quad dup
-
-	.quad zbranch, 0f
-
-	.quad dup
-
-0:
 	.quad exit
 
 DEFWORD min, "min" # n1 n2 -- n3
