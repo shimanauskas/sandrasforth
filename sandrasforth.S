@@ -151,8 +151,16 @@ code_nip: # x1 x2 -- x2
 	NIP
 	NEXT
 
+code_twonip: # x1 x2 x3 -- x3
+	TWONIP
+	NEXT
+
 code_drop: # x --
 	DROP
+	NEXT
+
+code_twodrop: # x1 x2 --
+	TWODROP
 	NEXT
 
 code_over: # x1 x2 -- x1 x2 x1
@@ -326,7 +334,9 @@ DEFCODE exit,     "exit"
 DEFCODE lit,      "lit"
 DEFCODE dup,      "dup"
 DEFCODE nip,      "nip"
+DEFCODE twonip,   "2nip"
 DEFCODE drop,     "drop"
+DEFCODE twodrop,  "2drop"
 DEFCODE over,     "over"
 DEFCODE rpush,    ">r"
 DEFCODE rpull,    "r>"
@@ -526,8 +536,7 @@ DEFWORD cmove, "cmove" # addr1 addr2 u --
 	.quad branch, 0b
 
 0:
-	.quad nip
-	.quad drop
+	.quad twodrop
 	.quad exit
 
 DEFWORD scomma, "s," # addr u --
@@ -593,8 +602,7 @@ DEFWORD sequals, "s=" # addr1 u1 addr2 u2 -- flag
 	.quad branch, 0f
 
 1:
-	.quad nip
-	.quad nip
+	.quad twonip
 	.quad drop
 	.quad lit, 0
 

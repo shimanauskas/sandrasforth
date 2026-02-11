@@ -22,7 +22,7 @@
 : count ( addr1 -- addr2 u ) 1+ dup 1- c@ ;
 
 : cmove ( addr1 addr2 u -- )
-  begin ?dup if >r over c@ over c! >r 1+ r> 1+ r> 1- repeat nip drop ;
+  begin ?dup if >r over c@ over c! >r 1+ r> 1+ r> 1- repeat 2drop ;
 
 : s, ( addr u -- ) dup c,
   dup >r >r here @ r> cmove r> here @ + aligned here ! ;
@@ -32,7 +32,7 @@
     begin dup >r >r over c@ over c@ = r> and if >r 1+ r> 1+ r> 1- repeat
     r> nip nip 0=
   else
-    nip nip drop 0
+    2nip drop 0
   then ;
 
 : refill 0 'input c! 0 >in !
