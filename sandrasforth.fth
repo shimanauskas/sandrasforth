@@ -1,7 +1,7 @@
 : 2dup ( x1 x2 -- x1 x2 x1 x2 ) over over ;
 : ?dup ( x -- 0 | x x ) dup if dup then ;
 
-: flag ( x -- flag ) if -1 else 0 then ;
+: flag ( x -- flag ) if -1 exit then 0 ;
 
 : 0= ( x -- flag ) flag invert ;
 
@@ -9,10 +9,10 @@
 
 : 0< ( n -- flag ) [ 1 cell 8 * 1- lshift ] literal and flag ;
 
-:  < ( n1 n2 -- flag ) 2dup xor 0< if drop 0< else - 0< then ;
-: u< ( u1 u2 -- flag ) 2dup xor 0< if nip  0< else - 0< then ;
+:  < ( n1 n2 -- flag ) 2dup xor 0< if drop 0< exit then - 0< ;
+: u< ( u1 u2 -- flag ) 2dup xor 0< if nip  0< exit then - 0< ;
 
-: min ( n1 n2 -- n3 ) 2dup < if drop else nip then ;
+: min ( n1 n2 -- n3 ) 2dup < if drop exit then nip ;
 
 : c, ( char -- ) here @ dup 1+     here ! c! ;
 :  , ( x -- )    here @ dup cell + here !  ! ;
@@ -30,10 +30,9 @@
 : s= ( addr1 u1 addr2 u2 -- flag ) >r over >r nip r> r> over =
   if
     begin dup >r >r over c@ over c@ = r> and if >r 1+ r> 1+ r> 1- repeat
-    r> nip nip 0=
-  else
-    2nip drop 0
-  then ;
+    r> nip nip 0= exit
+  then
+  2nip drop 0 ;
 
 : refill 0 'input c! 0 >in !
   begin
@@ -100,7 +99,7 @@
 
 : ; ['] exit , reveal postpone [ ; immediate
 
-: ' ( -- 0 | xt ) bl word find dup if drop else nip then ;
+: ' ( -- 0 | xt ) bl word find dup if drop exit then nip ;
 
 : literal ( x -- ) lit lit , , ; immediate
 

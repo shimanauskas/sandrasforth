@@ -401,13 +401,10 @@ DEFWORD flag, "flag" # x -- flag
 	.quad zbranch, 0f
 
 	.quad lit, -1
-
-	.quad branch, 1f
+	.quad exit
 
 0:
 	.quad lit, 0
-
-1:
 	.quad exit
 
 DEFWORD zequals, "0=" # x -- flag
@@ -435,14 +432,11 @@ DEFWORD less, "<" # n1 n2 -- flag
 
 	.quad drop
 	.quad zless
-
-	.quad branch, 1f
+	.quad exit
 
 0:
 	.quad sub
 	.quad zless
-
-1:
 	.quad exit
 
 DEFWORD uless, "u<" # u1 u2 -- flag
@@ -454,14 +448,11 @@ DEFWORD uless, "u<" # u1 u2 -- flag
 
 	.quad nip
 	.quad zless
-
-	.quad branch, 1f
+	.quad exit
 
 0:
 	.quad sub
 	.quad zless
-
-1:
 	.quad exit
 
 DEFWORD min, "min" # n1 n2 -- n3
@@ -471,13 +462,10 @@ DEFWORD min, "min" # n1 n2 -- n3
 	.quad zbranch, 0f
 
 	.quad drop
-
-	.quad branch, 1f
+	.quad exit
 
 0:
 	.quad nip
-
-1:
 	.quad exit
 
 DEFWORD ccomma, "c," # char --
@@ -598,15 +586,12 @@ DEFWORD sequals, "s=" # addr1 u1 addr2 u2 -- flag
 	.quad nip
 	.quad nip
 	.quad zequals
-
-	.quad branch, 0f
+	.quad exit
 
 1:
 	.quad twonip
 	.quad drop
 	.quad lit, 0
-
-0:
 	.quad exit
 
 DEFWORD refill, "refill"
@@ -970,13 +955,10 @@ DEFWORD tick, "'" # -- 0 | xt
 	.quad zbranch, 0f
 
 	.quad drop
-
-	.quad branch, 1f
+	.quad exit
 
 0:
 	.quad nip
-
-1:
 	.quad exit
 
 DEFWORD literal, "literal", IMMEDIATE # x --
