@@ -104,9 +104,9 @@ DEFWORD \body, "\name"
 .global _start
 
 _start:
-	leaq dstack(%rip), %rbp
+	movl $dstack, %ebp
 	movq $-1, %rax
-	leaq main(%rip), %r12
+	movl $main, %r12d
 	NEXT
 
 code_enter:
@@ -296,17 +296,17 @@ code_cstore: # char addr --
 	NEXT
 
 code_bye:
-	movq $SYS_exit, %rax
-	xorq %rdi, %rdi # Error code.
+	movl $SYS_exit, %eax
+	xorl %edi, %edi # Error code.
 	syscall
 
 code_key: # -- char
 	DUP
-	movq $SYS_read, %rax
-	movq $1, %rdx # Count.
+	movl $SYS_read, %eax
+	movl $1, %edx # Count.
 	pushq $0
 	movq %rsp, %rsi # Destination.
-	movq $STDIN, %rdi
+	movl $STDIN, %edi
 	syscall
 	testq %rax, %rax
 
@@ -317,10 +317,10 @@ code_key: # -- char
 
 code_emit: # char --
 	pushq %rax
-	movq $SYS_write, %rax
-	movq $1, %rdx # Count.
+	movl $SYS_write, %eax
+	movl $1, %edx # Count.
 	movq %rsp, %rsi # Source.
-	movq $STDOUT, %rdi
+	movl $STDOUT, %edi
 	syscall
 	popq %rax
 	DROP
