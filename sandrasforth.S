@@ -55,6 +55,7 @@
 .macro NEXT
 	movq (%r12), %rbx
 	addq $CELL, %r12
+
 	jmp *(%rbx)
 .endm
 
@@ -131,6 +132,7 @@ code_zbranch: # x --
 code_execute: # addr --
 	movq %rax, %rbx
 	DROP
+
 	jmp *(%rbx)
 
 code_exit:
