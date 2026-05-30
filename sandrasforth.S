@@ -30,7 +30,7 @@
 .set IMMEDIATE, (1 << 7)
 
 .macro DUP # x -- x x
-	leaq -CELL(%rbp), %rbp
+	subq $CELL, %rbp
 	movq %rax, (%rbp)
 .endm
 
@@ -39,7 +39,7 @@
 .endm
 
 .macro TWONIP # x1 x2 x3 -- x3
-	leaq CELL * 2(%rbp), %rbp
+	addq $CELL * 2, %rbp
 .endm
 
 .macro DROP # x --
