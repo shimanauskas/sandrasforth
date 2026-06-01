@@ -18,13 +18,6 @@
 # r14 - unused.
 # r15 - unused.
 
-.set SYS_read,  0
-.set SYS_write, 1
-.set SYS_exit,  60
-
-.set STDIN,  0
-.set STDOUT, 1
-
 .set CELL,      8
 .set LATEST,    0
 .set IMMEDIATE, (1 << 7)
@@ -298,17 +291,17 @@ code_cstore: # char addr --
 	NEXT
 
 code_bye:
-	movl $SYS_exit, %eax
+	movl $60, %eax # SYS_exit.
 	xorl %edi, %edi # Error code.
 	syscall
 
 code_key: # -- char
 	DUP
-	movl $SYS_read, %eax
+	xorl %eax, %eax # SYS_read.
 	movl $1, %edx # Count.
 	pushq $0
 	movq %rsp, %rsi # Destination.
-	movl $STDIN, %edi
+	xorl %edi, %edi # STDIN.
 	syscall
 	testq %rax, %rax
 
@@ -319,10 +312,10 @@ code_key: # -- char
 
 code_emit: # char --
 	pushq %rax
-	movl $SYS_write, %eax
+	movl $1, %eax # SYS_write.
 	movl $1, %edx # Count.
 	movq %rsp, %rsi # Source.
-	movl $STDOUT, %edi
+	movl $1, %edi # STDOUT.
 	syscall
 	popq %rax
 	DROP
