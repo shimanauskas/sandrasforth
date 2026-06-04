@@ -18,8 +18,8 @@
 # r14 - unused.
 # r15 - unused.
 
-.set CELL,      8
-.set LATEST,    0
+.set CELL, 8
+.set LATEST, 0
 .set IMMEDIATE, (1 << 7)
 
 .macro DUP # x -- x x
@@ -81,6 +81,7 @@ DEFINE \body, "\name", \flags
 .macro DEFCONST body, name, val
 DEFWORD \body, "\name"
 	.quad lit, \val
+
 	.quad exit
 .endm
 
@@ -90,6 +91,7 @@ var_\body:
 
 DEFWORD \body, "\name"
 	.quad lit, var_\body
+
 	.quad exit
 .endm
 
@@ -101,16 +103,19 @@ _start:
 	movl $dstack, %ebp
 	movq $-1, %rax
 	movl $main, %r12d
+
 	NEXT
 
 code_enter:
 	pushq %r12
 	addq $CELL, %rbx
 	movq %rbx, %r12
+
 	NEXT
 
 code_branch:
 	movq (%r12), %r12
+
 	NEXT
 
 code_zbranch: # x --
@@ -120,6 +125,7 @@ code_zbranch: # x --
 	jz code_branch
 
 	addq $CELL, %r12
+
 	NEXT
 
 code_execute: # addr --
@@ -130,119 +136,144 @@ code_execute: # addr --
 
 code_exit:
 	popq %r12
+
 	NEXT
 
 code_lit: # -- x
 	DUP
 	movq (%r12), %rax
 	addq $CELL, %r12
+
 	NEXT
 
 code_dup: # x -- x x
 	DUP
+
 	NEXT
 
 code_nip: # x1 x2 -- x2
 	NIP
+
 	NEXT
 
 code_twonip: # x1 x2 x3 -- x3
 	TWONIP
+
 	NEXT
 
 code_drop: # x --
 	DROP
+
 	NEXT
 
 code_twodrop: # x1 x2 --
 	TWODROP
+
 	NEXT
 
 code_over: # x1 x2 -- x1 x2 x1
 	DUP
 	movq CELL(%rbp), %rax
+
 	NEXT
 
 code_rpush: # x --
 	pushq %rax
 	DROP
+
 	NEXT
 
 code_rpull: # -- x
 	DUP
 	popq %rax
+
 	NEXT
 
 code_invert: # x1 -- x2
 	notq %rax
+
 	NEXT
 
 code_twomul: # x1 -- x2
 	shlq %rax
+
 	NEXT
 
 code_twodiv: # x1 -- x2
 	shrq %rax
+
 	NEXT
 
 code_lshift: # x1 u -- x2
 	movb %al, %cl
 	DROP
 	shlq %cl, %rax
+
 	NEXT
 
 code_rshift: # x1 u -- x2
 	movb %al, %cl
 	DROP
 	shrq %cl, %rax
+
 	NEXT
 
 code_and: # x1 x2 -- x3
 	andq (%rbp), %rax
 	NIP
+
 	NEXT
 
 code_or: # x1 x2 -- x3
 	orq (%rbp), %rax
 	NIP
+
 	NEXT
 
 code_xor: # x1 x2 -- x3
 	xorq (%rbp), %rax
 	NIP
+
 	NEXT
 
 code_negate: # n1 -- n2
 	negq %rax
+
 	NEXT
 
 code_inc: # n1 -- n2
 	incq %rax
+
 	NEXT
 
 code_dec: # n1 -- n2
 	decq %rax
+
 	NEXT
 
 code_add: # n1|u1 n2|u2 -- n3|u3
 	addq %rax, (%rbp)
 	DROP
+
 	NEXT
 
 code_sub: # n1|u1 n2|u2 -- n3|u3
 	subq %rax, (%rbp)
 	DROP
+
 	NEXT
 
 code_mul: # n1 n2 -- n3
 	imulq (%rbp)
 	NIP
+
 	NEXT
 
 code_ummul: # u1 u2 -- ud
 	mulq (%rbp)
 	movq %rax, (%rbp)
 	movq %rdx, %rax
+
 	NEXT
 
 code_div: # n1 n2 -- n3
@@ -251,6 +282,7 @@ code_div: # n1 n2 -- n3
 	cqo
 	idivq %rcx
 	NIP
+
 	NEXT
 
 code_divmod: # n1 n2 -- n3 n4
@@ -259,6 +291,7 @@ code_divmod: # n1 n2 -- n3 n4
 	cqo
 	idivq %rcx
 	movq %rdx, (%rbp)
+
 	NEXT
 
 code_umdivmod: # ud u1 -- u2 u3
@@ -268,31 +301,37 @@ code_umdivmod: # ud u1 -- u2 u3
 	movq (%rbp), %rax
 	divq %rcx
 	movq %rdx, (%rbp)
+
 	NEXT
 
 code_fetch: # addr -- x
 	movq (%rax), %rax
+
 	NEXT
 
 code_store: # x addr --
 	movq (%rbp), %rdx
 	movq %rdx, (%rax)
 	TWODROP
+
 	NEXT
 
 code_cfetch: # addr -- char
 	movzbq (%rax), %rax
+
 	NEXT
 
 code_cstore: # char addr --
 	movb (%rbp), %dl
 	movb %dl, (%rax)
 	TWODROP
+
 	NEXT
 
 code_bye:
 	movl $60, %eax # SYS_exit.
 	xorl %edi, %edi # Error code.
+
 	syscall
 
 code_key: # -- char
@@ -302,12 +341,15 @@ code_key: # -- char
 	pushq $0
 	movq %rsp, %rsi # Destination.
 	xorl %edi, %edi # STDIN.
+
 	syscall
+
 	testq %rax, %rax
 
 	jz code_bye
 
 	popq %rax
+
 	NEXT
 
 code_emit: # char --
@@ -316,9 +358,12 @@ code_emit: # char --
 	movl $1, %edx # Count.
 	movq %rsp, %rsi # Source.
 	movl $1, %edi # STDOUT.
+
 	syscall
+
 	popq %rax
 	DROP
+
 	NEXT
 
 DEFCODE enter,    "enter"
@@ -380,6 +425,7 @@ DEFVAR base,    "base",    10         # -- addr
 DEFWORD twodup, "2dup" # x1 x2 -- x1 x2 x1 x2
 	.quad over
 	.quad over
+
 	.quad exit
 
 DEFWORD qdup, "?dup" # x -- 0 | x x
@@ -396,26 +442,31 @@ DEFWORD flag, "flag" # x -- flag
 	.quad zbranch, 0f
 
 	.quad lit, -1
+
 	.quad exit
 
 0:
 	.quad lit, 0
+
 	.quad exit
 
 DEFWORD zequals, "0=" # x -- flag
 	.quad flag
 	.quad invert
+
 	.quad exit
 
 DEFWORD equals, "=" # x1 x2 -- flag
 	.quad xor
 	.quad zequals
+
 	.quad exit
 
 DEFWORD zless, "0<" # n - flag
 	.quad lit, 1 << (CELL * 8 - 1)
 	.quad and
 	.quad flag
+
 	.quad exit
 
 DEFWORD less, "<" # n1 n2 -- flag
@@ -427,11 +478,13 @@ DEFWORD less, "<" # n1 n2 -- flag
 
 	.quad drop
 	.quad zless
+
 	.quad exit
 
 0:
 	.quad sub
 	.quad zless
+
 	.quad exit
 
 DEFWORD uless, "u<" # u1 u2 -- flag
@@ -443,11 +496,13 @@ DEFWORD uless, "u<" # u1 u2 -- flag
 
 	.quad nip
 	.quad zless
+
 	.quad exit
 
 0:
 	.quad sub
 	.quad zless
+
 	.quad exit
 
 DEFWORD min, "min" # n1 n2 -- n3
@@ -457,10 +512,12 @@ DEFWORD min, "min" # n1 n2 -- n3
 	.quad zbranch, 0f
 
 	.quad drop
+
 	.quad exit
 
 0:
 	.quad nip
+
 	.quad exit
 
 DEFWORD ccomma, "c," # char --
@@ -471,6 +528,7 @@ DEFWORD ccomma, "c," # char --
 	.quad here
 	.quad store
 	.quad cstore
+
 	.quad exit
 
 DEFWORD comma, "," # x --
@@ -482,6 +540,7 @@ DEFWORD comma, "," # x --
 	.quad here
 	.quad store
 	.quad store
+
 	.quad exit
 
 DEFWORD aligned, "aligned" # x1 -- x2
@@ -489,6 +548,7 @@ DEFWORD aligned, "aligned" # x1 -- x2
 	.quad add
 	.quad lit, -CELL
 	.quad and
+
 	.quad exit
 
 DEFWORD count, "count" # addr1 -- addr2 u
@@ -496,6 +556,7 @@ DEFWORD count, "count" # addr1 -- addr2 u
 	.quad dup
 	.quad dec
 	.quad cfetch
+
 	.quad exit
 
 DEFWORD cmove, "cmove" # addr1 addr2 u --
@@ -520,6 +581,7 @@ DEFWORD cmove, "cmove" # addr1 addr2 u --
 
 0:
 	.quad twodrop
+
 	.quad exit
 
 DEFWORD scomma, "s," # addr u --
@@ -539,6 +601,7 @@ DEFWORD scomma, "s," # addr u --
 	.quad aligned
 	.quad here
 	.quad store
+
 	.quad exit
 
 DEFWORD sequals, "s=" # addr1 u1 addr2 u2 -- flag
@@ -581,12 +644,14 @@ DEFWORD sequals, "s=" # addr1 u1 addr2 u2 -- flag
 	.quad nip
 	.quad nip
 	.quad zequals
+
 	.quad exit
 
 1:
 	.quad twonip
 	.quad drop
 	.quad lit, 0
+
 	.quad exit
 
 DEFWORD refill, "refill"
@@ -649,6 +714,7 @@ DEFWORD type, "type" # addr u --
 
 0:
 	.quad drop
+
 	.quad exit
 
 DEFWORD parse, "parse" # char - addr u
@@ -692,6 +758,7 @@ DEFWORD parse, "parse" # char - addr u
 	.quad lit, input + 1
 	.quad add
 	.quad rpull
+
 	.quad exit
 
 DEFWORD word, "word" # char -- addr
@@ -735,6 +802,7 @@ DEFWORD word, "word" # char -- addr
 	.quad cstore
 	.quad count
 	.quad cmove
+
 	.quad exit
 
 DEFWORD ctonumber, "c>number" # char -- n
@@ -792,6 +860,7 @@ DEFWORD utonumber, "u>number" # 0 addr1 u1 -- u2 addr2 u3
 0:
 	.quad nip
 	.quad rpull
+
 	.quad exit
 
 DEFWORD tonumber, ">number" # 0 addr1 u1 -- n addr2 u2
@@ -829,6 +898,7 @@ DEFWORD tocode, ">code" # addr1 -- addr2
 	.quad and
 	.quad add
 	.quad aligned
+
 	.quad exit
 
 DEFWORD find, "find" # addr -- addr 0 | xt 1 | xt -1
@@ -902,12 +972,14 @@ DEFWORD lbracket, "[", IMMEDIATE
 	.quad lit, 0
 	.quad state
 	.quad store
+
 	.quad exit
 
 DEFWORD rbracket, "]"
 	.quad lit, -1
 	.quad state
 	.quad store
+
 	.quad exit
 
 DEFWORD colon, ":"
@@ -925,6 +997,7 @@ DEFWORD colon, ":"
 	.quad lit, code_enter
 	.quad comma
 	.quad rbracket
+
 	.quad exit
 
 DEFWORD reveal, "reveal"
@@ -932,6 +1005,7 @@ DEFWORD reveal, "reveal"
 	.quad fetch
 	.quad latest
 	.quad store
+
 	.quad exit
 
 DEFWORD semicolon, ";", IMMEDIATE
@@ -939,6 +1013,7 @@ DEFWORD semicolon, ";", IMMEDIATE
 	.quad comma
 	.quad reveal
 	.quad lbracket
+
 	.quad exit
 
 DEFWORD tick, "'" # -- 0 | xt
@@ -954,12 +1029,14 @@ DEFWORD tick, "'" # -- 0 | xt
 
 0:
 	.quad nip
+
 	.quad exit
 
 DEFWORD literal, "literal", IMMEDIATE # x --
 	.quad lit, lit
 	.quad comma
 	.quad comma
+
 	.quad exit
 
 DEFWORD interpret, "interpret"
@@ -1021,11 +1098,13 @@ DEFWORD interpret, "interpret"
 
 4:
 	.quad drop
+
 	.quad exit
 
 DEFINE main, "main"
 	.quad refill
 	.quad interpret
+
 	.quad branch, main
 
 .bss
