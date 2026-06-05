@@ -101,7 +101,6 @@ DEFWORD \body, "\name"
 
 _start:
 	movl $dstack, %ebp
-	movq $-1, %rax
 	movl $main, %r12d
 
 	NEXT
