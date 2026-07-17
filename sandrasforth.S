@@ -365,6 +365,8 @@ code_emit: # char --
 
 	NEXT
 
+.align 0x40
+
 DEFCODE enter,    "enter"
 DEFCODE branch,   "branch"
 DEFCODE zbranch,  "0branch"
@@ -1107,6 +1109,8 @@ DEFINE main, "main"
 	.quad branch, main
 
 .bss
+
+.align 0x40
 
 input:
 	.skip 0x100
