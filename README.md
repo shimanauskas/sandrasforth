@@ -9,8 +9,8 @@ Since .text and .data are not mixed, CPU caches stay clean.
 
 ## How to run
 
-If you're on a Debian-based Linux distribution, first install `binutils` and
-`make` using these commands:
+If you're on a Debian-based x86-64 Linux distribution, first install `binutils`
+and `make` using these commands:
 
 	sudo apt update
 	sudo apt install binutils make
